@@ -1,23 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item
-        android:id="@+id/export"
-        android:icon="@drawable/ic_action_save"
-        android:title="Export" />
-    <item
         android:id="@+id/person"
-        android:icon="@drawable/ic_action_person"
-        android:title="Set Person" />
+        android:icon="@drawable/ic_person"
+        android:title="Set person" />
     <item
         android:id="@+id/scaleConnect"
-        android:icon="@drawable/ic_action_refresh"
-        android:title="Connect Scale" />
+        android:icon="@drawable/ic_usb"
+        android:title="Connect scale" />
+    <item
+        android:id="@+id/export"
+        android:icon="@drawable/ic_save"
+        android:title="Export" />
     <item
         android:id="@+id/clearData"
-        android:icon="@drawable/ic_action_discard"
-        android:title="Clear Data" />
+        android:icon="@drawable/ic_delete"
+        android:title="Delete data" />
     <item
         android:id="@+id/about"
-        android:icon="@drawable/ic_action_about"
+        android:icon="@drawable/ic_info"
         android:title="About" />
 </menu>

@@ -1,0 +1,17 @@
+4
+Added Other Apps dialog
+Changed menu order
+
+3
+Updated layout
+Update icon
+New theme
+Landscape and portrait modes
+Compatible with phones
+
+2
+Changed export format
+App works with 0.1g scale
+
+1
+Initial release

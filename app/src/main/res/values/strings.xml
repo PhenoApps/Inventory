@@ -25,7 +25,7 @@
     <string name="clear_data">Clear Data</string>
     <string name="help">Help</string>
     <string name="about_title">About</string>
-    <string name="versiontitle">Version: </string>
+    <string name="versiontitle">Version</string>
 
     <!-- Dialog strings -->
     <string name="ok">OK</string>
@@ -69,6 +69,8 @@
     <string name="dev_jesse">Jesse Poland</string>
     <string name="dev_jesse_email">jpoland@ksu.edu</string>
     <string name="wg_site">http://wheatgenetics.org\n</string>
+
+    <string name="otherapps">Other Apps</string>
 
     <!-- Scale not found -->
     <string name="no_scale">Scale Not Found</string>
