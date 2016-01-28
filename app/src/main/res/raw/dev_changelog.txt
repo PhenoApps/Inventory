@@ -1,3 +1,6 @@
+5
+Fixed a bug that caused some devices to crash on start
+
 4
 Added Other Apps dialog
 Changed menu order

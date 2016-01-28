@@ -1081,7 +1081,6 @@ public class MainActivity extends AppCompatActivity implements OnInitListener {
                     endpoint.getDirection(), UsbConstants.USB_DIR_OUT,
                     UsbConstants.USB_DIR_IN));
             UsbDeviceConnection connection = usbManager.openDevice(mDevice);
-            Log.v(TAG, "got connection:" + connection.toString());
             connection.claimInterface(intf, true);
             while (true) {
 

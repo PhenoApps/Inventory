@@ -1,4 +1,4 @@
-# Inventory [![Google Play](http://developer.android.com/images/brand/en_generic_rgb_wo_45.png)](https://play.google.com/store/apps/details?id=org.wheatgenetics.inventory)
+# Inventory [![Google Play](https://play.google.com/intl/en_us/badges/images/generic/en-play-badge.png)](https://play.google.com/store/apps/details?id=org.wheatgenetics.inventory)
 Inventory uses an Elane USB Scale to quickly weigh and categorize samples. In addition to Box and Sample ID, a timestamp and the name of the inventory person are also collected. Data is exported to a text file ready to be uploaded to a database.
 
 ### Acknowledgements
