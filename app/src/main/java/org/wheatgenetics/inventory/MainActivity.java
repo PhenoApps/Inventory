@@ -92,7 +92,7 @@ public class MainActivity extends AppCompatActivity implements OnInitListener {
     private DrawerLayout mDrawerLayout;
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main_layout);
         Log.v(TAG, "onCreate");
@@ -451,13 +451,13 @@ public class MainActivity extends AppCompatActivity implements OnInitListener {
     }
 
     @Override
-    public void onDestroy() {
+    protected void onDestroy() {
         super.onDestroy();
 
     }
 
     @Override
-    public void onStart() {
+    protected void onStart() {
         super.onStart();
         Log.v(TAG, "onStart");
 
