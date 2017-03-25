@@ -27,7 +27,6 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.graphics.Color;
 import android.hardware.usb.UsbConstants;
@@ -69,7 +68,7 @@ import android.widget.Toast;
 public class MainActivity extends AppCompatActivity implements OnInitListener {
 
     public final static String TAG = "Inventory";
-    private SharedPreferences ep;
+    protected Settings ep;
     private UsbDevice mDevice;
 
     private String boxNumber;
@@ -215,21 +214,19 @@ public class MainActivity extends AppCompatActivity implements OnInitListener {
         parseDbToTable();
         goToBottom();
 
-        ep = getSharedPreferences("Settings", 0);
+        ep = new Settings(getSharedPreferences("Settings", 0));
 
-        if (ep.getString("FirstName", "").length() == 0) {
+        if (!ep.firstNameIsSet()) {
             setPersonDialog();
         }
 
-        if (!ep.getBoolean("ignoreScale", false)) {
+        if (!ep.getIgnoreScale()) {
             findScale();
         }
 
-        if (ep.getInt("UpdateVersion", -1) < getVersion()) {
-            SharedPreferences.Editor ed = ep.edit();
-
-            ed.putInt("UpdateVersion", getVersion());
-            ed.apply();
+        final int version = getVersion();
+        if (!ep.updateVersionIsSet(version)) {
+            ep.setUpdateVersion(version);
             changelog();
         }
     }
@@ -289,7 +286,7 @@ public class MainActivity extends AppCompatActivity implements OnInitListener {
         }
 
         db.addSample(new InventoryRecord(boxNumTextView.getText().toString(), inputText
-                .getText().toString(), ep.getString("FirstName", "") + "_" + ep.getString("LastName", ""), date, currentItemNum, weight)); // add
+                .getText().toString(), ep.getFirstName() + "_" + ep.getLastName(), date, currentItemNum, weight)); // add
         // to
         // database
 
@@ -553,8 +550,8 @@ public class MainActivity extends AppCompatActivity implements OnInitListener {
         final EditText lName = (EditText) personView
                 .findViewById(R.id.lastName);
 
-        fName.setText(ep.getString("FirstName", ""));
-        lName.setText(ep.getString("LastName", ""));
+        fName.setText(ep.getFirstName());
+        lName.setText(ep.getLastName());
 
         alert.setCancelable(false);
         alert.setTitle(getResources().getString(R.string.set_person));
@@ -571,10 +568,7 @@ public class MainActivity extends AppCompatActivity implements OnInitListener {
                 }
 
                 makeToast(getResources().getString(R.string.person_set) + " " + firstName + " " + lastName);
-                SharedPreferences.Editor ed = ep.edit();
-                ed.putString("FirstName", firstName);
-                ed.putString("LastName", lastName);
-                ed.apply();
+                ep.setName(firstName, lastName);
             }
         });
         alert.show();
@@ -891,7 +885,7 @@ public class MainActivity extends AppCompatActivity implements OnInitListener {
 
             public void onDrawerOpened(View drawerView) {
                 TextView person = (TextView) findViewById(R.id.nameLabel);
-                person.setText(ep.getString("FirstName", "") + " " + ep.getString("LastName", ""));
+                person.setText(ep.getFirstName() + " " + ep.getLastName());
             }
 
             public void onDrawerClosed(View view) {
@@ -1052,9 +1046,7 @@ public class MainActivity extends AppCompatActivity implements OnInitListener {
 
                                 public void onClick(DialogInterface dialog,
                                                     int which) {
-                                    SharedPreferences.Editor ed = ep.edit();
-                                    ed.putBoolean("ignoreScale", true);
-                                    ed.apply();
+                                    ep.setIgnoreScaleToTrue();
                                     dialog.cancel();
                                 }
                             }).show();
