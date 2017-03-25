@@ -117,8 +117,6 @@ public class MainActivity extends AppCompatActivity implements OnInitListener {
             }
         }
 
-        ep = getSharedPreferences("Settings", 0);
-
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         NavigationView nvDrawer = (NavigationView) findViewById(R.id.nvView);
         setupDrawerContent(nvDrawer);
@@ -217,7 +215,8 @@ public class MainActivity extends AppCompatActivity implements OnInitListener {
         parseDbToTable();
         goToBottom();
 
-        SharedPreferences.Editor ed = ep.edit();
+        ep = getSharedPreferences("Settings", 0);
+
         if (ep.getString("FirstName", "").length() == 0) {
             setPersonDialog();
         }
@@ -227,6 +226,8 @@ public class MainActivity extends AppCompatActivity implements OnInitListener {
         }
 
         if (ep.getInt("UpdateVersion", -1) < getVersion()) {
+            SharedPreferences.Editor ed = ep.edit();
+
             ed.putInt("UpdateVersion", getVersion());
             ed.apply();
             changelog();
