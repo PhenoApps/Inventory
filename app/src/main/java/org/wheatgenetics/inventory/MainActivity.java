@@ -98,10 +98,12 @@ public class MainActivity extends AppCompatActivity implements OnInitListener {
         Log.v(TAG, "onCreate");
 
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        {
+            Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
 
-        setSupportActionBar(toolbar);
-        toolbar.bringToFront();
+            setSupportActionBar(toolbar);
+            toolbar.bringToFront();
+        }
 
         if (getSupportActionBar() != null) {
             getSupportActionBar().setTitle(null);
