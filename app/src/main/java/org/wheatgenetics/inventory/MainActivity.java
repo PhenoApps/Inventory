@@ -22,6 +22,7 @@ import android.content.pm.PackageManager;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -105,11 +106,15 @@ public class MainActivity extends AppCompatActivity implements OnInitListener {
             toolbar.bringToFront();
         }
 
-        if (getSupportActionBar() != null) {
-            getSupportActionBar().setTitle(null);
-            getSupportActionBar().getThemedContext();
-            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-            getSupportActionBar().setHomeButtonEnabled(true);
+        {
+            ActionBar supportActionBar = getSupportActionBar();
+
+            if (supportActionBar != null) {
+                supportActionBar.setTitle(null);
+                supportActionBar.getThemedContext();         // This appears to do nothing.  Remove?
+                supportActionBar.setDisplayHomeAsUpEnabled(true);
+                supportActionBar.setHomeButtonEnabled(true);
+            }
         }
 
         ep = getSharedPreferences("Settings", 0);
