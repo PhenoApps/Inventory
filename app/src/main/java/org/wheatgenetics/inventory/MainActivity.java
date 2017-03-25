@@ -224,9 +224,9 @@ public class MainActivity extends AppCompatActivity implements OnInitListener {
             findScale();
         }
 
-        final int version = getVersion();
-        if (!ep.updateVersionIsSet(version)) {
-            ep.setUpdateVersion(version);
+        final int v = getVersion();
+        if (!ep.updateVersionIsSet(v)) {
+            ep.setUpdateVersion(v);
             changelog();
         }
     }
