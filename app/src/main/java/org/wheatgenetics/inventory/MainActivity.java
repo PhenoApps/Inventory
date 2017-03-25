@@ -224,21 +224,16 @@ public class MainActivity extends AppCompatActivity implements OnInitListener {
             findScale();
         }
 
-        final int v = getVersion();
-        if (!ep.updateVersionIsSet(v)) {
-            ep.setUpdateVersion(v);
-            changelog();
-        }
-    }
-
-    public int getVersion() {
         int v = 0;
         try {
             v = getPackageManager().getPackageInfo(getPackageName(), 0).versionCode;
         } catch (PackageManager.NameNotFoundException e) {
             Log.e("Inventory", "" + e.getMessage());
         }
-        return v;
+        if (!ep.updateVersionIsSet(v)) {
+            ep.setUpdateVersion(v);
+            changelog();
+        }
     }
 
     private void goToBottom() {
