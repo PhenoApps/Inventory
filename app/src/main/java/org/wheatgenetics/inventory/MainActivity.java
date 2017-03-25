@@ -106,7 +106,7 @@ public class MainActivity extends AppCompatActivity implements OnInitListener {
         }
 
         {
-            ActionBar supportActionBar = getSupportActionBar();
+            final ActionBar supportActionBar = getSupportActionBar();
 
             if (supportActionBar != null) {
                 supportActionBar.setTitle(null);
@@ -117,8 +117,17 @@ public class MainActivity extends AppCompatActivity implements OnInitListener {
         }
 
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
-        NavigationView nvDrawer = (NavigationView) findViewById(R.id.nvView);
-        setupDrawerContent(nvDrawer);
+        {
+            final NavigationView nvDrawer = (NavigationView) findViewById(R.id.nvView);
+            nvDrawer.setNavigationItemSelectedListener(
+                new NavigationView.OnNavigationItemSelectedListener() {
+                    @Override
+                    public boolean onNavigationItemSelected(MenuItem menuItem) {
+                        selectDrawerItem(menuItem);
+                        return true;
+                    }
+                });
+        }
         setupDrawer();
 
         sv1 = (ScrollView) findViewById(R.id.svData);
@@ -889,17 +898,6 @@ public class MainActivity extends AppCompatActivity implements OnInitListener {
 
         mDrawerToggle.setDrawerIndicatorEnabled(true);
         mDrawerLayout.setDrawerListener(mDrawerToggle);
-    }
-
-    private void setupDrawerContent(NavigationView navigationView) {
-        navigationView.setNavigationItemSelectedListener(
-                new NavigationView.OnNavigationItemSelectedListener() {
-                    @Override
-                    public boolean onNavigationItemSelected(MenuItem menuItem) {
-                        selectDrawerItem(menuItem);
-                        return true;
-                    }
-                });
     }
 
     public void selectDrawerItem(MenuItem menuItem) {
