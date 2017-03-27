@@ -65,7 +65,7 @@ import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.Toast;
 
-public class MainActivity extends AppCompatActivity implements OnInitListener {
+public class MainActivity extends AppCompatActivity {
 
     public final static String TAG = "Inventory";
     protected Settings ep;
@@ -135,7 +135,7 @@ public class MainActivity extends AppCompatActivity implements OnInitListener {
         mWeightEditText.setText(getString(R.string.not_connected));
         boxNumTextView = (TextView) findViewById(R.id.tvBoxNum);
         boxNumTextView.setText("");
-        Button setBox = (Button) findViewById(R.id.btBox);
+        final Button setBox = (Button) findViewById(R.id.btBox);
         inputText = (EditText) findViewById(R.id.etInput);
         InventoryTable = (TableLayout) findViewById(R.id.tlInventory);
 
@@ -1168,10 +1168,6 @@ public class MainActivity extends AppCompatActivity implements OnInitListener {
             mDevice = null;
             mWeightEditText.setText(getString(R.string.not_connected));
         }
-    }
-
-    public void onInit(int status) {
-
     }
 
     @Override
