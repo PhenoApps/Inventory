@@ -39,7 +39,6 @@ import android.media.MediaScannerConnection;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.speech.tts.TextToSpeech.OnInitListener;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.KeyEvent;
@@ -67,7 +66,7 @@ import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity {
 
-    public final static String TAG = "Inventory";
+    protected final static String TAG = "Inventory";
     protected Settings ep;
     private UsbDevice mDevice;
 
@@ -99,7 +98,7 @@ public class MainActivity extends AppCompatActivity {
 
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         {
-            Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+            final Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
 
             setSupportActionBar(toolbar);
             toolbar.bringToFront();
@@ -147,12 +146,14 @@ public class MainActivity extends AppCompatActivity {
         db = new MySQLiteHelper(this);
 
         setBox.setOnClickListener(new View.OnClickListener() {
+            @Override
             public void onClick(View v) {
                 setBoxDialog();
             }
         });
 
         InventoryTable.setOnClickListener(new View.OnClickListener() {
+            @Override
             public void onClick(View v) {
             }
         });
@@ -162,6 +163,7 @@ public class MainActivity extends AppCompatActivity {
                 .getParcelableExtra(UsbManager.EXTRA_DEVICE);
 
         inputText.setOnKeyListener(new View.OnKeyListener() {
+            @Override
             public boolean onKey(View v, int keyCode, KeyEvent event) {
                 if (keyCode == KeyEvent.KEYCODE_ENTER) {
                     InputMethodManager mgr = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
@@ -189,6 +191,7 @@ public class MainActivity extends AppCompatActivity {
         });
 
         mWeightEditText.setOnKeyListener(new View.OnKeyListener() {
+            @Override
             public boolean onKey(View v, int keyCode, KeyEvent event) {
                 if ((keyCode == KeyEvent.KEYCODE_ENTER || keyCode == KeyEvent.KEYCODE_NUMPAD_ENTER)) {
                     InputMethodManager mgr = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
@@ -247,6 +250,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void goToBottom() {
         sv1.post(new Runnable() {
+            @Override
             public void run() {
                 sv1.fullScroll(ScrollView.FOCUS_DOWN);
                 inputText.requestFocus();
@@ -355,6 +359,7 @@ public class MainActivity extends AppCompatActivity {
 
 		/* Define the listener for the longclick event */
         envIDTV.setOnLongClickListener(new OnLongClickListener() {
+            @Override
             public boolean onLongClick(View v) {
                 final String tag = (String) v.getTag();
                 deleteDialog(tag);
@@ -394,6 +399,7 @@ public class MainActivity extends AppCompatActivity {
                 .setCancelable(true)
                 .setPositiveButton(getString(R.string.yes),
                         new DialogInterface.OnClickListener() {
+                            @Override
                             public void onClick(DialogInterface dialog, int id) {
                                 InventoryRecord temp = new InventoryRecord(fBox, fEnv, null, null,
                                         fNum, null);
@@ -402,6 +408,7 @@ public class MainActivity extends AppCompatActivity {
                             }
                         })
                 .setNegativeButton(getString(R.string.no), new DialogInterface.OnClickListener() {
+                    @Override
                     public void onClick(DialogInterface dialog, int id) {
                         dialog.cancel();
                     }
@@ -436,6 +443,7 @@ public class MainActivity extends AppCompatActivity {
         alert.setTitle(getString(R.string.setbox));
         alert.setView(input);
         alert.setPositiveButton(getString(R.string.ok), new DialogInterface.OnClickListener() {
+            @Override
             public void onClick(DialogInterface dialog, int whichButton) {
                 String value = input.getText().toString().trim();
                 boxNumTextView.setText(value);
@@ -449,6 +457,7 @@ public class MainActivity extends AppCompatActivity {
 
         alert.setNegativeButton(getString(R.string.cancel),
                 new DialogInterface.OnClickListener() {
+                    @Override
                     public void onClick(DialogInterface dialog, int whichButton) {
                         dialog.cancel();
                         InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
@@ -532,6 +541,7 @@ public class MainActivity extends AppCompatActivity {
         alert.setTitle(getResources().getString(R.string.about));
         alert.setView(personView);
         alert.setNegativeButton(getResources().getString(R.string.ok), new DialogInterface.OnClickListener() {
+            @Override
             public void onClick(DialogInterface dialog, int whichButton) {
                 dialog.dismiss();
             }
@@ -540,7 +550,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-    public void makeToast(String message) {
+    protected void makeToast(String message) {
         Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
     }
 
@@ -561,6 +571,7 @@ public class MainActivity extends AppCompatActivity {
         alert.setTitle(getResources().getString(R.string.set_person));
         alert.setView(personView);
         alert.setPositiveButton(getResources().getString(R.string.ok), new DialogInterface.OnClickListener() {
+            @Override
             public void onClick(DialogInterface dialog, int whichButton) {
                 firstName = fName.getText().toString().trim();
                 lastName = lName.getText().toString().trim();
@@ -598,6 +609,7 @@ public class MainActivity extends AppCompatActivity {
                 "http://wheatgenetics.org/apps"}; //TODO update these links
 
         myList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
             public void onItemClick(AdapterView<?> av, View arg1, int which, long arg3) {
                 Uri uri = Uri.parse(links[which]);
                 Intent intent;
@@ -626,6 +638,7 @@ public class MainActivity extends AppCompatActivity {
         otherAppsAlert.setTitle(getResources().getString(R.string.otherapps));
         otherAppsAlert.setView(myList);
         otherAppsAlert.setNegativeButton(getResources().getString(R.string.ok), new DialogInterface.OnClickListener() {
+            @Override
             public void onClick(DialogInterface dialog, int whichButton) {
                 dialog.dismiss();
             }
@@ -667,6 +680,7 @@ public class MainActivity extends AppCompatActivity {
                 .setTitle(getString(R.string.clear_data))
                 .setPositiveButton(getString(R.string.yes),
                         new DialogInterface.OnClickListener() {
+                            @Override
                             public void onClick(DialogInterface dialog, int id) {
                                 boxNumTextView.setText("");
                                 makeToast(getString(R.string.data_deleted));
@@ -674,6 +688,7 @@ public class MainActivity extends AppCompatActivity {
                             }
                         })
                 .setNegativeButton(getString(R.string.no), new DialogInterface.OnClickListener() {
+                    @Override
                     public void onClick(DialogInterface dialog, int id) {
                         dialog.cancel();
                     }
@@ -688,7 +703,7 @@ public class MainActivity extends AppCompatActivity {
                 .setMessage(getString(R.string.export_choice))
                 .setPositiveButton(getString(R.string.export_csv),
                         new DialogInterface.OnClickListener() {
-
+                            @Override
                             public void onClick(DialogInterface dialog,
                                                 int which) {
                                 exportCSV();
@@ -697,7 +712,7 @@ public class MainActivity extends AppCompatActivity {
                         })
                 .setNegativeButton(getString(R.string.export_sql),
                         new DialogInterface.OnClickListener() {
-
+                            @Override
                             public void onClick(DialogInterface dialog,
                                                 int which) {
                                 exportSQL();
@@ -706,7 +721,7 @@ public class MainActivity extends AppCompatActivity {
                         })
                 .setNeutralButton(getString(R.string.cancel),
                         new DialogInterface.OnClickListener() {
-
+                            @Override
                             public void onClick(DialogInterface dialog,
                                                 int which) {
                                 dialog.cancel();
@@ -852,7 +867,7 @@ public class MainActivity extends AppCompatActivity {
         dropTables();
     }
 
-    public void makeFileDiscoverable(File file, Context context) {
+    protected void makeFileDiscoverable(File file, Context context) {
         MediaScannerConnection.scanFile(context, new String[]{file.getPath()}, null, null);
         context.sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE,
                 Uri.fromFile(file)));
@@ -887,11 +902,13 @@ public class MainActivity extends AppCompatActivity {
         mDrawerToggle = new ActionBarDrawerToggle(this, mDrawerLayout,
                 R.string.drawer_open, R.string.drawer_close) {
 
+            @Override
             public void onDrawerOpened(View drawerView) {
                 TextView person = (TextView) findViewById(R.id.nameLabel);
                 person.setText(ep.getFirstName() + " " + ep.getLastName());
             }
 
+            @Override
             public void onDrawerClosed(View view) {
             }
         };
@@ -900,7 +917,7 @@ public class MainActivity extends AppCompatActivity {
         mDrawerLayout.setDrawerListener(mDrawerToggle);
     }
 
-    public void selectDrawerItem(MenuItem menuItem) {
+    protected void selectDrawerItem(MenuItem menuItem) {
         switch (menuItem.getItemId()) {
             case R.id.scaleConnect:
                 findScale();
@@ -940,7 +957,7 @@ public class MainActivity extends AppCompatActivity {
         alert.show();
     }
 
-    public void parseLog(int resId) {
+    protected void parseLog(int resId) {
         try {
             InputStream is = getResources().openRawResource(resId);
             InputStreamReader isr = new InputStreamReader(is);
@@ -997,7 +1014,7 @@ public class MainActivity extends AppCompatActivity {
         mDrawerToggle.syncState();
     }
 
-    public void findScale() {
+    protected void findScale() {
         if (mDevice == null) {
             UsbManager usbManager = (UsbManager) getSystemService(Context.USB_SERVICE);
             HashMap<String, UsbDevice> deviceList = usbManager.getDeviceList();
