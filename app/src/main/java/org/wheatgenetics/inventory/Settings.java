@@ -50,26 +50,28 @@ public class Settings extends java.lang.Object
     //endregion
 
 
+    //region Public Methods
     public Settings(final android.content.SharedPreferences sharedPreferences)
     {
+        super();
         assert sharedPreferences != null;
         this.sharedPreferences = sharedPreferences;
     }
 
 
-    //region FirstName
+    //region FirstName Methods
     public java.lang.Boolean firstNameIsSet() { return this.getFirstName().length() > 0; }
 
     public java.lang.String getFirstName() { return this.getString(this.FIRST_NAME); }
     //endregion
 
 
-    //region LastName
+    //region LastName Method
     public java.lang.String getLastName(){ return this.getString(this.LAST_NAME); }
     //endregion
 
 
-    //region Name
+    //region Name Method
     public void setName(final java.lang.String firstName, final java.lang.String lastName)
     {
         this.setString(this.FIRST_NAME, this.getFirstName(), firstName);
@@ -85,7 +87,7 @@ public class Settings extends java.lang.Object
     //endregion
 
 
-    //region ignoreScale
+    //region ignoreScale Methods
     public java.lang.Boolean getIgnoreScale()
     {
         assert this.sharedPreferences != null;
@@ -107,7 +109,7 @@ public class Settings extends java.lang.Object
     //endregion
 
 
-    //region UpdateVersion
+    //region UpdateVersion Methods
     public java.lang.Boolean updateVersionIsSet(final int newUpdateVersion)
     {
         return this.getUpdateVersion() >= newUpdateVersion;
@@ -125,5 +127,6 @@ public class Settings extends java.lang.Object
             editor.apply();
         }
     }
+    //endregion
     //endregion
 }
