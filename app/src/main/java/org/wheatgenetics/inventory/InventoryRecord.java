@@ -2,6 +2,7 @@ package org.wheatgenetics.inventory;
 
 public class InventoryRecord {
 
+    //region Fields
     private int id;
     private String mBoxID;
     private String mEnvID;
@@ -9,12 +10,14 @@ public class InventoryRecord {
     private String mDate;
     private int mPosition;
     private String mWt;
+    //endregion
 
+    //region Constructors
     public InventoryRecord() {
     }
 
-    public InventoryRecord(String mBoxID, String mEnvID, String mPersonID, String mDate,
-                           int mPosition, String mWt) {
+    public InventoryRecord(final String mBoxID, final String mEnvID, final String mPersonID,
+                           final String mDate, final int mPosition, final String mWt) {
         super();
         this.mBoxID = mBoxID;
         this.mEnvID = mEnvID;
@@ -23,12 +26,14 @@ public class InventoryRecord {
         this.mPosition = mPosition;
         this.mWt = mWt;
     }
+    //endregion
 
+    //region Getters and Setters
     public int getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(final int id) {
         this.id = id;
     }
 
@@ -36,7 +41,7 @@ public class InventoryRecord {
         return mBoxID;
     }
 
-    public void setBox(String title) {
+    public void setBox(final String title) {
         this.mBoxID = title;
     }
 
@@ -44,7 +49,7 @@ public class InventoryRecord {
         return mEnvID;
     }
 
-    public void setEnvID(String author) {
+    public void setEnvID(final String author) {
         this.mEnvID = author;
     }
 
@@ -52,12 +57,12 @@ public class InventoryRecord {
         return mPersonID;
     }
 
-    public void setPersonID(String author) {
+    public void setPersonID(final String author) {
         this.mPersonID = author;
     }
 
 
-    public void setDate(String author) {
+    public void setDate(final String author) {
         this.mDate = author;
     }
 
@@ -69,7 +74,7 @@ public class InventoryRecord {
         return mPosition;
     }
 
-    public void setPosition(int author) {
+    public void setPosition(final int author) {
         this.mPosition = author;
     }
 
@@ -77,7 +82,7 @@ public class InventoryRecord {
         return mWt;
     }
 
-    public void setWt(String author) {
+    public void setWt(final String author) {
         this.mWt = author;
     }
 
@@ -85,4 +90,5 @@ public class InventoryRecord {
     public String toString() {
         return mBoxID + "," + mEnvID + "," + mPersonID + "," + mDate + "," + mPosition + "," + mWt;
     }
+    //endregion
 }
