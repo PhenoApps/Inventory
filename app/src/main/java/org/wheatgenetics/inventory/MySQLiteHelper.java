@@ -15,13 +15,13 @@ public class MySQLiteHelper extends SQLiteOpenHelper {
     private static final int DATABASE_VERSION = 3;
     private static final String DATABASE_NAME = "InventoryDB";
 
-    public MySQLiteHelper(Context context) {
+    public MySQLiteHelper(final Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
     }
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-        String CREATE_INVENTORY_TABLE = "CREATE TABLE samples ( "
+        final String CREATE_INVENTORY_TABLE = "CREATE TABLE samples ( "
                 + "id INTEGER PRIMARY KEY AUTOINCREMENT, " + "box TEXT, "
                 + "envid TEXT, " + "person TEXT, " + "date TEXT, "
                 + "position TEXT, " + "wt TEXT" + ")";
@@ -48,27 +48,31 @@ public class MySQLiteHelper extends SQLiteOpenHelper {
     private static final String[] COLUMNS = {KEY_ID, KEY_BOX, KEY_ENVID,
             KEY_PERSON, KEY_DATE, KEY_POSITION, KEY_WT};
 
-    public void addSample(InventoryRecord sample) {
+    public void addSample(final InventoryRecord sample) {
         Log.d("Add Sample: ", sample.toString());
-        SQLiteDatabase db = this.getWritableDatabase();
+        {
+            final SQLiteDatabase db = this.getWritableDatabase();
 
-        ContentValues values = new ContentValues();
-        values.put(KEY_BOX, sample.getBox());
-        values.put(KEY_ENVID, sample.getEnvID());
-        values.put(KEY_PERSON, sample.getPersonID());
-        values.put(KEY_DATE, sample.getDate());
-        values.put(KEY_POSITION, sample.getPosition());
-        values.put(KEY_WT, sample.getWt());
+            {
+                final ContentValues values = new ContentValues();
+                values.put(KEY_BOX, sample.getBox());
+                values.put(KEY_ENVID, sample.getEnvID());
+                values.put(KEY_PERSON, sample.getPersonID());
+                values.put(KEY_DATE, sample.getDate());
+                values.put(KEY_POSITION, sample.getPosition());
+                values.put(KEY_WT, sample.getWt());
 
-        db.insert(TABLE_SAMPLES, null,
-                values);
-        db.close();
+                db.insert(TABLE_SAMPLES, null,
+                        values);
+            }
+            db.close();
+        }
     }
 
-    public InventoryRecord getSample(int id) {
-        SQLiteDatabase db = this.getReadableDatabase();
+    public InventoryRecord getSample(final int id) {
+        final SQLiteDatabase db = this.getReadableDatabase();
 
-        Cursor cursor = db.query(TABLE_SAMPLES,
+        final Cursor cursor = db.query(TABLE_SAMPLES,
                 COLUMNS,
                 " id = ?",
                 new String[]{String.valueOf(id)},
@@ -80,7 +84,7 @@ public class MySQLiteHelper extends SQLiteOpenHelper {
         if (cursor != null)
             cursor.moveToFirst();
 
-        InventoryRecord sample = new InventoryRecord();
+        final InventoryRecord sample = new InventoryRecord();
 
         if (cursor != null) {
             sample.setId(Integer.parseInt(cursor.getString(0)));
@@ -99,13 +103,13 @@ public class MySQLiteHelper extends SQLiteOpenHelper {
     }
 
     public List<InventoryRecord> getAllSamples() {
-        List<InventoryRecord> samples = new LinkedList<>();
-        String query = "SELECT  * FROM " + TABLE_SAMPLES;
-        SQLiteDatabase db = this.getWritableDatabase();
-        Cursor cursor = db.rawQuery(query, null);
+        final List<InventoryRecord> samples = new LinkedList<>();
+        final String query = "SELECT  * FROM " + TABLE_SAMPLES;
+        final SQLiteDatabase db = this.getWritableDatabase();
+        final Cursor cursor = db.rawQuery(query, null);
 
-        InventoryRecord sample;
         if (cursor.moveToFirst()) {
+            InventoryRecord sample;
             do {
                 sample = new InventoryRecord();
                 sample.setId(Integer.parseInt(cursor.getString(0)));
@@ -127,9 +131,9 @@ public class MySQLiteHelper extends SQLiteOpenHelper {
         return samples;
     }
 
-    public int updateSample(InventoryRecord sample) {
-        SQLiteDatabase db = this.getWritableDatabase();
-        ContentValues values = new ContentValues();
+    protected int updateSample(final InventoryRecord sample) {
+        final SQLiteDatabase db = this.getWritableDatabase();
+        final ContentValues values = new ContentValues();
 
         values.put("id", sample.getId());
         values.put("box", sample.getBox());
@@ -139,7 +143,7 @@ public class MySQLiteHelper extends SQLiteOpenHelper {
         values.put("position", sample.getPosition());
         values.put("wt", sample.getWt());
 
-        int i = db.update(TABLE_SAMPLES,
+        final int i = db.update(TABLE_SAMPLES,
                 values,
                 KEY_ID + " = ?",
                 new String[]{String.valueOf(sample.getId())});
@@ -148,24 +152,24 @@ public class MySQLiteHelper extends SQLiteOpenHelper {
         return i;
     }
 
-    public Boolean deleteSample(InventoryRecord sample) {
-        SQLiteDatabase db = this.getWritableDatabase();
-        String num = "'" + Integer.toString(sample.getPosition()) + "'";
+    public Boolean deleteSample(final InventoryRecord sample) {
+        final SQLiteDatabase db = this.getWritableDatabase();
+        final String num = "'" + Integer.toString(sample.getPosition()) + "'";
         Log.d("deleteSample", sample.toString());
         return db.delete(TABLE_SAMPLES, KEY_POSITION + "=" + num, null) > 0;
     }
 
     public void deleteAllSamples() {
-        SQLiteDatabase db = this.getWritableDatabase();
+        final SQLiteDatabase db = this.getWritableDatabase();
         db.delete(TABLE_SAMPLES, null, null);
     }
 
     public String[] getBoxList() {
-        SQLiteDatabase db = this.getWritableDatabase();
-        Cursor cursor = db.query(true, TABLE_SAMPLES, new String[]{KEY_BOX},
+        final SQLiteDatabase db = this.getWritableDatabase();
+        final Cursor cursor = db.query(true, TABLE_SAMPLES, new String[]{KEY_BOX},
                 null, null, KEY_BOX, null, null, null);
-        String[] boxes = new String[cursor.getCount()];
-        ArrayList<String> arrcurval = new ArrayList<>();
+        final String[] boxes = new String[cursor.getCount()];
+        final ArrayList<String> arrcurval = new ArrayList<>();
         if (cursor.moveToFirst()) {
             do {
                 arrcurval.add(cursor.getString(0));
@@ -173,7 +177,6 @@ public class MySQLiteHelper extends SQLiteOpenHelper {
         }
 
         cursor.close();
-        boxes = arrcurval.toArray(boxes);
-        return boxes;
+        return arrcurval.toArray(boxes);
     }
 }
