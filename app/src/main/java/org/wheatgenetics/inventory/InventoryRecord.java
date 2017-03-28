@@ -41,55 +41,54 @@ public class InventoryRecord {
         return this.mBoxID;
     }
 
-    public void setBox(final String title) {
-        this.mBoxID = title;
+    public void setBox(final String box) {
+        this.mBoxID = box;
     }
 
     public String getEnvID() {
         return this.mEnvID;
     }
 
-    public void setEnvID(final String author) {
-        this.mEnvID = author;
+    public void setEnvID(final String envID) {
+        this.mEnvID = envID;
     }
 
     public String getPersonID() {
         return this.mPersonID;
     }
 
-    public void setPersonID(final String author) {
-        this.mPersonID = author;
-    }
-
-
-    public void setDate(final String author) {
-        this.mDate = author;
+    public void setPersonID(final String personID) {
+        this.mPersonID = personID;
     }
 
     public String getDate() {
         return this.mDate;
     }
 
+    public void setDate(final String date) {
+        this.mDate = date;
+    }
+
     public int getPosition() {
         return this.mPosition;
     }
 
-    public void setPosition(final int author) {
-        this.mPosition = author;
+    public void setPosition(final int position) {
+        this.mPosition = position;
     }
 
     public String getWt() {
         return this.mWt;
     }
 
-    public void setWt(final String author) {
-        this.mWt = author;
+    public void setWt(final String wt) {
+        this.mWt = wt;
     }
+    //endregion
 
     @Override
     public String toString() {
         return this.mBoxID + "," + this.mEnvID + "," + this.mPersonID + "," +
             this.mDate + "," + this.mPosition + "," + this.mWt;
     }
-    //endregion
 }
