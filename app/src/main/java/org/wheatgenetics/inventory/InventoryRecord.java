@@ -30,7 +30,7 @@ public class InventoryRecord {
 
     //region Getters and Setters
     public int getId() {
-        return id;
+        return this.id;
     }
 
     public void setId(final int id) {
@@ -38,7 +38,7 @@ public class InventoryRecord {
     }
 
     public String getBox() {
-        return mBoxID;
+        return this.mBoxID;
     }
 
     public void setBox(final String title) {
@@ -46,7 +46,7 @@ public class InventoryRecord {
     }
 
     public String getEnvID() {
-        return mEnvID;
+        return this.mEnvID;
     }
 
     public void setEnvID(final String author) {
@@ -54,7 +54,7 @@ public class InventoryRecord {
     }
 
     public String getPersonID() {
-        return mPersonID;
+        return this.mPersonID;
     }
 
     public void setPersonID(final String author) {
@@ -67,11 +67,11 @@ public class InventoryRecord {
     }
 
     public String getDate() {
-        return mDate;
+        return this.mDate;
     }
 
     public int getPosition() {
-        return mPosition;
+        return this.mPosition;
     }
 
     public void setPosition(final int author) {
@@ -79,7 +79,7 @@ public class InventoryRecord {
     }
 
     public String getWt() {
-        return mWt;
+        return this.mWt;
     }
 
     public void setWt(final String author) {
@@ -88,7 +88,8 @@ public class InventoryRecord {
 
     @Override
     public String toString() {
-        return mBoxID + "," + mEnvID + "," + mPersonID + "," + mDate + "," + mPosition + "," + mWt;
+        return this.mBoxID + "," + this.mEnvID + "," + this.mPersonID + "," +
+            this.mDate + "," + this.mPosition + "," + this.mWt;
     }
     //endregion
 }
