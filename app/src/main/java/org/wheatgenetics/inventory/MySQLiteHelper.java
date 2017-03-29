@@ -12,21 +12,24 @@ import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
 public class MySQLiteHelper extends SQLiteOpenHelper {
+    //region Database Constants
     private static final int DATABASE_VERSION = 3;
     private static final String DATABASE_NAME = "InventoryDB";
+    //endregion
+
 
     public MySQLiteHelper(final Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
     }
 
+
+    //region Overridden Methods
     @Override
     public void onCreate(SQLiteDatabase db) {
-        final String CREATE_INVENTORY_TABLE = "CREATE TABLE " + TABLE_SAMPLES + " ( "
-                + KEY_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " + KEY_BOX + " TEXT, "
+        db.execSQL("CREATE TABLE " + TABLE_SAMPLES + " ( " +
+                KEY_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " + KEY_BOX + " TEXT, "
                 + KEY_ENVID + " TEXT, " + KEY_PERSON + " TEXT, " + KEY_DATE + " TEXT, "
-                + KEY_POSITION + " TEXT, " + KEY_WT + " TEXT" + ")";
-
-        db.execSQL(CREATE_INVENTORY_TABLE);
+                + KEY_POSITION + " TEXT, " + KEY_WT + " TEXT" + ")");
     }
 
     @Override
@@ -34,7 +37,10 @@ public class MySQLiteHelper extends SQLiteOpenHelper {
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_SAMPLES);
         this.onCreate(db);
     }
+    //endregion
 
+
+    //region Table Constants
     private static final String TABLE_SAMPLES = "samples";
 
     private static final String KEY_ID = "id";
@@ -47,7 +53,39 @@ public class MySQLiteHelper extends SQLiteOpenHelper {
 
     private static final String[] COLUMNS = {KEY_ID, KEY_BOX, KEY_ENVID,
             KEY_PERSON, KEY_DATE, KEY_POSITION, KEY_WT};
+    //endregion
 
+
+    //region Protected Method
+    protected int updateSample(final InventoryRecord sample) {
+        int i;
+        {
+            final SQLiteDatabase db = this.getWritableDatabase();
+            {
+                final ContentValues values = new ContentValues();
+                final int           id     = sample.getId()     ;
+
+                values.put(KEY_ID      , id                  );
+                values.put(KEY_BOX     , sample.getBox()     );
+                values.put(KEY_ENVID   , sample.getEnvID()   );
+                values.put(KEY_PERSON  , sample.getPersonID());
+                values.put(KEY_DATE    , sample.getDate()    );
+                values.put(KEY_POSITION, sample.getPosition());
+                values.put(KEY_WT      , sample.getWt()      );
+
+                i = db.update(TABLE_SAMPLES,
+                        values,
+                        KEY_ID + " = ?",
+                        new String[]{String.valueOf(id)});
+            }
+            db.close();
+        }
+        return i;
+    }
+    //endregion
+
+
+    //region Public Methods
     public void addSample(final InventoryRecord sample) {
         Log.d("addSample() ", sample.toString());
         final SQLiteDatabase db = this.getWritableDatabase();
@@ -120,32 +158,6 @@ public class MySQLiteHelper extends SQLiteOpenHelper {
         return samples;
     }
 
-    protected int updateSample(final InventoryRecord sample) {
-        int i;
-        {
-            final SQLiteDatabase db = this.getWritableDatabase();
-            {
-                final ContentValues values = new ContentValues();
-                final int           id     = sample.getId()     ;
-
-                values.put(KEY_ID      , id                  );
-                values.put(KEY_BOX     , sample.getBox()     );
-                values.put(KEY_ENVID   , sample.getEnvID()   );
-                values.put(KEY_PERSON  , sample.getPersonID());
-                values.put(KEY_DATE    , sample.getDate()    );
-                values.put(KEY_POSITION, sample.getPosition());
-                values.put(KEY_WT      , sample.getWt()      );
-
-                i = db.update(TABLE_SAMPLES,
-                        values,
-                        KEY_ID + " = ?",
-                        new String[]{String.valueOf(id)});
-            }
-            db.close();
-        }
-        return i;
-    }
-
     public Boolean deleteSample(final InventoryRecord sample) {
         Log.d("deleteSample()", sample.toString());
         final SQLiteDatabase db = this.getWritableDatabase();
@@ -172,4 +184,5 @@ public class MySQLiteHelper extends SQLiteOpenHelper {
         cursor.close();
         return arrcurval.toArray(boxes);
     }
+    //endregion
 }
