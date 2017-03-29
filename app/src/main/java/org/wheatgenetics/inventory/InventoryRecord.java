@@ -32,6 +32,13 @@ public class InventoryRecord {
         this.mDate = date;
         this.mWt = wt;
     }
+
+    public InventoryRecord(final String id, final String box, final String envID,
+                           final String personID, final String date, final String position,
+                           final String wt) {
+        this();
+        this.set(id, box, envID, personID, date, position, wt);
+    }
     //endregion
 
 

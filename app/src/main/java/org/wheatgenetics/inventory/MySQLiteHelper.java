@@ -87,9 +87,14 @@ public class MySQLiteHelper extends SQLiteOpenHelper {
         final InventoryRecord sample = new InventoryRecord();
 
         if (cursor != null) {
-            sample.set(cursor.getString(0), cursor.getString(1), cursor.getString(2),
-                    cursor.getString(3), cursor.getString(4), cursor.getString(5),
-                    cursor.getString(6));
+            sample.set(
+                /* id       => */ cursor.getString(0),
+                /* box      => */ cursor.getString(1),
+                /* envID    => */ cursor.getString(2),
+                /* personID => */ cursor.getString(3),
+                /* date     => */ cursor.getString(4),
+                /* position => */ cursor.getString(5),
+                /* wt       => */ cursor.getString(6));
             cursor.close();
         }
 
@@ -100,30 +105,29 @@ public class MySQLiteHelper extends SQLiteOpenHelper {
 
     public List<InventoryRecord> getAllSamples() {
         final List<InventoryRecord> samples = new LinkedList<>();
-        final String query = "SELECT  * FROM " + TABLE_SAMPLES;
-        final SQLiteDatabase db = this.getWritableDatabase();
-        final Cursor cursor = db.rawQuery(query, null);
+        {
+            Cursor cursor;
+            {
+                final SQLiteDatabase db = this.getWritableDatabase();
+                cursor = db.rawQuery("SELECT  * FROM " + TABLE_SAMPLES, null);
+            }
 
-        if (cursor.moveToFirst()) {
-            InventoryRecord sample;
-            do {
-                sample = new InventoryRecord();
-                sample.setId(Integer.parseInt(cursor.getString(0)));
-                sample.setBox(cursor.getString(1));
-                sample.setEnvID(cursor.getString(2));
-                sample.setPersonID(cursor.getString(3));
-                sample.setDate(cursor.getString(4));
-                sample.setPosition(Integer.parseInt(cursor.getString(5)));
-                sample.setWt(cursor.getString(6));
-
-                samples.add(sample);
-            } while (cursor.moveToNext());
+            if (cursor.moveToFirst()) {
+                do {
+                    final InventoryRecord sample = new InventoryRecord(
+                        /* id       => */ cursor.getString(0),
+                        /* box      => */ cursor.getString(1),
+                        /* envID    => */ cursor.getString(2),
+                        /* personID => */ cursor.getString(3),
+                        /* date     => */ cursor.getString(4),
+                        /* position => */ cursor.getString(5),
+                        /* wt       => */ cursor.getString(6));
+                    samples.add(sample);
+                } while (cursor.moveToNext());
+            }
+            cursor.close();
         }
-
-        cursor.close();
-
         Log.d("getAllSamples()", samples.toString());
-
         return samples;
     }
 
