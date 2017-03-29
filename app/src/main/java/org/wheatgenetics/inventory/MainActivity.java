@@ -399,8 +399,7 @@ public class MainActivity extends AppCompatActivity {
                         new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int id) {
-                                final InventoryRecord temp = new InventoryRecord(fBox, fEnv, null, null,
-                                        fNum, null);
+                                final InventoryRecord temp = new InventoryRecord(fBox, fEnv, fNum);
                                 db.deleteSample(temp);
                                 parseDbToTable();
                             }

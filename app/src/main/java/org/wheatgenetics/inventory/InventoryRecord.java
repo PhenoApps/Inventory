@@ -4,26 +4,31 @@ public class InventoryRecord {
 
     //region Fields
     private int id;
-    private String mBoxID;
-    private String mEnvID;
-    private String mPersonID;
-    private String mDate;
+    private String mBoxID = null;
+    private String mEnvID = null;
+    private String mPersonID = null;
+    private String mDate = null;
     private int mPosition;
-    private String mWt;
+    private String mWt = null;
     //endregion
 
     //region Constructors
     public InventoryRecord() {
+        super();
+    }
+
+    public InventoryRecord(final String mBoxID, final String mEnvID, final int mPosition) {
+        this();
+        this.mBoxID = mBoxID;
+        this.mEnvID = mEnvID;
+        this.mPosition = mPosition;
     }
 
     public InventoryRecord(final String mBoxID, final String mEnvID, final String mPersonID,
                            final String mDate, final int mPosition, final String mWt) {
-        super();
-        this.mBoxID = mBoxID;
-        this.mEnvID = mEnvID;
+        this(mBoxID, mEnvID, mPosition);
         this.mPersonID = mPersonID;
         this.mDate = mDate;
-        this.mPosition = mPosition;
         this.mWt = mWt;
     }
     //endregion
