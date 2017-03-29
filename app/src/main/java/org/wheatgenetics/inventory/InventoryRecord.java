@@ -108,6 +108,8 @@ public class InventoryRecord {
     //endregion
 
 
+    public String getPositionAsString() { return Integer.toString(this.getPosition()); }
+
     public void set(final String id, final String box, final String envID, final String personID,
                     final String date, final String position, final String wt) {
         this.setId(Integer.parseInt(id));

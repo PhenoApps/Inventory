@@ -147,10 +147,10 @@ public class MySQLiteHelper extends SQLiteOpenHelper {
     }
 
     public Boolean deleteSample(final InventoryRecord sample) {
-        final SQLiteDatabase db = this.getWritableDatabase();
-        final String num = "'" + Integer.toString(sample.getPosition()) + "'";
         Log.d("deleteSample()", sample.toString());
-        return db.delete(TABLE_SAMPLES, KEY_POSITION + "=" + num, null) > 0;
+        final SQLiteDatabase db = this.getWritableDatabase();
+        return db.delete(TABLE_SAMPLES,
+            KEY_POSITION + "='" + sample.getPositionAsString() + "'", null) > 0;
     }
 
     public void deleteAllSamples() {
