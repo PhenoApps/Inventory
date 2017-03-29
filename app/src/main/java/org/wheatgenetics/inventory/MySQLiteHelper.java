@@ -21,17 +21,17 @@ public class MySQLiteHelper extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-        final String CREATE_INVENTORY_TABLE = "CREATE TABLE samples ( "
-                + "id INTEGER PRIMARY KEY AUTOINCREMENT, " + "box TEXT, "
-                + "envid TEXT, " + "person TEXT, " + "date TEXT, "
-                + "position TEXT, " + "wt TEXT" + ")";
+        final String CREATE_INVENTORY_TABLE = "CREATE TABLE " + TABLE_SAMPLES + " ( "
+                + KEY_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " + KEY_BOX + " TEXT, "
+                + KEY_ENVID + " TEXT, " + KEY_PERSON + " TEXT, " + KEY_DATE + " TEXT, "
+                + KEY_POSITION + " TEXT, " + KEY_WT + " TEXT" + ")";
 
         db.execSQL(CREATE_INVENTORY_TABLE);
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        db.execSQL("DROP TABLE IF EXISTS samples");
+        db.execSQL("DROP TABLE IF EXISTS " + TABLE_SAMPLES);
         this.onCreate(db);
     }
 
@@ -49,7 +49,7 @@ public class MySQLiteHelper extends SQLiteOpenHelper {
             KEY_PERSON, KEY_DATE, KEY_POSITION, KEY_WT};
 
     public void addSample(final InventoryRecord sample) {
-        Log.d("Add Sample: ", sample.toString());
+        Log.d("addSample() ", sample.toString());
         final SQLiteDatabase db = this.getWritableDatabase();
         {
             final ContentValues values = new ContentValues();
@@ -67,47 +67,39 @@ public class MySQLiteHelper extends SQLiteOpenHelper {
     }
 
     public InventoryRecord getSample(final int id) {
-        final SQLiteDatabase db = this.getReadableDatabase();
-
-        final Cursor cursor = db.query(TABLE_SAMPLES,
+        final InventoryRecord sample = new InventoryRecord();
+        {
+            final Cursor cursor = this.getReadableDatabase().query(TABLE_SAMPLES,
                 COLUMNS,
-                " id = ?",
+                " " + KEY_ID + " = ?",
                 new String[]{String.valueOf(id)},
                 null,
                 null,
                 null,
                 null);
 
-        if (cursor != null)
-            cursor.moveToFirst();
-
-        final InventoryRecord sample = new InventoryRecord();
-
-        if (cursor != null) {
-            sample.set(
-                /* id       => */ cursor.getString(0),
-                /* box      => */ cursor.getString(1),
-                /* envID    => */ cursor.getString(2),
-                /* personID => */ cursor.getString(3),
-                /* date     => */ cursor.getString(4),
-                /* position => */ cursor.getString(5),
-                /* wt       => */ cursor.getString(6));
-            cursor.close();
+            if (cursor != null) {
+                cursor.moveToFirst();
+                sample.set(
+                    /* id       => */ cursor.getString(0),
+                    /* box      => */ cursor.getString(1),
+                    /* envID    => */ cursor.getString(2),
+                    /* personID => */ cursor.getString(3),
+                    /* date     => */ cursor.getString(4),
+                    /* position => */ cursor.getString(5),
+                    /* wt       => */ cursor.getString(6));
+                cursor.close();
+            }
         }
-
         Log.d("getSample(" + id + ")", sample.toString());
-
         return sample;
     }
 
     public List<InventoryRecord> getAllSamples() {
         final List<InventoryRecord> samples = new LinkedList<>();
         {
-            Cursor cursor;
-            {
-                final SQLiteDatabase db = this.getWritableDatabase();
-                cursor = db.rawQuery("SELECT  * FROM " + TABLE_SAMPLES, null);
-            }
+            final Cursor cursor = this.getWritableDatabase().rawQuery(
+                "SELECT  * FROM " + TABLE_SAMPLES, null);
 
             if (cursor.moveToFirst()) {
                 do {
@@ -157,13 +149,12 @@ public class MySQLiteHelper extends SQLiteOpenHelper {
     public Boolean deleteSample(final InventoryRecord sample) {
         final SQLiteDatabase db = this.getWritableDatabase();
         final String num = "'" + Integer.toString(sample.getPosition()) + "'";
-        Log.d("deleteSample", sample.toString());
+        Log.d("deleteSample()", sample.toString());
         return db.delete(TABLE_SAMPLES, KEY_POSITION + "=" + num, null) > 0;
     }
 
     public void deleteAllSamples() {
-        final SQLiteDatabase db = this.getWritableDatabase();
-        db.delete(TABLE_SAMPLES, null, null);
+        this.getWritableDatabase().delete(TABLE_SAMPLES, null, null);
     }
 
     public String[] getBoxList() {
