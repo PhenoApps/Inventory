@@ -50,23 +50,20 @@ public class MySQLiteHelper extends SQLiteOpenHelper {
 
     public void addSample(final InventoryRecord sample) {
         Log.d("Add Sample: ", sample.toString());
+        final SQLiteDatabase db = this.getWritableDatabase();
         {
-            final SQLiteDatabase db = this.getWritableDatabase();
+            final ContentValues values = new ContentValues();
 
-            {
-                final ContentValues values = new ContentValues();
-                values.put(KEY_BOX, sample.getBox());
-                values.put(KEY_ENVID, sample.getEnvID());
-                values.put(KEY_PERSON, sample.getPersonID());
-                values.put(KEY_DATE, sample.getDate());
-                values.put(KEY_POSITION, sample.getPosition());
-                values.put(KEY_WT, sample.getWt());
+            values.put(KEY_BOX     , sample.getBox()     );
+            values.put(KEY_ENVID   , sample.getEnvID()   );
+            values.put(KEY_PERSON  , sample.getPersonID());
+            values.put(KEY_DATE    , sample.getDate()    );
+            values.put(KEY_POSITION, sample.getPosition());
+            values.put(KEY_WT      , sample.getWt()      );
 
-                db.insert(TABLE_SAMPLES, null,
-                        values);
-            }
-            db.close();
+            db.insert(TABLE_SAMPLES, null, values);
         }
+        db.close();
     }
 
     public InventoryRecord getSample(final int id) {
@@ -132,23 +129,28 @@ public class MySQLiteHelper extends SQLiteOpenHelper {
     }
 
     protected int updateSample(final InventoryRecord sample) {
-        final SQLiteDatabase db = this.getWritableDatabase();
-        final ContentValues values = new ContentValues();
+        int i;
+        {
+            final SQLiteDatabase db = this.getWritableDatabase();
+            {
+                final ContentValues values = new ContentValues();
+                final int           id     = sample.getId()     ;
 
-        values.put("id", sample.getId());
-        values.put("box", sample.getBox());
-        values.put("envid", sample.getEnvID());
-        values.put("person", sample.getPersonID());
-        values.put("date", sample.getDate());
-        values.put("position", sample.getPosition());
-        values.put("wt", sample.getWt());
+                values.put(KEY_ID      , id                  );
+                values.put(KEY_BOX     , sample.getBox()     );
+                values.put(KEY_ENVID   , sample.getEnvID()   );
+                values.put(KEY_PERSON  , sample.getPersonID());
+                values.put(KEY_DATE    , sample.getDate()    );
+                values.put(KEY_POSITION, sample.getPosition());
+                values.put(KEY_WT      , sample.getWt()      );
 
-        final int i = db.update(TABLE_SAMPLES,
-                values,
-                KEY_ID + " = ?",
-                new String[]{String.valueOf(sample.getId())});
-        db.close();
-
+                i = db.update(TABLE_SAMPLES,
+                        values,
+                        KEY_ID + " = ?",
+                        new String[]{String.valueOf(id)});
+            }
+            db.close();
+        }
         return i;
     }
 
