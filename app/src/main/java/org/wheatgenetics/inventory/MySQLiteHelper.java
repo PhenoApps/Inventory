@@ -87,13 +87,9 @@ public class MySQLiteHelper extends SQLiteOpenHelper {
         final InventoryRecord sample = new InventoryRecord();
 
         if (cursor != null) {
-            sample.setId(Integer.parseInt(cursor.getString(0)));
-            sample.setBox(cursor.getString(1));
-            sample.setEnvID(cursor.getString(2));
-            sample.setPersonID(cursor.getString(3));
-            sample.setDate(cursor.getString(4));
-            sample.setPosition(Integer.parseInt(cursor.getString(5)));
-            sample.setWt(cursor.getString(6));
+            sample.set(cursor.getString(0), cursor.getString(1), cursor.getString(2),
+                    cursor.getString(3), cursor.getString(4), cursor.getString(5),
+                    cursor.getString(6));
             cursor.close();
         }
 

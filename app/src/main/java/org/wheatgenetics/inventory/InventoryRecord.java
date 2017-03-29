@@ -12,26 +12,35 @@ public class InventoryRecord {
     private String mWt = null;
     //endregion
 
+
     //region Constructors
     public InventoryRecord() {
         super();
     }
 
-    public InventoryRecord(final String mBoxID, final String mEnvID, final int mPosition) {
+    public InventoryRecord(final String boxID, final String envID, final int position) {
         this();
-        this.mBoxID = mBoxID;
-        this.mEnvID = mEnvID;
-        this.mPosition = mPosition;
+        this.mBoxID = boxID;
+        this.mEnvID = envID;
+        this.mPosition = position;
     }
 
-    public InventoryRecord(final String mBoxID, final String mEnvID, final String mPersonID,
-                           final String mDate, final int mPosition, final String mWt) {
-        this(mBoxID, mEnvID, mPosition);
-        this.mPersonID = mPersonID;
-        this.mDate = mDate;
-        this.mWt = mWt;
+    public InventoryRecord(final String boxID, final String envID, final String personID,
+                           final String date, final int position, final String wt) {
+        this(boxID, envID, position);
+        this.mPersonID = personID;
+        this.mDate = date;
+        this.mWt = wt;
     }
     //endregion
+
+
+    @Override
+    public String toString() {
+        return this.mBoxID + "," + this.mEnvID + "," + this.mPersonID + "," +
+                this.mDate + "," + this.mPosition + "," + this.mWt;
+    }
+
 
     //region Getters and Setters
     public int getId() {
@@ -91,9 +100,15 @@ public class InventoryRecord {
     }
     //endregion
 
-    @Override
-    public String toString() {
-        return this.mBoxID + "," + this.mEnvID + "," + this.mPersonID + "," +
-            this.mDate + "," + this.mPosition + "," + this.mWt;
+
+    public void set(final String id, final String box, final String envID, final String personID,
+                    final String date, final String position, final String wt) {
+        this.setId(Integer.parseInt(id));
+        this.setBox(box);
+        this.setEnvID(envID);
+        this.setPersonID(personID);
+        this.setDate(date);
+        this.setPosition(Integer.parseInt(position));
+        this.setWt(wt);
     }
 }
