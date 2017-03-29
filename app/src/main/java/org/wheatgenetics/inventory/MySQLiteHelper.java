@@ -56,27 +56,41 @@ public class MySQLiteHelper extends SQLiteOpenHelper {
     //endregion
 
 
-    //region Protected Method
+    //region Protected Methods
+    static protected ContentValues makeContentValues(final InventoryRecord sample) {
+        final ContentValues contentValues = new ContentValues();
+
+        contentValues.put(KEY_BOX     , sample.getBox()     );
+        contentValues.put(KEY_ENVID   , sample.getEnvID()   );
+        contentValues.put(KEY_PERSON  , sample.getPersonID());
+        contentValues.put(KEY_DATE    , sample.getDate()    );
+        contentValues.put(KEY_POSITION, sample.getPosition());
+        contentValues.put(KEY_WT      , sample.getWt()      );
+
+        return contentValues;
+    }
+
+    static protected String[] makeStringArray(final String value) { return new String[]{value}; }
+
+    static protected String[] makeStringArray(final int value) {
+        return MySQLiteHelper.makeStringArray(String.valueOf(value));
+    }
+
+    protected int delete(final String whereClause) {
+        return this.getWritableDatabase().delete(TABLE_SAMPLES, whereClause, null);
+    }
+
     protected int updateSample(final InventoryRecord sample) {
         int i;
         {
             final SQLiteDatabase db = this.getWritableDatabase();
             {
-                final ContentValues values = new ContentValues();
                 final int           id     = sample.getId()     ;
+                final ContentValues values = makeContentValues(sample);
 
-                values.put(KEY_ID      , id                  );
-                values.put(KEY_BOX     , sample.getBox()     );
-                values.put(KEY_ENVID   , sample.getEnvID()   );
-                values.put(KEY_PERSON  , sample.getPersonID());
-                values.put(KEY_DATE    , sample.getDate()    );
-                values.put(KEY_POSITION, sample.getPosition());
-                values.put(KEY_WT      , sample.getWt()      );
-
-                i = db.update(TABLE_SAMPLES,
-                        values,
-                        KEY_ID + " = ?",
-                        new String[]{String.valueOf(id)});
+                values.put(KEY_ID, id);
+                i = db.update(TABLE_SAMPLES, values, KEY_ID + " = ?",
+                    MySQLiteHelper.makeStringArray(id));
             }
             db.close();
         }
@@ -88,19 +102,10 @@ public class MySQLiteHelper extends SQLiteOpenHelper {
     //region Public Methods
     public void addSample(final InventoryRecord sample) {
         Log.d("addSample() ", sample.toString());
+
         final SQLiteDatabase db = this.getWritableDatabase();
-        {
-            final ContentValues values = new ContentValues();
 
-            values.put(KEY_BOX     , sample.getBox()     );
-            values.put(KEY_ENVID   , sample.getEnvID()   );
-            values.put(KEY_PERSON  , sample.getPersonID());
-            values.put(KEY_DATE    , sample.getDate()    );
-            values.put(KEY_POSITION, sample.getPosition());
-            values.put(KEY_WT      , sample.getWt()      );
-
-            db.insert(TABLE_SAMPLES, null, values);
-        }
+        db.insert(TABLE_SAMPLES, null, MySQLiteHelper.makeContentValues(sample));
         db.close();
     }
 
@@ -110,7 +115,7 @@ public class MySQLiteHelper extends SQLiteOpenHelper {
             final Cursor cursor = this.getReadableDatabase().query(TABLE_SAMPLES,
                 COLUMNS,
                 " " + KEY_ID + " = ?",
-                new String[]{String.valueOf(id)},
+                MySQLiteHelper.makeStringArray(id),
                 null,
                 null,
                 null,
@@ -160,29 +165,27 @@ public class MySQLiteHelper extends SQLiteOpenHelper {
 
     public Boolean deleteSample(final InventoryRecord sample) {
         Log.d("deleteSample()", sample.toString());
-        final SQLiteDatabase db = this.getWritableDatabase();
-        return db.delete(TABLE_SAMPLES,
-            KEY_POSITION + "='" + sample.getPositionAsString() + "'", null) > 0;
+        return this.delete(KEY_POSITION + "='" + sample.getPositionAsString() + "'") > 0;
     }
 
-    public void deleteAllSamples() {
-        this.getWritableDatabase().delete(TABLE_SAMPLES, null, null);
-    }
+    public void deleteAllSamples() { this.delete(null); }
 
     public String[] getBoxList() {
-        final SQLiteDatabase db = this.getWritableDatabase();
-        final Cursor cursor = db.query(true, TABLE_SAMPLES, new String[]{KEY_BOX},
-                null, null, KEY_BOX, null, null, null);
-        final String[] boxes = new String[cursor.getCount()];
-        final ArrayList<String> arrcurval = new ArrayList<>();
-        if (cursor.moveToFirst()) {
-            do {
-                arrcurval.add(cursor.getString(0));
-            } while (cursor.moveToNext());
-        }
+        final ArrayList<String> boxList = new ArrayList<>();
+              String[]          boxArray;
+        {
+            final Cursor cursor = this.getWritableDatabase().query(true, TABLE_SAMPLES,
+                MySQLiteHelper.makeStringArray(KEY_BOX), null, null, KEY_BOX, null, null, null);
 
-        cursor.close();
-        return arrcurval.toArray(boxes);
+            boxArray = new String[cursor.getCount()];
+            if (cursor.moveToFirst()) {
+                do {
+                    boxList.add(cursor.getString(0));
+                } while (cursor.moveToNext());
+            }
+            cursor.close();
+        }
+        return boxList.toArray(boxArray);
     }
     //endregion
 }
