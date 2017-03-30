@@ -1,15 +1,15 @@
 package org.wheatgenetics.inventory;
 
-public class InventoryRecord {
+public class InventoryRecord extends java.lang.Object {
 
     //region Fields
     private int id;
-    private String mBoxID = null;
-    private String mEnvID = null;
-    private String mPersonID = null;
-    private String mDate = null;
-    private int mPosition;
-    private String mWt = null;
+    private String boxID = null;
+    private String envID = null;
+    private String personID = null;
+    private String date = null;
+    private int position;
+    private String wt = null;
     //endregion
 
 
@@ -20,17 +20,17 @@ public class InventoryRecord {
 
     public InventoryRecord(final String boxID, final String envID, final int position) {
         this();
-        this.mBoxID = boxID;
-        this.mEnvID = envID;
-        this.mPosition = position;
+        this.boxID = boxID;
+        this.envID = envID;
+        this.position = position;
     }
 
     public InventoryRecord(final String boxID, final String envID, final String personID,
                            final String date, final int position, final String wt) {
         this(boxID, envID, position);
-        this.mPersonID = personID;
-        this.mDate = date;
-        this.mWt = wt;
+        this.personID = personID;
+        this.date = date;
+        this.wt = wt;
     }
 
     public InventoryRecord(final String id, final String box, final String envID,
@@ -44,8 +44,8 @@ public class InventoryRecord {
 
     @Override
     public String toString() {
-        return this.mBoxID + "," + this.mEnvID + "," + this.mPersonID + "," +
-                this.mDate + "," + this.mPosition + "," + this.mWt;
+        return this.boxID + "," + this.envID + "," + this.personID + "," +
+                this.date + "," + this.position + "," + this.wt;
     }
 
 
@@ -59,65 +59,65 @@ public class InventoryRecord {
     }
 
     public String getBox() {
-        return this.mBoxID;
+        return this.boxID;
     }
 
     public void setBox(final String box) {
-        this.mBoxID = box;
+        this.boxID = box;
     }
 
     public String getEnvID() {
-        return this.mEnvID;
+        return this.envID;
     }
 
     public void setEnvID(final String envID) {
-        this.mEnvID = envID;
+        this.envID = envID;
     }
 
     public String getPersonID() {
-        return this.mPersonID;
+        return this.personID;
     }
 
     public void setPersonID(final String personID) {
-        this.mPersonID = personID;
+        this.personID = personID;
     }
 
     public String getDate() {
-        return this.mDate;
+        return this.date;
     }
 
     public void setDate(final String date) {
-        this.mDate = date;
+        this.date = date;
     }
 
     public int getPosition() {
-        return this.mPosition;
+        return this.position;
     }
 
     public void setPosition(final int position) {
-        this.mPosition = position;
+        this.position = position;
     }
 
     public String getWt() {
-        return this.mWt;
+        return this.wt;
     }
 
     public void setWt(final String wt) {
-        this.mWt = wt;
+        this.wt = wt;
     }
     //endregion
 
 
-    public String getPositionAsString() { return Integer.toString(this.getPosition()); }
+    public String getPositionAsString() { return java.lang.Integer.toString(this.getPosition()); }
 
     public void set(final String id, final String box, final String envID, final String personID,
                     final String date, final String position, final String wt) {
-        this.setId(Integer.parseInt(id));
+        this.setId(java.lang.Integer.parseInt(id));
         this.setBox(box);
         this.setEnvID(envID);
         this.setPersonID(personID);
         this.setDate(date);
-        this.setPosition(Integer.parseInt(position));
+        this.setPosition(java.lang.Integer.parseInt(position));
         this.setWt(wt);
     }
 }

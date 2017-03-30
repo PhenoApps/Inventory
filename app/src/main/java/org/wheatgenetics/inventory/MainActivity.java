@@ -291,10 +291,9 @@ public class MainActivity extends AppCompatActivity {
             weight = mWeightEditText.getText().toString();
         }
 
-        db.addSample(new InventoryRecord(boxNumTextView.getText().toString(), inputText
-                .getText().toString(), ep.getFirstName() + "_" + ep.getLastName(), date, currentItemNum, weight)); // add
-        // to
-        // database
+        db.addSample(new InventoryRecord(boxNumTextView.getText().toString(),
+                inputText.getText().toString(), ep.getFirstName() + "_" + ep.getLastName(), date,
+                currentItemNum, weight)); // add to database
 
         createNewTableEntry(boxNumTextView.getText().toString(),
                 currentItemNum, inputText.getText().toString(), weight);
@@ -399,8 +398,7 @@ public class MainActivity extends AppCompatActivity {
                         new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int id) {
-                                final InventoryRecord temp = new InventoryRecord(fBox, fEnv, fNum);
-                                db.deleteSample(temp);
+                                db.deleteSample(new InventoryRecord(fBox, fEnv, fNum));
                                 parseDbToTable();
                             }
                         })
