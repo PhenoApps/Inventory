@@ -36,7 +36,6 @@ public class MySQLiteHelper extends SQLiteOpenHelper {
     //endregion
 
 
-
     public MySQLiteHelper(final Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
     }

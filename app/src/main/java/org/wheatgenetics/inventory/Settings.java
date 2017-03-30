@@ -5,11 +5,12 @@ package org.wheatgenetics.inventory;
 public class Settings extends java.lang.Object
 {
     //region Constants
-    final protected java.lang.String FIRST_NAME     = "FirstName"    ;
-    final protected java.lang.String LAST_NAME      = "LastName"     ;
-    final protected java.lang.String IGNORE_SCALE   = "ignoreScale"  ;
-    final protected java.lang.String UPDATE_VERSION = "UpdateVersion";
+    static final protected java.lang.String FIRST_NAME     = "FirstName"    ;
+    static final protected java.lang.String LAST_NAME      = "LastName"     ;
+    static final protected java.lang.String IGNORE_SCALE   = "ignoreScale"  ;
+    static final protected java.lang.String UPDATE_VERSION = "UpdateVersion";
     //endregion
+
 
     protected android.content.SharedPreferences sharedPreferences;
 
@@ -18,21 +19,23 @@ public class Settings extends java.lang.Object
     protected java.lang.String getString(final java.lang.String key)
     {
         assert key != null;
-        assert key.equals(this.FIRST_NAME) || key.equals(this.LAST_NAME);
+        assert key.equals(org.wheatgenetics.inventory.Settings.FIRST_NAME)
+            || key.equals(org.wheatgenetics.inventory.Settings.LAST_NAME );
 
         assert this.sharedPreferences != null;
         return this.sharedPreferences.getString(key, "");
     }
 
     protected void setString(final java.lang.String key,
-                             final java.lang.String oldValue, java.lang.String newValue)
+    final java.lang.String oldValue, java.lang.String newValue)
     {
         assert oldValue != null;
         if (newValue == null) newValue = "";
         if (!oldValue.equals(newValue))
         {
             assert key != null;
-            assert key.equals(this.FIRST_NAME) || key.equals(this.LAST_NAME);
+            assert key.equals(org.wheatgenetics.inventory.Settings.FIRST_NAME)
+                || key.equals(org.wheatgenetics.inventory.Settings.LAST_NAME );
 
             assert this.sharedPreferences != null;
             final android.content.SharedPreferences.Editor editor = this.sharedPreferences.edit();
@@ -45,7 +48,7 @@ public class Settings extends java.lang.Object
     protected int getUpdateVersion()
     {
         assert this.sharedPreferences != null;
-        return this.sharedPreferences.getInt(this.UPDATE_VERSION, -1);
+        return this.sharedPreferences.getInt(org.wheatgenetics.inventory.Settings.UPDATE_VERSION, -1);
     }
     //endregion
 
@@ -62,20 +65,28 @@ public class Settings extends java.lang.Object
     //region FirstName Methods
     public java.lang.Boolean firstNameIsSet() { return this.getFirstName().length() > 0; }
 
-    public java.lang.String getFirstName() { return this.getString(this.FIRST_NAME); }
+    public java.lang.String getFirstName()
+    {
+        return this.getString(org.wheatgenetics.inventory.Settings.FIRST_NAME);
+    }
     //endregion
 
 
     //region LastName Method
-    public java.lang.String getLastName(){ return this.getString(this.LAST_NAME); }
+    public java.lang.String getLastName()
+    {
+        return this.getString(org.wheatgenetics.inventory.Settings.LAST_NAME);
+    }
     //endregion
 
 
     //region Name Method
     public void setName(final java.lang.String firstName, final java.lang.String lastName)
     {
-        this.setString(this.FIRST_NAME, this.getFirstName(), firstName);
-        this.setString(this.LAST_NAME , this.getLastName() , lastName );
+        this.setString(org.wheatgenetics.inventory.Settings.FIRST_NAME,
+            this.getFirstName(), firstName);
+        this.setString(org.wheatgenetics.inventory.Settings.LAST_NAME,
+            this.getLastName(), lastName);
 
 
         assert this.sharedPreferences != null;
@@ -91,7 +102,8 @@ public class Settings extends java.lang.Object
     public java.lang.Boolean getIgnoreScale()
     {
         assert this.sharedPreferences != null;
-        return this.sharedPreferences.getBoolean(this.IGNORE_SCALE, false);
+        return this.sharedPreferences.getBoolean(
+            org.wheatgenetics.inventory.Settings.IGNORE_SCALE, false);
     }
 
     public void setIgnoreScaleToTrue()
@@ -102,7 +114,7 @@ public class Settings extends java.lang.Object
             final android.content.SharedPreferences.Editor editor = this.sharedPreferences.edit();
 
             assert editor != null;
-            editor.putBoolean(this.IGNORE_SCALE, true);
+            editor.putBoolean(org.wheatgenetics.inventory.Settings.IGNORE_SCALE, true);
             editor.apply();
         }
     }
@@ -123,7 +135,7 @@ public class Settings extends java.lang.Object
             final android.content.SharedPreferences.Editor editor = this.sharedPreferences.edit();
 
             assert editor != null;
-            editor.putInt(this.UPDATE_VERSION, newUpdateVersion);
+            editor.putInt(org.wheatgenetics.inventory.Settings.UPDATE_VERSION, newUpdateVersion);
             editor.apply();
         }
     }

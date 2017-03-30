@@ -94,7 +94,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main_layout);
-        Log.v(TAG, "onCreate");
+        Log.v(TAG, "onCreate()");
 
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         {
@@ -134,7 +134,6 @@ public class MainActivity extends AppCompatActivity {
         mWeightEditText.setText(getString(R.string.not_connected));
         boxNumTextView = (TextView) findViewById(R.id.tvBoxNum);
         boxNumTextView.setText("");
-        final Button setBox = (Button) findViewById(R.id.btBox);
         inputText = (EditText) findViewById(R.id.etInput);
         InventoryTable = (TableLayout) findViewById(R.id.tlInventory);
 
@@ -145,12 +144,15 @@ public class MainActivity extends AppCompatActivity {
 
         db = new MySQLiteHelper(this);
 
-        setBox.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                setBoxDialog();
-            }
-        });
+        {
+            final Button setBox = (Button) findViewById(R.id.btBox);
+            setBox.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    setBoxDialog();
+                }
+            });
+        }
 
         InventoryTable.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -158,16 +160,17 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        mDevice = getIntent()
-                .getParcelableExtra(UsbManager.EXTRA_DEVICE);
+        mDevice = getIntent().getParcelableExtra(UsbManager.EXTRA_DEVICE);
 
         inputText.setOnKeyListener(new View.OnKeyListener() {
             @Override
             public boolean onKey(View v, int keyCode, KeyEvent event) {
                 if (keyCode == KeyEvent.KEYCODE_ENTER) {
-                    final InputMethodManager mgr = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-                    mgr.showSoftInput(inputText,
-                            InputMethodManager.HIDE_IMPLICIT_ONLY);
+                    {
+                        final InputMethodManager mgr =
+                            (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                        mgr.showSoftInput(inputText, InputMethodManager.HIDE_IMPLICIT_ONLY);
+                    }
                     if (event.getAction() != KeyEvent.ACTION_DOWN)
                         return true;
                     addRecord(); // Add the current record to the table
@@ -192,10 +195,12 @@ public class MainActivity extends AppCompatActivity {
         mWeightEditText.setOnKeyListener(new View.OnKeyListener() {
             @Override
             public boolean onKey(View v, int keyCode, KeyEvent event) {
-                if ((keyCode == KeyEvent.KEYCODE_ENTER || keyCode == KeyEvent.KEYCODE_NUMPAD_ENTER)) {
-                    final InputMethodManager mgr = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-                    mgr.showSoftInput(inputText,
-                            InputMethodManager.HIDE_IMPLICIT_ONLY);
+                if (keyCode == KeyEvent.KEYCODE_ENTER || keyCode == KeyEvent.KEYCODE_NUMPAD_ENTER) {
+                    {
+                        final InputMethodManager mgr =
+                            (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                        mgr.showSoftInput(inputText, InputMethodManager.HIDE_IMPLICIT_ONLY);
+                    }
                     if (event.getAction() != KeyEvent.ACTION_DOWN)
                         return true;
                     addRecord(); // Add the current record to the table
@@ -277,34 +282,32 @@ public class MainActivity extends AppCompatActivity {
      * Adds a new record to the internal list of records
      */
     private void addRecord() {
-        final String date = getDate();
-
-        final String ut = inputText.getText().toString();
-        if (ut.equals("")) {
-            return; // check for empty user input
+        {
+            final String ut = inputText.getText().toString();
+            if (ut.equals("")) {
+                return; // check for empty user input
+            }
         }
 
-        String weight;
-        if (mDevice == null && mWeightEditText.getText().toString().equals(getString(R.string.not_connected))) {
-            weight = getString(R.string.not_connected);
-        } else {
-            weight = mWeightEditText.getText().toString();
-        }
+        final String weight = mWeightEditText.getText().toString();
 
-        db.addSample(new InventoryRecord(boxNumTextView.getText().toString(),
-                inputText.getText().toString(), ep.getFirstName() + "_" + ep.getLastName(), date,
-                currentItemNum, weight)); // add to database
+        db.addSample(new InventoryRecord(
+            /* boxID    => */ boxNumTextView.getText().toString()       ,
+            /* envID    => */ inputText.getText().toString()            ,
+            /* personID => */ ep.getFirstName() + "_" + ep.getLastName(),
+            /* date     => */ getDate()                                 ,
+            /* position => */ currentItemNum                            ,
+            /* wt       => */ weight                                    )); // add to database
 
         createNewTableEntry(boxNumTextView.getText().toString(),
-                currentItemNum, inputText.getText().toString(), weight);
+            currentItemNum, inputText.getText().toString(), weight);
         currentItemNum++;
     }
 
     private String getDate() {
-        final Calendar cal = Calendar.getInstance();
-        final SimpleDateFormat date = new SimpleDateFormat(
-                "yyyy-MM-dd-hh-mm-ss", Locale.getDefault());
-        return date.format(cal.getTime());
+        final SimpleDateFormat simpleDateFormat = new SimpleDateFormat(
+            "yyyy-MM-dd-hh-mm-ss", Locale.getDefault());
+        return simpleDateFormat.format(Calendar.getInstance().getTime());
     }
 
     /**
@@ -315,7 +318,8 @@ public class MainActivity extends AppCompatActivity {
      * @param en - Sample ID
      * @param wt - Sample weight
      */
-    private void createNewTableEntry(final String bn, final int in, final String en, final String wt) {
+    private void createNewTableEntry(final String bn,
+    final int in, final String en, final String wt) {
         final String tag = bn + "," + en + "," + in;
         inputText.setText("");
 
@@ -389,8 +393,7 @@ public class MainActivity extends AppCompatActivity {
         final String fEnv = tagArray[1];
         final int fNum = Integer.parseInt(tagArray[2]);
 
-        final AlertDialog.Builder builder = new AlertDialog.Builder(
-                MainActivity.this);
+        final AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
         builder.setTitle(getString(R.string.delete_entry));
         builder.setMessage(getString(R.string.delete) + fEnv + "?")
                 .setCancelable(true)
@@ -409,7 +412,6 @@ public class MainActivity extends AppCompatActivity {
                     }
                 });
         builder.create().show();
-
     }
 
     private void createDir(final File path) {
