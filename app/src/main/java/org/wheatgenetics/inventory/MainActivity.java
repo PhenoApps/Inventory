@@ -65,7 +65,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity {
-
     protected final static String TAG = "Inventory";
     protected Settings ep;
     private UsbDevice mDevice;
@@ -304,7 +303,7 @@ public class MainActivity extends AppCompatActivity {
         currentItemNum++;
     }
 
-    private String getDate() {
+    static private String getDate() {
         final SimpleDateFormat simpleDateFormat = new SimpleDateFormat(
             "yyyy-MM-dd-hh-mm-ss", Locale.getDefault());
         return simpleDateFormat.format(Calendar.getInstance().getTime());
@@ -312,102 +311,89 @@ public class MainActivity extends AppCompatActivity {
 
     /**
      * Adds a new entry to the end of the TableView
-     *
-     * @param wt - Sample weight
      */
     private void createNewTableEntry(final String boxID,
     final int position, final String sampleID, final String sampleWeight) {
-        final String tag = boxID + "," + sampleID + "," + position;
         inputText.setText("");
 
-		
 		/* Create a new row to be added. */
         final TableRow tr = new TableRow(this);
         tr.setLayoutParams(new TableLayout.LayoutParams(
-                LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
+            LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
 
-		/* Create the item number field */
+		/* Create the item number field. */
         final TextView itemNumTV = new TextView(this);
         itemNumTV.setGravity(Gravity.CENTER | Gravity.BOTTOM);
         itemNumTV.setTextColor(Color.BLACK);
         itemNumTV.setTextSize(20.0f);
         itemNumTV.setText("" + position);
-        itemNumTV.setLayoutParams(new TableRow.LayoutParams(0,
-                LayoutParams.WRAP_CONTENT, 0.16f));
+        itemNumTV.setLayoutParams(new TableRow.LayoutParams(0, LayoutParams.WRAP_CONTENT, 0.16f));
 
-		/* Create the box number field */
+		/* Create the box number field. */
         final TextView boxNumTV = new TextView(this);
         boxNumTV.setGravity(Gravity.CENTER | Gravity.BOTTOM);
         boxNumTV.setTextColor(Color.BLACK);
         boxNumTV.setTextSize(20.0f);
         boxNumTV.setText(boxID);
-        boxNumTV.setLayoutParams(new TableRow.LayoutParams(0,
-                LayoutParams.WRAP_CONTENT, 0.16f));
+        boxNumTV.setLayoutParams(new TableRow.LayoutParams(0, LayoutParams.WRAP_CONTENT, 0.16f));
 
-		/* Create the Envelope ID field */
+		/* Create the Envelope ID field. */
         final TextView envIDTV = new TextView(this);
         envIDTV.setGravity(Gravity.CENTER | Gravity.BOTTOM);
         envIDTV.setTextColor(Color.BLACK);
         envIDTV.setTextSize(20.0f);
         envIDTV.setText(sampleID);
-        envIDTV.setTag(tag);
-        envIDTV.setLayoutParams(new TableRow.LayoutParams(0,
-                LayoutParams.WRAP_CONTENT, 0.5f));
+        envIDTV.setTag(boxID + "," + sampleID + "," + position);
+        envIDTV.setLayoutParams(new TableRow.LayoutParams(0, LayoutParams.WRAP_CONTENT, 0.5f));
         envIDTV.setLongClickable(true);
 
-		/* Define the listener for the longclick event */
+		/* Define the listener for the longclick event. */
         envIDTV.setOnLongClickListener(new OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
-                final String tag = (String) v.getTag();
-                deleteDialog(tag);
+                deleteDialog((String) v.getTag());
                 return false;
             }
         });
 
-		/* Create the Weight field */
+		/* Create the Weight field. */
         final TextView weightTV = new TextView(this);
         weightTV.setGravity(Gravity.CENTER | Gravity.BOTTOM);
         weightTV.setTextColor(Color.BLACK);
         weightTV.setTextSize(20.0f);
         weightTV.setText(sampleWeight);
-        weightTV.setLayoutParams(new TableRow.LayoutParams(0,
-                LayoutParams.WRAP_CONTENT, 0.16f));
+        weightTV.setLayoutParams(new TableRow.LayoutParams(0, LayoutParams.WRAP_CONTENT, 0.16f));
 
-		/* Add UI elements to row and add row to table */
+		/* Add UI elements to row and add row to table. */
         tr.addView(itemNumTV);
-        tr.addView(boxNumTV);
-        tr.addView(envIDTV);
-        tr.addView(weightTV);
+        tr.addView(boxNumTV );
+        tr.addView(envIDTV  );
+        tr.addView(weightTV );
         InventoryTable.addView(tr, new LayoutParams(
-                TableLayout.LayoutParams.MATCH_PARENT,
-                TableLayout.LayoutParams.MATCH_PARENT));
+            TableLayout.LayoutParams.MATCH_PARENT, TableLayout.LayoutParams.MATCH_PARENT));
     }
 
     private void deleteDialog(final String tag) {
         final String tagArray[] = tag.split(",");
-        final String fBox = tagArray[0];
-        final String fEnv = tagArray[1];
-        final int fNum = Integer.parseInt(tagArray[2]);
+        final String box        = tagArray[0];
+        final String env        = tagArray[1];
+        final int    num        = Integer.parseInt(tagArray[2]);
 
         final AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
         builder.setTitle(getString(R.string.delete_entry));
-        builder.setMessage(getString(R.string.delete) + fEnv + "?")
-                .setCancelable(true)
-                .setPositiveButton(getString(R.string.yes),
-                        new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int id) {
-                                db.deleteSample(new InventoryRecord(fBox, fEnv, fNum));
-                                parseDbToTable();
-                            }
-                        })
-                .setNegativeButton(getString(R.string.no), new DialogInterface.OnClickListener() {
+        builder.setMessage(getString(R.string.delete) + env + "?")
+               .setCancelable(true)
+               .setPositiveButton(getString(R.string.yes), new DialogInterface.OnClickListener() {
                     @Override
-                    public void onClick(DialogInterface dialog, int id) {
+                    public void onClick(DialogInterface dialog, int which) {
+                        db.deleteSample(new InventoryRecord(box, env, num));
+                        parseDbToTable();
+                    }})
+               .setNegativeButton(getString(R.string.no), new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
                         dialog.cancel();
-                    }
-                });
+                    }});
         builder.create().show();
     }
 
@@ -428,54 +414,46 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void setBoxDialog() {
-        final AlertDialog.Builder alert = new AlertDialog.Builder(this);
         final EditText input = new EditText(this);
         input.setText(boxNumber);
         input.selectAll();
         input.setSingleLine();
+
+        final AlertDialog.Builder alert = new AlertDialog.Builder(this);
         alert.setTitle(getString(R.string.setbox));
         alert.setView(input);
         alert.setPositiveButton(getString(R.string.ok), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int whichButton) {
-                String value = input.getText().toString().trim();
-                boxNumTextView.setText(value);
+                {
+                    final String value = input.getText().toString().trim();
 
-                boxNumber = value;
+                    boxNumTextView.setText(value);
+                    boxNumber = value;
+                }
 
-                InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                final InputMethodManager imm =
+                    (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                imm.hideSoftInputFromWindow(input.getWindowToken(), 0);
+            }});
+
+        alert.setNegativeButton(getString(R.string.cancel), new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int whichButton) {
+                dialog.cancel();
+
+                final InputMethodManager imm =
+                    (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
                 imm.hideSoftInputFromWindow(input.getWindowToken(), 0);
             }
-        });
-
-        alert.setNegativeButton(getString(R.string.cancel),
-                new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int whichButton) {
-                        dialog.cancel();
-                        InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-                        imm.hideSoftInputFromWindow(input.getWindowToken(), 0);
-                    }
-                });
+            });
         alert.create().show();
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-
     }
 
     @Override
     protected void onStart() {
         super.onStart();
-        Log.v(TAG, "onStart");
-
-    }
-
-    @Override
-    protected void onStop() {
-        super.onStop();
+        Log.v(TAG, "onStart()");
     }
 
     @Override
@@ -500,47 +478,46 @@ public class MainActivity extends AppCompatActivity {
 
     private void aboutDialog() {
         final AlertDialog.Builder alert = new AlertDialog.Builder(this);
+        {
+            final View personView =
+                this.getLayoutInflater().inflate(R.layout.about, new LinearLayout(this), false);
 
-        final LayoutInflater inflater = this.getLayoutInflater();
-        final View personView = inflater.inflate(R.layout.about, new LinearLayout(this), false);
-        final TextView version = (TextView) personView.findViewById(R.id.tvVersion);
-        final TextView otherApps = (TextView) personView.findViewById(R.id.tvOtherApps);
+            {
+                final TextView version = (TextView) personView.findViewById(R.id.tvVersion);
+                try {
+                    final PackageInfo packageInfo =
+                        this.getPackageManager().getPackageInfo(this.getPackageName(), 0);
+                    version.setText(getResources().getString(R.string.versiontitle) + " " + packageInfo.versionName);
+                } catch (PackageManager.NameNotFoundException e) {
+                    Log.e(TAG, e.getMessage());
+                }
+                version.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        changelog();
+                    }});
+            }
 
-        final PackageManager packageManager = this.getPackageManager();
-        try {
-            PackageInfo packageInfo = packageManager.getPackageInfo(this.getPackageName(), 0);
-            version.setText(getResources().getString(R.string.versiontitle) + " " + packageInfo.versionName);
-        } catch (PackageManager.NameNotFoundException e) {
-            Log.e(TAG, e.getMessage());
+            {
+                final TextView otherApps = (TextView) personView.findViewById(R.id.tvOtherApps);
+                otherApps.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        showOtherAppsDialog();
+                    }});
+            }
+
+            alert.setCancelable(true);
+            alert.setTitle(getResources().getString(R.string.about));
+            alert.setView(personView);
         }
-
-        version.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                changelog();
-            }
-        });
-
-        otherApps.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                showOtherAppsDialog();
-            }
-        });
-
-
-        alert.setCancelable(true);
-        alert.setTitle(getResources().getString(R.string.about));
-        alert.setView(personView);
         alert.setNegativeButton(getResources().getString(R.string.ok), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int whichButton) {
                 dialog.dismiss();
-            }
-        });
+            }});
         alert.show();
     }
-
 
     protected void makeToast(final String message) {
         Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
@@ -548,303 +525,298 @@ public class MainActivity extends AppCompatActivity {
 
     private void setPersonDialog() {
         final AlertDialog.Builder alert = new AlertDialog.Builder(this);
-        final LayoutInflater inflater = this.getLayoutInflater();
-        final View personView = inflater.inflate(R.layout.person, new LinearLayout(this), false);
-
-        final EditText fName = (EditText) personView
-                .findViewById(R.id.firstName);
-        final EditText lName = (EditText) personView
-                .findViewById(R.id.lastName);
-
-        fName.setText(ep.getFirstName());
-        lName.setText(ep.getLastName() );
 
         alert.setCancelable(false);
         alert.setTitle(getResources().getString(R.string.set_person));
-        alert.setView(personView);
-        alert.setPositiveButton(getResources().getString(R.string.ok), new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int whichButton) {
-                firstName = fName.getText().toString().trim();
-                lastName = lName.getText().toString().trim();
+        {
+            final View personView =
+                this.getLayoutInflater().inflate(R.layout.person, new LinearLayout(this), false);
 
-                if (firstName.length() == 0 | lastName.length() == 0) {
-                    makeToast(getResources().getString(R.string.no_blank));
-                    setPersonDialog();
-                    return;
-                }
+            final EditText fName = (EditText) personView.findViewById(R.id.firstName);
+            final EditText lName = (EditText) personView.findViewById(R.id.lastName );
 
-                makeToast(getResources().getString(R.string.person_set) + " " + firstName + " " + lastName);
-                ep.setName(firstName, lastName);
-            }
-        });
+            fName.setText(ep.getFirstName());
+            lName.setText(ep.getLastName() );
+
+            alert.setView(personView);
+            alert.setPositiveButton(getResources().getString(R.string.ok), new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int whichButton) {
+                    firstName = fName.getText().toString().trim();
+                    lastName  = lName.getText().toString().trim();
+
+                    if (firstName.length() == 0 | lastName.length() == 0) {
+                        makeToast(getResources().getString(R.string.no_blank));
+                        setPersonDialog();
+                        return;
+                    }
+
+                    makeToast(getResources().getString(R.string.person_set) + " " + firstName + " " + lastName);
+                    ep.setName(firstName, lastName);
+                }});
+        }
         alert.show();
     }
 
     private void showOtherAppsDialog() {
         final AlertDialog.Builder otherAppsAlert = new AlertDialog.Builder(this);
+        {
+            final ListView myList = new ListView(this);
 
-        final ListView myList = new ListView(this);
-        myList.setDivider(null);
-        myList.setDividerHeight(0);
-        final String[] appsArray = new String[3];
-
-        appsArray[0] = "Field Book";
-        appsArray[1] = "Coordinate";
-        appsArray[2] = "1KK";
-        //appsArray[3] = "Intercross";
-        //appsArray[4] = "Rangle";
-
-        final Integer app_images[] = {R.drawable.other_ic_field_book, R.drawable.other_ic_coordinate, R.drawable.other_ic_1kk};
-        final String[] links = {"https://play.google.com/store/apps/details?id=com.fieldbook.tracker",
-                "http://wheatgenetics.org/apps",
-                "http://wheatgenetics.org/apps"}; //TODO update these links
-
-        myList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> av, View arg1, int which, long arg3) {
-                final Uri uri = Uri.parse(links[which]);
-                Intent intent;
-
-                switch (which) {
-                    case 0:
-                        intent = new Intent(Intent.ACTION_VIEW, uri);
-                        startActivity(intent);
-                        break;
-                    case 1:
-                        intent = new Intent(Intent.ACTION_VIEW, uri);
-                        startActivity(intent);
-                        break;
-                    case 2:
-                        intent = new Intent(Intent.ACTION_VIEW, uri);
-                        startActivity(intent);
-                        break;
-                }
+            myList.setDivider(null);
+            myList.setDividerHeight(0);
+            {
+                final String[] links = {                                   //TODO update these links
+                    "https://play.google.com/store/apps/details?id=com.fieldbook.tracker",
+                    "http://wheatgenetics.org/apps"                                      ,
+                    "http://wheatgenetics.org/apps"                                      };
+                myList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                    @Override
+                    public void onItemClick(AdapterView<?> av, View arg1, int which, long arg3) {
+                        switch (which) {
+                            case 0:
+                            case 1:
+                            case 2:
+                                startActivity(new Intent(
+                                    Intent.ACTION_VIEW, Uri.parse(links[which])));
+                                break;
+                        }
+                    }});
             }
-        });
+            {
+                final Integer appIconIDs[] = {R.drawable.other_ic_field_book,
+                    R.drawable.other_ic_coordinate, R.drawable.other_ic_1kk};
 
-        final CustomListAdapter adapterImg = new CustomListAdapter(this, app_images, appsArray);
-        myList.setAdapter(adapterImg);
+                final String[] appNames = new String[3];
+                appNames[0] = "Field Book";
+                appNames[1] = "Coordinate";
+                appNames[2] = "1KK"       ;
+                //appNames[3] = "Intercross";
+                //appNames[4] = "Rangle"    ;
 
-        otherAppsAlert.setCancelable(true);
-        otherAppsAlert.setTitle(getResources().getString(R.string.otherapps));
-        otherAppsAlert.setView(myList);
+                myList.setAdapter(new CustomListAdapter(this, appIconIDs, appNames));
+            }
+
+            otherAppsAlert.setCancelable(true);
+            otherAppsAlert.setTitle(getResources().getString(R.string.otherapps));
+            otherAppsAlert.setView(myList);
+        }
         otherAppsAlert.setNegativeButton(getResources().getString(R.string.ok), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int whichButton) {
                 dialog.dismiss();
-            }
-        });
+            }});
         otherAppsAlert.show();
     }
 
     public class CustomListAdapter extends ArrayAdapter<String> {
-        String[] color_names;
-        Integer[] image_id;
-        Context context;
+        protected Context   context    ;
+        protected String[]  color_names;
+        protected Integer[] image_ids  ;
 
-        public CustomListAdapter(final Activity context, final Integer[] image_id, final String[] text) {
-            super(context, R.layout.appline, text);
-            this.color_names = text;
-            this.image_id = image_id;
-            this.context = context;
+        public CustomListAdapter(final Activity context,
+        final Integer[] image_ids, final String[] color_names) {
+            super(context, R.layout.appline, color_names);
+
+            this.context     = context    ;
+            this.color_names = color_names;
+            this.image_ids   = image_ids  ;
         }
 
         @Override
         public View getView(int position, View convertView, ViewGroup parent) {
-            final LayoutInflater inflater = (LayoutInflater) context
-                    .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+            final LayoutInflater inflater =
+                (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             final View single_row = inflater.inflate(R.layout.appline, null, true);
-            final TextView textView = (TextView) single_row.findViewById(R.id.txt);
-            final ImageView imageView = (ImageView) single_row.findViewById(R.id.img);
-            textView.setText(color_names[position]);
-            imageView.setImageResource(image_id[position]);
+            {
+                final TextView textView = (TextView) single_row.findViewById(R.id.txt);
+                textView.setText(color_names[position]);
+            }
+            {
+                final ImageView imageView = (ImageView) single_row.findViewById(R.id.img);
+                imageView.setImageResource(image_ids[position]);
+            }
             return single_row;
         }
     }
 
     private void clearDialog() {
-        final AlertDialog.Builder builder = new AlertDialog.Builder(
-                MainActivity.this);
+        final AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+
         builder.setMessage(
-                getString(R.string.delete_msg_1))
-                .setCancelable(false)
-                .setTitle(getString(R.string.clear_data))
-                .setPositiveButton(getString(R.string.yes),
-                        new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int id) {
-                                boxNumTextView.setText("");
-                                makeToast(getString(R.string.data_deleted));
-                                dropTables();
-                            }
-                        })
-                .setNegativeButton(getString(R.string.no), new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int id) {
-                        dialog.cancel();
-                    }
-                });
+            getString(R.string.delete_msg_1))
+            .setCancelable(false)
+            .setTitle(getString(R.string.clear_data))
+            .setPositiveButton(getString(R.string.yes), new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int id) {
+                    boxNumTextView.setText("");
+                    makeToast(getString(R.string.data_deleted));
+                    dropTables();
+                }})
+            .setNegativeButton(getString(R.string.no), new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int id) {
+                    dialog.cancel();
+                }});
         builder.create().show();
     }
 
     private void export() {
         new AlertDialog.Builder(MainActivity.this)
-                .setTitle(getString(R.string.export_data))
-                .setMessage(getString(R.string.export_choice))
-                .setPositiveButton(getString(R.string.export_csv),
-                        new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog,
-                                                int which) {
-                                exportCSV();
-                            }
-
-                        })
-                .setNegativeButton(getString(R.string.export_sql),
-                        new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog,
-                                                int which) {
-                                exportSQL();
-                            }
-
-                        })
-                .setNeutralButton(getString(R.string.cancel),
-                        new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog,
-                                                int which) {
-                                dialog.cancel();
-                            }
-
-                        }).show();
+            .setTitle(getString(R.string.export_data))
+            .setMessage(getString(R.string.export_choice))
+            .setPositiveButton(getString(R.string.export_csv), new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    exportCSV();
+                }})
+            .setNegativeButton(getString(R.string.export_sql), new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    exportSQL();
+                }})
+            .setNeutralButton(getString(R.string.cancel), new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    dialog.cancel();
+                }}).show();
     }
 
     private void exportCSV() {
-        final String date = getDate();
-
         try {
-            writeCSV("inventory_" + date + ".csv");
+            writeCSV("inventory_" + getDate() + ".csv");
         } catch (Exception e) {
-            Toast.makeText(getBaseContext(), e.getMessage(), Toast.LENGTH_SHORT)
-                    .show();
+            Toast.makeText(getBaseContext(), e.getMessage(), Toast.LENGTH_SHORT).show();
         }
-
         dropTables();
     }
 
     private void exportSQL() {
-        final String date = getDate();
-
         try {
-            writeSQL("inventory_" + date + ".sql");
+            writeSQL("inventory_" + getDate() + ".sql");
         } catch (Exception e) {
-            Toast.makeText(getBaseContext(), e.getMessage(), Toast.LENGTH_SHORT)
-                    .show();
+            Toast.makeText(getBaseContext(), e.getMessage(), Toast.LENGTH_SHORT).show();
         }
-
         dropTables();
     }
 
-    private void writeCSV(String filename) {
-        list = db.getAllSamples();
-        itemCount = list.size();
+    private void writeCSV(final String filename) {
+        list      = db.getAllSamples();
+        itemCount = list.size()       ;
         if (itemCount != 0) {
-            try {
-                final File myFile = new File(Constants.MAIN_PATH, filename);
-                myFile.createNewFile();
-                final FileOutputStream fOut = new FileOutputStream(myFile);
-                final OutputStreamWriter myOutWriter = new OutputStreamWriter(fOut);
+            try
+            {
+                {
+                    final File myFile = new File(Constants.MAIN_PATH, filename);
+                    myFile.createNewFile();
+                    {
+                        final FileOutputStream fOut = new FileOutputStream(myFile);
+                        {
+                            final OutputStreamWriter myOutWriter = new OutputStreamWriter(fOut);
 
-                String record = "box_id,seed_id,inventory_date,inventory_person,weight_gram\r\n";
-                myOutWriter.append(record);
+                            String record = "box_id,seed_id,inventory_date,inventory_person,weight_gram\r\n";
+                            myOutWriter.append(record);
 
-                for (int i = 0; i < itemCount; i++) {
+                            for (int i = 0; i < itemCount; i++) {
+                                {
+                                    final String[] temp = list.get(i).toString().split(",");
 
-                    String[] temp = list.get(i).toString().split(",");
-                    record = temp[0] + ","; // box
-                    record += temp[1] + ","; // seed id
-                    record += temp[3] + ","; // date
-                    record += temp[2] + ","; // person
-                    record += temp[5] + "\r\n"; // weight
-
-                    myOutWriter.append(record);
+                                    record =  temp[0] + ","   ; // box
+                                    record += temp[1] + ","   ; // seed id
+                                    record += temp[3] + ","   ; // date
+                                    record += temp[2] + ","   ; // person
+                                    record += temp[5] + "\r\n"; // weight
+                                }
+                                myOutWriter.append(record);
+                            }
+                            myOutWriter.close();
+                        }
+                        fOut.close();
+                    }
+                    makeFileDiscoverable(myFile, this);
                 }
-                myOutWriter.close();
-                fOut.close();
-                makeFileDiscoverable(myFile, this);
                 makeToast("File exported successfully.");
             } catch (Exception e) {
-                Toast.makeText(getBaseContext(), e.getMessage(),
-                        Toast.LENGTH_SHORT).show();
+                Toast.makeText(getBaseContext(), e.getMessage(), Toast.LENGTH_SHORT).show();
             }
-
         }
         db.close();
         shareFile(filename);
         dropTables();
     }
 
-    private void writeSQL(String filename) {
-        list = db.getAllSamples();
-        itemCount = list.size();
-
+    private void writeSQL(final String filename) {
+        list      = db.getAllSamples();
+        itemCount = list.size()       ;
         if (itemCount != 0) {
-            try {
-                // get boxes
-                String boxList = "";
-                final String[] boxes = db.getBoxList();
-                for (int i = 0; i < boxes.length; i++) {
-                    if (i == boxes.length - 1 && boxes[i] != null) {
-                        boxList = boxList + "'" + boxes[i] + "'";
-                    } else if (boxes[i] != null) {
-                        boxList = boxList + "'" + boxes[i] + "'" + ",";
-                    }
-                }
+            try
+            {
+                {
+                    final File myFile = new File(Constants.MAIN_PATH, filename);
+                    myFile.createNewFile();
+                    {
+                        final FileOutputStream fOut = new FileOutputStream(myFile);
+                        {
+                            final OutputStreamWriter myOutWriter = new OutputStreamWriter(fOut);
+                            {
+                                String record;
+                                {
+                                    // get boxes
+                                    String boxList = "";
+                                    {
+                                        final String[] boxes = db.getBoxList();
+                                        final int last = boxes.length - 1;
+                                        for (int i = 0; i < boxes.length; i++) {
+                                            if (i == last && boxes[i] != null) {
+                                                boxList += "'" + boxes[i] + "'";
+                                            } else if (boxes[i] != null) {
+                                                boxList += "'" + boxes[i] + "',";
+                                            }
+                                        }
+                                    }
+                                    record = "DELETE FROM seedinv WHERE seedinv.box_id in (" +
+                                            boxList + ");\n";
+                                }
+                                record += "INSERT INTO seedinv(`box_id`,`seed_id`," +
+                                        "`inventory_date`,`inventory_person`,`weight_gram`)\r\nVALUES";
+                                myOutWriter.append(record);
+                            }
+                            for (int i = 0; i < itemCount; i++) {
+                                String record = "(";
+                                {
+                                    final String[] temp = list.get(i).toString().split(",");
+                                    for (int j = 0; j < temp.length; j++) {
+                                        if (temp[j].length() == 0) {
+                                            temp[j] = "null";
+                                        }
+                                    }
 
-                String record = "DELETE FROM seedinv WHERE seedinv.box_id in ("
-                        + boxList + ");\n";
-                record += "INSERT INTO seedinv(`box_id`,`seed_id`,`inventory_date`,`inventory_person`,`weight_gram`)\r\nVALUES";
-                final File myFile = new File(Constants.MAIN_PATH, filename);
-                myFile.createNewFile();
-                final FileOutputStream fOut = new FileOutputStream(myFile);
-                final OutputStreamWriter myOutWriter = new OutputStreamWriter(fOut);
-                myOutWriter.append(record);
+                                    record += addTicks(temp[0]) + ","; // box
+                                    record += addTicks(temp[1]) + ","; // seed id
+                                    record += addTicks(temp[3]) + ","; // date
+                                    record += addTicks(temp[2]) + ","; // person
+                                    record += addTicks(temp[5])      ; // weight
+                                }
+                                record += ")";
 
-                for (int i = 0; i < itemCount; i++) {
-                    final String[] temp = list.get(i).toString().split(",");
+                                if (i == itemCount - 1) {
+                                    record += ";\r\n";
+                                } else {
+                                    record += ",\r\n";
+                                }
 
-                    for (int j = 0; j < temp.length; j++) {
-                        if (temp[j].length() == 0) {
-                            temp[j] = "null";
+                                myOutWriter.append(record);
+                            }
+                            myOutWriter.close();
                         }
+                        fOut.close();
                     }
-
-                    record = "(";
-                    record += addTicks(temp[0]) + ","; // box
-                    record += addTicks(temp[1]) + ","; // seed id
-                    record += addTicks(temp[3]) + ","; // date
-                    record += addTicks(temp[2]) + ","; // person
-                    record += addTicks(temp[5]); // weight
-                    record += ")";
-
-                    if (i == itemCount - 1) {
-                        record += ";\r\n";
-                    } else {
-                        record += ",\r\n";
-                    }
-
-                    myOutWriter.append(record);
+                    makeFileDiscoverable(myFile, this);
                 }
-                myOutWriter.close();
-                fOut.close();
-                makeFileDiscoverable(myFile, this);
-
                 makeToast(getString(R.string.export_success));
             } catch (Exception e) {
-                Toast.makeText(getBaseContext(), e.getMessage(),
-                        Toast.LENGTH_SHORT).show();
+                Toast.makeText(getBaseContext(), e.getMessage(), Toast.LENGTH_SHORT).show();
             }
         }
         db.close();
@@ -852,20 +824,14 @@ public class MainActivity extends AppCompatActivity {
         dropTables();
     }
 
-    protected void makeFileDiscoverable(final File file, final Context context) {
+    static protected void makeFileDiscoverable(final File file, final Context context) {
         MediaScannerConnection.scanFile(context, new String[]{file.getPath()}, null, null);
         context.sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE,
-                Uri.fromFile(file)));
+            Uri.fromFile(file)));
     }
 
-    private String addTicks(String entry) {
-        String newEntry;
-        if (entry.contains(getString(R.string.not_connected))) {
-            newEntry = getString(R.string.not_connected);
-        } else {
-            newEntry = "'" + entry + "'";
-        }
-        return newEntry;
+    static private String addTicks(final String entry) {
+        return entry.contains("null") ? "null" : "'" + entry + "'";
     }
 
     private void dropTables() {
@@ -876,6 +842,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void shareFile(String filePath) {
         filePath = Constants.MAIN_PATH.toString() + filePath;
+
         final Intent intent = new Intent();
         intent.setAction(android.content.Intent.ACTION_SEND);
         intent.setType("text/plain");
@@ -884,9 +851,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void setupDrawer() {
-        mDrawerToggle = new ActionBarDrawerToggle(this, mDrawerLayout,
-                R.string.drawer_open, R.string.drawer_close) {
-
+        mDrawerToggle = new ActionBarDrawerToggle(this,
+        mDrawerLayout, R.string.drawer_open, R.string.drawer_close) {
             @Override
             public void onDrawerOpened(View drawerView) {
                 final TextView person = (TextView) findViewById(R.id.nameLabel);
@@ -895,8 +861,7 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onDrawerClosed(View view) {
-            }
-        };
+            }};
 
         mDrawerToggle.setDrawerIndicatorEnabled(true);
         mDrawerLayout.setDrawerListener(mDrawerToggle);
@@ -920,7 +885,6 @@ public class MainActivity extends AppCompatActivity {
                 aboutDialog();
                 break;
         }
-
         mDrawerLayout.closeDrawers();
     }
 
@@ -931,45 +895,44 @@ public class MainActivity extends AppCompatActivity {
         final AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
         builder.setTitle(getResources().getString(R.string.updatemsg));
         builder.setView(changeContainer)
-                .setCancelable(true)
-                .setPositiveButton(getResources().getString(R.string.ok),
-                        new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int id) {
-                                dialog.dismiss();
-                            }
-                        });
-        AlertDialog alert = builder.create();
-        alert.show();
+               .setCancelable(true)
+               .setPositiveButton(getResources().getString(R.string.ok),
+                    new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int id) {
+                            dialog.dismiss();
+                        }});
+        builder.create().show();
     }
 
     protected void parseLog(final int resId) {
         try {
-            final InputStream is = getResources().openRawResource(resId);
-            final InputStreamReader isr = new InputStreamReader(is);
-            final BufferedReader br = new BufferedReader(isr, 8192);
+            final InputStream       is  = getResources().openRawResource(resId);
+            final InputStreamReader isr = new InputStreamReader(is)            ;
+            final BufferedReader    br  = new BufferedReader(isr, 8192)        ;
 
-            final LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT);
+            final LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT);
             lp.setMargins(20, 5, 20, 0);
 
             String curVersionName = null;
             String line;
 
             while ((line = br.readLine()) != null) {
-                final TextView header = new TextView(this);
+                final TextView header  = new TextView(this);
                 final TextView content = new TextView(this);
-                final TextView spacer = new TextView(this);
-                final View ruler = new View(this);
+                final TextView spacer  = new TextView(this);
+                final View     ruler   = new View    (this);
 
-                header.setLayoutParams(lp);
+                header.setLayoutParams (lp);
                 content.setLayoutParams(lp);
-                spacer.setLayoutParams(lp);
-                ruler.setLayoutParams(lp);
+                spacer.setLayoutParams (lp);
+                ruler.setLayoutParams  (lp);
 
                 spacer.setTextSize(5);
 
                 ruler.setBackgroundColor(getResources().getColor(R.color.main_colorAccent));
-                header.setTextAppearance(getApplicationContext(), R.style.ChangelogTitles);
+                header.setTextAppearance (getApplicationContext(), R.style.ChangelogTitles );
                 content.setTextAppearance(getApplicationContext(), R.style.ChangelogContent);
 
                 if (line.length() == 0) {
@@ -977,8 +940,10 @@ public class MainActivity extends AppCompatActivity {
                     spacer.setText("\n");
                     parent.addView(spacer);
                 } else if (curVersionName == null) {
-                    final String[] lineSplit = line.split("/");
-                    curVersionName = lineSplit[1];
+                    {
+                        final String[] lineSplit = line.split("/");
+                        curVersionName = lineSplit[1];
+                    }
                     header.setText(curVersionName);
                     parent.addView(header);
                     parent.addView(ruler);
@@ -987,12 +952,10 @@ public class MainActivity extends AppCompatActivity {
                     parent.addView(content);
                 }
             }
-
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
     }
-
 
     @Override
     protected void onPostCreate(Bundle savedInstanceState) {
@@ -1006,15 +969,12 @@ public class MainActivity extends AppCompatActivity {
             final HashMap<String, UsbDevice> deviceList = usbManager.getDeviceList();
             for (UsbDevice usbDevice : deviceList.values()) {
                 mDevice = usbDevice;
-                Log.v(TAG,
-                        String.format(
-                                "name=%s deviceId=%d productId=%d vendorId=%d deviceClass=%d subClass=%d protocol=%d interfaceCount=%d",
-                                mDevice.getDeviceName(), mDevice.getDeviceId(),
-                                mDevice.getProductId(), mDevice.getVendorId(),
-                                mDevice.getDeviceClass(),
-                                mDevice.getDeviceSubclass(),
-                                mDevice.getDeviceProtocol(),
-                                mDevice.getInterfaceCount()));
+                Log.v(TAG, String.format("name=%s deviceId=%d productId=%d " +
+                    "vendorId=%d deviceClass=%d subClass=%d protocol=%d interfaceCount=%d",
+                    mDevice.getDeviceName()    , mDevice.getDeviceId()      ,
+                    mDevice.getProductId()     , mDevice.getVendorId()      ,
+                    mDevice.getDeviceClass()   , mDevice.getDeviceSubclass(),
+                    mDevice.getDeviceProtocol(), mDevice.getInterfaceCount()));
                 break;
             }
         }
@@ -1024,31 +984,24 @@ public class MainActivity extends AppCompatActivity {
             new ScaleListener().execute();
         } else {
             new AlertDialog.Builder(MainActivity.this)
-                    .setTitle(getString(R.string.no_scale))
-                    .setMessage(
-                            getString(R.string.connect_scale))
-                    .setCancelable(false)
-                    .setPositiveButton(getString(R.string.try_again),
-                            new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialog,
-                                                    int which) {
-                                    findScale();
-                                }
-
-                            })
-                    .setNegativeButton(getString(R.string.ignore),
-                            new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialog,
-                                                    int which) {
-                                    ep.setIgnoreScaleToTrue();
-                                    dialog.cancel();
-                                }
-                            }).show();
+                .setTitle(getString(R.string.no_scale))
+                .setMessage(getString(R.string.connect_scale))
+                .setCancelable(false)
+                .setPositiveButton(getString(R.string.try_again),
+                    new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            findScale();
+                        }})
+                .setNegativeButton(getString(R.string.ignore),
+                    new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            ep.setIgnoreScaleToTrue();
+                            dialog.cancel();
+                        }}).show();
         }
     }
-
 
     private class ScaleListener extends AsyncTask<Void, Double, Void> {
         private double mLastWeight = 0;
@@ -1062,22 +1015,17 @@ public class MainActivity extends AppCompatActivity {
                 return null;
             }
             final UsbInterface intf = mDevice.getInterface(0);
-            Log.v(TAG,
-                    String.format("endpoint count = %d",
-                            intf.getEndpointCount()));
+            Log.v(TAG, String.format("endpoint count = %d", intf.getEndpointCount()));
             final UsbEndpoint endpoint = intf.getEndpoint(0);
-            Log.v(TAG, String.format(
-                    "endpoint direction = %d out = %d in = %d",
-                    endpoint.getDirection(), UsbConstants.USB_DIR_OUT,
-                    UsbConstants.USB_DIR_IN));
+            Log.v(TAG, String.format("endpoint direction = %d out = %d in = %d",
+                endpoint.getDirection(), UsbConstants.USB_DIR_OUT, UsbConstants.USB_DIR_IN));
             final UsbManager usbManager = (UsbManager) getSystemService(Context.USB_SERVICE);
             final UsbDeviceConnection connection = usbManager.openDevice(mDevice);
             connection.claimInterface(intf, true);
             final byte[] data = new byte[128];
             while (true) {
-
-                final int length = connection.bulkTransfer(endpoint, data,
-                        data.length, /* timeout => */ 2000);
+                final int length = connection.bulkTransfer(endpoint,
+                    data, data.length, /* timeout => */ 2000);
 
                 if (length != 6) {
                     Log.e(TAG, String.format("invalid length: %d", length));
@@ -1086,7 +1034,7 @@ public class MainActivity extends AppCompatActivity {
 
                 final byte report = data[0];
                 final byte status = data[1];
-                //byte exp = data[3];
+                //    byte exp    = data[3];
                 final short weightLSB = (short) (data[4] & 0xff);
                 final short weightMSB = (short) (data[5] & 0xff);
 
@@ -1099,15 +1047,12 @@ public class MainActivity extends AppCompatActivity {
                     return null;
                 }
 
-                double mWeightGrams;
-
+                double mWeightGrams = weightLSB + weightMSB * 256.0;
                 if (mDevice.getProductId() == 519) {
-                    mWeightGrams = (weightLSB + weightMSB * 256.0) / 10.0;
-                } else {
-                    mWeightGrams = (weightLSB + weightMSB * 256.0);
+                    mWeightGrams /= 10.0;
                 }
                 final double mZeroGrams = 0;
-                final double zWeight = (mWeightGrams - mZeroGrams);
+                final double zWeight = mWeightGrams - mZeroGrams;
 
                 switch (status) {
                     case 1:
@@ -1152,9 +1097,9 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         protected void onProgressUpdate(Double... weights) {
-            final Double weight = weights[0];
             Log.i(TAG, "update progress");
-            final String weightText = String.format("%.1f", weight);
+
+            final String weightText = String.format("%.1f", weights[0]);
             Log.i(TAG, weightText);
             mWeightEditText.setText(weightText);
             mWeightEditText.invalidate();
@@ -1162,15 +1107,15 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         protected void onPostExecute(Void result) {
-            Toast.makeText(getApplicationContext(), getString(R.string.scale_disconnect),
-                    Toast.LENGTH_LONG).show();
+            Toast.makeText(getApplicationContext(),
+                getString(R.string.scale_disconnect), Toast.LENGTH_LONG).show();
             mDevice = null;
             mWeightEditText.setText(getString(R.string.not_connected));
         }
     }
 
     @Override
-    public void onConfigurationChanged(final Configuration newConfig) {
+    public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
         mDrawerToggle.onConfigurationChanged(newConfig);
     }
