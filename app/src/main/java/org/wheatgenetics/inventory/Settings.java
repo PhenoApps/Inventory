@@ -80,7 +80,7 @@ public class Settings extends java.lang.Object
     //endregion
 
 
-    //region Name Method
+    //region Name Methods
     public void setName(final java.lang.String firstName, final java.lang.String lastName)
     {
         this.setString(org.wheatgenetics.inventory.Settings.FIRST_NAME,
@@ -95,6 +95,14 @@ public class Settings extends java.lang.Object
         assert editor != null;
         editor.apply();
     }
+
+    public java.lang.String getName() { return this.getFirstName() + " " + this.getLastName(); }
+
+    /**
+     * A "safe" name is a full name (first name and last name) where the first name and last name
+     * are separated with an underscore ("_") instead of a space (" ").
+     */
+    public java.lang.String getSafeName() { return this.getFirstName() + "_" + this.getLastName(); }
     //endregion
 
 

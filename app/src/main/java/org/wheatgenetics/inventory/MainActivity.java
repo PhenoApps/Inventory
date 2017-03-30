@@ -292,12 +292,12 @@ public class MainActivity extends AppCompatActivity {
         final String weight = mWeightEditText.getText().toString();
 
         db.addSample(new InventoryRecord(
-            /* boxID    => */ boxNumTextView.getText().toString()       ,
-            /* envID    => */ inputText.getText().toString()            ,
-            /* personID => */ ep.getFirstName() + "_" + ep.getLastName(),
-            /* date     => */ getDate()                                 ,
-            /* position => */ currentItemNum                            ,
-            /* wt       => */ weight                                    )); // add to database
+            /* boxID    => */ boxNumTextView.getText().toString(),
+            /* envID    => */ inputText.getText().toString()     ,
+            /* personID => */ ep.getSafeName()                   ,
+            /* date     => */ getDate()                          ,
+            /* position => */ currentItemNum                     ,
+            /* wt       => */ weight                             )); // add to database
 
         createNewTableEntry(boxNumTextView.getText().toString(),
             currentItemNum, inputText.getText().toString(), weight);
@@ -313,14 +313,11 @@ public class MainActivity extends AppCompatActivity {
     /**
      * Adds a new entry to the end of the TableView
      *
-     * @param bn - Box ID
-     * @param in - Position
-     * @param en - Sample ID
      * @param wt - Sample weight
      */
-    private void createNewTableEntry(final String bn,
-    final int in, final String en, final String wt) {
-        final String tag = bn + "," + en + "," + in;
+    private void createNewTableEntry(final String boxID,
+    final int position, final String sampleID, final String sampleWeight) {
+        final String tag = boxID + "," + sampleID + "," + position;
         inputText.setText("");
 
 		
@@ -334,7 +331,7 @@ public class MainActivity extends AppCompatActivity {
         itemNumTV.setGravity(Gravity.CENTER | Gravity.BOTTOM);
         itemNumTV.setTextColor(Color.BLACK);
         itemNumTV.setTextSize(20.0f);
-        itemNumTV.setText("" + in);
+        itemNumTV.setText("" + position);
         itemNumTV.setLayoutParams(new TableRow.LayoutParams(0,
                 LayoutParams.WRAP_CONTENT, 0.16f));
 
@@ -343,7 +340,7 @@ public class MainActivity extends AppCompatActivity {
         boxNumTV.setGravity(Gravity.CENTER | Gravity.BOTTOM);
         boxNumTV.setTextColor(Color.BLACK);
         boxNumTV.setTextSize(20.0f);
-        boxNumTV.setText(bn);
+        boxNumTV.setText(boxID);
         boxNumTV.setLayoutParams(new TableRow.LayoutParams(0,
                 LayoutParams.WRAP_CONTENT, 0.16f));
 
@@ -352,7 +349,7 @@ public class MainActivity extends AppCompatActivity {
         envIDTV.setGravity(Gravity.CENTER | Gravity.BOTTOM);
         envIDTV.setTextColor(Color.BLACK);
         envIDTV.setTextSize(20.0f);
-        envIDTV.setText(en);
+        envIDTV.setText(sampleID);
         envIDTV.setTag(tag);
         envIDTV.setLayoutParams(new TableRow.LayoutParams(0,
                 LayoutParams.WRAP_CONTENT, 0.5f));
@@ -373,7 +370,7 @@ public class MainActivity extends AppCompatActivity {
         weightTV.setGravity(Gravity.CENTER | Gravity.BOTTOM);
         weightTV.setTextColor(Color.BLACK);
         weightTV.setTextSize(20.0f);
-        weightTV.setText(wt);
+        weightTV.setText(sampleWeight);
         weightTV.setLayoutParams(new TableRow.LayoutParams(0,
                 LayoutParams.WRAP_CONTENT, 0.16f));
 
@@ -560,7 +557,7 @@ public class MainActivity extends AppCompatActivity {
                 .findViewById(R.id.lastName);
 
         fName.setText(ep.getFirstName());
-        lName.setText(ep.getLastName());
+        lName.setText(ep.getLastName() );
 
         alert.setCancelable(false);
         alert.setTitle(getResources().getString(R.string.set_person));
@@ -893,7 +890,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onDrawerOpened(View drawerView) {
                 final TextView person = (TextView) findViewById(R.id.nameLabel);
-                person.setText(ep.getFirstName() + " " + ep.getLastName());
+                person.setText(ep.getName());
             }
 
             @Override
