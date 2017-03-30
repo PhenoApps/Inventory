@@ -120,8 +120,8 @@ public class MainActivity extends AppCompatActivity {
             nvDrawer.setNavigationItemSelectedListener(
                 new NavigationView.OnNavigationItemSelectedListener() {
                     @Override
-                    public boolean onNavigationItemSelected(MenuItem menuItem) {
-                        selectDrawerItem(menuItem);
+                    public boolean onNavigationItemSelected(MenuItem item) {
+                        selectDrawerItem(item);
                         return true;
                     }
                 });
@@ -424,7 +424,7 @@ public class MainActivity extends AppCompatActivity {
         alert.setView(input);
         alert.setPositiveButton(getString(R.string.ok), new DialogInterface.OnClickListener() {
             @Override
-            public void onClick(DialogInterface dialog, int whichButton) {
+            public void onClick(DialogInterface dialog, int which) {
                 {
                     final String value = input.getText().toString().trim();
 
@@ -439,7 +439,7 @@ public class MainActivity extends AppCompatActivity {
 
         alert.setNegativeButton(getString(R.string.cancel), new DialogInterface.OnClickListener() {
             @Override
-            public void onClick(DialogInterface dialog, int whichButton) {
+            public void onClick(DialogInterface dialog, int which) {
                 dialog.cancel();
 
                 final InputMethodManager imm =
@@ -513,7 +513,7 @@ public class MainActivity extends AppCompatActivity {
         }
         alert.setNegativeButton(getResources().getString(R.string.ok), new DialogInterface.OnClickListener() {
             @Override
-            public void onClick(DialogInterface dialog, int whichButton) {
+            public void onClick(DialogInterface dialog, int which) {
                 dialog.dismiss();
             }});
         alert.show();
@@ -541,7 +541,7 @@ public class MainActivity extends AppCompatActivity {
             alert.setView(personView);
             alert.setPositiveButton(getResources().getString(R.string.ok), new DialogInterface.OnClickListener() {
                 @Override
-                public void onClick(DialogInterface dialog, int whichButton) {
+                public void onClick(DialogInterface dialog, int which) {
                     firstName = fName.getText().toString().trim();
                     lastName  = lName.getText().toString().trim();
 
@@ -572,13 +572,13 @@ public class MainActivity extends AppCompatActivity {
                     "http://wheatgenetics.org/apps"                                      };
                 myList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                     @Override
-                    public void onItemClick(AdapterView<?> av, View arg1, int which, long arg3) {
-                        switch (which) {
+                    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                        switch (position) {
                             case 0:
                             case 1:
                             case 2:
                                 startActivity(new Intent(
-                                    Intent.ACTION_VIEW, Uri.parse(links[which])));
+                                    Intent.ACTION_VIEW, Uri.parse(links[position])));
                                 break;
                         }
                     }});
@@ -603,7 +603,7 @@ public class MainActivity extends AppCompatActivity {
         }
         otherAppsAlert.setNegativeButton(getResources().getString(R.string.ok), new DialogInterface.OnClickListener() {
             @Override
-            public void onClick(DialogInterface dialog, int whichButton) {
+            public void onClick(DialogInterface dialog, int which) {
                 dialog.dismiss();
             }});
         otherAppsAlert.show();
@@ -649,14 +649,14 @@ public class MainActivity extends AppCompatActivity {
             .setTitle(getString(R.string.clear_data))
             .setPositiveButton(getString(R.string.yes), new DialogInterface.OnClickListener() {
                 @Override
-                public void onClick(DialogInterface dialog, int id) {
+                public void onClick(DialogInterface dialog, int which) {
                     boxNumTextView.setText("");
                     makeToast(getString(R.string.data_deleted));
                     dropTables();
                 }})
             .setNegativeButton(getString(R.string.no), new DialogInterface.OnClickListener() {
                 @Override
-                public void onClick(DialogInterface dialog, int id) {
+                public void onClick(DialogInterface dialog, int which) {
                     dialog.cancel();
                 }});
         builder.create().show();
@@ -860,7 +860,7 @@ public class MainActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onDrawerClosed(View view) {
+            public void onDrawerClosed(View drawerView) {
             }};
 
         mDrawerToggle.setDrawerIndicatorEnabled(true);
@@ -899,7 +899,7 @@ public class MainActivity extends AppCompatActivity {
                .setPositiveButton(getResources().getString(R.string.ok),
                     new DialogInterface.OnClickListener() {
                         @Override
-                        public void onClick(DialogInterface dialog, int id) {
+                        public void onClick(DialogInterface dialog, int which) {
                             dialog.dismiss();
                         }});
         builder.create().show();
@@ -1007,7 +1007,7 @@ public class MainActivity extends AppCompatActivity {
         private double mLastWeight = 0;
 
         @Override
-        protected Void doInBackground(Void... arg0) {
+        protected Void doInBackground(Void... params) {
             Log.v(TAG, "start transfer");
 
             if (mDevice == null) {
@@ -1096,10 +1096,10 @@ public class MainActivity extends AppCompatActivity {
         }
 
         @Override
-        protected void onProgressUpdate(Double... weights) {
+        protected void onProgressUpdate(Double... values) {
             Log.i(TAG, "update progress");
 
-            final String weightText = String.format("%.1f", weights[0]);
+            final String weightText = String.format("%.1f", values[0]);
             Log.i(TAG, weightText);
             mWeightEditText.setText(weightText);
             mWeightEditText.invalidate();

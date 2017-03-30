@@ -1,7 +1,6 @@
 package org.wheatgenetics.inventory;
 
 public class InventoryRecord extends java.lang.Object {
-
     //region Fields
     private int id;
     private String boxID = null;
