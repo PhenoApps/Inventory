@@ -260,7 +260,7 @@ public class MainActivity extends AppCompatActivity {
     private void parseDbToTable() {
         InventoryTable.removeAllViews();
 
-        final List<InventoryRecord> inventoryRecords = db.getAllSamples();
+        final List<InventoryRecord> inventoryRecords = db.getInventoryRecords();
         for (InventoryRecord inventoryRecord : inventoryRecords) {
             final String[] temp     = inventoryRecord.toString().split(",");
             final int      position = Integer.parseInt(temp[4]);
@@ -285,7 +285,7 @@ public class MainActivity extends AppCompatActivity {
         final String envID  = inputText.getText().toString()      ;
         final String weight = mWeightEditText.getText().toString();
 
-        db.addSample(new InventoryRecord(
+        db.addInventoryRecord(new InventoryRecord(
             /* boxID    => */ boxID           ,
             /* envID    => */ envID           ,
             /* personID => */ ep.getSafeName(),
@@ -380,7 +380,7 @@ public class MainActivity extends AppCompatActivity {
                .setPositiveButton(getString(R.string.yes), new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        db.deleteSample(new InventoryRecord(box, env, num));
+                        db.deleteInventoryRecord(new InventoryRecord(box, env, num));
                         parseDbToTable();
                     }})
                .setNegativeButton(getString(R.string.no), new DialogInterface.OnClickListener() {
@@ -697,7 +697,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void writeCSV(final String filename) {
-        final List<InventoryRecord> inventoryRecords = db.getAllSamples();
+        final List<InventoryRecord> inventoryRecords = db.getInventoryRecords();
         if (inventoryRecords.size() > 0) {
             try
             {
@@ -742,7 +742,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void writeSQL(final String filename) {
-        final List<InventoryRecord> inventoryRecords = db.getAllSamples()     ;
+        final List<InventoryRecord> inventoryRecords = db.getInventoryRecords()     ;
         final int                   itemCount        = inventoryRecords.size();
         if (itemCount > 0) {
             try
@@ -760,7 +760,7 @@ public class MainActivity extends AppCompatActivity {
                                     // get boxes
                                     String boxList = "";
                                     {
-                                        final String[] boxes = db.getBoxList() ;
+                                        final String[] boxes = db.getBoxes() ;
                                         final int      last  = boxes.length - 1;
                                         for (int i = 0; i < boxes.length; i++) {
                                             if (i == last && boxes[i] != null) {
@@ -831,7 +831,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void dropTables() {
-        db.deleteAllSamples();
+        db.deleteInventoryRecords();
         InventoryTable.removeAllViews();
         currentItemNum = 1;
     }

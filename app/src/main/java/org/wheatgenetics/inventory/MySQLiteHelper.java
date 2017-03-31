@@ -20,54 +20,62 @@ public class MySQLiteHelper extends SQLiteOpenHelper {
 
 
     //region Table Constants
-    private static final String TABLE_SAMPLES = "samples";
+    private static final String TABLE_NAME = "samples";
 
-    private static final String KEY_ID       = "id"      ;
-    private static final String KEY_BOX      = "box"     ;
-    private static final String KEY_ENVID    = "envid"   ;
-    private static final String KEY_PERSON   = "person"  ;
-    private static final String KEY_DATE     = "date"    ;
-    private static final String KEY_POSITION = "position";
-    private static final String KEY_WT       = "wt"      ;
-
-    private static final String[] COLUMNS = {KEY_ID, KEY_BOX,
-        KEY_ENVID, KEY_PERSON, KEY_DATE, KEY_POSITION, KEY_WT};
+    private static final String ID_FIELD_NAME       = "id"      ;
+    private static final String BOX_FIELD_NAME      = "box"     ;
+    private static final String ENVID_FIELD_NAME    = "envid"   ;
+    private static final String PERSON_FIELD_NAME   = "person"  ;
+    private static final String DATE_FIELD_NAME     = "date"    ;
+    private static final String POSITION_FIELD_NAME = "position";
+    private static final String WT_FIELD_NAME       = "wt"      ;
     //endregion
     //endregion
 
 
     public MySQLiteHelper(final Context context) {
-        super(context, DATABASE_NAME, null, DATABASE_VERSION);
+        super(context, org.wheatgenetics.inventory.MySQLiteHelper.DATABASE_NAME,
+            null, org.wheatgenetics.inventory.MySQLiteHelper.DATABASE_VERSION);
     }
 
 
     //region Overridden Methods
     @Override
     public void onCreate(SQLiteDatabase db) {
-        db.execSQL("CREATE TABLE " + TABLE_SAMPLES + " ( " +
-                KEY_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " + KEY_BOX + " TEXT, "
-                + KEY_ENVID + " TEXT, " + KEY_PERSON + " TEXT, " + KEY_DATE + " TEXT, "
-                + KEY_POSITION + " TEXT, " + KEY_WT + " TEXT" + ")");
+        db.execSQL("CREATE TABLE " + this.TABLE_NAME + " ( "                  +
+            this.ID_FIELD_NAME       + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
+            this.BOX_FIELD_NAME      + " TEXT, "                              +
+            this.ENVID_FIELD_NAME    + " TEXT, "                              +
+            this.PERSON_FIELD_NAME   + " TEXT, "                              +
+            this.DATE_FIELD_NAME     + " TEXT, "                              +
+            this.POSITION_FIELD_NAME + " TEXT, "                              +
+            this.WT_FIELD_NAME       + " TEXT)");
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        db.execSQL("DROP TABLE IF EXISTS " + TABLE_SAMPLES);
+        db.execSQL("DROP TABLE IF EXISTS " + this.TABLE_NAME);
         this.onCreate(db);
     }
     //endregion
 
 
     //region Protected Methods
-    static protected ContentValues makeContentValues(final InventoryRecord sample) {
+    static protected ContentValues makeContentValues(final InventoryRecord inventoryRecord) {
         final ContentValues contentValues = new ContentValues();
 
-        contentValues.put(KEY_BOX     , sample.getBox()     );
-        contentValues.put(KEY_ENVID   , sample.getEnvID()   );
-        contentValues.put(KEY_PERSON  , sample.getPersonID());
-        contentValues.put(KEY_DATE    , sample.getDate()    );
-        contentValues.put(KEY_POSITION, sample.getPosition());
-        contentValues.put(KEY_WT      , sample.getWt()      );
+        contentValues.put(org.wheatgenetics.inventory.MySQLiteHelper.BOX_FIELD_NAME,
+            inventoryRecord.getBox());
+        contentValues.put(org.wheatgenetics.inventory.MySQLiteHelper.ENVID_FIELD_NAME,
+            inventoryRecord.getEnvID());
+        contentValues.put(org.wheatgenetics.inventory.MySQLiteHelper.PERSON_FIELD_NAME,
+            inventoryRecord.getPersonID());
+        contentValues.put(org.wheatgenetics.inventory.MySQLiteHelper.DATE_FIELD_NAME,
+            inventoryRecord.getDate());
+        contentValues.put(org.wheatgenetics.inventory.MySQLiteHelper.POSITION_FIELD_NAME,
+            inventoryRecord.getPosition());
+        contentValues.put(org.wheatgenetics.inventory.MySQLiteHelper.WT_FIELD_NAME,
+            inventoryRecord.getWt());
 
         return contentValues;
     }
@@ -79,20 +87,21 @@ public class MySQLiteHelper extends SQLiteOpenHelper {
     }
 
     protected int delete(final String whereClause) {
-        return this.getWritableDatabase().delete(TABLE_SAMPLES, whereClause, null);
+        return this.getWritableDatabase().delete(this.TABLE_NAME, whereClause, null);
     }
 
-    protected int updateSample(final InventoryRecord sample) {
+    protected int updateInventoryRecord(final InventoryRecord inventoryRecord) {
         int i;
         {
             final SQLiteDatabase db = this.getWritableDatabase();
             {
-                final int           id     = sample.getId()     ;
-                final ContentValues values = makeContentValues(sample);
+                final int           id            = inventoryRecord.getId();
+                final ContentValues contentValues =
+                    org.wheatgenetics.inventory.MySQLiteHelper.makeContentValues(inventoryRecord);
 
-                values.put(KEY_ID, id);
-                i = db.update(TABLE_SAMPLES, values, KEY_ID + " = ?",
-                    MySQLiteHelper.makeStringArray(id));
+                contentValues.put(this.ID_FIELD_NAME, id);
+                i = db.update(this.TABLE_NAME, contentValues, this.ID_FIELD_NAME + " = ?",
+                    org.wheatgenetics.inventory.MySQLiteHelper.makeStringArray(id));
             }
             db.close();
         }
@@ -103,83 +112,103 @@ public class MySQLiteHelper extends SQLiteOpenHelper {
 
     //region Public Methods
     //region Single-Record Public Methods
-    public void addSample(final InventoryRecord sample) {
-        Log.d("addSample() ", sample.toString());
+    public void addInventoryRecord(final InventoryRecord inventoryRecord) {
+        Log.d("addInventoryRecord() ", inventoryRecord.toString());
 
         final SQLiteDatabase db = this.getWritableDatabase();
 
-        db.insert(TABLE_SAMPLES, null, MySQLiteHelper.makeContentValues(sample));
+        db.insert(this.TABLE_NAME, null,
+            org.wheatgenetics.inventory.MySQLiteHelper.makeContentValues(inventoryRecord));
         db.close();
     }
 
-    public InventoryRecord getSample(final int id) {
-        final InventoryRecord sample = new InventoryRecord();
+    public InventoryRecord getInventoryRecord(final int id) {
+        final InventoryRecord inventoryRecord = new InventoryRecord();
         {
-            final Cursor cursor = this.getReadableDatabase().query(TABLE_SAMPLES,
-                COLUMNS,
-                " " + KEY_ID + " = ?",
-                MySQLiteHelper.makeStringArray(id),
-                null,
-                null,
-                null,
-                null);
+            final String[] FIELD_NAMES = {
+                org.wheatgenetics.inventory.MySQLiteHelper.ID_FIELD_NAME      ,
+                org.wheatgenetics.inventory.MySQLiteHelper.BOX_FIELD_NAME     ,
+                org.wheatgenetics.inventory.MySQLiteHelper.ENVID_FIELD_NAME   ,
+                org.wheatgenetics.inventory.MySQLiteHelper.PERSON_FIELD_NAME  ,
+                org.wheatgenetics.inventory.MySQLiteHelper.DATE_FIELD_NAME    ,
+                org.wheatgenetics.inventory.MySQLiteHelper.POSITION_FIELD_NAME,
+                org.wheatgenetics.inventory.MySQLiteHelper.WT_FIELD_NAME      };
+            final Cursor cursor = this.getReadableDatabase().query(
+                /* table         => */ this.TABLE_NAME                  ,
+                /* columns       => */ FIELD_NAMES                      ,
+                /* selection     => */ " " + this.ID_FIELD_NAME + " = ?",
+                /* selectionArgs => */
+                    org.wheatgenetics.inventory.MySQLiteHelper.makeStringArray(id),
+                /* groupBy => */ null,
+                /* having  => */ null,
+                /* orderBy => */ null,
+                /* limit   => */ null);
 
             if (cursor != null) {
                 cursor.moveToFirst();
-                sample.set(
+                inventoryRecord.set(
                     /* id       => */ cursor.getString(0),
                     /* box      => */ cursor.getString(1),
-                    /* envID    => */ cursor.getString(2),
-                    /* personID => */ cursor.getString(3),
+                    /* envid    => */ cursor.getString(2),
+                    /* person   => */ cursor.getString(3),
                     /* date     => */ cursor.getString(4),
                     /* position => */ cursor.getString(5),
                     /* wt       => */ cursor.getString(6));
                 cursor.close();
             }
         }
-        Log.d("getSample(" + id + ")", sample.toString());
-        return sample;
+        Log.d("getInventoryRecord(" + id + ")", inventoryRecord.toString());
+        return inventoryRecord;
     }
 
-    public Boolean deleteSample(final InventoryRecord sample) {
-        Log.d("deleteSample()", sample.toString());
-        return this.delete(KEY_POSITION + "='" + sample.getPositionAsString() + "'") > 0;
+    public Boolean deleteInventoryRecord(final InventoryRecord inventoryRecord) {
+        Log.d("deleteInventoryRecord()", inventoryRecord.toString());
+        return this.delete(
+            this.POSITION_FIELD_NAME + "='" + inventoryRecord.getPositionAsString() + "'") > 0;
     }
     //endregion
 
 
     //region Multiple-Record Public Methods
-    public List<InventoryRecord> getAllSamples() {
-        final List<InventoryRecord> samples = new LinkedList<>();
+    public List<InventoryRecord> getInventoryRecords() {
+        final List<InventoryRecord> inventoryRecords = new LinkedList<>();
         {
             final Cursor cursor = this.getWritableDatabase().rawQuery(
-                "SELECT  * FROM " + TABLE_SAMPLES, null);
+                "SELECT * FROM " + this.TABLE_NAME, null);
 
             if (cursor.moveToFirst()) {
                 do {
-                    final InventoryRecord sample = new InventoryRecord(
+                    final InventoryRecord inventoryRecord = new InventoryRecord(
                         /* id       => */ cursor.getString(0),
                         /* box      => */ cursor.getString(1),
-                        /* envID    => */ cursor.getString(2),
-                        /* personID => */ cursor.getString(3),
+                        /* envid    => */ cursor.getString(2),
+                        /* person   => */ cursor.getString(3),
                         /* date     => */ cursor.getString(4),
                         /* position => */ cursor.getString(5),
                         /* wt       => */ cursor.getString(6));
-                    samples.add(sample);
+                    inventoryRecords.add(inventoryRecord);
                 } while (cursor.moveToNext());
             }
             cursor.close();
         }
-        Log.d("getAllSamples()", samples.toString());
-        return samples;
+        Log.d("getInventoryRecords()", inventoryRecords.toString());
+        return inventoryRecords;
     }
 
-    public String[] getBoxList() {
+    public String[] getBoxes() {
         final ArrayList<String> boxList = new ArrayList<>();
               String[]          boxArray;
         {
-            final Cursor cursor = this.getWritableDatabase().query(true, TABLE_SAMPLES,
-                MySQLiteHelper.makeStringArray(KEY_BOX), null, null, KEY_BOX, null, null, null);
+            final Cursor cursor = this.getWritableDatabase().query(
+                /* distinct      => */ true                                               ,
+                /* table         => */ this.TABLE_NAME                                    ,
+                /* columns       => */ MySQLiteHelper.makeStringArray(this.BOX_FIELD_NAME),
+                /* selection     => */ null                                               ,
+                /* selectionArgs => */ null                                               ,
+                /* groupBy       => */ this.BOX_FIELD_NAME                                ,
+                /* having        => */ null                                               ,
+                /* orderBy       => */ null                                               ,
+                /* limit         => */ null                                               );
 
             boxArray = new String[cursor.getCount()];
             if (cursor.moveToFirst()) {
@@ -192,7 +221,7 @@ public class MySQLiteHelper extends SQLiteOpenHelper {
         return boxList.toArray(boxArray);
     }
 
-    public void deleteAllSamples() { this.delete(null); }
+    public void deleteInventoryRecords() { this.delete(null); }
     //endregion
     //endregion
 }
