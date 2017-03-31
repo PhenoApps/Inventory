@@ -67,9 +67,9 @@ public class MySQLiteHelper extends SQLiteOpenHelper {
         contentValues.put(org.wheatgenetics.inventory.MySQLiteHelper.BOX_FIELD_NAME,
             inventoryRecord.getBox());
         contentValues.put(org.wheatgenetics.inventory.MySQLiteHelper.ENVID_FIELD_NAME,
-            inventoryRecord.getEnvID());
+            inventoryRecord.getEnvId());
         contentValues.put(org.wheatgenetics.inventory.MySQLiteHelper.PERSON_FIELD_NAME,
-            inventoryRecord.getPersonID());
+            inventoryRecord.getPerson());
         contentValues.put(org.wheatgenetics.inventory.MySQLiteHelper.DATE_FIELD_NAME,
             inventoryRecord.getDate());
         contentValues.put(org.wheatgenetics.inventory.MySQLiteHelper.POSITION_FIELD_NAME,
