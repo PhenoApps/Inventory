@@ -43,8 +43,8 @@ public class InventoryRecord extends java.lang.Object {
 
     @Override
     public String toString() {
-        return this.boxID + "," + this.envID + "," + this.personID + "," +
-                this.date + "," + this.position + "," + this.wt;
+        return this.boxID + "," + this.envID + "," + this.personID +
+            "," + this.date + "," + this.position + "," + this.wt;
     }
 
 

@@ -76,10 +76,6 @@ public class MainActivity extends AppCompatActivity {
     private EditText inputText;
     private TableLayout InventoryTable;
     private MySQLiteHelper db;
-    private String firstName = "";
-    private String lastName = "";
-    private List<InventoryRecord> list;
-    private int itemCount;
     private ScrollView sv1;
     private static int currentItemNum = 1;
 
@@ -263,17 +259,14 @@ public class MainActivity extends AppCompatActivity {
 
     private void parseDbToTable() {
         InventoryTable.removeAllViews();
-        list = db.getAllSamples();
-        itemCount = list.size();
-        if (itemCount != 0) {
-            for (int i = 0; i < itemCount; i++) {
-                String[] temp = list.get(i).toString().split(",");
-                Log.e(TAG, temp[0] + " " + Integer.parseInt(temp[4]) + " "
-                        + temp[1] + " " + temp[5]);
-                createNewTableEntry(temp[0], Integer.parseInt(temp[4]),
-                        temp[1], temp[5]);
-                currentItemNum = Integer.parseInt(temp[4]) + 1;
-            }
+
+        final List<InventoryRecord> inventoryRecords = db.getAllSamples();
+        for (InventoryRecord inventoryRecord : inventoryRecords) {
+            final String[] temp     = inventoryRecord.toString().split(",");
+            final int      position = Integer.parseInt(temp[4]);
+            Log.e(TAG, temp[0] + " " + position + " " + temp[1] + " " + temp[5]);
+            createNewTableEntry(temp[0], position, temp[1], temp[5]);
+            currentItemNum = position + 1;
         }
     }
 
@@ -524,10 +517,10 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void setPersonDialog() {
-        final AlertDialog.Builder alert = new AlertDialog.Builder(this);
+        final AlertDialog.Builder builder = new AlertDialog.Builder(this);
 
-        alert.setCancelable(false);
-        alert.setTitle(getResources().getString(R.string.set_person));
+        builder.setCancelable(false);
+        builder.setTitle(getResources().getString(R.string.set_person));
         {
             final View personView =
                 this.getLayoutInflater().inflate(R.layout.person, new LinearLayout(this), false);
@@ -538,12 +531,12 @@ public class MainActivity extends AppCompatActivity {
             fName.setText(ep.getFirstName());
             lName.setText(ep.getLastName() );
 
-            alert.setView(personView);
-            alert.setPositiveButton(getResources().getString(R.string.ok), new DialogInterface.OnClickListener() {
+            builder.setView(personView);
+            builder.setPositiveButton(getResources().getString(R.string.ok), new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
-                    firstName = fName.getText().toString().trim();
-                    lastName  = lName.getText().toString().trim();
+                    final String firstName = fName.getText().toString().trim();
+                    final String lastName  = lName.getText().toString().trim();
 
                     if (firstName.length() == 0 | lastName.length() == 0) {
                         makeToast(getResources().getString(R.string.no_blank));
@@ -555,7 +548,7 @@ public class MainActivity extends AppCompatActivity {
                     ep.setName(firstName, lastName);
                 }});
         }
-        alert.show();
+        builder.show();
     }
 
     private void showOtherAppsDialog() {
@@ -572,7 +565,8 @@ public class MainActivity extends AppCompatActivity {
                     "http://wheatgenetics.org/apps"                                      };
                 myList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                     @Override
-                    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                    public void onItemClick(AdapterView<?> parent,
+                    View view, int position, long id) {
                         switch (position) {
                             case 0:
                             case 1:
@@ -702,9 +696,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void writeCSV(final String filename) {
-        list      = db.getAllSamples();
-        itemCount = list.size()       ;
-        if (itemCount != 0) {
+        final List<InventoryRecord> inventoryRecords = db.getAllSamples();
+        if (inventoryRecords.size() > 0) {
             try
             {
                 {
@@ -715,12 +708,13 @@ public class MainActivity extends AppCompatActivity {
                         {
                             final OutputStreamWriter myOutWriter = new OutputStreamWriter(fOut);
 
-                            String record = "box_id,seed_id,inventory_date,inventory_person,weight_gram\r\n";
+                            String record =
+                                "box_id,seed_id,inventory_date,inventory_person,weight_gram\r\n";
                             myOutWriter.append(record);
 
-                            for (int i = 0; i < itemCount; i++) {
+                            for (InventoryRecord inventoryRecord : inventoryRecords) {
                                 {
-                                    final String[] temp = list.get(i).toString().split(",");
+                                    final String[] temp = inventoryRecord.toString().split(",");
 
                                     record =  temp[0] + ","   ; // box
                                     record += temp[1] + ","   ; // seed id
@@ -747,9 +741,9 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void writeSQL(final String filename) {
-        list      = db.getAllSamples();
-        itemCount = list.size()       ;
-        if (itemCount != 0) {
+        final List<InventoryRecord> inventoryRecords = db.getAllSamples()     ;
+        final int                   itemCount        = inventoryRecords.size();
+        if (itemCount > 0) {
             try
             {
                 {
@@ -765,8 +759,8 @@ public class MainActivity extends AppCompatActivity {
                                     // get boxes
                                     String boxList = "";
                                     {
-                                        final String[] boxes = db.getBoxList();
-                                        final int last = boxes.length - 1;
+                                        final String[] boxes = db.getBoxList() ;
+                                        final int      last  = boxes.length - 1;
                                         for (int i = 0; i < boxes.length; i++) {
                                             if (i == last && boxes[i] != null) {
                                                 boxList += "'" + boxes[i] + "'";
@@ -776,16 +770,17 @@ public class MainActivity extends AppCompatActivity {
                                         }
                                     }
                                     record = "DELETE FROM seedinv WHERE seedinv.box_id in (" +
-                                            boxList + ");\n";
+                                        boxList + ");\n";
                                 }
                                 record += "INSERT INTO seedinv(`box_id`,`seed_id`," +
-                                        "`inventory_date`,`inventory_person`,`weight_gram`)\r\nVALUES";
+                                    "`inventory_date`,`inventory_person`,`weight_gram`)\r\nVALUES";
                                 myOutWriter.append(record);
                             }
                             for (int i = 0; i < itemCount; i++) {
                                 String record = "(";
                                 {
-                                    final String[] temp = list.get(i).toString().split(",");
+                                    final String[] temp =
+                                        inventoryRecords.get(i).toString().split(",");
                                     for (int j = 0; j < temp.length; j++) {
                                         if (temp[j].length() == 0) {
                                             temp[j] = "null";
