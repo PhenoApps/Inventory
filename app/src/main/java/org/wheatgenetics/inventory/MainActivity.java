@@ -281,18 +281,19 @@ public class MainActivity extends AppCompatActivity {
             }
         }
 
+        final String boxID  = boxNumTextView.getText().toString() ;
+        final String envID  = inputText.getText().toString()      ;
         final String weight = mWeightEditText.getText().toString();
 
         db.addSample(new InventoryRecord(
-            /* boxID    => */ boxNumTextView.getText().toString(),
-            /* envID    => */ inputText.getText().toString()     ,
-            /* personID => */ ep.getSafeName()                   ,
-            /* date     => */ getDate()                          ,
-            /* position => */ currentItemNum                     ,
-            /* wt       => */ weight                             )); // add to database
+            /* boxID    => */ boxID           ,
+            /* envID    => */ envID           ,
+            /* personID => */ ep.getSafeName(),
+            /* date     => */ getDate()       ,
+            /* position => */ currentItemNum  ,
+            /* wt       => */ weight          )); // add to database
 
-        createNewTableEntry(boxNumTextView.getText().toString(),
-            currentItemNum, inputText.getText().toString(), weight);
+        createNewTableEntry(boxID, currentItemNum, envID, weight);
         currentItemNum++;
     }
 

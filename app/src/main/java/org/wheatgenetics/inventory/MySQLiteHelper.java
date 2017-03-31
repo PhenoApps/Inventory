@@ -14,24 +14,24 @@ import android.util.Log;
 public class MySQLiteHelper extends SQLiteOpenHelper {
     //region Constants
     //region Database Constants
-    private static final int DATABASE_VERSION = 3;
-    private static final String DATABASE_NAME = "InventoryDB";
+    private static final int    DATABASE_VERSION = 3            ;
+    private static final String DATABASE_NAME    = "InventoryDB";
     //endregion
 
 
     //region Table Constants
     private static final String TABLE_SAMPLES = "samples";
 
-    private static final String KEY_ID = "id";
-    private static final String KEY_BOX = "box";
-    private static final String KEY_ENVID = "envid";
-    private static final String KEY_PERSON = "person";
-    private static final String KEY_DATE = "date";
+    private static final String KEY_ID       = "id"      ;
+    private static final String KEY_BOX      = "box"     ;
+    private static final String KEY_ENVID    = "envid"   ;
+    private static final String KEY_PERSON   = "person"  ;
+    private static final String KEY_DATE     = "date"    ;
     private static final String KEY_POSITION = "position";
-    private static final String KEY_WT = "wt";
+    private static final String KEY_WT       = "wt"      ;
 
-    private static final String[] COLUMNS = {KEY_ID, KEY_BOX, KEY_ENVID,
-            KEY_PERSON, KEY_DATE, KEY_POSITION, KEY_WT};
+    private static final String[] COLUMNS = {KEY_ID, KEY_BOX,
+        KEY_ENVID, KEY_PERSON, KEY_DATE, KEY_POSITION, KEY_WT};
     //endregion
     //endregion
 
