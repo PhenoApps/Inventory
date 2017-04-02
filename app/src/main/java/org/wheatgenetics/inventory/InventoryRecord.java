@@ -65,6 +65,22 @@ class InventoryRecord extends java.lang.Object {
             "," + this.person + "," + this.wt + "\r\n";
     }
 
+    String getSQL() {
+        final java.lang.String[] fields = this.toString().split(",");
+        for (int i = 0; i < fields.length; i++)
+            if (fields[i].length() <= 0)
+                fields[i] = "'null'";
+            else
+                fields[i] = "'" + fields[i] + "'";
+
+        return "(" +
+            fields[0] + "," + // box
+            fields[1] + "," + // envid
+            fields[3] + "," + // date
+            fields[2] + "," + // person
+            fields[5] + ")";  // wt
+    }
+
     void set(final String id, final String box, final String envid,
     final String person, final String date, final String position, final String wt) {
         this.setId(java.lang.Integer.parseInt(id));

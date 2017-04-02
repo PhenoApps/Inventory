@@ -196,32 +196,6 @@ public class MySQLiteHelper extends SQLiteOpenHelper {
         return inventoryRecords;
     }
 
-    String[] getBoxes() {
-        final ArrayList<String> boxList = new ArrayList<>();
-              String[]          boxArray;
-        {
-            final Cursor cursor = this.getWritableDatabase().query(
-                /* distinct      => */ true                                               ,
-                /* table         => */ this.TABLE_NAME                                    ,
-                /* columns       => */ MySQLiteHelper.makeStringArray(this.BOX_FIELD_NAME),
-                /* selection     => */ null                                               ,
-                /* selectionArgs => */ null                                               ,
-                /* groupBy       => */ this.BOX_FIELD_NAME                                ,
-                /* having        => */ null                                               ,
-                /* orderBy       => */ null                                               ,
-                /* limit         => */ null                                               );
-
-            boxArray = new String[cursor.getCount()];
-            if (cursor.moveToFirst()) {
-                do {
-                    boxList.add(cursor.getString(0));
-                } while (cursor.moveToNext());
-            }
-            cursor.close();
-        }
-        return boxList.toArray(boxArray);
-    }
-
     String getBoxList()
     {
         java.lang.String boxList = null;

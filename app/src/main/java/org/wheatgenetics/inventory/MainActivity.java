@@ -763,23 +763,7 @@ public class MainActivity extends AppCompatActivity {
                                 myOutWriter.append(record);
                             }
                             for (int i = 0; i < itemCount; i++) {
-                                String record = "(";
-                                {
-                                    final String[] temp =
-                                        inventoryRecords.get(i).toString().split(",");
-                                    for (int j = 0; j < temp.length; j++) {
-                                        if (temp[j].length() == 0) {
-                                            temp[j] = "null";
-                                        }
-                                    }
-
-                                    record += addTicks(temp[0]) + ","; // box
-                                    record += addTicks(temp[1]) + ","; // seed id
-                                    record += addTicks(temp[3]) + ","; // date
-                                    record += addTicks(temp[2]) + ","; // person
-                                    record += addTicks(temp[5])      ; // weight
-                                }
-                                record += ")";
+                                String record = inventoryRecords.get(i).getSQL();
 
                                 if (i == itemCount - 1) {
                                     record += ";\r\n";
