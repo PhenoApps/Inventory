@@ -12,14 +12,14 @@ import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
 public class MySQLiteHelper extends SQLiteOpenHelper {
-    //region Constants
-    //region Database Constants
+    // region Constants
+    // region Database Constants
     private static final int    DATABASE_VERSION = 3            ;
     private static final String DATABASE_NAME    = "InventoryDB";
-    //endregion
+    // endregion
 
 
-    //region Table Constants
+    // region Table Constants
     private static final String TABLE_NAME = "samples";
 
     private static final String ID_FIELD_NAME       = "id"      ;
@@ -29,17 +29,17 @@ public class MySQLiteHelper extends SQLiteOpenHelper {
     private static final String DATE_FIELD_NAME     = "date"    ;
     private static final String POSITION_FIELD_NAME = "position";
     private static final String WT_FIELD_NAME       = "wt"      ;
-    //endregion
-    //endregion
+    // endregion
+    // endregion
 
 
-    public MySQLiteHelper(final Context context) {
+    MySQLiteHelper(final Context context) {
         super(context, org.wheatgenetics.inventory.MySQLiteHelper.DATABASE_NAME,
             null, org.wheatgenetics.inventory.MySQLiteHelper.DATABASE_VERSION);
     }
 
 
-    //region Overridden Methods
+    // region Overridden Methods
     @Override
     public void onCreate(SQLiteDatabase db) {
         db.execSQL("CREATE TABLE " + this.TABLE_NAME + " ( "                  +
@@ -57,10 +57,10 @@ public class MySQLiteHelper extends SQLiteOpenHelper {
         db.execSQL("DROP TABLE IF EXISTS " + this.TABLE_NAME);
         this.onCreate(db);
     }
-    //endregion
+    // endregion
 
 
-    //region Protected Methods
+    // region Protected Methods
     static protected ContentValues makeContentValues(final InventoryRecord inventoryRecord) {
         final ContentValues contentValues = new ContentValues();
 
@@ -107,12 +107,12 @@ public class MySQLiteHelper extends SQLiteOpenHelper {
         }
         return i;
     }
-    //endregion
+    // endregion
 
 
-    //region Public Methods
-    //region Single-Record Public Methods
-    public void addInventoryRecord(final InventoryRecord inventoryRecord) {
+    // region Package Methods
+    // region Single-Record Package Methods
+    void addInventoryRecord(final InventoryRecord inventoryRecord) {
         Log.d("addInventoryRecord() ", inventoryRecord.toString());
 
         final SQLiteDatabase db = this.getWritableDatabase();
@@ -122,7 +122,7 @@ public class MySQLiteHelper extends SQLiteOpenHelper {
         db.close();
     }
 
-    public InventoryRecord getInventoryRecord(final int id) {
+    InventoryRecord getInventoryRecord(final int id) {
         final InventoryRecord inventoryRecord = new InventoryRecord();
         {
             final String[] FIELD_NAMES = {
@@ -161,16 +161,18 @@ public class MySQLiteHelper extends SQLiteOpenHelper {
         return inventoryRecord;
     }
 
-    public Boolean deleteInventoryRecord(final InventoryRecord inventoryRecord) {
+    Boolean deleteInventoryRecord(final InventoryRecord inventoryRecord) {
         Log.d("deleteInventoryRecord()", inventoryRecord.toString());
         return this.delete(
             this.POSITION_FIELD_NAME + "='" + inventoryRecord.getPositionAsString() + "'") > 0;
     }
-    //endregion
+    // endregion
 
 
-    //region Multiple-Record Public Methods
-    public List<InventoryRecord> getInventoryRecords() {
+    // region Multiple-Record Package Methods
+    List<InventoryRecord> getInventoryRecords() {
+//    InventoryRecords getInventoryRecords() {
+//        final InventoryRecords inventoryRecords = new InventoryRecords();
         final List<InventoryRecord> inventoryRecords = new LinkedList<>();
         {
             final Cursor cursor = this.getWritableDatabase().rawQuery(
@@ -178,15 +180,14 @@ public class MySQLiteHelper extends SQLiteOpenHelper {
 
             if (cursor.moveToFirst()) {
                 do {
-                    final InventoryRecord inventoryRecord = new InventoryRecord(
+                    inventoryRecords.add(new InventoryRecord(
                         /* id       => */ cursor.getString(0),
                         /* box      => */ cursor.getString(1),
                         /* envid    => */ cursor.getString(2),
                         /* person   => */ cursor.getString(3),
                         /* date     => */ cursor.getString(4),
                         /* position => */ cursor.getString(5),
-                        /* wt       => */ cursor.getString(6));
-                    inventoryRecords.add(inventoryRecord);
+                        /* wt       => */ cursor.getString(6)));
                 } while (cursor.moveToNext());
             }
             cursor.close();
@@ -195,7 +196,7 @@ public class MySQLiteHelper extends SQLiteOpenHelper {
         return inventoryRecords;
     }
 
-    public String[] getBoxes() {
+    String[] getBoxes() {
         final ArrayList<String> boxList = new ArrayList<>();
               String[]          boxArray;
         {
@@ -221,7 +222,42 @@ public class MySQLiteHelper extends SQLiteOpenHelper {
         return boxList.toArray(boxArray);
     }
 
-    public void deleteInventoryRecords() { this.delete(null); }
-    //endregion
-    //endregion
+    String getBoxList()
+    {
+        java.lang.String boxList = null;
+        {
+            final Cursor cursor = this.getWritableDatabase().query(
+                /* distinct      => */ true                                               ,
+                /* table         => */ this.TABLE_NAME                                    ,
+                /* columns       => */ MySQLiteHelper.makeStringArray(this.BOX_FIELD_NAME),
+                /* selection     => */ null                                               ,
+                /* selectionArgs => */ null                                               ,
+                /* groupBy       => */ this.BOX_FIELD_NAME                                ,
+                /* having        => */ null                                               ,
+                /* orderBy       => */ null                                               ,
+                /* limit         => */ null                                               );
+
+            if (cursor.moveToFirst())
+            {
+                java.lang.String box = cursor.getString(0);
+                while (box == null)
+                    if (cursor.moveToNext())
+                        box = cursor.getString(0);
+                    else
+                        break;
+
+                if (box != null)
+                {
+                    boxList = "'" + box + "'";
+                    while (cursor.moveToNext()) boxList += ",'" + cursor.getString(0) + "'";
+                }
+            }
+            cursor.close();
+        }
+        return boxList;
+    }
+
+    void deleteInventoryRecords() { this.delete(null); }
+    // endregion
+    // endregion
 }

@@ -755,24 +755,9 @@ public class MainActivity extends AppCompatActivity {
                         {
                             final OutputStreamWriter myOutWriter = new OutputStreamWriter(fOut);
                             {
-                                String record;
-                                {
-                                    // get boxes
-                                    String boxList = "";
-                                    {
-                                        final String[] boxes = db.getBoxes() ;
-                                        final int      last  = boxes.length - 1;
-                                        for (int i = 0; i < boxes.length; i++) {
-                                            if (i == last && boxes[i] != null) {
-                                                boxList += "'" + boxes[i] + "'";
-                                            } else if (boxes[i] != null) {
-                                                boxList += "'" + boxes[i] + "',";
-                                            }
-                                        }
-                                    }
-                                    record = "DELETE FROM seedinv WHERE seedinv.box_id in (" +
-                                        boxList + ");\n";
-                                }
+                                String record = "DELETE FROM seedinv WHERE seedinv.box_id in (" +
+                                    db.getBoxList() + ");\n";
+
                                 record += "INSERT INTO seedinv(`box_id`,`seed_id`," +
                                     "`inventory_date`,`inventory_person`,`weight_gram`)\r\nVALUES";
                                 myOutWriter.append(record);
