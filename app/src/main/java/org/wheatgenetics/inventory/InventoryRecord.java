@@ -60,6 +60,11 @@ class InventoryRecord extends java.lang.Object {
 
     String getPositionAsString() { return java.lang.Integer.toString(this.getPosition()); }
 
+    String getLogMsg()
+    {
+        return this.box + " " + this.getPositionAsString() + " " + this.envid + " " + this.wt;
+    }
+
     String getCSV() {
         return this.box + ","  + this.envid + "," + this.date +
             "," + this.person + "," + this.wt + "\r\n";

@@ -262,10 +262,11 @@ public class MainActivity extends AppCompatActivity {
 
         final List<InventoryRecord> inventoryRecords = db.getInventoryRecords();
         for (InventoryRecord inventoryRecord : inventoryRecords) {
-            final String[] temp     = inventoryRecord.toString().split(",");
-            final int      position = Integer.parseInt(temp[4]);
-            Log.e(TAG, temp[0] + " " + position + " " + temp[1] + " " + temp[5]);
-            createNewTableEntry(temp[0], position, temp[1], temp[5]);
+            Log.e(TAG, inventoryRecord.getLogMsg());
+
+            final int position = inventoryRecord.getPosition();
+            createNewTableEntry(inventoryRecord.getBox(), position,
+                inventoryRecord.getEnvId(), inventoryRecord.getWt());
             currentItemNum = position + 1;
         }
     }
