@@ -10,6 +10,7 @@ import java.io.OutputStreamWriter;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 
@@ -260,8 +261,9 @@ public class MainActivity extends AppCompatActivity {
     private void parseDbToTable() {
         InventoryTable.removeAllViews();
 
-        final List<InventoryRecord> inventoryRecords = db.getInventoryRecords();
-        for (InventoryRecord inventoryRecord : inventoryRecords) {
+        final Iterator<InventoryRecord> iterator = db.getInventoryRecords().iterator();
+        while (iterator.hasNext()) {
+            final InventoryRecord inventoryRecord = iterator.next();
             Log.e(TAG, inventoryRecord.getLogMsg());
 
             final int position = inventoryRecord.getPosition();
@@ -698,44 +700,12 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void writeCSV(final String filename) {
-        final List<InventoryRecord> inventoryRecords = db.getInventoryRecords();
-        if (inventoryRecords.size() > 0) {
-            try
-            {
-                {
-                    final File myFile = new File(Constants.MAIN_PATH, filename);
-                    myFile.createNewFile();
-                    {
-                        final FileOutputStream fOut = new FileOutputStream(myFile);
-                        {
-                            final OutputStreamWriter myOutWriter = new OutputStreamWriter(fOut);
-
-                            String record =
-                                "box_id,seed_id,inventory_date,inventory_person,weight_gram\r\n";
-                            myOutWriter.append(record);
-
-                            for (InventoryRecord inventoryRecord : inventoryRecords) {
-                                {
-                                    final String[] temp = inventoryRecord.toString().split(",");
-
-                                    record =  temp[0] + ","   ; // box
-                                    record += temp[1] + ","   ; // seed id
-                                    record += temp[3] + ","   ; // date
-                                    record += temp[2] + ","   ; // person
-                                    record += temp[5] + "\r\n"; // weight
-                                }
-                                myOutWriter.append(record);
-                            }
-                            myOutWriter.close();
-                        }
-                        fOut.close();
-                    }
-                    makeFileDiscoverable(myFile, this);
-                }
-                makeToast("File exported successfully.");
-            } catch (Exception e) {
-                Toast.makeText(getBaseContext(), e.getMessage(), Toast.LENGTH_SHORT).show();
-            }
+        final InventoryRecords inventoryRecords = db.getInventoryRecords();
+        try {
+            makeFileDiscoverable(inventoryRecords.writeCSV(filename), this);
+            makeToast("File exported successfully.");
+        } catch (IOException e) {
+            Toast.makeText(getBaseContext(), e.getMessage(), Toast.LENGTH_SHORT).show();
         }
         db.close();
         shareFile(filename);
@@ -743,47 +713,13 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void writeSQL(final String filename) {
-        final List<InventoryRecord> inventoryRecords = db.getInventoryRecords()     ;
-        final int                   itemCount        = inventoryRecords.size();
-        if (itemCount > 0) {
-            try
-            {
-                {
-                    final File myFile = new File(Constants.MAIN_PATH, filename);
-                    myFile.createNewFile();
-                    {
-                        final FileOutputStream fOut = new FileOutputStream(myFile);
-                        {
-                            final OutputStreamWriter myOutWriter = new OutputStreamWriter(fOut);
-                            {
-                                String record = "DELETE FROM seedinv WHERE seedinv.box_id in (" +
-                                    db.getBoxList() + ");\n";
-
-                                record += "INSERT INTO seedinv(`box_id`,`seed_id`," +
-                                    "`inventory_date`,`inventory_person`,`weight_gram`)\r\nVALUES";
-                                myOutWriter.append(record);
-                            }
-                            for (int i = 0; i < itemCount; i++) {
-                                String record = inventoryRecords.get(i).getSQL();
-
-                                if (i == itemCount - 1) {
-                                    record += ";\r\n";
-                                } else {
-                                    record += ",\r\n";
-                                }
-
-                                myOutWriter.append(record);
-                            }
-                            myOutWriter.close();
-                        }
-                        fOut.close();
-                    }
-                    makeFileDiscoverable(myFile, this);
-                }
-                makeToast(getString(R.string.export_success));
-            } catch (Exception e) {
-                Toast.makeText(getBaseContext(), e.getMessage(), Toast.LENGTH_SHORT).show();
-            }
+        final InventoryRecords inventoryRecords = db.getInventoryRecords();
+        try
+        {
+            makeFileDiscoverable(inventoryRecords.writeSQL(filename, db.getBoxList()), this);
+            makeToast(getString(R.string.export_success));
+        } catch (Exception e) {
+            Toast.makeText(getBaseContext(), e.getMessage(), Toast.LENGTH_SHORT).show();
         }
         db.close();
         shareFile(filename);

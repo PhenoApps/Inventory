@@ -1,9 +1,5 @@
 package org.wheatgenetics.inventory;
 
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
-
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
@@ -170,10 +166,8 @@ public class MySQLiteHelper extends SQLiteOpenHelper {
 
 
     // region Multiple-Record Package Methods
-    List<InventoryRecord> getInventoryRecords() {
-//    InventoryRecords getInventoryRecords() {
-//        final InventoryRecords inventoryRecords = new InventoryRecords();
-        final List<InventoryRecord> inventoryRecords = new LinkedList<>();
+    InventoryRecords getInventoryRecords() {
+        final InventoryRecords inventoryRecords = new InventoryRecords();
         {
             final Cursor cursor = this.getWritableDatabase().rawQuery(
                 "SELECT * FROM " + this.TABLE_NAME, null);
@@ -224,6 +218,7 @@ public class MySQLiteHelper extends SQLiteOpenHelper {
                 {
                     boxList = "'" + box + "'";
                     while (cursor.moveToNext()) boxList += ",'" + cursor.getString(0) + "'";
+                    boxList = "(" + boxList + ")";
                 }
             }
             cursor.close();
