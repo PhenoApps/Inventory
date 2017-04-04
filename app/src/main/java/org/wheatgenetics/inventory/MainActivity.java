@@ -64,7 +64,7 @@ import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity {
     private final static String TAG = "Inventory";
-    protected SharedPreferences ep;
+    protected org.wheatgenetics.inventory.SharedPreferences sharedPreferences;
     private UsbDevice mDevice;
 
     private String boxNumber;
@@ -224,15 +224,12 @@ public class MainActivity extends AppCompatActivity {
         parseDbToTable();
         goToBottom();
 
-        ep = new SharedPreferences(getSharedPreferences("SharedPreferences", 0));
+        sharedPreferences =
+            new org.wheatgenetics.inventory.SharedPreferences(getSharedPreferences("Settings", 0));
 
-        if (!ep.firstNameIsSet()) {
-            setPersonDialog();
-        }
+        if (!sharedPreferences.firstNameIsSet()) setPersonDialog();
 
-        if (!ep.getIgnoreScale()) {
-            findScale();
-        }
+        if (!sharedPreferences.getIgnoreScale()) findScale();
 
         int v = 0;
         try {
@@ -240,8 +237,8 @@ public class MainActivity extends AppCompatActivity {
         } catch (PackageManager.NameNotFoundException e) {
             Log.e("Inventory", "" + e.getMessage());
         }
-        if (!ep.updateVersionIsSet(v)) {
-            ep.setUpdateVersion(v);
+        if (!sharedPreferences.updateVersionIsSet(v)) {
+            sharedPreferences.setUpdateVersion(v);
             changelog();
         }
     }
@@ -287,12 +284,12 @@ public class MainActivity extends AppCompatActivity {
         final String weight = mWeightEditText.getText().toString();
 
         db.addInventoryRecord(new InventoryRecord(
-            /* boxID    => */ boxID           ,
-            /* envID    => */ envID           ,
-            /* personID => */ ep.getSafeName(),
-            /* date     => */ getDate()       ,
-            /* position => */ currentItemNum  ,
-            /* wt       => */ weight          )); // add to database
+            /* boxID    => */ boxID                          ,
+            /* envID    => */ envID                          ,
+            /* personID => */ sharedPreferences.getSafeName(),
+            /* date     => */ getDate()                      ,
+            /* position => */ currentItemNum                 ,
+            /* wt       => */ weight                         )); // add to database
 
         createNewTableEntry(boxID, currentItemNum, envID, weight);
         currentItemNum++;
@@ -514,8 +511,8 @@ public class MainActivity extends AppCompatActivity {
             final EditText fName = (EditText) personView.findViewById(R.id.firstName);
             final EditText lName = (EditText) personView.findViewById(R.id.lastName );
 
-            fName.setText(ep.getFirstName());
-            lName.setText(ep.getLastName() );
+            fName.setText(sharedPreferences.getFirstName());
+            lName.setText(sharedPreferences.getLastName() );
 
             builder.setView(personView);
             builder.setPositiveButton(getResources().getString(R.string.ok),
@@ -533,7 +530,7 @@ public class MainActivity extends AppCompatActivity {
 
                         makeToast(getResources().getString(R.string.person_set) +
                             " " + firstName + " " + lastName);
-                        ep.setName(firstName, lastName);
+                        sharedPreferences.setName(firstName, lastName);
                     }});
         }
         builder.show();
@@ -727,7 +724,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onDrawerOpened(View drawerView) {
                 final TextView person = (TextView) findViewById(R.id.nameLabel);
-                person.setText(ep.getName());
+                person.setText(sharedPreferences.getName());
             }
 
             @Override
@@ -868,7 +865,7 @@ public class MainActivity extends AppCompatActivity {
                     new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
-                            ep.setIgnoreScaleToTrue();
+                            sharedPreferences.setIgnoreScaleToTrue();
                             dialog.cancel();
                         }}).show();
         }
