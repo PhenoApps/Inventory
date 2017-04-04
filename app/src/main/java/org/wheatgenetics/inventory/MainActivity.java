@@ -64,7 +64,7 @@ import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity {
     private final static String TAG = "Inventory";
-    protected Settings ep;
+    protected SharedPreferences ep;
     private UsbDevice mDevice;
 
     private String boxNumber;
@@ -224,7 +224,7 @@ public class MainActivity extends AppCompatActivity {
         parseDbToTable();
         goToBottom();
 
-        ep = new Settings(getSharedPreferences("Settings", 0));
+        ep = new SharedPreferences(getSharedPreferences("SharedPreferences", 0));
 
         if (!ep.firstNameIsSet()) {
             setPersonDialog();
