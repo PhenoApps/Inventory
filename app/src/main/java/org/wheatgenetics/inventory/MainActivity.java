@@ -2,16 +2,13 @@ package org.wheatgenetics.inventory;
 
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Locale;
 
 import android.app.Activity;
@@ -536,21 +533,23 @@ public class MainActivity extends AppCompatActivity {
             lName.setText(ep.getLastName() );
 
             builder.setView(personView);
-            builder.setPositiveButton(getResources().getString(R.string.ok), new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    final String firstName = fName.getText().toString().trim();
-                    final String lastName  = lName.getText().toString().trim();
+            builder.setPositiveButton(getResources().getString(R.string.ok),
+                new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        final String firstName = fName.getText().toString().trim();
+                        final String lastName  = lName.getText().toString().trim();
 
-                    if (firstName.length() == 0 | lastName.length() == 0) {
-                        makeToast(getResources().getString(R.string.no_blank));
-                        setPersonDialog();
-                        return;
-                    }
+                        if (firstName.length() == 0 | lastName.length() == 0) {
+                            makeToast(getResources().getString(R.string.no_blank));
+                            setPersonDialog();
+                            return;
+                        }
 
-                    makeToast(getResources().getString(R.string.person_set) + " " + firstName + " " + lastName);
-                    ep.setName(firstName, lastName);
-                }});
+                        makeToast(getResources().getString(R.string.person_set) +
+                            " " + firstName + " " + lastName);
+                        ep.setName(firstName, lastName);
+                    }});
         }
         builder.show();
     }
@@ -599,11 +598,12 @@ public class MainActivity extends AppCompatActivity {
             otherAppsAlert.setTitle(getResources().getString(R.string.otherapps));
             otherAppsAlert.setView(myList);
         }
-        otherAppsAlert.setNegativeButton(getResources().getString(R.string.ok), new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.dismiss();
-            }});
+        otherAppsAlert.setNegativeButton(getResources().getString(R.string.ok),
+            new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    dialog.dismiss();
+                }});
         otherAppsAlert.show();
     }
 
@@ -730,10 +730,6 @@ public class MainActivity extends AppCompatActivity {
         MediaScannerConnection.scanFile(context, new String[]{file.getPath()}, null, null);
         context.sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE,
             Uri.fromFile(file)));
-    }
-
-    static private String addTicks(final String entry) {
-        return entry.contains("null") ? "null" : "'" + entry + "'";
     }
 
     private void dropTables() {

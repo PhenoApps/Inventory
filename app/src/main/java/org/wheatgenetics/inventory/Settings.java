@@ -48,7 +48,8 @@ class Settings extends java.lang.Object
     protected int getUpdateVersion()
     {
         assert this.sharedPreferences != null;
-        return this.sharedPreferences.getInt(org.wheatgenetics.inventory.Settings.UPDATE_VERSION, -1);
+        return this.sharedPreferences.getInt(
+            org.wheatgenetics.inventory.Settings.UPDATE_VERSION, -1);
     }
     // endregion
 

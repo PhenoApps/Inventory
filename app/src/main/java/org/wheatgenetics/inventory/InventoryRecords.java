@@ -3,7 +3,7 @@ package org.wheatgenetics.inventory;
 class InventoryRecords extends java.lang.Object
 {
     protected java.util.LinkedList<org.wheatgenetics.inventory.InventoryRecord> linkedList =
-        new java.util.LinkedList<InventoryRecord>();
+        new java.util.LinkedList<org.wheatgenetics.inventory.InventoryRecord>();
 
     boolean add(final org.wheatgenetics.inventory.InventoryRecord inventoryRecord)
     {
