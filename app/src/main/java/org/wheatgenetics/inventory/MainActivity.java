@@ -723,13 +723,13 @@ public class MainActivity extends AppCompatActivity {
         currentItemNum = 1;
     }
 
-    private void shareFile(String filePath) {
-        filePath = InventoryDir.PATH.toString() + filePath;
-
+    private void shareFile(final String filePath) {
         final Intent intent = new Intent();
+
         intent.setAction(android.content.Intent.ACTION_SEND);
-        intent.setType("text/plain");
-        intent.putExtra(Intent.EXTRA_STREAM, Uri.parse(filePath));
+        intent.setType  ("text/plain");
+        intent.putExtra (Intent.EXTRA_STREAM, InventoryDir.parse(filePath));
+
         startActivity(Intent.createChooser(intent, getString(R.string.sending_file)));
     }
 

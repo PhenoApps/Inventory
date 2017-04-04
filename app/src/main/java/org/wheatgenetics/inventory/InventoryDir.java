@@ -1,6 +1,6 @@
 package org.wheatgenetics.inventory;
 
-// Uses android.os.Environment.
+// Uses android.os.Environment and android.net.Uri.
 
 class InventoryDir
 {
@@ -29,5 +29,11 @@ class InventoryDir
             }
             else
                 throw new java.io.IOException();
+    }
+
+    static android.net.Uri parse(final java.lang.String filePath)
+    {
+        return android.net.Uri.parse(
+            org.wheatgenetics.inventory.InventoryDir.PATH.toString() + filePath);
     }
 }
