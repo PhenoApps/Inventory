@@ -685,10 +685,8 @@ public class MainActivity extends AppCompatActivity {
         {
             final InventoryRecords inventoryRecords = db.getInventoryRecords();
             db.close();
-            makeFileDiscoverable(inventoryRecords.writeCSV(fileName));         // throws IOException
+            shareFile(inventoryRecords.writeCSV(fileName), fileName);          // throws IOException
         }
-        makeToast("File exported successfully.");
-        shareFile(fileName);
         dropTables();
     }
 
@@ -697,10 +695,8 @@ public class MainActivity extends AppCompatActivity {
             final InventoryRecords inventoryRecords = db.getInventoryRecords();
             final String           boxList          = db.getBoxList()         ;
             db.close();
-            makeFileDiscoverable(inventoryRecords.writeSQL(fileName, boxList));      // throws
+            shareFile(inventoryRecords.writeSQL(fileName, boxList), fileName);       // throws
         }                                                                            //  IOException
-        makeToast(getString(R.string.export_success));
-        shareFile(fileName);
         dropTables();
     }
 
@@ -719,7 +715,10 @@ public class MainActivity extends AppCompatActivity {
         currentItemNum = 1;
     }
 
-    private void shareFile(final String fileName) {
+    private void shareFile(final File file, final String fileName) {
+        makeFileDiscoverable(file);
+        makeToast(getString(R.string.export_success));
+
         final Intent intent = new Intent(android.content.Intent.ACTION_SEND);
 
         intent.setType ("text/plain");
