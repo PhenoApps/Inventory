@@ -287,18 +287,11 @@ public class MainActivity extends AppCompatActivity {
             /* boxID    => */ boxID                          ,
             /* envID    => */ envID                          ,
             /* personID => */ sharedPreferences.getSafeName(),
-            /* date     => */ getDate()                      ,
             /* position => */ currentItemNum                 ,
             /* wt       => */ weight                         )); // add to database
 
         createNewTableEntry(boxID, currentItemNum, envID, weight);
         currentItemNum++;
-    }
-
-    static private String getDate() {
-        final SimpleDateFormat simpleDateFormat = new SimpleDateFormat(
-            "yyyy-MM-dd-hh-mm-ss", Locale.getDefault());
-        return simpleDateFormat.format(Calendar.getInstance().getTime());
     }
 
     /**
@@ -665,7 +658,7 @@ public class MainActivity extends AppCompatActivity {
             final InventoryRecords inventoryRecords = db.getInventoryRecords();
             db.close();
             {
-                final String fileName = "inventory_" + getDate() + ".csv";
+                final String fileName = Utils.getFileName() + ".csv";
                 try { shareFile(inventoryRecords.writeCSV(fileName), fileName); }
                 catch (IOException e) {
                     Toast.makeText(getBaseContext(), e.getMessage(), Toast.LENGTH_SHORT).show();
@@ -681,7 +674,7 @@ public class MainActivity extends AppCompatActivity {
             final String           boxList          = db.getBoxList()         ;
             db.close();
             {
-                final String fileName = "inventory_" + getDate() + ".sql";
+                final String fileName = Utils.getFileName() + ".sql";
                 try { shareFile(inventoryRecords.writeSQL(fileName, boxList), fileName); }
                 catch (IOException e) {
                     Toast.makeText(getBaseContext(), e.getMessage(), Toast.LENGTH_SHORT).show();

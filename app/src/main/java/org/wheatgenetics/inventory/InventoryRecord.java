@@ -23,11 +23,11 @@ class InventoryRecord extends java.lang.Object {
     }
 
     InventoryRecord(final String box, final String envid,
-    final String person, final String date, final int position, final String wt) {
+    final String person, final int position, final String wt) {
         this(box, envid, position);
-        this.person = person;
-        this.date   = date  ;
-        this.wt     = wt    ;
+        this.person = person                                         ;
+        this.date   = org.wheatgenetics.inventory.Utils.getDateTime();
+        this.wt     = wt                                             ;
     }
 
     InventoryRecord(final String id, final String box, final String envid,
