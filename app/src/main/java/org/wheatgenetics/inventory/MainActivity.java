@@ -219,23 +219,8 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        // The following code block was originally in a method named createDir().  This name gives a
-        // clue as to the purpose of the code, although it doesn't explain why blankFile is created.
-        {
-            final File blankFile = new File(Constants.MAIN_PATH, ".inventory");
-
-            if (!Constants.MAIN_PATH.exists()) {
-                Constants.MAIN_PATH.mkdirs();
-
-                try {
-                    blankFile.getParentFile().mkdirs();
-                    blankFile.createNewFile();
-                    makeFileDiscoverable(blankFile, this);
-                } catch (IOException e) {
-                    Log.e(TAG, e.getMessage());
-                }
-            }
-        }
+        try { makeFileDiscoverable(InventoryDir.createIfMissing(), this); }
+        catch (IOException e) { Log.e(TAG, e.getMessage()); }
         parseDbToTable();
         goToBottom();
 
@@ -724,9 +709,12 @@ public class MainActivity extends AppCompatActivity {
     }
 
     static protected void makeFileDiscoverable(final File file, final Context context) {
-        MediaScannerConnection.scanFile(context, new String[]{file.getPath()}, null, null);
-        context.sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE,
-            Uri.fromFile(file)));
+        if (file != null)
+        {
+            MediaScannerConnection.scanFile(context, new String[]{file.getPath()}, null, null);
+            context.sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE,
+                    Uri.fromFile(file)));
+        }
     }
 
     private void dropTables() {
@@ -736,7 +724,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void shareFile(String filePath) {
-        filePath = Constants.MAIN_PATH.toString() + filePath;
+        filePath = InventoryDir.PATH.toString() + filePath;
 
         final Intent intent = new Intent();
         intent.setAction(android.content.Intent.ACTION_SEND);

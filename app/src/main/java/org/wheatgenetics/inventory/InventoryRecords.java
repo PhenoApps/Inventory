@@ -25,7 +25,7 @@ class InventoryRecords extends java.lang.Object
         else
         {
             final java.io.File file =
-                new java.io.File(org.wheatgenetics.inventory.Constants.MAIN_PATH, filename);
+                new java.io.File(org.wheatgenetics.inventory.InventoryDir.PATH, filename);
             file.createNewFile();                                      // throws java.io.IOException
             {
                 final java.io.FileOutputStream fileOutputStream =
@@ -56,7 +56,7 @@ class InventoryRecords extends java.lang.Object
         else
         {
             final java.io.File file =
-                new java.io.File(org.wheatgenetics.inventory.Constants.MAIN_PATH, filename);
+                new java.io.File(org.wheatgenetics.inventory.InventoryDir.PATH, filename);
             file.createNewFile();                                      // throws java.io.IOException
             {
                 final java.io.FileOutputStream fileOutputStream =
