@@ -1,11 +1,9 @@
 package org.wheatgenetics.inventory;
 
-import android.os.Environment;
+// Uses android.os.Environment.
 
-import java.io.File;
-
-class Constants {
-
-    static File MAIN_PATH = new File(Environment.getExternalStorageDirectory(), "Inventory");
-
+class Constants
+{
+    static java.io.File MAIN_PATH =
+        new java.io.File(android.os.Environment.getExternalStorageDirectory(), "Inventory");
 }

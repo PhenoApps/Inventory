@@ -219,7 +219,23 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        createDir(Constants.MAIN_PATH);
+        // The following code block was originally in a method named createDir().  This name gives a
+        // clue as to the purpose of the code, although it doesn't explain why blankFile is created.
+        {
+            final File blankFile = new File(Constants.MAIN_PATH, ".inventory");
+
+            if (!Constants.MAIN_PATH.exists()) {
+                Constants.MAIN_PATH.mkdirs();
+
+                try {
+                    blankFile.getParentFile().mkdirs();
+                    blankFile.createNewFile();
+                    makeFileDiscoverable(blankFile, this);
+                } catch (IOException e) {
+                    Log.e(TAG, e.getMessage());
+                }
+            }
+        }
         parseDbToTable();
         goToBottom();
 
@@ -389,22 +405,6 @@ public class MainActivity extends AppCompatActivity {
                         dialog.cancel();
                     }});
         builder.create().show();
-    }
-
-    private void createDir(final File path) {
-        final File blankFile = new File(path, ".inventory");
-
-        if (!path.exists()) {
-            path.mkdirs();
-
-            try {
-                blankFile.getParentFile().mkdirs();
-                blankFile.createNewFile();
-                makeFileDiscoverable(blankFile, this);
-            } catch (IOException e) {
-                Log.e(TAG, e.getMessage());
-            }
-        }
     }
 
     private void setBoxDialog() {
@@ -664,21 +664,18 @@ public class MainActivity extends AppCompatActivity {
         new AlertDialog.Builder(MainActivity.this)
             .setTitle(getString(R.string.export_data))
             .setMessage(getString(R.string.export_choice))
-            .setPositiveButton(getString(R.string.export_csv), new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    exportCSV();
-                }})
-            .setNegativeButton(getString(R.string.export_sql), new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    exportSQL();
-                }})
+            .setPositiveButton(getString(R.string.export_csv),
+                new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) { exportCSV(); }})
+            .setNegativeButton(getString(R.string.export_sql),
+                new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) { exportSQL(); }})
             .setNeutralButton(getString(R.string.cancel), new DialogInterface.OnClickListener() {
                 @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    dialog.cancel();
-                }}).show();
+                public void onClick(DialogInterface dialog, int which) { dialog.cancel(); }})
+            .show();
     }
 
     private void exportCSV() {
