@@ -5,10 +5,10 @@ package org.wheatgenetics.inventory;
 class Settings extends java.lang.Object
 {
     // region Constants
-    static final protected java.lang.String FIRST_NAME     = "FirstName"    ;
-    static final protected java.lang.String LAST_NAME      = "LastName"     ;
-    static final protected java.lang.String IGNORE_SCALE   = "ignoreScale"  ;
-    static final protected java.lang.String UPDATE_VERSION = "UpdateVersion";
+    static final private java.lang.String FIRST_NAME     = "FirstName"    ;
+    static final private java.lang.String LAST_NAME      = "LastName"     ;
+    static final private java.lang.String IGNORE_SCALE   = "ignoreScale"  ;
+    static final private java.lang.String UPDATE_VERSION = "UpdateVersion";
     // endregion
 
 

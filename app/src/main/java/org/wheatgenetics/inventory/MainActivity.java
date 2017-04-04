@@ -63,7 +63,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity {
-    protected final static String TAG = "Inventory";
+    private final static String TAG = "Inventory";
     protected Settings ep;
     private UsbDevice mDevice;
 
@@ -219,7 +219,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        try { makeFileDiscoverable(InventoryDir.createIfMissing(), this); }
+        try { makeFileDiscoverable(InventoryDir.createIfMissing()); }
         catch (IOException e) { Log.e(TAG, e.getMessage()); }
         parseDbToTable();
         goToBottom();
@@ -684,7 +684,7 @@ public class MainActivity extends AppCompatActivity {
     private void writeCSV(final String filename) {
         final InventoryRecords inventoryRecords = db.getInventoryRecords();
         try {
-            makeFileDiscoverable(inventoryRecords.writeCSV(filename), this);
+            makeFileDiscoverable(inventoryRecords.writeCSV(filename));
             makeToast("File exported successfully.");
         } catch (IOException e) {
             Toast.makeText(getBaseContext(), e.getMessage(), Toast.LENGTH_SHORT).show();
@@ -698,7 +698,7 @@ public class MainActivity extends AppCompatActivity {
         final InventoryRecords inventoryRecords = db.getInventoryRecords();
         try
         {
-            makeFileDiscoverable(inventoryRecords.writeSQL(filename, db.getBoxList()), this);
+            makeFileDiscoverable(inventoryRecords.writeSQL(filename, db.getBoxList()));
             makeToast(getString(R.string.export_success));
         } catch (Exception e) {
             Toast.makeText(getBaseContext(), e.getMessage(), Toast.LENGTH_SHORT).show();
@@ -708,12 +708,12 @@ public class MainActivity extends AppCompatActivity {
         dropTables();
     }
 
-    static protected void makeFileDiscoverable(final File file, final Context context) {
+    protected void makeFileDiscoverable(final File file) {
         if (file != null)
         {
-            MediaScannerConnection.scanFile(context, new String[]{file.getPath()}, null, null);
-            context.sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE,
-                    Uri.fromFile(file)));
+            MediaScannerConnection.scanFile(this, new String[]{file.getPath()}, null, null);
+            this.sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE,
+                Uri.fromFile(file)));
         }
     }
 
