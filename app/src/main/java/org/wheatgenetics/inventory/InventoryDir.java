@@ -4,7 +4,7 @@ package org.wheatgenetics.inventory;
 
 class InventoryDir
 {
-    static java.io.File PATH =
+    private static java.io.File PATH =
         new java.io.File(android.os.Environment.getExternalStorageDirectory(), "Inventory");
 
     /**
@@ -35,5 +35,14 @@ class InventoryDir
     {
         return android.net.Uri.parse(
             org.wheatgenetics.inventory.InventoryDir.PATH.toString() + filePath);
+    }
+
+    static java.io.File createNewFile(final java.lang.String fileName) throws java.io.IOException
+    {
+        final java.io.File file =
+            new java.io.File(org.wheatgenetics.inventory.InventoryDir.PATH, fileName);
+
+        file.createNewFile();                                          // throws java.io.IOException
+        return file;
     }
 }

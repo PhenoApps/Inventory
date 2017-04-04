@@ -17,7 +17,7 @@ class InventoryRecords extends java.lang.Object
         return this.linkedList.iterator();
     }
 
-    java.io.File writeCSV(final java.lang.String filename) throws java.io.IOException
+    java.io.File writeCSV(final java.lang.String fileName) throws java.io.IOException
     {
         assert this.linkedList != null;
         if (this.linkedList.isEmpty())
@@ -25,10 +25,9 @@ class InventoryRecords extends java.lang.Object
         else
         {
             final java.io.File file =
-                new java.io.File(org.wheatgenetics.inventory.InventoryDir.PATH, filename);
-            file.createNewFile();                                      // throws java.io.IOException
-            {
-                final java.io.FileOutputStream fileOutputStream =
+                org.wheatgenetics.inventory.InventoryDir.createNewFile(fileName);    // throws
+            {                                                                        //  java.io.IO-
+                final java.io.FileOutputStream fileOutputStream =                    //  Exception
                     new java.io.FileOutputStream(file);
                 {
                     final java.io.OutputStreamWriter outputStreamWriter =
@@ -47,7 +46,7 @@ class InventoryRecords extends java.lang.Object
         }
     }
 
-    java.io.File writeSQL(final java.lang.String filename,
+    java.io.File writeSQL(final java.lang.String fileName,
     final java.lang.String boxList) throws java.io.IOException
     {
         assert this.linkedList != null;
@@ -56,10 +55,9 @@ class InventoryRecords extends java.lang.Object
         else
         {
             final java.io.File file =
-                new java.io.File(org.wheatgenetics.inventory.InventoryDir.PATH, filename);
-            file.createNewFile();                                      // throws java.io.IOException
-            {
-                final java.io.FileOutputStream fileOutputStream =
+                org.wheatgenetics.inventory.InventoryDir.createNewFile(fileName);    // throws
+            {                                                                        //  java.io.IO-
+                final java.io.FileOutputStream fileOutputStream =                    //  Exception
                     new java.io.FileOutputStream(file);
                 {
                     final java.io.OutputStreamWriter outputStreamWriter =
