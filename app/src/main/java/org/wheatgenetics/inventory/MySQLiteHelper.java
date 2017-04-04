@@ -1,14 +1,12 @@
 package org.wheatgenetics.inventory;
 
 import android.content.ContentValues;
-import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
-public class MySQLiteHelper extends SQLiteOpenHelper {
-    // region Constants
+class MySQLiteHelper extends android.database.sqlite.SQLiteOpenHelper {
+    // region Private Constants
     // region Database Constants
     private static final int    DATABASE_VERSION = 3            ;
     private static final String DATABASE_NAME    = "InventoryDB";
@@ -29,15 +27,19 @@ public class MySQLiteHelper extends SQLiteOpenHelper {
     // endregion
 
 
-    MySQLiteHelper(final Context context) {
-        super(context, org.wheatgenetics.inventory.MySQLiteHelper.DATABASE_NAME,
-            null, org.wheatgenetics.inventory.MySQLiteHelper.DATABASE_VERSION);
+    MySQLiteHelper(final android.content.Context context) {
+        super(
+            /* context => */ context                                                    ,
+            /* name    => */ org.wheatgenetics.inventory.MySQLiteHelper.DATABASE_NAME   ,
+            /* factory => */ null                                                       ,
+            /* version => */ org.wheatgenetics.inventory.MySQLiteHelper.DATABASE_VERSION);
     }
 
 
     // region Overridden Methods
     @Override
     public void onCreate(SQLiteDatabase db) {
+        assert db != null;
         db.execSQL("CREATE TABLE " + this.TABLE_NAME + " ( "                  +
             this.ID_FIELD_NAME       + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
             this.BOX_FIELD_NAME      + " TEXT, "                              +
@@ -50,6 +52,7 @@ public class MySQLiteHelper extends SQLiteOpenHelper {
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+        assert db != null;
         db.execSQL("DROP TABLE IF EXISTS " + this.TABLE_NAME);
         this.onCreate(db);
     }
@@ -57,7 +60,7 @@ public class MySQLiteHelper extends SQLiteOpenHelper {
 
 
     // region Protected Methods
-    static protected ContentValues makeContentValues(final InventoryRecord inventoryRecord) {
+    static private ContentValues makeContentValues(final InventoryRecord inventoryRecord) {
         final ContentValues contentValues = new ContentValues();
 
         contentValues.put(org.wheatgenetics.inventory.MySQLiteHelper.BOX_FIELD_NAME,
@@ -76,49 +79,17 @@ public class MySQLiteHelper extends SQLiteOpenHelper {
         return contentValues;
     }
 
-    static protected String[] makeStringArray(final String value) { return new String[]{value}; }
+    static private String[] makeStringArray(final String value) { return new String[]{value}; }
 
-    static protected String[] makeStringArray(final int value) {
+    static private String[] makeStringArray(final int value) {
         return MySQLiteHelper.makeStringArray(String.valueOf(value));
     }
 
-    protected int delete(final String whereClause) {
+    protected int internalDelete(final String whereClause) {
         return this.getWritableDatabase().delete(this.TABLE_NAME, whereClause, null);
     }
 
-    protected int updateInventoryRecord(final InventoryRecord inventoryRecord) {
-        int i;
-        {
-            final SQLiteDatabase db = this.getWritableDatabase();
-            {
-                final int           id            = inventoryRecord.getId();
-                final ContentValues contentValues =
-                    org.wheatgenetics.inventory.MySQLiteHelper.makeContentValues(inventoryRecord);
-
-                contentValues.put(this.ID_FIELD_NAME, id);
-                i = db.update(this.TABLE_NAME, contentValues, this.ID_FIELD_NAME + " = ?",
-                    org.wheatgenetics.inventory.MySQLiteHelper.makeStringArray(id));
-            }
-            db.close();
-        }
-        return i;
-    }
-    // endregion
-
-
-    // region Package Methods
-    // region Single-Record Package Methods
-    void addInventoryRecord(final InventoryRecord inventoryRecord) {
-        Log.d("addInventoryRecord() ", inventoryRecord.toString());
-
-        final SQLiteDatabase db = this.getWritableDatabase();
-
-        db.insert(this.TABLE_NAME, null,
-            org.wheatgenetics.inventory.MySQLiteHelper.makeContentValues(inventoryRecord));
-        db.close();
-    }
-
-    InventoryRecord getInventoryRecord(final int id) {
+    protected InventoryRecord get(final int id) {
         final InventoryRecord inventoryRecord = new InventoryRecord();
         {
             final String[] FIELD_NAMES = {
@@ -153,20 +124,54 @@ public class MySQLiteHelper extends SQLiteOpenHelper {
                 cursor.close();
             }
         }
-        Log.d("getInventoryRecord(" + id + ")", inventoryRecord.toString());
+        Log.d("get(" + id + ")", inventoryRecord.toString());
         return inventoryRecord;
     }
 
-    Boolean deleteInventoryRecord(final InventoryRecord inventoryRecord) {
-        Log.d("deleteInventoryRecord()", inventoryRecord.toString());
-        return this.delete(
+    protected int updateInventoryRecord(final InventoryRecord inventoryRecord) {
+        int i;
+        {
+            final SQLiteDatabase db = this.getWritableDatabase();
+            {
+                assert inventoryRecord != null;
+
+                final int           id            = inventoryRecord.getId();
+                final ContentValues contentValues =
+                    org.wheatgenetics.inventory.MySQLiteHelper.makeContentValues(inventoryRecord);
+
+                contentValues.put(this.ID_FIELD_NAME, id);
+                i = db.update(this.TABLE_NAME, contentValues, this.ID_FIELD_NAME + " = ?",
+                    org.wheatgenetics.inventory.MySQLiteHelper.makeStringArray(id));
+            }
+            db.close();
+        }
+        return i;
+    }
+    // endregion
+
+
+    // region Package Methods
+    // region Single-Record Package Methods
+    void add(final InventoryRecord inventoryRecord) {
+        Log.d("add() ", inventoryRecord.toString());
+
+        final SQLiteDatabase db = this.getWritableDatabase();
+
+        db.insert(this.TABLE_NAME, null,
+            org.wheatgenetics.inventory.MySQLiteHelper.makeContentValues(inventoryRecord));
+        db.close();
+    }
+
+    Boolean delete(final InventoryRecord inventoryRecord) {
+        Log.d("delete()", inventoryRecord.toString());
+        return this.internalDelete(
             this.POSITION_FIELD_NAME + "='" + inventoryRecord.getPositionAsString() + "'") > 0;
     }
     // endregion
 
 
     // region Multiple-Record Package Methods
-    InventoryRecords getInventoryRecords() {
+    InventoryRecords getAll() {
         final InventoryRecords inventoryRecords = new InventoryRecords();
         {
             final Cursor cursor = this.getWritableDatabase().rawQuery(
@@ -186,7 +191,7 @@ public class MySQLiteHelper extends SQLiteOpenHelper {
             }
             cursor.close();
         }
-        Log.d("getInventoryRecords()", inventoryRecords.toString());
+        Log.d("getAll()", inventoryRecords.toString());
         return inventoryRecords;
     }
 
@@ -226,7 +231,7 @@ public class MySQLiteHelper extends SQLiteOpenHelper {
         return boxList;
     }
 
-    void deleteInventoryRecords() { this.delete(null); }
+    void deleteAll() { this.internalDelete(null); }
     // endregion
     // endregion
 }

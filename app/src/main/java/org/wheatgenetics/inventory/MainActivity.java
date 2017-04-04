@@ -73,7 +73,7 @@ public class MainActivity extends AppCompatActivity {
 
     private EditText inputText;
     private TableLayout InventoryTable;
-    private MySQLiteHelper db;
+    private MySQLiteHelper samplesTable;
     private ScrollView sv1;
     private static int currentItemNum = 1;
 
@@ -135,7 +135,7 @@ public class MainActivity extends AppCompatActivity {
         changeContainer.removeAllViews();
         changeContainer.addView(parent);
 
-        db = new MySQLiteHelper(this);
+        samplesTable = new MySQLiteHelper(this);
 
         {
             final Button setBox = (Button) findViewById(R.id.btBox);
@@ -256,7 +256,8 @@ public class MainActivity extends AppCompatActivity {
     private void parseDbToTable() {
         InventoryTable.removeAllViews();
 
-        final Iterator<InventoryRecord> iterator = db.getInventoryRecords().iterator();
+        final Iterator<InventoryRecord> iterator = samplesTable.getAll().iterator();
+        samplesTable.close();
         while (iterator.hasNext()) {
             final InventoryRecord inventoryRecord = iterator.next();
             Log.e(TAG, inventoryRecord.getLogMsg());
@@ -283,7 +284,7 @@ public class MainActivity extends AppCompatActivity {
         final String envID  = inputText.getText().toString()      ;
         final String weight = mWeightEditText.getText().toString();
 
-        db.addInventoryRecord(new InventoryRecord(
+        samplesTable.add(new InventoryRecord(
             /* boxID    => */ boxID                          ,
             /* envID    => */ envID                          ,
             /* personID => */ sharedPreferences.getSafeName(),
@@ -371,7 +372,7 @@ public class MainActivity extends AppCompatActivity {
                .setPositiveButton(getString(R.string.yes), new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        db.deleteInventoryRecord(new InventoryRecord(box, env, num));
+                        samplesTable.delete(new InventoryRecord(box, env, num));
                         parseDbToTable();
                     }})
                .setNegativeButton(getString(R.string.no), new DialogInterface.OnClickListener() {
@@ -625,7 +626,7 @@ public class MainActivity extends AppCompatActivity {
                 public void onClick(DialogInterface dialog, int which) {
                     boxNumTextView.setText("");
                     makeToast(getString(R.string.data_deleted));
-                    dropTables();
+                    deleteAll();
                 }})
             .setNegativeButton(getString(R.string.no), new DialogInterface.OnClickListener() {
                 @Override
@@ -655,8 +656,8 @@ public class MainActivity extends AppCompatActivity {
 
     private void exportCSV() {
         {
-            final InventoryRecords inventoryRecords = db.getInventoryRecords();
-            db.close();
+            final InventoryRecords inventoryRecords = samplesTable.getAll();
+            samplesTable.close();
             {
                 final String fileName = Utils.getFileName() + ".csv";
                 try { shareFile(inventoryRecords.writeCSV(fileName), fileName); }
@@ -665,14 +666,14 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         }
-        dropTables();
+        deleteAll();
     }
 
     private void exportSQL() {
         {
-            final InventoryRecords inventoryRecords = db.getInventoryRecords();
-            final String           boxList          = db.getBoxList()         ;
-            db.close();
+            final InventoryRecords inventoryRecords = samplesTable.getAll();
+            final String           boxList          = samplesTable.getBoxList()         ;
+            samplesTable.close();
             {
                 final String fileName = Utils.getFileName() + ".sql";
                 try { shareFile(inventoryRecords.writeSQL(fileName, boxList), fileName); }
@@ -681,7 +682,7 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         }
-        dropTables();
+        deleteAll();
     }
 
     protected void makeFileDiscoverable(final File file) {
@@ -693,8 +694,8 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    private void dropTables() {
-        db.deleteInventoryRecords();
+    private void deleteAll() {
+        samplesTable.deleteAll();
         InventoryTable.removeAllViews();
         currentItemNum = 1;
     }
