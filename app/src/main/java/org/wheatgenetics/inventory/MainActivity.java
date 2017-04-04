@@ -664,39 +664,33 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void exportCSV() {
-        try {
-            writeCSV("inventory_" + getDate() + ".csv");
-        } catch (IOException e) {
-            Toast.makeText(getBaseContext(), e.getMessage(), Toast.LENGTH_SHORT).show();
+        {
+            final InventoryRecords inventoryRecords = db.getInventoryRecords();
+            db.close();
+            {
+                final String fileName = "inventory_" + getDate() + ".csv";
+                try { shareFile(inventoryRecords.writeCSV(fileName), fileName); }
+                catch (IOException e) {
+                    Toast.makeText(getBaseContext(), e.getMessage(), Toast.LENGTH_SHORT).show();
+                }
+            }
         }
         dropTables();
     }
 
     private void exportSQL() {
-        try {
-            writeSQL("inventory_" + getDate() + ".sql");
-        } catch (IOException e) {
-            Toast.makeText(getBaseContext(), e.getMessage(), Toast.LENGTH_SHORT).show();
-        }
-        dropTables();
-    }
-
-    private void writeCSV(final String fileName) throws IOException {
-        {
-            final InventoryRecords inventoryRecords = db.getInventoryRecords();
-            db.close();
-            shareFile(inventoryRecords.writeCSV(fileName), fileName);          // throws IOException
-        }
-        dropTables();
-    }
-
-    private void writeSQL(final String fileName) throws IOException {
         {
             final InventoryRecords inventoryRecords = db.getInventoryRecords();
             final String           boxList          = db.getBoxList()         ;
             db.close();
-            shareFile(inventoryRecords.writeSQL(fileName, boxList), fileName);       // throws
-        }                                                                            //  IOException
+            {
+                final String fileName = "inventory_" + getDate() + ".sql";
+                try { shareFile(inventoryRecords.writeSQL(fileName, boxList), fileName); }
+                catch (IOException e) {
+                    Toast.makeText(getBaseContext(), e.getMessage(), Toast.LENGTH_SHORT).show();
+                }
+            }
+        }
         dropTables();
     }
 
