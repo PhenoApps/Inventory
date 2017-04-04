@@ -666,7 +666,7 @@ public class MainActivity extends AppCompatActivity {
     private void exportCSV() {
         try {
             writeCSV("inventory_" + getDate() + ".csv");
-        } catch (Exception e) {
+        } catch (IOException e) {
             Toast.makeText(getBaseContext(), e.getMessage(), Toast.LENGTH_SHORT).show();
         }
         dropTables();
@@ -675,39 +675,31 @@ public class MainActivity extends AppCompatActivity {
     private void exportSQL() {
         try {
             writeSQL("inventory_" + getDate() + ".sql");
-        } catch (Exception e) {
+        } catch (IOException e) {
             Toast.makeText(getBaseContext(), e.getMessage(), Toast.LENGTH_SHORT).show();
         }
         dropTables();
     }
 
-    private void writeCSV(final String fileName) {
+    private void writeCSV(final String fileName) throws IOException {
         {
             final InventoryRecords inventoryRecords = db.getInventoryRecords();
             db.close();
-            try {
-                makeFileDiscoverable(inventoryRecords.writeCSV(fileName));
-                makeToast("File exported successfully.");
-            } catch (IOException e) {
-                Toast.makeText(getBaseContext(), e.getMessage(), Toast.LENGTH_SHORT).show();
-            }
+            makeFileDiscoverable(inventoryRecords.writeCSV(fileName));         // throws IOException
         }
+        makeToast("File exported successfully.");
         shareFile(fileName);
         dropTables();
     }
 
-    private void writeSQL(final String fileName) {
+    private void writeSQL(final String fileName) throws IOException {
         {
             final InventoryRecords inventoryRecords = db.getInventoryRecords();
             final String           boxList          = db.getBoxList()         ;
             db.close();
-            try {
-                makeFileDiscoverable(inventoryRecords.writeSQL(fileName, boxList));
-                makeToast(getString(R.string.export_success));
-            } catch (Exception e) {
-                Toast.makeText(getBaseContext(), e.getMessage(), Toast.LENGTH_SHORT).show();
-            }
-        }
+            makeFileDiscoverable(inventoryRecords.writeSQL(fileName, boxList));      // throws
+        }                                                                            //  IOException
+        makeToast(getString(R.string.export_success));
         shareFile(fileName);
         dropTables();
     }
