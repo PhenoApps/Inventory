@@ -681,30 +681,34 @@ public class MainActivity extends AppCompatActivity {
         dropTables();
     }
 
-    private void writeCSV(final String filename) {
-        final InventoryRecords inventoryRecords = db.getInventoryRecords();
-        try {
-            makeFileDiscoverable(inventoryRecords.writeCSV(filename));
-            makeToast("File exported successfully.");
-        } catch (IOException e) {
-            Toast.makeText(getBaseContext(), e.getMessage(), Toast.LENGTH_SHORT).show();
+    private void writeCSV(final String fileName) {
+        {
+            final InventoryRecords inventoryRecords = db.getInventoryRecords();
+            db.close();
+            try {
+                makeFileDiscoverable(inventoryRecords.writeCSV(fileName));
+                makeToast("File exported successfully.");
+            } catch (IOException e) {
+                Toast.makeText(getBaseContext(), e.getMessage(), Toast.LENGTH_SHORT).show();
+            }
         }
-        db.close();
-        shareFile(filename);
+        shareFile(fileName);
         dropTables();
     }
 
-    private void writeSQL(final String filename) {
-        final InventoryRecords inventoryRecords = db.getInventoryRecords();
-        try
+    private void writeSQL(final String fileName) {
         {
-            makeFileDiscoverable(inventoryRecords.writeSQL(filename, db.getBoxList()));
-            makeToast(getString(R.string.export_success));
-        } catch (Exception e) {
-            Toast.makeText(getBaseContext(), e.getMessage(), Toast.LENGTH_SHORT).show();
+            final InventoryRecords inventoryRecords = db.getInventoryRecords();
+            final String           boxList          = db.getBoxList()         ;
+            db.close();
+            try {
+                makeFileDiscoverable(inventoryRecords.writeSQL(fileName, boxList));
+                makeToast(getString(R.string.export_success));
+            } catch (Exception e) {
+                Toast.makeText(getBaseContext(), e.getMessage(), Toast.LENGTH_SHORT).show();
+            }
         }
-        db.close();
-        shareFile(filename);
+        shareFile(fileName);
         dropTables();
     }
 
@@ -723,12 +727,11 @@ public class MainActivity extends AppCompatActivity {
         currentItemNum = 1;
     }
 
-    private void shareFile(final String filePath) {
-        final Intent intent = new Intent();
+    private void shareFile(final String fileName) {
+        final Intent intent = new Intent(android.content.Intent.ACTION_SEND);
 
-        intent.setAction(android.content.Intent.ACTION_SEND);
-        intent.setType  ("text/plain");
-        intent.putExtra (Intent.EXTRA_STREAM, InventoryDir.parse(filePath));
+        intent.setType ("text/plain");
+        intent.putExtra(Intent.EXTRA_STREAM, InventoryDir.parse(fileName));
 
         startActivity(Intent.createChooser(intent, getString(R.string.sending_file)));
     }

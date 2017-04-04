@@ -31,10 +31,10 @@ class InventoryDir
                 throw new java.io.IOException();
     }
 
-    static android.net.Uri parse(final java.lang.String filePath)
+    static android.net.Uri parse(final java.lang.String fileName)
     {
         return android.net.Uri.parse(
-            org.wheatgenetics.inventory.InventoryDir.PATH.toString() + filePath);
+            org.wheatgenetics.inventory.InventoryDir.PATH.toString() + fileName);
     }
 
     static java.io.File createNewFile(final java.lang.String fileName) throws java.io.IOException
