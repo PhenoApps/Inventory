@@ -65,10 +65,6 @@ class InventoryRecord extends java.lang.Object {
         return java.lang.Integer.toString(this.getPosition());
     }
 
-    java.lang.String getLogMsg() {
-        return this.box + " " + this.getPositionAsString() + " " + this.envid + " " + this.wt;
-    }
-
     java.lang.String getCSV() {
         return this.box + ","  + this.envid + "," + this.date +
             "," + this.person + "," + this.wt + "\r\n";
@@ -102,5 +98,14 @@ class InventoryRecord extends java.lang.Object {
         this.wt       = wt                                  ;
     }
 
-    void sendDebugLogMsg(final java.lang.String tag) { android.util.Log.d(tag, this.toString()); }
+    int sendDebugLogMsg(final java.lang.String tag)
+    {
+        return android.util.Log.d(tag, this.toString());
+    }
+
+    int sendErrorLogMsg(final java.lang.String tag)
+    {
+        return android.util.Log.e(tag,
+            this.box + " " + this.getPositionAsString() + " " + this.envid + " " + this.wt);
+    }
 }

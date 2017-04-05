@@ -61,6 +61,9 @@ import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity {
     private final static String TAG = "Inventory";
+
+    private static int currentItemNum = 1;
+
     protected org.wheatgenetics.inventory.SharedPreferences sharedPreferences;
     private UsbDevice mDevice;
 
@@ -72,7 +75,6 @@ public class MainActivity extends AppCompatActivity {
     private TableLayout InventoryTable;
     private SamplesTable samplesTable;
     private ScrollView sv1;
-    private static int currentItemNum = 1;
 
     private LinearLayout parent;
     private ScrollView changeContainer;
@@ -80,11 +82,35 @@ public class MainActivity extends AppCompatActivity {
     private ActionBarDrawerToggle mDrawerToggle;
     private DrawerLayout mDrawerLayout;
 
+
+    // region Class Methods
+    static private int sendVerboseLogMsg(final java.lang.String msg)
+    {
+        return android.util.Log.v(org.wheatgenetics.inventory.MainActivity.TAG, msg);
+    }
+
+    static private int sendInfoLogMsg(final java.lang.String msg)
+    {
+        return android.util.Log.i(org.wheatgenetics.inventory.MainActivity.TAG, msg);
+    }
+
+    static private int sendWarnLogMsg(final java.lang.String msg)
+    {
+        return android.util.Log.w(org.wheatgenetics.inventory.MainActivity.TAG, msg);
+    }
+
+    static private int sendErrorLogMsg(final java.lang.String msg)
+    {
+        return android.util.Log.e(org.wheatgenetics.inventory.MainActivity.TAG, msg);
+    }
+    // endregion
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main_layout);
-        Log.v(TAG, "onCreate()");
+        org.wheatgenetics.inventory.MainActivity.sendVerboseLogMsg("onCreate()");
 
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         {
@@ -217,7 +243,9 @@ public class MainActivity extends AppCompatActivity {
         });
 
         try { makeFileDiscoverable(InventoryDir.createIfMissing()); }
-        catch (IOException e) { Log.e(TAG, e.getMessage()); }
+        catch (IOException e) {
+            org.wheatgenetics.inventory.MainActivity.sendErrorLogMsg(e.getMessage());
+        }
         parseDbToTable();
         goToBottom();
 
@@ -232,7 +260,7 @@ public class MainActivity extends AppCompatActivity {
         try {
             v = getPackageManager().getPackageInfo(getPackageName(), 0).versionCode;
         } catch (PackageManager.NameNotFoundException e) {
-            Log.e("Inventory", "" + e.getMessage());
+            org.wheatgenetics.inventory.MainActivity.sendErrorLogMsg(e.getMessage());
         }
         if (!sharedPreferences.updateVersionIsSet(v)) {
             sharedPreferences.setUpdateVersion(v);
@@ -257,7 +285,7 @@ public class MainActivity extends AppCompatActivity {
         samplesTable.close();
         while (iterator.hasNext()) {
             final InventoryRecord inventoryRecord = iterator.next();
-            Log.e(TAG, inventoryRecord.getLogMsg());
+            inventoryRecord.sendErrorLogMsg(org.wheatgenetics.inventory.MainActivity.TAG);
 
             final int position = inventoryRecord.getPosition();
             createNewTableEntry(inventoryRecord.getBox(), position,
@@ -288,8 +316,7 @@ public class MainActivity extends AppCompatActivity {
             /* position => */ currentItemNum                 ,
             /* wt       => */ weight                         ));
 
-        createNewTableEntry(boxID, currentItemNum, envID, weight);
-        currentItemNum++;
+        createNewTableEntry(boxID, currentItemNum++, envID, weight);
     }
 
     /**
@@ -420,7 +447,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
-        Log.v(TAG, "onStart()");
+        org.wheatgenetics.inventory.MainActivity.sendVerboseLogMsg("onStart()");
     }
 
     @Override
@@ -456,7 +483,7 @@ public class MainActivity extends AppCompatActivity {
                         this.getPackageManager().getPackageInfo(this.getPackageName(), 0);
                     version.setText(getResources().getString(R.string.versiontitle) + " " + packageInfo.versionName);
                 } catch (PackageManager.NameNotFoundException e) {
-                    Log.e(TAG, e.getMessage());
+                    org.wheatgenetics.inventory.MainActivity.sendErrorLogMsg(e.getMessage());
                 }
                 version.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -844,8 +871,9 @@ public class MainActivity extends AppCompatActivity {
             final HashMap<String, UsbDevice> deviceList = usbManager.getDeviceList();
             for (UsbDevice usbDevice : deviceList.values()) {
                 mDevice = usbDevice;
-                Log.v(TAG, String.format("name=%s deviceId=%d productId=%d " +
-                    "vendorId=%d deviceClass=%d subClass=%d protocol=%d interfaceCount=%d",
+                org.wheatgenetics.inventory.MainActivity.sendVerboseLogMsg(String.format(
+                    "name=%s deviceId=%d productId=%d vendorId=%d " +
+                    "deviceClass=%d subClass=%d protocol=%d interfaceCount=%d",
                     mDevice.getDeviceName()    , mDevice.getDeviceId()      ,
                     mDevice.getProductId()     , mDevice.getVendorId()      ,
                     mDevice.getDeviceClass()   , mDevice.getDeviceSubclass(),
@@ -883,16 +911,18 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         protected Void doInBackground(Void... params) {
-            Log.v(TAG, "start transfer");
+            org.wheatgenetics.inventory.MainActivity.sendVerboseLogMsg("start transfer");
 
             if (mDevice == null) {
-                Log.e(TAG, "no device");
+                org.wheatgenetics.inventory.MainActivity.sendErrorLogMsg("no device");
                 return null;
             }
             final UsbInterface intf = mDevice.getInterface(0);
-            Log.v(TAG, String.format("endpoint count = %d", intf.getEndpointCount()));
+            org.wheatgenetics.inventory.MainActivity.sendVerboseLogMsg(
+                String.format("endpoint count = %d", intf.getEndpointCount()));
             final UsbEndpoint endpoint = intf.getEndpoint(0);
-            Log.v(TAG, String.format("endpoint direction = %d out = %d in = %d",
+            org.wheatgenetics.inventory.MainActivity.sendVerboseLogMsg(
+                String.format("endpoint direction = %d out = %d in = %d",
                 endpoint.getDirection(), UsbConstants.USB_DIR_OUT, UsbConstants.USB_DIR_IN));
             final UsbManager usbManager = (UsbManager) getSystemService(Context.USB_SERVICE);
             final UsbDeviceConnection connection = usbManager.openDevice(mDevice);
@@ -903,7 +933,8 @@ public class MainActivity extends AppCompatActivity {
                     data, data.length, /* timeout => */ 2000);
 
                 if (length != 6) {
-                    Log.e(TAG, String.format("invalid length: %d", length));
+                    org.wheatgenetics.inventory.MainActivity.sendErrorLogMsg(
+                        String.format("invalid length: %d", length));
                     return null;
                 }
 
@@ -913,12 +944,13 @@ public class MainActivity extends AppCompatActivity {
                 final short weightLSB = (short) (data[4] & 0xff);
                 final short weightMSB = (short) (data[5] & 0xff);
 
-                // Log.v(TAG, String.format(
+                // org.wheatgenetics.inventory.MainActivity.sendVerboseLogMsg(String.format(
                 // "report=%x status=%x exp=%x lsb=%x msb=%x", report,
                 // status, exp, weightLSB, weightMSB));
 
                 if (report != 3) {
-                    Log.v(TAG, String.format("scale status error %d", status));
+                    org.wheatgenetics.inventory.MainActivity.sendVerboseLogMsg(
+                        String.format("scale status error %d", status));
                     return null;
                 }
 
@@ -931,10 +963,11 @@ public class MainActivity extends AppCompatActivity {
 
                 switch (status) {
                     case 1:
-                        Log.w(TAG, "Scale reports FAULT!\n");
+                        org.wheatgenetics.inventory.MainActivity.sendWarnLogMsg(
+                            "Scale reports FAULT!\n");
                         break;
                     case 3:
-                        Log.i(TAG, "Weighing...");
+                        org.wheatgenetics.inventory.MainActivity.sendInfoLogMsg("Weighing...");
                         if (mLastWeight != zWeight) {
                             publishProgress(zWeight);
                         }
@@ -942,27 +975,33 @@ public class MainActivity extends AppCompatActivity {
                     case 2:
                     case 4:
                         if (mLastWeight != zWeight) {
-                            Log.i(TAG, String.format("Final Weight: %f", zWeight));
+                            org.wheatgenetics.inventory.MainActivity.sendInfoLogMsg(
+                                String.format("Final Weight: %f", zWeight));
                             publishProgress(zWeight);
                         }
                         break;
                     case 5:
-                        Log.w(TAG, "Scale reports Under Zero");
+                        org.wheatgenetics.inventory.MainActivity.sendWarnLogMsg(
+                            "Scale reports Under Zero");
                         if (mLastWeight != zWeight) {
                             publishProgress(0.0);
                         }
                         break;
                     case 6:
-                        Log.w(TAG, "Scale reports Over Weight!");
+                        org.wheatgenetics.inventory.MainActivity.sendWarnLogMsg(
+                            "Scale reports Over Weight!");
                         break;
                     case 7:
-                        Log.e(TAG, "Scale reports Calibration Needed!");
+                        org.wheatgenetics.inventory.MainActivity.sendErrorLogMsg(
+                            "Scale reports Calibration Needed!");
                         break;
                     case 8:
-                        Log.e(TAG, "Scale reports Re-zeroing Needed!\n");
+                        org.wheatgenetics.inventory.MainActivity.sendErrorLogMsg(
+                            "Scale reports Re-zeroing Needed!\n");
                         break;
                     default:
-                        Log.e(TAG, "Unknown status code");
+                        org.wheatgenetics.inventory.MainActivity.sendErrorLogMsg(
+                            "Unknown status code");
                         break;
                 }
 
@@ -972,10 +1011,10 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         protected void onProgressUpdate(Double... values) {
-            Log.i(TAG, "update progress");
+            org.wheatgenetics.inventory.MainActivity.sendInfoLogMsg("update progress");
 
             final String weightText = String.format("%.1f", values[0]);
-            Log.i(TAG, weightText);
+            org.wheatgenetics.inventory.MainActivity.sendInfoLogMsg(weightText);
             mWeightEditText.setText(weightText);
             mWeightEditText.invalidate();
         }
