@@ -64,6 +64,8 @@ public class MainActivity extends AppCompatActivity {
 
     private static int currentItemNum = 1;
 
+
+    // region Instance Fields
     protected org.wheatgenetics.inventory.SharedPreferences sharedPreferences;
     private UsbDevice mDevice;
 
@@ -81,9 +83,11 @@ public class MainActivity extends AppCompatActivity {
 
     private ActionBarDrawerToggle mDrawerToggle;
     private DrawerLayout mDrawerLayout;
+    // endregion
 
 
     // region Class Methods
+    // region Log Class Methods
     static private int sendVerboseLogMsg(final java.lang.String msg)
     {
         return android.util.Log.v(org.wheatgenetics.inventory.MainActivity.TAG, msg);
@@ -111,6 +115,29 @@ public class MainActivity extends AppCompatActivity {
     // endregion
 
 
+    // region Toast Class Methods
+    static private void showToast(final android.content.Context context,
+    final java.lang.CharSequence text, final int duration)
+    {
+        android.widget.Toast.makeText(context, text, duration).show();
+    }
+
+    static private void showToast(
+    final android.content.Context context, final java.lang.CharSequence text)
+    {
+        org.wheatgenetics.inventory.MainActivity.showToast(
+            context, text, android.widget.Toast.LENGTH_SHORT);
+    }
+
+    protected void showToast(final java.lang.CharSequence text)
+    {
+        org.wheatgenetics.inventory.MainActivity.showToast(this, text);
+    }
+    // endregion
+    // endregion
+
+
+    // region Overridden Methods
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -272,6 +299,46 @@ public class MainActivity extends AppCompatActivity {
             changelog();
         }
     }
+
+    @Override
+    protected void onPostCreate(Bundle savedInstanceState) {
+        super.onPostCreate(savedInstanceState);
+        mDrawerToggle.syncState();
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        org.wheatgenetics.inventory.MainActivity.sendVerboseLogMsg("onStart()");
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (mDrawerToggle.onOptionsItemSelected(item)) {
+            return true;
+        }
+
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                mDrawerLayout.openDrawer(GravityCompat.START);
+                return true;
+        }
+
+        return true;
+    }
+
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        mDrawerToggle.onConfigurationChanged(newConfig);
+    }
+    // endregion
+
 
     private void goToBottom() {
         sv1.post(new Runnable() {
@@ -449,32 +516,6 @@ public class MainActivity extends AppCompatActivity {
         alert.create().show();
     }
 
-    @Override
-    protected void onStart() {
-        super.onStart();
-        org.wheatgenetics.inventory.MainActivity.sendVerboseLogMsg("onStart()");
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        if (mDrawerToggle.onOptionsItemSelected(item)) {
-            return true;
-        }
-
-        switch (item.getItemId()) {
-            case android.R.id.home:
-                mDrawerLayout.openDrawer(GravityCompat.START);
-                return true;
-        }
-
-        return true;
-    }
-
     private void aboutDialog() {
         final AlertDialog.Builder alert = new AlertDialog.Builder(this);
         {
@@ -516,24 +557,6 @@ public class MainActivity extends AppCompatActivity {
                 dialog.dismiss();
             }});
         alert.show();
-    }
-
-    static private void showToast(final android.content.Context context,
-    final java.lang.CharSequence text, final int duration)
-    {
-        android.widget.Toast.makeText(context, text, duration).show();
-    }
-
-    static private void showToast(
-    final android.content.Context context, final java.lang.CharSequence text)
-    {
-        org.wheatgenetics.inventory.MainActivity.showToast(
-            context, text, android.widget.Toast.LENGTH_SHORT);
-    }
-
-    protected void showToast(final java.lang.CharSequence text)
-    {
-        org.wheatgenetics.inventory.MainActivity.showToast(this, text);
     }
 
     private void setPersonDialog() {
@@ -864,12 +887,6 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    @Override
-    protected void onPostCreate(Bundle savedInstanceState) {
-        super.onPostCreate(savedInstanceState);
-        mDrawerToggle.syncState();
-    }
-
     protected void findScale() {
         if (mDevice == null) {
             final UsbManager usbManager = (UsbManager) getSystemService(Context.USB_SERVICE);
@@ -1031,11 +1048,5 @@ public class MainActivity extends AppCompatActivity {
             mDevice = null;
             mWeightEditText.setText(getString(R.string.not_connected));
         }
-    }
-
-    @Override
-    public void onConfigurationChanged(Configuration newConfig) {
-        super.onConfigurationChanged(newConfig);
-        mDrawerToggle.onConfigurationChanged(newConfig);
     }
 }
