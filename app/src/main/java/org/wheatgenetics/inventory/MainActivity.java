@@ -23,7 +23,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.content.Intent;
 import android.content.res.Configuration;
-import android.graphics.Color;
 import android.hardware.usb.UsbConstants;
 import android.hardware.usb.UsbDevice;
 import android.hardware.usb.UsbDeviceConnection;
@@ -34,7 +33,6 @@ import android.media.MediaScannerConnection;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -61,7 +59,7 @@ import android.widget.Toast;
 public class MainActivity extends AppCompatActivity {
     private final static String TAG = "Inventory";
 
-    private static int currentItemNum = 1;
+    private static int position = 1;
 
 
     // region Instance Fields
@@ -82,10 +80,10 @@ public class MainActivity extends AppCompatActivity {
 
 
     protected org.wheatgenetics.inventory.SharedPreferences sharedPreferences;
-    private   UsbDevice                                     usbDevice        ;
+    private   android.hardware.usb.UsbDevice                usbDevice        ;
 
-    private String       box         ;
-    private SamplesTable samplesTable;
+    private java.lang.String                         box         ;
+    private org.wheatgenetics.inventory.SamplesTable samplesTable;
     // endregion
 
 
@@ -275,14 +273,14 @@ public class MainActivity extends AppCompatActivity {
         catch (IOException e) {
             org.wheatgenetics.inventory.MainActivity.sendErrorLogMsg(e);
         }
-        this.parseDbToTable();
+        this.addTableRows();
         this.goToBottom();
 
         this.sharedPreferences =
             new org.wheatgenetics.inventory.SharedPreferences(getSharedPreferences("Settings", 0));
 
-        if (!this.sharedPreferences.firstNameIsSet()) this.setPersonDialog();
-        if (!this.sharedPreferences.getIgnoreScale()) this.findScale()      ;
+        if (!this.sharedPreferences.firstNameIsSet()) this.setPerson();
+        if (!this.sharedPreferences.getIgnoreScale()) this.findScale();
 
         int v = 0;
         try {
@@ -364,7 +362,8 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    private void parseDbToTable() {
+    private void addTableRows()
+    {
         assert this.tableLayout != null;
         this.tableLayout.removeAllViews();
 
@@ -377,7 +376,7 @@ public class MainActivity extends AppCompatActivity {
             assert inventoryRecord != null;
             inventoryRecord.sendErrorLogMsg(org.wheatgenetics.inventory.MainActivity.TAG);
             this.addTableRow(inventoryRecord);
-            currentItemNum = inventoryRecord.getPosition() + 1;
+            MainActivity.position = inventoryRecord.getPosition() + 1;
         }
     }
 
@@ -398,7 +397,7 @@ public class MainActivity extends AppCompatActivity {
             /* box      => */ this.boxTextView.getText().toString()  ,
             /* envid    => */ this.envidEditText.getText().toString(),
             /* person   => */ this.sharedPreferences.getSafeName()   ,
-            /* position => */ currentItemNum++                       ,
+            /* position => */ MainActivity.position++                ,
             /* wt       => */ this.wtEditText.getText().toString()   );
 
         assert this.samplesTable != null;
@@ -430,7 +429,7 @@ public class MainActivity extends AppCompatActivity {
             sampleTextView.setOnLongClickListener(new OnLongClickListener() {
                 @Override
                 public boolean onLongClick(View v) {
-                    deleteDialog((String) v.getTag());
+                    delete(v.getTag());
                     return false;
                 }});
 
@@ -444,8 +443,9 @@ public class MainActivity extends AppCompatActivity {
             TableLayout.LayoutParams.MATCH_PARENT, TableLayout.LayoutParams.MATCH_PARENT));
     }
 
-    private void deleteDialog(final String tag) {
-        final String tagArray[] = tag.split(",");
+    private void delete(final java.lang.Object tag) {
+        assert tag != null;
+        final String tagArray[] = ((java.lang.String) tag).split(",");
         final String box        = tagArray[0];
         final String env        = tagArray[1];
         final int    num        = Integer.parseInt(tagArray[2]);
@@ -458,13 +458,11 @@ public class MainActivity extends AppCompatActivity {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         samplesTable.delete(new InventoryRecord(box, env, num));
-                        parseDbToTable();
+                        addTableRows();
                     }})
                .setNegativeButton(getString(R.string.no), new DialogInterface.OnClickListener() {
                     @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.cancel();
-                    }});
+                    public void onClick(DialogInterface dialog, int which) { dialog.cancel(); }});
         builder.create().show();
     }
 
@@ -505,7 +503,7 @@ public class MainActivity extends AppCompatActivity {
         alert.create().show();
     }
 
-    private void aboutDialog() {
+    private void showAboutDialog() {
         final AlertDialog.Builder alert = new AlertDialog.Builder(this);
         {
             final View personView =
@@ -522,18 +520,14 @@ public class MainActivity extends AppCompatActivity {
                 }
                 version.setOnClickListener(new View.OnClickListener() {
                     @Override
-                    public void onClick(View v) {
-                        changelog();
-                    }});
+                    public void onClick(View v) { changelog(); }});
             }
 
             {
                 final TextView otherApps = (TextView) personView.findViewById(R.id.tvOtherApps);
                 otherApps.setOnClickListener(new View.OnClickListener() {
                     @Override
-                    public void onClick(View v) {
-                        showOtherAppsDialog();
-                    }});
+                    public void onClick(View v) { showOtherAppsDialog(); }});
             }
 
             alert.setCancelable(true);
@@ -542,13 +536,11 @@ public class MainActivity extends AppCompatActivity {
         }
         alert.setNegativeButton(getResources().getString(R.string.ok), new DialogInterface.OnClickListener() {
             @Override
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.dismiss();
-            }});
+            public void onClick(DialogInterface dialog, int which) { dialog.dismiss(); }});
         alert.show();
     }
 
-    private void setPersonDialog() {
+    private void setPerson() {
         final AlertDialog.Builder builder = new AlertDialog.Builder(this);
 
         builder.setCancelable(false);
@@ -573,7 +565,7 @@ public class MainActivity extends AppCompatActivity {
 
                         if (firstName.length() == 0 | lastName.length() == 0) {
                             showToast(getResources().getString(R.string.no_blank));
-                            setPersonDialog();
+                            setPerson();
                             return;
                         }
 
@@ -754,7 +746,7 @@ public class MainActivity extends AppCompatActivity {
     private void deleteAll() {
         this.samplesTable.deleteAll();
         this.tableLayout.removeAllViews();
-        currentItemNum = 1;
+        MainActivity.position = 1;
     }
 
     private void shareFile(final File file, final String fileName) {
@@ -776,7 +768,7 @@ public class MainActivity extends AppCompatActivity {
                 findScale();
                 break;
             case R.id.person:
-                setPersonDialog();
+                setPerson();
                 break;
             case R.id.export:
                 export();
@@ -785,7 +777,7 @@ public class MainActivity extends AppCompatActivity {
                 clearDialog();
                 break;
             case R.id.about:
-                aboutDialog();
+                showAboutDialog();
                 break;
         }
         this.drawerLayout.closeDrawers();
