@@ -82,9 +82,9 @@ public class MainActivity extends AppCompatActivity {
 
 
     protected org.wheatgenetics.inventory.SharedPreferences sharedPreferences;
-    private UsbDevice mDevice;
+    private   UsbDevice                                     usbDevice        ;
 
-    private String box;
+    private String       box         ;
     private SamplesTable samplesTable;
     // endregion
 
@@ -207,21 +207,20 @@ public class MainActivity extends AppCompatActivity {
         changeContainer.removeAllViews();
         changeContainer.addView(parent);
 
-        samplesTable = new SamplesTable(this);
+        this.samplesTable = new SamplesTable(this);
 
         {
-            final Button setBox = (Button) this.findViewById(R.id.btBox);
-            setBox.setOnClickListener(new View.OnClickListener() {
+            final Button setBoxButton = (Button) this.findViewById(R.id.btBox);
+            setBoxButton.setOnClickListener(new View.OnClickListener() {
                 @Override
-                public void onClick(View v) { setBoxDialog(); }
-            });
+                public void onClick(View v) { setBox(); }});
         }
 
         this.tableLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {}});
 
-        mDevice = this.getIntent().getParcelableExtra(UsbManager.EXTRA_DEVICE);
+        this.usbDevice = this.getIntent().getParcelableExtra(UsbManager.EXTRA_DEVICE);
 
         this.envidEditText.setOnKeyListener(new View.OnKeyListener() {
             @Override
@@ -232,17 +231,14 @@ public class MainActivity extends AppCompatActivity {
                             (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
                         mgr.showSoftInput(envidEditText, InputMethodManager.HIDE_IMPLICIT_ONLY);
                     }
-                    if (event.getAction() != KeyEvent.ACTION_DOWN)
-                        return true;
+                    if (event.getAction() != KeyEvent.ACTION_DOWN) return true;
                     addRecord(); // Add the current record to the table
                     goToBottom();
                     envidEditText.requestFocus(); // Set focus back to Enter box
                 }
 
                 if (keyCode == KeyEvent.KEYCODE_NUMPAD_ENTER) {
-                    if (event.getAction() == KeyEvent.ACTION_DOWN) {
-                        return true;
-                    }
+                    if (event.getAction() == KeyEvent.ACTION_DOWN) return true;
                     if (event.getAction() == KeyEvent.ACTION_UP) {
                         addRecord(); // Add the current record to the table
                         goToBottom();
@@ -250,8 +246,7 @@ public class MainActivity extends AppCompatActivity {
                     envidEditText.requestFocus(); // Set focus back to Enter box
                 }
                 return false;
-            }
-        });
+            }});
 
         this.wtEditText.setOnKeyListener(new View.OnKeyListener() {
             @Override
@@ -262,19 +257,16 @@ public class MainActivity extends AppCompatActivity {
                             (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
                         mgr.showSoftInput(envidEditText, InputMethodManager.HIDE_IMPLICIT_ONLY);
                     }
-                    if (event.getAction() != KeyEvent.ACTION_DOWN)
-                        return true;
+                    if (event.getAction() != KeyEvent.ACTION_DOWN) return true;
                     addRecord(); // Add the current record to the table
                     goToBottom();
 
-                    if (mDevice != null) wtEditText.setText("");
+                    if (usbDevice != null) wtEditText.setText("");
                     envidEditText.requestFocus(); // Set focus back to Enter box
                 }
 
                 if (keyCode == KeyEvent.KEYCODE_NUMPAD_ENTER) {
-                    if (event.getAction() == KeyEvent.ACTION_DOWN) {
-                        return true;
-                    }
+                    if (event.getAction() == KeyEvent.ACTION_DOWN) return true;
                     if (event.getAction() == KeyEvent.ACTION_UP) {
                         addRecord(); // Add the current record to the table
                         goToBottom();
@@ -282,8 +274,7 @@ public class MainActivity extends AppCompatActivity {
                     envidEditText.requestFocus(); // Set focus back to Enter box
                 }
                 return false;
-            }
-        });
+            }});
 
         try { this.makeFileDiscoverable(InventoryDir.createIfMissing()); }
         catch (IOException e) {
@@ -296,8 +287,7 @@ public class MainActivity extends AppCompatActivity {
             new org.wheatgenetics.inventory.SharedPreferences(getSharedPreferences("Settings", 0));
 
         if (!sharedPreferences.firstNameIsSet()) this.setPersonDialog();
-
-        if (!sharedPreferences.getIgnoreScale()) this.findScale();
+        if (!sharedPreferences.getIgnoreScale()) this.findScale()      ;
 
         int v = 0;
         try {
@@ -362,8 +352,8 @@ public class MainActivity extends AppCompatActivity {
     private void parseDbToTable() {
         this.tableLayout.removeAllViews();
 
-        final Iterator<InventoryRecord> iterator = samplesTable.getAll().iterator();
-        samplesTable.close();
+        final Iterator<InventoryRecord> iterator = this.samplesTable.getAll().iterator();
+        this.samplesTable.close();
         while (iterator.hasNext()) {
             final InventoryRecord inventoryRecord = iterator.next();
             inventoryRecord.sendErrorLogMsg(org.wheatgenetics.inventory.MainActivity.TAG);
@@ -390,7 +380,7 @@ public class MainActivity extends AppCompatActivity {
         final String envid = this.envidEditText.getText().toString();
         final String wt    = this.wtEditText.getText().toString()   ;
 
-        samplesTable.add(new InventoryRecord(
+        this.samplesTable.add(new InventoryRecord(
             /* box      => */ box                            ,
             /* envid    => */ envid                          ,
             /* person   => */ sharedPreferences.getSafeName(),
@@ -488,7 +478,7 @@ public class MainActivity extends AppCompatActivity {
         builder.create().show();
     }
 
-    private void setBoxDialog() {
+    private void setBox() {
         final EditText input = new EditText(this);
         input.setText(this.box);
         input.selectAll();
@@ -731,8 +721,8 @@ public class MainActivity extends AppCompatActivity {
 
     private void exportCSV() {
         {
-            final InventoryRecords inventoryRecords = samplesTable.getAll();
-            samplesTable.close();
+            final InventoryRecords inventoryRecords = this.samplesTable.getAll();
+            this.samplesTable.close();
             {
                 final String fileName = Utils.getExportFileName() + ".csv";
                 try { shareFile(inventoryRecords.writeCSV(fileName), fileName); }
@@ -747,9 +737,9 @@ public class MainActivity extends AppCompatActivity {
 
     private void exportSQL() {
         {
-            final InventoryRecords inventoryRecords = samplesTable.getAll();
-            final String           boxList          = samplesTable.getBoxList()         ;
-            samplesTable.close();
+            final InventoryRecords inventoryRecords = this.samplesTable.getAll()    ;
+            final String           boxList          = this.samplesTable.getBoxList();
+            this.samplesTable.close();
             {
                 final String fileName = Utils.getExportFileName() + ".sql";
                 try { shareFile(inventoryRecords.writeSQL(fileName, boxList), fileName); }
@@ -772,7 +762,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void deleteAll() {
-        samplesTable.deleteAll();
+        this.samplesTable.deleteAll();
         this.tableLayout.removeAllViews();
         currentItemNum = 1;
     }
@@ -881,23 +871,23 @@ public class MainActivity extends AppCompatActivity {
     }
 
     protected void findScale() {
-        if (mDevice == null) {
+        if (this.usbDevice == null) {
             final UsbManager usbManager = (UsbManager) getSystemService(Context.USB_SERVICE);
             final HashMap<String, UsbDevice> deviceList = usbManager.getDeviceList();
             for (UsbDevice usbDevice : deviceList.values()) {
-                mDevice = usbDevice;
+                this.usbDevice = usbDevice;
                 org.wheatgenetics.inventory.MainActivity.sendVerboseLogMsg(String.format(
                     "name=%s deviceId=%d productId=%d vendorId=%d " +
                     "deviceClass=%d subClass=%d protocol=%d interfaceCount=%d",
-                    mDevice.getDeviceName()    , mDevice.getDeviceId()      ,
-                    mDevice.getProductId()     , mDevice.getVendorId()      ,
-                    mDevice.getDeviceClass()   , mDevice.getDeviceSubclass(),
-                    mDevice.getDeviceProtocol(), mDevice.getInterfaceCount()));
+                    this.usbDevice.getDeviceName()    , this.usbDevice.getDeviceId()      ,
+                    this.usbDevice.getProductId()     , this.usbDevice.getVendorId()      ,
+                    this.usbDevice.getDeviceClass()   , this.usbDevice.getDeviceSubclass(),
+                    this.usbDevice.getDeviceProtocol(), this.usbDevice.getInterfaceCount()));
                 break;
             }
         }
 
-        if (mDevice != null) {
+        if (this.usbDevice != null) {
             this.wtEditText.setText("0");
             new ScaleListener().execute();
         } else {
@@ -928,11 +918,11 @@ public class MainActivity extends AppCompatActivity {
         protected Void doInBackground(Void... params) {
             org.wheatgenetics.inventory.MainActivity.sendVerboseLogMsg("start transfer");
 
-            if (mDevice == null) {
+            if (usbDevice == null) {
                 org.wheatgenetics.inventory.MainActivity.sendErrorLogMsg("no device");
                 return null;
             }
-            final UsbInterface intf = mDevice.getInterface(0);
+            final UsbInterface intf = usbDevice.getInterface(0);
             org.wheatgenetics.inventory.MainActivity.sendVerboseLogMsg(
                 String.format("endpoint count = %d", intf.getEndpointCount()));
             final UsbEndpoint endpoint = intf.getEndpoint(0);
@@ -940,7 +930,7 @@ public class MainActivity extends AppCompatActivity {
                 String.format("endpoint direction = %d out = %d in = %d",
                 endpoint.getDirection(), UsbConstants.USB_DIR_OUT, UsbConstants.USB_DIR_IN));
             final UsbManager usbManager = (UsbManager) getSystemService(Context.USB_SERVICE);
-            final UsbDeviceConnection connection = usbManager.openDevice(mDevice);
+            final UsbDeviceConnection connection = usbManager.openDevice(usbDevice);
             connection.claimInterface(intf, true);
             final byte[] data = new byte[128];
             while (true) {
@@ -970,9 +960,7 @@ public class MainActivity extends AppCompatActivity {
                 }
 
                 double mWeightGrams = weightLSB + weightMSB * 256.0;
-                if (mDevice.getProductId() == 519) {
-                    mWeightGrams /= 10.0;
-                }
+                if (usbDevice.getProductId() == 519) mWeightGrams /= 10.0;
                 final double mZeroGrams = 0;
                 final double zWeight = mWeightGrams - mZeroGrams;
 
@@ -1038,7 +1026,7 @@ public class MainActivity extends AppCompatActivity {
         protected void onPostExecute(Void result) {
             org.wheatgenetics.inventory.MainActivity.showToast(getApplicationContext(),
                 getString(R.string.scale_disconnect), Toast.LENGTH_LONG);
-            mDevice = null;
+            usbDevice = null;
             wtEditText.setText(getString(R.string.not_connected));
         }
     }
