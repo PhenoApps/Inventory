@@ -1,5 +1,7 @@
 package org.wheatgenetics.inventory;
 
+// Uses android.widget.Toast.
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
@@ -54,7 +56,6 @@ import android.widget.ScrollView;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
-import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity {
     private final static String TAG = "Inventory";
@@ -74,16 +75,15 @@ public class MainActivity extends AppCompatActivity {
     private android.widget.TableLayout tableLayout;
     private android.widget.ScrollView  scrollView ;
 
-    private android.widget.LinearLayout parent;
-    private android.widget.ScrollView changeContainer;
+    private android.widget.LinearLayout parent         ;
+    private android.widget.ScrollView   changeContainer;
     // endregion
 
 
+    protected org.wheatgenetics.inventory.SamplesTable      samplesTable     ;
+    protected android.hardware.usb.UsbDevice                usbDevice        ;
     protected org.wheatgenetics.inventory.SharedPreferences sharedPreferences;
-    private   android.hardware.usb.UsbDevice                usbDevice        ;
-
-    private java.lang.String                         box         ;
-    private org.wheatgenetics.inventory.SamplesTable samplesTable;
+    protected java.lang.String                              box              ;
     // endregion
 
 
@@ -179,8 +179,7 @@ public class MainActivity extends AppCompatActivity {
                 }
 
                 @Override
-                public void onDrawerClosed(View drawerView) {}
-            };
+                public void onDrawerClosed(View drawerView) {}};
         this.actionBarDrawerToggle.setDrawerIndicatorEnabled(true);
         this.drawerLayout.setDrawerListener(this.actionBarDrawerToggle);
 
@@ -195,10 +194,10 @@ public class MainActivity extends AppCompatActivity {
         this.tableLayout = (TableLayout) this.findViewById(R.id.tlInventory);
         this.scrollView  = (ScrollView ) this.findViewById(R.id.svData     );
 
-        parent = new LinearLayout(this);
-        changeContainer = new ScrollView(this);
-        changeContainer.removeAllViews();
-        changeContainer.addView(parent);
+        this.parent = new LinearLayout(this);
+        this.changeContainer = new ScrollView(this);
+        this.changeContainer.removeAllViews();
+        this.changeContainer.addView(this.parent);
 
         this.samplesTable = new SamplesTable(this);
 
@@ -270,9 +269,7 @@ public class MainActivity extends AppCompatActivity {
             }});
 
         try { this.makeFileDiscoverable(InventoryDir.createIfMissing()); }
-        catch (IOException e) {
-            org.wheatgenetics.inventory.MainActivity.sendErrorLogMsg(e);
-        }
+        catch (IOException e) { org.wheatgenetics.inventory.MainActivity.sendErrorLogMsg(e); }
         this.addTableRows();
         this.goToBottom();
 
@@ -283,14 +280,13 @@ public class MainActivity extends AppCompatActivity {
         if (!this.sharedPreferences.getIgnoreScale()) this.findScale();
 
         int v = 0;
-        try {
-            v = getPackageManager().getPackageInfo(getPackageName(), 0).versionCode;
-        } catch (PackageManager.NameNotFoundException e) {
+        try { v = getPackageManager().getPackageInfo(getPackageName(), 0).versionCode; }
+        catch (PackageManager.NameNotFoundException e) {
             org.wheatgenetics.inventory.MainActivity.sendErrorLogMsg(e);
         }
         if (!this.sharedPreferences.updateVersionIsSet(v)) {
             this.sharedPreferences.setUpdateVersion(v);
-            this.changelog();
+            this.showChangeLog();
         }
     }
 
@@ -353,13 +349,13 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void goToBottom() {
+        assert this.scrollView != null;
         this.scrollView.post(new Runnable() {
             @Override
             public void run() {
                 scrollView.fullScroll(ScrollView.FOCUS_DOWN);
                 envidEditText.requestFocus();
-            }
-        });
+            }});
     }
 
     private void addTableRows()
@@ -433,7 +429,7 @@ public class MainActivity extends AppCompatActivity {
                     return false;
                 }});
 
-            tableRow.addView(sampleTextView);                         // Add the Sample/envid field.
+            tableRow.addView(sampleTextView);
         }
 
         tableRow.addView(this.makeTextView(inventoryRecord.getWt(), 0.16f));
@@ -467,19 +463,20 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void setBox() {
-        final EditText input = new EditText(this);
-        input.setText(this.box);
-        input.selectAll();
-        input.setSingleLine();
+        final EditText boxEditText = new EditText(this);
+        boxEditText.setText(this.box);
+        boxEditText.selectAll();
+        boxEditText.setSingleLine();
 
         final AlertDialog.Builder alert = new AlertDialog.Builder(this);
         alert.setTitle(getString(R.string.setbox));
-        alert.setView(input);
+        alert.setView(boxEditText);
+
         alert.setPositiveButton(getString(R.string.ok), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 {
-                    final String value = input.getText().toString().trim();
+                    final String value = boxEditText.getText().toString().trim();
 
                     boxTextView.setText(value);
                     box = value;
@@ -487,7 +484,7 @@ public class MainActivity extends AppCompatActivity {
 
                 final InputMethodManager imm =
                     (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-                imm.hideSoftInputFromWindow(input.getWindowToken(), 0);
+                imm.hideSoftInputFromWindow(boxEditText.getWindowToken(), 0);
             }});
 
         alert.setNegativeButton(getString(R.string.cancel), new DialogInterface.OnClickListener() {
@@ -497,9 +494,9 @@ public class MainActivity extends AppCompatActivity {
 
                 final InputMethodManager imm =
                     (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-                imm.hideSoftInputFromWindow(input.getWindowToken(), 0);
-            }
-            });
+                imm.hideSoftInputFromWindow(boxEditText.getWindowToken(), 0);
+            }});
+
         alert.create().show();
     }
 
@@ -511,16 +508,20 @@ public class MainActivity extends AppCompatActivity {
 
             {
                 final TextView version = (TextView) personView.findViewById(R.id.tvVersion);
-                try {
+                try
+                {
                     final PackageInfo packageInfo =
                         this.getPackageManager().getPackageInfo(this.getPackageName(), 0);
-                    version.setText(getResources().getString(R.string.versiontitle) + " " + packageInfo.versionName);
-                } catch (PackageManager.NameNotFoundException e) {
+                    version.setText(getResources().getString(R.string.versiontitle) +
+                        " " + packageInfo.versionName);
+                }
+                catch (PackageManager.NameNotFoundException e)
+                {
                     org.wheatgenetics.inventory.MainActivity.sendErrorLogMsg(e);
                 }
                 version.setOnClickListener(new View.OnClickListener() {
                     @Override
-                    public void onClick(View v) { changelog(); }});
+                    public void onClick(View v) { showChangeLog(); }});
             }
 
             {
@@ -534,9 +535,10 @@ public class MainActivity extends AppCompatActivity {
             alert.setTitle(getResources().getString(R.string.about));
             alert.setView(personView);
         }
-        alert.setNegativeButton(getResources().getString(R.string.ok), new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) { dialog.dismiss(); }});
+        alert.setNegativeButton(getResources().getString(R.string.ok),
+            new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) { dialog.dismiss(); }});
         alert.show();
     }
 
@@ -578,7 +580,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void showOtherAppsDialog() {
-        final AlertDialog.Builder otherAppsAlert = new AlertDialog.Builder(this);
+        final AlertDialog.Builder builder = new AlertDialog.Builder(this);
         {
             final ListView myList = new ListView(this);
 
@@ -617,17 +619,17 @@ public class MainActivity extends AppCompatActivity {
                 myList.setAdapter(new CustomListAdapter(this, appIconIDs, appNames));
             }
 
-            otherAppsAlert.setCancelable(true);
-            otherAppsAlert.setTitle(getResources().getString(R.string.otherapps));
-            otherAppsAlert.setView(myList);
+            builder.setCancelable(true);
+            builder.setTitle(getResources().getString(R.string.otherapps));
+            builder.setView(myList);
         }
-        otherAppsAlert.setNegativeButton(getResources().getString(R.string.ok),
+        builder.setNegativeButton(getResources().getString(R.string.ok),
             new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
                     dialog.dismiss();
                 }});
-        otherAppsAlert.show();
+        builder.show();
     }
 
     public class CustomListAdapter extends ArrayAdapter<String> {
@@ -661,11 +663,10 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    private void clearDialog() {
+    private void clearAll() {
         final AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
 
-        builder.setMessage(
-            getString(R.string.delete_msg_1))
+        builder.setMessage(getString(R.string.delete_msg_1))
             .setCancelable(false)
             .setTitle(getString(R.string.clear_data))
             .setPositiveButton(getString(R.string.yes), new DialogInterface.OnClickListener() {
@@ -677,9 +678,7 @@ public class MainActivity extends AppCompatActivity {
                 }})
             .setNegativeButton(getString(R.string.no), new DialogInterface.OnClickListener() {
                 @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    dialog.cancel();
-                }});
+                public void onClick(DialogInterface dialog, int which) { dialog.cancel(); }});
         builder.create().show();
     }
 
@@ -707,14 +706,14 @@ public class MainActivity extends AppCompatActivity {
             this.samplesTable.close();
             {
                 final String fileName = Utils.getExportFileName() + ".csv";
-                try { shareFile(inventoryRecords.writeCSV(fileName), fileName); }
+                try { this.shareFile(inventoryRecords.writeCSV(fileName), fileName); }
                 catch (IOException e) {
                     org.wheatgenetics.inventory.MainActivity.showToast(
                         this.getBaseContext(), e.getMessage());
                 }
             }
         }
-        deleteAll();
+        this.deleteAll();
     }
 
     private void exportSQL() {
@@ -724,14 +723,14 @@ public class MainActivity extends AppCompatActivity {
             this.samplesTable.close();
             {
                 final String fileName = Utils.getExportFileName() + ".sql";
-                try { shareFile(inventoryRecords.writeSQL(fileName, boxList), fileName); }
+                try { this.shareFile(inventoryRecords.writeSQL(fileName, boxList), fileName); }
                 catch (IOException e) {
                     org.wheatgenetics.inventory.MainActivity.showToast(
                         this.getBaseContext(), e.getMessage());
                 }
             }
         }
-        deleteAll();
+        this.deleteAll();
     }
 
     protected void makeFileDiscoverable(final File file) {
@@ -751,46 +750,46 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void shareFile(final File file, final String fileName) {
-        makeFileDiscoverable(file);
-        showToast(getString(R.string.export_success));
+        this.makeFileDiscoverable(file);
+        this.showToast(getString(R.string.export_success));
 
         final Intent intent = new Intent(android.content.Intent.ACTION_SEND);
 
         intent.setType ("text/plain");
         intent.putExtra(Intent.EXTRA_STREAM, InventoryDir.parse(fileName));
 
-        startActivity(Intent.createChooser(intent, getString(R.string.sending_file)));
+        this.startActivity(Intent.createChooser(intent, getString(R.string.sending_file)));
     }
 
     protected void selectNavigationItem(final MenuItem menuItem) {
         assert menuItem != null;
         switch (menuItem.getItemId()) {
             case R.id.scaleConnect:
-                findScale();
+                this.findScale();
                 break;
             case R.id.person:
-                setPerson();
+                this.setPerson();
                 break;
             case R.id.export:
-                export();
+                this.export();
                 break;
             case R.id.clearData:
-                clearDialog();
+                this.clearAll();
                 break;
             case R.id.about:
-                showAboutDialog();
+                this.showAboutDialog();
                 break;
         }
         this.drawerLayout.closeDrawers();
     }
 
-    private void changelog() {
-        parent.setOrientation(LinearLayout.VERTICAL);
-        parseLog(R.raw.changelog_releases);
+    private void showChangeLog() {
+        this.parent.setOrientation(LinearLayout.VERTICAL);
+        this.parseLog(R.raw.changelog_releases);
 
         final AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
         builder.setTitle(getResources().getString(R.string.updatemsg));
-        builder.setView(changeContainer)
+        builder.setView(this.changeContainer)
                .setCancelable(true)
                .setPositiveButton(getResources().getString(R.string.ok),
                     new DialogInterface.OnClickListener() {
@@ -834,23 +833,21 @@ public class MainActivity extends AppCompatActivity {
                 if (line.length() == 0) {
                     curVersionName = null;
                     spacer.setText("\n");
-                    parent.addView(spacer);
+                    this.parent.addView(spacer);
                 } else if (curVersionName == null) {
                     {
                         final String[] lineSplit = line.split("/");
                         curVersionName = lineSplit[1];
                     }
                     header.setText(curVersionName);
-                    parent.addView(header);
-                    parent.addView(ruler);
+                    this.parent.addView(header);
+                    this.parent.addView(ruler);
                 } else {
                     content.setText("•  " + line);
-                    parent.addView(content);
+                    this.parent.addView(content);
                 }
             }
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+        } catch (IOException e) { throw new RuntimeException(e); }
     }
 
     protected void findScale() {
@@ -881,16 +878,15 @@ public class MainActivity extends AppCompatActivity {
                 .setPositiveButton(getString(R.string.try_again),
                     new DialogInterface.OnClickListener() {
                         @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            findScale();
-                        }})
+                        public void onClick(DialogInterface dialog, int which) { findScale(); }})
                 .setNegativeButton(getString(R.string.ignore),
                     new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             sharedPreferences.setIgnoreScaleToTrue();
                             dialog.cancel();
-                        }}).show();
+                        }})
+                .show();
         }
     }
 
@@ -933,8 +929,8 @@ public class MainActivity extends AppCompatActivity {
                 final short weightMSB = (short) (data[5] & 0xff);
 
                 // org.wheatgenetics.inventory.MainActivity.sendVerboseLogMsg(String.format(
-                // "report=%x status=%x exp=%x lsb=%x msb=%x", report,
-                // status, exp, weightLSB, weightMSB));
+                //   "report=%x status=%x exp=%x lsb=%x msb=%x",
+                //   report, status, exp, weightLSB, weightMSB));
 
                 if (report != 3) {
                     org.wheatgenetics.inventory.MainActivity.sendVerboseLogMsg(
@@ -945,7 +941,7 @@ public class MainActivity extends AppCompatActivity {
                 double mWeightGrams = weightLSB + weightMSB * 256.0;
                 if (usbDevice.getProductId() == 519) mWeightGrams /= 10.0;
                 final double mZeroGrams = 0;
-                final double zWeight = mWeightGrams - mZeroGrams;
+                final double zWeight    = mWeightGrams - mZeroGrams;
 
                 switch (status) {
                     case 1:
@@ -954,9 +950,7 @@ public class MainActivity extends AppCompatActivity {
                         break;
                     case 3:
                         org.wheatgenetics.inventory.MainActivity.sendInfoLogMsg("Weighing...");
-                        if (mLastWeight != zWeight) {
-                            publishProgress(zWeight);
-                        }
+                        if (mLastWeight != zWeight) publishProgress(zWeight);
                         break;
                     case 2:
                     case 4:
@@ -969,9 +963,7 @@ public class MainActivity extends AppCompatActivity {
                     case 5:
                         org.wheatgenetics.inventory.MainActivity.sendWarnLogMsg(
                             "Scale reports Under Zero");
-                        if (mLastWeight != zWeight) {
-                            publishProgress(0.0);
-                        }
+                        if (mLastWeight != zWeight) publishProgress(0.0);
                         break;
                     case 6:
                         org.wheatgenetics.inventory.MainActivity.sendWarnLogMsg(
@@ -1008,7 +1000,7 @@ public class MainActivity extends AppCompatActivity {
         @Override
         protected void onPostExecute(Void result) {
             org.wheatgenetics.inventory.MainActivity.showToast(getApplicationContext(),
-                getString(R.string.scale_disconnect), Toast.LENGTH_LONG);
+                getString(R.string.scale_disconnect), android.widget.Toast.LENGTH_LONG);
             usbDevice = null;
             wtEditText.setText(getString(R.string.not_connected));
         }
