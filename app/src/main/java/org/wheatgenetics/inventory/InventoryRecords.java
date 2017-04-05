@@ -1,5 +1,7 @@
 package org.wheatgenetics.inventory;
 
+// Uses android.util.Log.
+
 class InventoryRecords extends java.lang.Object
 {
     protected java.util.LinkedList<org.wheatgenetics.inventory.InventoryRecord> linkedList =
@@ -86,4 +88,6 @@ class InventoryRecords extends java.lang.Object
             return file;
         }
     }
+
+    void sendDebugLogMsg(final java.lang.String tag) { android.util.Log.d(tag, this.toString()); }
 }

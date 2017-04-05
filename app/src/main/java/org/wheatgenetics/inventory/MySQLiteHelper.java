@@ -3,7 +3,6 @@ package org.wheatgenetics.inventory;
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.util.Log;
 
 class MySQLiteHelper extends android.database.sqlite.SQLiteOpenHelper {
     // region Private Constants
@@ -61,6 +60,8 @@ class MySQLiteHelper extends android.database.sqlite.SQLiteOpenHelper {
 
     // region Protected Methods
     static private ContentValues makeContentValues(final InventoryRecord inventoryRecord) {
+        assert inventoryRecord != null;
+
         final ContentValues contentValues = new ContentValues();
 
         contentValues.put(org.wheatgenetics.inventory.MySQLiteHelper.BOX_FIELD_NAME,
@@ -124,7 +125,7 @@ class MySQLiteHelper extends android.database.sqlite.SQLiteOpenHelper {
                 cursor.close();
             }
         }
-        Log.d("get(" + id + ")", inventoryRecord.toString());
+        inventoryRecord.sendDebugLogMsg("get(" + id + ")");
         return inventoryRecord;
     }
 
@@ -153,7 +154,8 @@ class MySQLiteHelper extends android.database.sqlite.SQLiteOpenHelper {
     // region Package Methods
     // region Single-Record Package Methods
     void add(final InventoryRecord inventoryRecord) {
-        Log.d("add() ", inventoryRecord.toString());
+        assert inventoryRecord != null;
+        inventoryRecord.sendDebugLogMsg("add()");
 
         final SQLiteDatabase db = this.getWritableDatabase();
 
@@ -163,7 +165,8 @@ class MySQLiteHelper extends android.database.sqlite.SQLiteOpenHelper {
     }
 
     Boolean delete(final InventoryRecord inventoryRecord) {
-        Log.d("delete()", inventoryRecord.toString());
+        assert inventoryRecord != null;
+        inventoryRecord.sendDebugLogMsg("delete()");
         return this.internalDelete(
             this.POSITION_FIELD_NAME + "='" + inventoryRecord.getPositionAsString() + "'") > 0;
     }
@@ -191,7 +194,7 @@ class MySQLiteHelper extends android.database.sqlite.SQLiteOpenHelper {
             }
             cursor.close();
         }
-        Log.d("getAll()", inventoryRecords.toString());
+        inventoryRecords.sendDebugLogMsg("getAll()");
         return inventoryRecords;
     }
 
