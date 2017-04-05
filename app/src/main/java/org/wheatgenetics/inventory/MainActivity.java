@@ -131,11 +131,6 @@ public class MainActivity extends AppCompatActivity {
         org.wheatgenetics.inventory.MainActivity.showToast(
             context, text, android.widget.Toast.LENGTH_SHORT);
     }
-
-    protected void showToast(final java.lang.CharSequence text)
-    {
-        org.wheatgenetics.inventory.MainActivity.showToast(this, text);
-    }
     // endregion
     // endregion
 
@@ -337,6 +332,28 @@ public class MainActivity extends AppCompatActivity {
     // endregion
 
 
+    protected void showToast(final java.lang.CharSequence text)
+    {
+        org.wheatgenetics.inventory.MainActivity.showToast(this, text);
+    }
+
+    protected android.widget.TextView makeTextView(
+    final java.lang.CharSequence text, final float initWeight)
+    {
+        final android.widget.TextView textView = new android.widget.TextView(this);
+
+        textView.setGravity  (android.view.Gravity.CENTER | android.view.Gravity.BOTTOM);
+        textView.setTextColor(android.graphics.Color.BLACK                             );
+        textView.setTextSize (20.0f                                                    );
+        textView.setText     (text                                                     );
+        textView.setLayoutParams(new android.widget.TableRow.LayoutParams(
+            /* w          => */ 0                                               ,
+            /* h          => */ android.view.ViewGroup.LayoutParams.WRAP_CONTENT,
+            /* initWeight => */ initWeight                                      ));
+
+        return textView;
+    }
+
     private void goToBottom() {
         this.scrollView.post(new Runnable() {
             @Override
@@ -395,60 +412,32 @@ public class MainActivity extends AppCompatActivity {
     final int position, final String sampleID, final String sampleWeight) {
         this.envidEditText.setText("");
 
-		/* Create a new row to be added. */
-        final TableRow tr = new TableRow(this);
-        tr.setLayoutParams(new TableLayout.LayoutParams(
+        final TableRow tableRow = new TableRow(this);          // Create a new TableRow to be added.
+        tableRow.setLayoutParams(new TableLayout.LayoutParams(
             LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
 
-		/* Create the item number field. */
-        final TextView itemNumTV = new TextView(this);
-        itemNumTV.setGravity(Gravity.CENTER | Gravity.BOTTOM);
-        itemNumTV.setTextColor(Color.BLACK);
-        itemNumTV.setTextSize(20.0f);
-        itemNumTV.setText("" + position);
-        itemNumTV.setLayoutParams(new TableRow.LayoutParams(0, LayoutParams.WRAP_CONTENT, 0.16f));
+        tableRow.addView(this.makeTextView("" + position, 0.16f));    // Add the Num/position field.
+        tableRow.addView(this.makeTextView(box          , 0.16f));    // Add the Box/box      field.
 
-		/* Create the box number field. */
-        final TextView boxNumTV = new TextView(this);
-        boxNumTV.setGravity(Gravity.CENTER | Gravity.BOTTOM);
-        boxNumTV.setTextColor(Color.BLACK);
-        boxNumTV.setTextSize(20.0f);
-        boxNumTV.setText(box);
-        boxNumTV.setLayoutParams(new TableRow.LayoutParams(0, LayoutParams.WRAP_CONTENT, 0.16f));
+        {
+            final TextView sampleTextView = this.makeTextView(sampleID, 0.5f);
+            sampleTextView.setTag          (box + "," + sampleID + "," + position);
+            sampleTextView.setLongClickable(true                                 );
 
-		/* Create the Envelope ID field. */
-        final TextView envIDTV = new TextView(this);
-        envIDTV.setGravity(Gravity.CENTER | Gravity.BOTTOM);
-        envIDTV.setTextColor(Color.BLACK);
-        envIDTV.setTextSize(20.0f);
-        envIDTV.setText(sampleID);
-        envIDTV.setTag(box + "," + sampleID + "," + position);
-        envIDTV.setLayoutParams(new TableRow.LayoutParams(0, LayoutParams.WRAP_CONTENT, 0.5f));
-        envIDTV.setLongClickable(true);
+    		/* Define the listener for the longclick event. */
+            sampleTextView.setOnLongClickListener(new OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View v) {
+                    deleteDialog((String) v.getTag());
+                    return false;
+                }});
 
-		/* Define the listener for the longclick event. */
-        envIDTV.setOnLongClickListener(new OnLongClickListener() {
-            @Override
-            public boolean onLongClick(View v) {
-                deleteDialog((String) v.getTag());
-                return false;
-            }
-        });
+            tableRow.addView(sampleTextView);                         // Add the Sample/envid field.
+        }
 
-		/* Create the Weight field. */
-        final TextView weightTV = new TextView(this);
-        weightTV.setGravity(Gravity.CENTER | Gravity.BOTTOM);
-        weightTV.setTextColor(Color.BLACK);
-        weightTV.setTextSize(20.0f);
-        weightTV.setText(sampleWeight);
-        weightTV.setLayoutParams(new TableRow.LayoutParams(0, LayoutParams.WRAP_CONTENT, 0.16f));
+        tableRow.addView(this.makeTextView(sampleWeight, 0.16f));            // Add the Wt/wt field.
 
-		/* Add UI elements to row and add row to table. */
-        tr.addView(itemNumTV);
-        tr.addView(boxNumTV );
-        tr.addView(envIDTV  );
-        tr.addView(weightTV );
-        this.tableLayout.addView(tr, new LayoutParams(
+        this.tableLayout.addView(tableRow, new LayoutParams(         // Add TableRow to tableLayout.
             TableLayout.LayoutParams.MATCH_PARENT, TableLayout.LayoutParams.MATCH_PARENT));
     }
 
