@@ -65,14 +65,10 @@ public class MainActivity extends AppCompatActivity {
 
 
     // region Instance Fields
-    protected org.wheatgenetics.inventory.SharedPreferences sharedPreferences;
-    private UsbDevice mDevice;
-
-    private String box;
-    private SamplesTable samplesTable;
-
-
     // region Widget Instance Fields
+    private android.support.v4.widget.DrawerLayout       drawerLayout         ;
+    private android.support.v7.app.ActionBarDrawerToggle actionBarDrawerToggle;
+
     private android.widget.TextView boxTextView  ;
     private android.widget.EditText envidEditText;
     private android.widget.EditText wtEditText   ;
@@ -82,10 +78,14 @@ public class MainActivity extends AppCompatActivity {
 
     private android.widget.LinearLayout parent;
     private android.widget.ScrollView changeContainer;
-
-    private android.support.v7.app.ActionBarDrawerToggle mDrawerToggle;
-    private android.support.v4.widget.DrawerLayout       mDrawerLayout;
     // endregion
+
+
+    protected org.wheatgenetics.inventory.SharedPreferences sharedPreferences;
+    private UsbDevice mDevice;
+
+    private String box;
+    private SamplesTable samplesTable;
     // endregion
 
 
@@ -166,19 +166,30 @@ public class MainActivity extends AppCompatActivity {
             }
         }
 
-        mDrawerLayout = (DrawerLayout) this.findViewById(R.id.drawer_layout);
+        this.drawerLayout = (DrawerLayout) this.findViewById(R.id.drawer_layout);
         {
-            final NavigationView nvDrawer = (NavigationView) this.findViewById(R.id.nvView);
-            nvDrawer.setNavigationItemSelectedListener(
+            final NavigationView navigationView = (NavigationView) this.findViewById(R.id.nvView);
+            navigationView.setNavigationItemSelectedListener(
                 new NavigationView.OnNavigationItemSelectedListener() {
                     @Override
                     public boolean onNavigationItemSelected(MenuItem item) {
-                        selectDrawerItem(item);
+                        selectNavigationItem(item);
                         return true;
-                    }
-                });
+                    }});
         }
-        this.setupDrawer();
+        this.actionBarDrawerToggle = new ActionBarDrawerToggle(this,
+            this.drawerLayout, R.string.drawer_open, R.string.drawer_close) {
+                @Override
+                public void onDrawerOpened(View drawerView) {
+                    final TextView personTextView = (TextView) findViewById(R.id.nameLabel);
+                    personTextView.setText(sharedPreferences.getName());
+                }
+
+                @Override
+                public void onDrawerClosed(View drawerView) {}
+            };
+        this.actionBarDrawerToggle.setDrawerIndicatorEnabled(true);
+        this.drawerLayout.setDrawerListener(this.actionBarDrawerToggle);
 
         this.boxTextView = (TextView) this.findViewById(R.id.tvBoxNum);
         this.boxTextView.setText("");
@@ -303,7 +314,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onPostCreate(Bundle savedInstanceState) {
         super.onPostCreate(savedInstanceState);
-        mDrawerToggle.syncState();
+        this.actionBarDrawerToggle.syncState();
     }
 
     @Override
@@ -319,13 +330,11 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if (mDrawerToggle.onOptionsItemSelected(item)) {
-            return true;
-        }
+        if (this.actionBarDrawerToggle.onOptionsItemSelected(item)) return true;
 
         switch (item.getItemId()) {
             case android.R.id.home:
-                mDrawerLayout.openDrawer(GravityCompat.START);
+                this.drawerLayout.openDrawer(GravityCompat.START);
                 return true;
         }
 
@@ -335,7 +344,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
-        mDrawerToggle.onConfigurationChanged(newConfig);
+        this.actionBarDrawerToggle.onConfigurationChanged(newConfig);
     }
     // endregion
 
@@ -780,24 +789,8 @@ public class MainActivity extends AppCompatActivity {
         startActivity(Intent.createChooser(intent, getString(R.string.sending_file)));
     }
 
-    private void setupDrawer() {
-        mDrawerToggle = new ActionBarDrawerToggle(this,
-        mDrawerLayout, R.string.drawer_open, R.string.drawer_close) {
-            @Override
-            public void onDrawerOpened(View drawerView) {
-                final TextView person = (TextView) findViewById(R.id.nameLabel);
-                person.setText(sharedPreferences.getName());
-            }
-
-            @Override
-            public void onDrawerClosed(View drawerView) {
-            }};
-
-        mDrawerToggle.setDrawerIndicatorEnabled(true);
-        mDrawerLayout.setDrawerListener(mDrawerToggle);
-    }
-
-    protected void selectDrawerItem(final MenuItem menuItem) {
+    protected void selectNavigationItem(final MenuItem menuItem) {
+        assert menuItem != null;
         switch (menuItem.getItemId()) {
             case R.id.scaleConnect:
                 findScale();
@@ -815,7 +808,7 @@ public class MainActivity extends AppCompatActivity {
                 aboutDialog();
                 break;
         }
-        mDrawerLayout.closeDrawers();
+        this.drawerLayout.closeDrawers();
     }
 
     private void changelog() {
