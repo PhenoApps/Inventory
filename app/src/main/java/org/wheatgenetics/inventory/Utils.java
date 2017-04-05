@@ -9,7 +9,7 @@ class Utils
         return simpleDateFormat.format(java.util.Calendar.getInstance().getTime());
     }
 
-    static java.lang.String getFileName()
+    static java.lang.String getExportFileName()
     {
         return "inventory_" + org.wheatgenetics.inventory.Utils.getDateTime();
     }

@@ -103,6 +103,11 @@ public class MainActivity extends AppCompatActivity {
     {
         return android.util.Log.e(org.wheatgenetics.inventory.MainActivity.TAG, msg);
     }
+
+    static private int sendErrorLogMsg(final java.lang.Exception exception)
+    {
+        return org.wheatgenetics.inventory.MainActivity.sendErrorLogMsg(exception.getMessage());
+    }
     // endregion
 
 
@@ -244,7 +249,7 @@ public class MainActivity extends AppCompatActivity {
 
         try { makeFileDiscoverable(InventoryDir.createIfMissing()); }
         catch (IOException e) {
-            org.wheatgenetics.inventory.MainActivity.sendErrorLogMsg(e.getMessage());
+            org.wheatgenetics.inventory.MainActivity.sendErrorLogMsg(e);
         }
         parseDbToTable();
         goToBottom();
@@ -260,7 +265,7 @@ public class MainActivity extends AppCompatActivity {
         try {
             v = getPackageManager().getPackageInfo(getPackageName(), 0).versionCode;
         } catch (PackageManager.NameNotFoundException e) {
-            org.wheatgenetics.inventory.MainActivity.sendErrorLogMsg(e.getMessage());
+            org.wheatgenetics.inventory.MainActivity.sendErrorLogMsg(e);
         }
         if (!sharedPreferences.updateVersionIsSet(v)) {
             sharedPreferences.setUpdateVersion(v);
@@ -483,7 +488,7 @@ public class MainActivity extends AppCompatActivity {
                         this.getPackageManager().getPackageInfo(this.getPackageName(), 0);
                     version.setText(getResources().getString(R.string.versiontitle) + " " + packageInfo.versionName);
                 } catch (PackageManager.NameNotFoundException e) {
-                    org.wheatgenetics.inventory.MainActivity.sendErrorLogMsg(e.getMessage());
+                    org.wheatgenetics.inventory.MainActivity.sendErrorLogMsg(e);
                 }
                 version.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -697,7 +702,7 @@ public class MainActivity extends AppCompatActivity {
             final InventoryRecords inventoryRecords = samplesTable.getAll();
             samplesTable.close();
             {
-                final String fileName = Utils.getFileName() + ".csv";
+                final String fileName = Utils.getExportFileName() + ".csv";
                 try { shareFile(inventoryRecords.writeCSV(fileName), fileName); }
                 catch (IOException e) {
                     org.wheatgenetics.inventory.MainActivity.showToast(
@@ -714,7 +719,7 @@ public class MainActivity extends AppCompatActivity {
             final String           boxList          = samplesTable.getBoxList()         ;
             samplesTable.close();
             {
-                final String fileName = Utils.getFileName() + ".sql";
+                final String fileName = Utils.getExportFileName() + ".sql";
                 try { shareFile(inventoryRecords.writeSQL(fileName, boxList), fileName); }
                 catch (IOException e) {
                     org.wheatgenetics.inventory.MainActivity.showToast(

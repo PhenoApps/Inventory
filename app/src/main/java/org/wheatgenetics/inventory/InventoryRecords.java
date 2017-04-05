@@ -89,5 +89,8 @@ class InventoryRecords extends java.lang.Object
         }
     }
 
-    void sendDebugLogMsg(final java.lang.String tag) { android.util.Log.d(tag, this.toString()); }
+    int sendDebugLogMsg(final java.lang.String tag)
+    {
+        return android.util.Log.d(tag, this.toString());
+    }
 }
