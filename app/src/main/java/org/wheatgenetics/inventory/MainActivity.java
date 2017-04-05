@@ -486,8 +486,22 @@ public class MainActivity extends AppCompatActivity {
         alert.show();
     }
 
-    protected void showToast(final String message) {
-        Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
+    static private void showToast(final android.content.Context context,
+    final java.lang.CharSequence text, final int duration)
+    {
+        android.widget.Toast.makeText(context, text, duration).show();
+    }
+
+    static private void showToast(
+    final android.content.Context context, final java.lang.CharSequence text)
+    {
+        org.wheatgenetics.inventory.MainActivity.showToast(
+            context, text, android.widget.Toast.LENGTH_SHORT);
+    }
+
+    protected void showToast(final java.lang.CharSequence text)
+    {
+        org.wheatgenetics.inventory.MainActivity.showToast(this, text);
     }
 
     private void setPersonDialog() {
@@ -659,7 +673,8 @@ public class MainActivity extends AppCompatActivity {
                 final String fileName = Utils.getFileName() + ".csv";
                 try { shareFile(inventoryRecords.writeCSV(fileName), fileName); }
                 catch (IOException e) {
-                    Toast.makeText(getBaseContext(), e.getMessage(), Toast.LENGTH_SHORT).show();
+                    org.wheatgenetics.inventory.MainActivity.showToast(
+                        this.getBaseContext(), e.getMessage());
                 }
             }
         }
@@ -675,7 +690,8 @@ public class MainActivity extends AppCompatActivity {
                 final String fileName = Utils.getFileName() + ".sql";
                 try { shareFile(inventoryRecords.writeSQL(fileName, boxList), fileName); }
                 catch (IOException e) {
-                    Toast.makeText(getBaseContext(), e.getMessage(), Toast.LENGTH_SHORT).show();
+                    org.wheatgenetics.inventory.MainActivity.showToast(
+                        this.getBaseContext(), e.getMessage());
                 }
             }
         }
@@ -966,8 +982,8 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         protected void onPostExecute(Void result) {
-            Toast.makeText(getApplicationContext(),
-                getString(R.string.scale_disconnect), Toast.LENGTH_LONG).show();
+            org.wheatgenetics.inventory.MainActivity.showToast(getApplicationContext(),
+                getString(R.string.scale_disconnect), Toast.LENGTH_LONG);
             mDevice = null;
             mWeightEditText.setText(getString(R.string.not_connected));
         }
