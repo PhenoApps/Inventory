@@ -278,11 +278,11 @@ public class MainActivity extends AppCompatActivity {
         this.parseDbToTable();
         this.goToBottom();
 
-        sharedPreferences =
+        this.sharedPreferences =
             new org.wheatgenetics.inventory.SharedPreferences(getSharedPreferences("Settings", 0));
 
-        if (!sharedPreferences.firstNameIsSet()) this.setPersonDialog();
-        if (!sharedPreferences.getIgnoreScale()) this.findScale()      ;
+        if (!this.sharedPreferences.firstNameIsSet()) this.setPersonDialog();
+        if (!this.sharedPreferences.getIgnoreScale()) this.findScale()      ;
 
         int v = 0;
         try {
@@ -290,8 +290,8 @@ public class MainActivity extends AppCompatActivity {
         } catch (PackageManager.NameNotFoundException e) {
             org.wheatgenetics.inventory.MainActivity.sendErrorLogMsg(e);
         }
-        if (!sharedPreferences.updateVersionIsSet(v)) {
-            sharedPreferences.setUpdateVersion(v);
+        if (!this.sharedPreferences.updateVersionIsSet(v)) {
+            this.sharedPreferences.setUpdateVersion(v);
             this.changelog();
         }
     }
@@ -365,18 +365,19 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void parseDbToTable() {
+        assert this.tableLayout != null;
         this.tableLayout.removeAllViews();
 
+        assert this.samplesTable != null;
         final Iterator<InventoryRecord> iterator = this.samplesTable.getAll().iterator();
         this.samplesTable.close();
-        while (iterator.hasNext()) {
+        while (iterator.hasNext())
+        {
             final InventoryRecord inventoryRecord = iterator.next();
+            assert inventoryRecord != null;
             inventoryRecord.sendErrorLogMsg(org.wheatgenetics.inventory.MainActivity.TAG);
-
-            final int position = inventoryRecord.getPosition();
-            addTableRow(inventoryRecord.getBox(), position,
-                inventoryRecord.getEnvId(), inventoryRecord.getWt());
-            currentItemNum = position + 1;
+            this.addTableRow(inventoryRecord);
+            currentItemNum = inventoryRecord.getPosition() + 1;
         }
     }
 
@@ -385,44 +386,45 @@ public class MainActivity extends AppCompatActivity {
      */
     private void addRecord() {
         {
+            assert this.envidEditText != null;
             final String envid = this.envidEditText.getText().toString();
-            if (envid.equals("")) {
-                return; // check for empty user input
-            }
+            if (envid.equals("")) return;                              // check for empty user input
         }
 
-        final String box   = this.boxTextView.getText().toString()  ;
-        final String envid = this.envidEditText.getText().toString();
-        final String wt    = this.wtEditText.getText().toString()   ;
+        assert this.boxTextView       != null;
+        assert this.sharedPreferences != null;
+        assert this.wtEditText        != null;
+        final InventoryRecord inventoryRecord = new InventoryRecord(
+            /* box      => */ this.boxTextView.getText().toString()  ,
+            /* envid    => */ this.envidEditText.getText().toString(),
+            /* person   => */ this.sharedPreferences.getSafeName()   ,
+            /* position => */ currentItemNum++                       ,
+            /* wt       => */ this.wtEditText.getText().toString()   );
 
-        this.samplesTable.add(new InventoryRecord(
-            /* box      => */ box                            ,
-            /* envid    => */ envid                          ,
-            /* person   => */ sharedPreferences.getSafeName(),
-            /* position => */ currentItemNum                 ,
-            /* wt       => */ wt                             ));
-
-        addTableRow(box, currentItemNum++, envid, wt);
+        assert this.samplesTable != null;
+        this.samplesTable.add(inventoryRecord);
+        this.addTableRow     (inventoryRecord);
     }
 
     /**
      * Adds a new entry to the end of the TableView
      */
-    private void addTableRow(final String box,
-    final int position, final String sampleID, final String sampleWeight) {
+    private void addTableRow(final InventoryRecord inventoryRecord) {
+        assert this.envidEditText != null;
         this.envidEditText.setText("");
 
         final TableRow tableRow = new TableRow(this);          // Create a new TableRow to be added.
         tableRow.setLayoutParams(new TableLayout.LayoutParams(
             LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
 
-        tableRow.addView(this.makeTextView("" + position, 0.16f));    // Add the Num/position field.
-        tableRow.addView(this.makeTextView(box          , 0.16f));    // Add the Box/box      field.
+        assert inventoryRecord != null;
+        tableRow.addView(this.makeTextView(inventoryRecord.getPositionAsString(), 0.16f));
+        tableRow.addView(this.makeTextView(inventoryRecord.getBox()             , 0.16f));
 
         {
-            final TextView sampleTextView = this.makeTextView(sampleID, 0.5f);
-            sampleTextView.setTag          (box + "," + sampleID + "," + position);
-            sampleTextView.setLongClickable(true                                 );
+            final TextView sampleTextView = this.makeTextView(inventoryRecord.getEnvId(), 0.5f);
+            sampleTextView.setTag          (inventoryRecord.getTag());
+            sampleTextView.setLongClickable(true                    );
 
     		/* Define the listener for the longclick event. */
             sampleTextView.setOnLongClickListener(new OnLongClickListener() {
@@ -435,8 +437,9 @@ public class MainActivity extends AppCompatActivity {
             tableRow.addView(sampleTextView);                         // Add the Sample/envid field.
         }
 
-        tableRow.addView(this.makeTextView(sampleWeight, 0.16f));            // Add the Wt/wt field.
+        tableRow.addView(this.makeTextView(inventoryRecord.getWt(), 0.16f));
 
+        assert this.tableLayout != null;
         this.tableLayout.addView(tableRow, new LayoutParams(         // Add TableRow to tableLayout.
             TableLayout.LayoutParams.MATCH_PARENT, TableLayout.LayoutParams.MATCH_PARENT));
     }
@@ -557,8 +560,8 @@ public class MainActivity extends AppCompatActivity {
             final EditText fName = (EditText) personView.findViewById(R.id.firstName);
             final EditText lName = (EditText) personView.findViewById(R.id.lastName );
 
-            fName.setText(sharedPreferences.getFirstName());
-            lName.setText(sharedPreferences.getLastName() );
+            fName.setText(this.sharedPreferences.getFirstName());
+            lName.setText(this.sharedPreferences.getLastName() );
 
             builder.setView(personView);
             builder.setPositiveButton(getResources().getString(R.string.ok),
