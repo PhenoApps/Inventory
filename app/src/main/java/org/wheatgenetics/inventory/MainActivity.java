@@ -286,7 +286,7 @@ public class MainActivity extends AppCompatActivity {
             /* envID    => */ envID                          ,
             /* personID => */ sharedPreferences.getSafeName(),
             /* position => */ currentItemNum                 ,
-            /* wt       => */ weight                         )); // add to database
+            /* wt       => */ weight                         ));
 
         createNewTableEntry(boxID, currentItemNum, envID, weight);
         currentItemNum++;
@@ -486,7 +486,7 @@ public class MainActivity extends AppCompatActivity {
         alert.show();
     }
 
-    protected void makeToast(final String message) {
+    protected void showToast(final String message) {
         Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
     }
 
@@ -514,12 +514,12 @@ public class MainActivity extends AppCompatActivity {
                         final String lastName  = lName.getText().toString().trim();
 
                         if (firstName.length() == 0 | lastName.length() == 0) {
-                            makeToast(getResources().getString(R.string.no_blank));
+                            showToast(getResources().getString(R.string.no_blank));
                             setPersonDialog();
                             return;
                         }
 
-                        makeToast(getResources().getString(R.string.person_set) +
+                        showToast(getResources().getString(R.string.person_set) +
                             " " + firstName + " " + lastName);
                         sharedPreferences.setName(firstName, lastName);
                     }});
@@ -622,7 +622,7 @@ public class MainActivity extends AppCompatActivity {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
                     boxNumTextView.setText("");
-                    makeToast(getString(R.string.data_deleted));
+                    showToast(getString(R.string.data_deleted));
                     deleteAll();
                 }})
             .setNegativeButton(getString(R.string.no), new DialogInterface.OnClickListener() {
@@ -699,7 +699,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void shareFile(final File file, final String fileName) {
         makeFileDiscoverable(file);
-        makeToast(getString(R.string.export_success));
+        showToast(getString(R.string.export_success));
 
         final Intent intent = new Intent(android.content.Intent.ACTION_SEND);
 
