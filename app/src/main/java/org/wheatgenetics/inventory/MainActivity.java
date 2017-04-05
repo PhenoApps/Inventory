@@ -5,11 +5,8 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.Locale;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -73,7 +70,7 @@ public class MainActivity extends AppCompatActivity {
 
     private EditText inputText;
     private TableLayout InventoryTable;
-    private MySQLiteHelper samplesTable;
+    private SamplesTable samplesTable;
     private ScrollView sv1;
     private static int currentItemNum = 1;
 
@@ -135,7 +132,7 @@ public class MainActivity extends AppCompatActivity {
         changeContainer.removeAllViews();
         changeContainer.addView(parent);
 
-        samplesTable = new MySQLiteHelper(this);
+        samplesTable = new SamplesTable(this);
 
         {
             final Button setBox = (Button) findViewById(R.id.btBox);
