@@ -73,12 +73,12 @@ public class MainActivity extends AppCompatActivity {
 
 
     // region Widget Instance Fields
-    private android.widget.EditText mWeightEditText;
-    private android.widget.TextView boxTextView;
+    private android.widget.TextView boxTextView  ;
+    private android.widget.EditText envidEditText;
+    private android.widget.EditText wtEditText   ;
 
-    private android.widget.EditText inputText;
-    private android.widget.TableLayout InventoryTable;
-    private android.widget.ScrollView sv1;
+    private android.widget.TableLayout tableLayout;
+    private android.widget.ScrollView  scrollView ;
 
     private android.widget.LinearLayout parent;
     private android.widget.ScrollView changeContainer;
@@ -180,13 +180,16 @@ public class MainActivity extends AppCompatActivity {
         }
         this.setupDrawer();
 
-        sv1 = (ScrollView) this.findViewById(R.id.svData);
-        mWeightEditText = (EditText) this.findViewById(R.id.etWeight);
-        mWeightEditText.setText(getString(R.string.not_connected));
         this.boxTextView = (TextView) this.findViewById(R.id.tvBoxNum);
         this.boxTextView.setText("");
-        inputText = (EditText) this.findViewById(R.id.etInput);
-        InventoryTable = (TableLayout) this.findViewById(R.id.tlInventory);
+
+        this.envidEditText = (EditText) this.findViewById(R.id.etInput);
+
+        this.wtEditText = (EditText) this.findViewById(R.id.etWeight);
+        this.wtEditText.setText(getString(R.string.not_connected));
+
+        this.tableLayout = (TableLayout) this.findViewById(R.id.tlInventory);
+        this.scrollView  = (ScrollView ) this.findViewById(R.id.svData     );
 
         parent = new LinearLayout(this);
         changeContainer = new ScrollView(this);
@@ -203,26 +206,26 @@ public class MainActivity extends AppCompatActivity {
             });
         }
 
-        InventoryTable.setOnClickListener(new View.OnClickListener() {
+        this.tableLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {}});
 
         mDevice = this.getIntent().getParcelableExtra(UsbManager.EXTRA_DEVICE);
 
-        inputText.setOnKeyListener(new View.OnKeyListener() {
+        this.envidEditText.setOnKeyListener(new View.OnKeyListener() {
             @Override
             public boolean onKey(View v, int keyCode, KeyEvent event) {
                 if (keyCode == KeyEvent.KEYCODE_ENTER) {
                     {
                         final InputMethodManager mgr =
                             (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-                        mgr.showSoftInput(inputText, InputMethodManager.HIDE_IMPLICIT_ONLY);
+                        mgr.showSoftInput(envidEditText, InputMethodManager.HIDE_IMPLICIT_ONLY);
                     }
                     if (event.getAction() != KeyEvent.ACTION_DOWN)
                         return true;
                     addRecord(); // Add the current record to the table
                     goToBottom();
-                    inputText.requestFocus(); // Set focus back to Enter box
+                    envidEditText.requestFocus(); // Set focus back to Enter box
                 }
 
                 if (keyCode == KeyEvent.KEYCODE_NUMPAD_ENTER) {
@@ -233,28 +236,28 @@ public class MainActivity extends AppCompatActivity {
                         addRecord(); // Add the current record to the table
                         goToBottom();
                     }
-                    inputText.requestFocus(); // Set focus back to Enter box
+                    envidEditText.requestFocus(); // Set focus back to Enter box
                 }
                 return false;
             }
         });
 
-        mWeightEditText.setOnKeyListener(new View.OnKeyListener() {
+        this.wtEditText.setOnKeyListener(new View.OnKeyListener() {
             @Override
             public boolean onKey(View v, int keyCode, KeyEvent event) {
                 if (keyCode == KeyEvent.KEYCODE_ENTER || keyCode == KeyEvent.KEYCODE_NUMPAD_ENTER) {
                     {
                         final InputMethodManager mgr =
                             (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-                        mgr.showSoftInput(inputText, InputMethodManager.HIDE_IMPLICIT_ONLY);
+                        mgr.showSoftInput(envidEditText, InputMethodManager.HIDE_IMPLICIT_ONLY);
                     }
                     if (event.getAction() != KeyEvent.ACTION_DOWN)
                         return true;
                     addRecord(); // Add the current record to the table
                     goToBottom();
 
-                    if (mDevice != null) mWeightEditText.setText("");
-                    inputText.requestFocus(); // Set focus back to Enter box
+                    if (mDevice != null) wtEditText.setText("");
+                    envidEditText.requestFocus(); // Set focus back to Enter box
                 }
 
                 if (keyCode == KeyEvent.KEYCODE_NUMPAD_ENTER) {
@@ -265,7 +268,7 @@ public class MainActivity extends AppCompatActivity {
                         addRecord(); // Add the current record to the table
                         goToBottom();
                     }
-                    inputText.requestFocus(); // Set focus back to Enter box
+                    envidEditText.requestFocus(); // Set focus back to Enter box
                 }
                 return false;
             }
@@ -338,17 +341,17 @@ public class MainActivity extends AppCompatActivity {
 
 
     private void goToBottom() {
-        sv1.post(new Runnable() {
+        this.scrollView.post(new Runnable() {
             @Override
             public void run() {
-                sv1.fullScroll(ScrollView.FOCUS_DOWN);
-                inputText.requestFocus();
+                scrollView.fullScroll(ScrollView.FOCUS_DOWN);
+                envidEditText.requestFocus();
             }
         });
     }
 
     private void parseDbToTable() {
-        InventoryTable.removeAllViews();
+        this.tableLayout.removeAllViews();
 
         final Iterator<InventoryRecord> iterator = samplesTable.getAll().iterator();
         samplesTable.close();
@@ -368,15 +371,15 @@ public class MainActivity extends AppCompatActivity {
      */
     private void addRecord() {
         {
-            final String ut = inputText.getText().toString();
-            if (ut.equals("")) {
+            final String envid = this.envidEditText.getText().toString();
+            if (envid.equals("")) {
                 return; // check for empty user input
             }
         }
 
-        final String box   = this.boxTextView.getText().toString();
-        final String envid = inputText.getText().toString()       ;
-        final String wt    = mWeightEditText.getText().toString() ;
+        final String box   = this.boxTextView.getText().toString()  ;
+        final String envid = this.envidEditText.getText().toString();
+        final String wt    = this.wtEditText.getText().toString()   ;
 
         samplesTable.add(new InventoryRecord(
             /* box      => */ box                            ,
@@ -393,7 +396,7 @@ public class MainActivity extends AppCompatActivity {
      */
     private void createNewTableEntry(final String box,
     final int position, final String sampleID, final String sampleWeight) {
-        inputText.setText("");
+        this.envidEditText.setText("");
 
 		/* Create a new row to be added. */
         final TableRow tr = new TableRow(this);
@@ -448,7 +451,7 @@ public class MainActivity extends AppCompatActivity {
         tr.addView(boxNumTV );
         tr.addView(envIDTV  );
         tr.addView(weightTV );
-        InventoryTable.addView(tr, new LayoutParams(
+        this.tableLayout.addView(tr, new LayoutParams(
             TableLayout.LayoutParams.MATCH_PARENT, TableLayout.LayoutParams.MATCH_PARENT));
     }
 
@@ -761,7 +764,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void deleteAll() {
         samplesTable.deleteAll();
-        InventoryTable.removeAllViews();
+        this.tableLayout.removeAllViews();
         currentItemNum = 1;
     }
 
@@ -902,7 +905,7 @@ public class MainActivity extends AppCompatActivity {
         }
 
         if (mDevice != null) {
-            mWeightEditText.setText("0");
+            this.wtEditText.setText("0");
             new ScaleListener().execute();
         } else {
             new AlertDialog.Builder(MainActivity.this)
@@ -1034,8 +1037,8 @@ public class MainActivity extends AppCompatActivity {
 
             final String weightText = String.format("%.1f", values[0]);
             org.wheatgenetics.inventory.MainActivity.sendInfoLogMsg(weightText);
-            mWeightEditText.setText(weightText);
-            mWeightEditText.invalidate();
+            wtEditText.setText(weightText);
+            wtEditText.invalidate();
         }
 
         @Override
@@ -1043,7 +1046,7 @@ public class MainActivity extends AppCompatActivity {
             org.wheatgenetics.inventory.MainActivity.showToast(getApplicationContext(),
                 getString(R.string.scale_disconnect), Toast.LENGTH_LONG);
             mDevice = null;
-            mWeightEditText.setText(getString(R.string.not_connected));
+            wtEditText.setText(getString(R.string.not_connected));
         }
     }
 }
