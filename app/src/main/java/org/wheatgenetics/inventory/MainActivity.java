@@ -314,9 +314,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        return true;
-    }
+    public boolean onCreateOptionsMenu(Menu menu) { return true; }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -359,7 +357,7 @@ public class MainActivity extends AppCompatActivity {
             inventoryRecord.sendErrorLogMsg(org.wheatgenetics.inventory.MainActivity.TAG);
 
             final int position = inventoryRecord.getPosition();
-            createNewTableEntry(inventoryRecord.getBox(), position,
+            addTableRow(inventoryRecord.getBox(), position,
                 inventoryRecord.getEnvId(), inventoryRecord.getWt());
             currentItemNum = position + 1;
         }
@@ -387,13 +385,13 @@ public class MainActivity extends AppCompatActivity {
             /* position => */ currentItemNum                 ,
             /* wt       => */ wt                             ));
 
-        createNewTableEntry(box, currentItemNum++, envid, wt);
+        addTableRow(box, currentItemNum++, envid, wt);
     }
 
     /**
      * Adds a new entry to the end of the TableView
      */
-    private void createNewTableEntry(final String box,
+    private void addTableRow(final String box,
     final int position, final String sampleID, final String sampleWeight) {
         this.envidEditText.setText("");
 
