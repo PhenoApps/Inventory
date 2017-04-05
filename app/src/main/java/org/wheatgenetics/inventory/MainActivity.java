@@ -737,7 +737,8 @@ public class MainActivity extends AppCompatActivity {
     protected void makeFileDiscoverable(final File file) {
         if (file != null)
         {
-            MediaScannerConnection.scanFile(this, new String[]{file.getPath()}, null, null);
+            MediaScannerConnection.scanFile(this,
+                Utils.makeStringArray(file.getPath()), null, null);
             this.sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE,
                 Uri.fromFile(file)));
         }

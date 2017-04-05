@@ -19,8 +19,8 @@ class SharedPreferences extends java.lang.Object
     protected java.lang.String getString(final java.lang.String key)
     {
         assert key != null;
-        assert key.equals(SharedPreferences.FIRST_NAME)
-            || key.equals(SharedPreferences.LAST_NAME );
+        assert key.equals(org.wheatgenetics.inventory.SharedPreferences.FIRST_NAME)
+            || key.equals(org.wheatgenetics.inventory.SharedPreferences.LAST_NAME );
 
         assert this.sharedPreferences != null;
         return this.sharedPreferences.getString(key, "");
@@ -34,14 +34,15 @@ class SharedPreferences extends java.lang.Object
         if (!oldValue.equals(newValue))
         {
             assert key != null;
-            assert key.equals(SharedPreferences.FIRST_NAME)
-                || key.equals(SharedPreferences.LAST_NAME );
+            assert key.equals(org.wheatgenetics.inventory.SharedPreferences.FIRST_NAME)
+                || key.equals(org.wheatgenetics.inventory.SharedPreferences.LAST_NAME );
 
             assert this.sharedPreferences != null;
             final android.content.SharedPreferences.Editor editor = this.sharedPreferences.edit();
 
             assert editor != null;
             editor.putString(key, newValue);
+            editor.apply();
         }
     }
 
@@ -49,7 +50,7 @@ class SharedPreferences extends java.lang.Object
     {
         assert this.sharedPreferences != null;
         return this.sharedPreferences.getInt(
-            SharedPreferences.UPDATE_VERSION, -1);
+            org.wheatgenetics.inventory.SharedPreferences.UPDATE_VERSION, -1);
     }
     // endregion
 
@@ -68,7 +69,7 @@ class SharedPreferences extends java.lang.Object
 
     java.lang.String getFirstName()
     {
-        return this.getString(SharedPreferences.FIRST_NAME);
+        return this.getString(org.wheatgenetics.inventory.SharedPreferences.FIRST_NAME);
     }
     // endregion
 
@@ -76,7 +77,7 @@ class SharedPreferences extends java.lang.Object
     // region LastName Method
     java.lang.String getLastName()
     {
-        return this.getString(SharedPreferences.LAST_NAME);
+        return this.getString(org.wheatgenetics.inventory.SharedPreferences.LAST_NAME);
     }
     // endregion
 
@@ -84,17 +85,10 @@ class SharedPreferences extends java.lang.Object
     // region Name Methods
     void setName(final java.lang.String firstName, final java.lang.String lastName)
     {
-        this.setString(SharedPreferences.FIRST_NAME,
+        this.setString(org.wheatgenetics.inventory.SharedPreferences.FIRST_NAME,
             this.getFirstName(), firstName);
-        this.setString(SharedPreferences.LAST_NAME,
+        this.setString(org.wheatgenetics.inventory.SharedPreferences.LAST_NAME,
             this.getLastName(), lastName);
-
-
-        assert this.sharedPreferences != null;
-        final android.content.SharedPreferences.Editor editor = this.sharedPreferences.edit();
-
-        assert editor != null;
-        editor.apply();
     }
 
     java.lang.String getName() { return this.getFirstName() + " " + this.getLastName(); }
@@ -112,7 +106,7 @@ class SharedPreferences extends java.lang.Object
     {
         assert this.sharedPreferences != null;
         return this.sharedPreferences.getBoolean(
-            SharedPreferences.IGNORE_SCALE, false);
+            org.wheatgenetics.inventory.SharedPreferences.IGNORE_SCALE, false);
     }
 
     void setIgnoreScaleToTrue()
@@ -123,7 +117,7 @@ class SharedPreferences extends java.lang.Object
             final android.content.SharedPreferences.Editor editor = this.sharedPreferences.edit();
 
             assert editor != null;
-            editor.putBoolean(SharedPreferences.IGNORE_SCALE, true);
+            editor.putBoolean(org.wheatgenetics.inventory.SharedPreferences.IGNORE_SCALE, true);
             editor.apply();
         }
     }
@@ -144,7 +138,8 @@ class SharedPreferences extends java.lang.Object
             final android.content.SharedPreferences.Editor editor = this.sharedPreferences.edit();
 
             assert editor != null;
-            editor.putInt(SharedPreferences.UPDATE_VERSION, newUpdateVersion);
+            editor.putInt(
+                org.wheatgenetics.inventory.SharedPreferences.UPDATE_VERSION, newUpdateVersion);
             editor.apply();
         }
     }
