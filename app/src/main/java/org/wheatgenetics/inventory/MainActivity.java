@@ -34,7 +34,6 @@ import android.media.MediaScannerConnection;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -69,20 +68,24 @@ public class MainActivity extends AppCompatActivity {
     protected org.wheatgenetics.inventory.SharedPreferences sharedPreferences;
     private UsbDevice mDevice;
 
-    private String boxNumber;
-    private EditText mWeightEditText;
-    private TextView boxNumTextView;
-
-    private EditText inputText;
-    private TableLayout InventoryTable;
+    private String box;
     private SamplesTable samplesTable;
-    private ScrollView sv1;
 
-    private LinearLayout parent;
-    private ScrollView changeContainer;
 
-    private ActionBarDrawerToggle mDrawerToggle;
-    private DrawerLayout mDrawerLayout;
+    // region Widget Instance Fields
+    private android.widget.EditText mWeightEditText;
+    private android.widget.TextView boxTextView;
+
+    private android.widget.EditText inputText;
+    private android.widget.TableLayout InventoryTable;
+    private android.widget.ScrollView sv1;
+
+    private android.widget.LinearLayout parent;
+    private android.widget.ScrollView changeContainer;
+
+    private android.support.v7.app.ActionBarDrawerToggle mDrawerToggle;
+    private android.support.v4.widget.DrawerLayout       mDrawerLayout;
+    // endregion
     // endregion
 
 
@@ -141,19 +144,19 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.main_layout);
+        this.setContentView(R.layout.main_layout);
         org.wheatgenetics.inventory.MainActivity.sendVerboseLogMsg("onCreate()");
 
-        getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+        this.getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         {
-            final Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+            final Toolbar toolbar = (Toolbar) this.findViewById(R.id.toolbar);
 
-            setSupportActionBar(toolbar);
+            this.setSupportActionBar(toolbar);
             toolbar.bringToFront();
         }
 
         {
-            final ActionBar supportActionBar = getSupportActionBar();
+            final ActionBar supportActionBar = this.getSupportActionBar();
 
             if (supportActionBar != null) {
                 supportActionBar.setTitle(null);
@@ -163,9 +166,9 @@ public class MainActivity extends AppCompatActivity {
             }
         }
 
-        mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+        mDrawerLayout = (DrawerLayout) this.findViewById(R.id.drawer_layout);
         {
-            final NavigationView nvDrawer = (NavigationView) findViewById(R.id.nvView);
+            final NavigationView nvDrawer = (NavigationView) this.findViewById(R.id.nvView);
             nvDrawer.setNavigationItemSelectedListener(
                 new NavigationView.OnNavigationItemSelectedListener() {
                     @Override
@@ -175,15 +178,15 @@ public class MainActivity extends AppCompatActivity {
                     }
                 });
         }
-        setupDrawer();
+        this.setupDrawer();
 
-        sv1 = (ScrollView) findViewById(R.id.svData);
-        mWeightEditText = (EditText) findViewById(R.id.etWeight);
+        sv1 = (ScrollView) this.findViewById(R.id.svData);
+        mWeightEditText = (EditText) this.findViewById(R.id.etWeight);
         mWeightEditText.setText(getString(R.string.not_connected));
-        boxNumTextView = (TextView) findViewById(R.id.tvBoxNum);
-        boxNumTextView.setText("");
-        inputText = (EditText) findViewById(R.id.etInput);
-        InventoryTable = (TableLayout) findViewById(R.id.tlInventory);
+        this.boxTextView = (TextView) this.findViewById(R.id.tvBoxNum);
+        this.boxTextView.setText("");
+        inputText = (EditText) this.findViewById(R.id.etInput);
+        InventoryTable = (TableLayout) this.findViewById(R.id.tlInventory);
 
         parent = new LinearLayout(this);
         changeContainer = new ScrollView(this);
@@ -193,22 +196,18 @@ public class MainActivity extends AppCompatActivity {
         samplesTable = new SamplesTable(this);
 
         {
-            final Button setBox = (Button) findViewById(R.id.btBox);
+            final Button setBox = (Button) this.findViewById(R.id.btBox);
             setBox.setOnClickListener(new View.OnClickListener() {
                 @Override
-                public void onClick(View v) {
-                    setBoxDialog();
-                }
+                public void onClick(View v) { setBoxDialog(); }
             });
         }
 
         InventoryTable.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) {
-            }
-        });
+            public void onClick(View v) {}});
 
-        mDevice = getIntent().getParcelableExtra(UsbManager.EXTRA_DEVICE);
+        mDevice = this.getIntent().getParcelableExtra(UsbManager.EXTRA_DEVICE);
 
         inputText.setOnKeyListener(new View.OnKeyListener() {
             @Override
@@ -254,9 +253,7 @@ public class MainActivity extends AppCompatActivity {
                     addRecord(); // Add the current record to the table
                     goToBottom();
 
-                    if (mDevice != null) {
-                        mWeightEditText.setText("");
-                    }
+                    if (mDevice != null) mWeightEditText.setText("");
                     inputText.requestFocus(); // Set focus back to Enter box
                 }
 
@@ -274,19 +271,19 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        try { makeFileDiscoverable(InventoryDir.createIfMissing()); }
+        try { this.makeFileDiscoverable(InventoryDir.createIfMissing()); }
         catch (IOException e) {
             org.wheatgenetics.inventory.MainActivity.sendErrorLogMsg(e);
         }
-        parseDbToTable();
-        goToBottom();
+        this.parseDbToTable();
+        this.goToBottom();
 
         sharedPreferences =
             new org.wheatgenetics.inventory.SharedPreferences(getSharedPreferences("Settings", 0));
 
-        if (!sharedPreferences.firstNameIsSet()) setPersonDialog();
+        if (!sharedPreferences.firstNameIsSet()) this.setPersonDialog();
 
-        if (!sharedPreferences.getIgnoreScale()) findScale();
+        if (!sharedPreferences.getIgnoreScale()) this.findScale();
 
         int v = 0;
         try {
@@ -296,7 +293,7 @@ public class MainActivity extends AppCompatActivity {
         }
         if (!sharedPreferences.updateVersionIsSet(v)) {
             sharedPreferences.setUpdateVersion(v);
-            changelog();
+            this.changelog();
         }
     }
 
@@ -377,24 +374,24 @@ public class MainActivity extends AppCompatActivity {
             }
         }
 
-        final String boxID  = boxNumTextView.getText().toString() ;
-        final String envID  = inputText.getText().toString()      ;
-        final String weight = mWeightEditText.getText().toString();
+        final String box   = this.boxTextView.getText().toString();
+        final String envid = inputText.getText().toString()       ;
+        final String wt    = mWeightEditText.getText().toString() ;
 
         samplesTable.add(new InventoryRecord(
-            /* boxID    => */ boxID                          ,
-            /* envID    => */ envID                          ,
-            /* personID => */ sharedPreferences.getSafeName(),
+            /* box      => */ box                            ,
+            /* envid    => */ envid                          ,
+            /* person   => */ sharedPreferences.getSafeName(),
             /* position => */ currentItemNum                 ,
-            /* wt       => */ weight                         ));
+            /* wt       => */ wt                             ));
 
-        createNewTableEntry(boxID, currentItemNum++, envID, weight);
+        createNewTableEntry(box, currentItemNum++, envid, wt);
     }
 
     /**
      * Adds a new entry to the end of the TableView
      */
-    private void createNewTableEntry(final String boxID,
+    private void createNewTableEntry(final String box,
     final int position, final String sampleID, final String sampleWeight) {
         inputText.setText("");
 
@@ -416,7 +413,7 @@ public class MainActivity extends AppCompatActivity {
         boxNumTV.setGravity(Gravity.CENTER | Gravity.BOTTOM);
         boxNumTV.setTextColor(Color.BLACK);
         boxNumTV.setTextSize(20.0f);
-        boxNumTV.setText(boxID);
+        boxNumTV.setText(box);
         boxNumTV.setLayoutParams(new TableRow.LayoutParams(0, LayoutParams.WRAP_CONTENT, 0.16f));
 
 		/* Create the Envelope ID field. */
@@ -425,7 +422,7 @@ public class MainActivity extends AppCompatActivity {
         envIDTV.setTextColor(Color.BLACK);
         envIDTV.setTextSize(20.0f);
         envIDTV.setText(sampleID);
-        envIDTV.setTag(boxID + "," + sampleID + "," + position);
+        envIDTV.setTag(box + "," + sampleID + "," + position);
         envIDTV.setLayoutParams(new TableRow.LayoutParams(0, LayoutParams.WRAP_CONTENT, 0.5f));
         envIDTV.setLongClickable(true);
 
@@ -481,7 +478,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void setBoxDialog() {
         final EditText input = new EditText(this);
-        input.setText(boxNumber);
+        input.setText(this.box);
         input.selectAll();
         input.setSingleLine();
 
@@ -494,8 +491,8 @@ public class MainActivity extends AppCompatActivity {
                 {
                     final String value = input.getText().toString().trim();
 
-                    boxNumTextView.setText(value);
-                    boxNumber = value;
+                    boxTextView.setText(value);
+                    box = value;
                 }
 
                 final InputMethodManager imm =
@@ -690,7 +687,7 @@ public class MainActivity extends AppCompatActivity {
             .setPositiveButton(getString(R.string.yes), new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
-                    boxNumTextView.setText("");
+                    boxTextView.setText("");
                     showToast(getString(R.string.data_deleted));
                     deleteAll();
                 }})
