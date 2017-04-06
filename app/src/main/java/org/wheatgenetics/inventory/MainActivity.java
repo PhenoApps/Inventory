@@ -341,49 +341,6 @@ public class MainActivity extends AppCompatActivity {
             }});
     }
 
-    private void addTableRows()
-    {
-        assert this.tableLayout != null;
-        this.tableLayout.removeAllViews();
-
-        assert this.samplesTable != null;
-        final Iterator<InventoryRecord> iterator = this.samplesTable.getAll().iterator();
-        this.samplesTable.close();
-        while (iterator.hasNext())
-        {
-            final InventoryRecord inventoryRecord = iterator.next();
-            assert inventoryRecord != null;
-            inventoryRecord.sendErrorLogMsg(org.wheatgenetics.inventory.MainActivity.TAG);
-            this.addTableRow(inventoryRecord);
-            MainActivity.position = inventoryRecord.getPosition() + 1;
-        }
-    }
-
-    /**
-     * Adds a new record to the internal list of records
-     */
-    private void addRecord() {
-        {
-            assert this.envidEditText != null;
-            final String envid = this.envidEditText.getText().toString();
-            if (envid.equals("")) return;                              // check for empty user input
-        }
-
-        assert this.boxTextView       != null;
-        assert this.sharedPreferences != null;
-        assert this.wtEditText        != null;
-        final InventoryRecord inventoryRecord = new InventoryRecord(
-            /* box      => */ this.boxTextView.getText().toString()  ,
-            /* envid    => */ this.envidEditText.getText().toString(),
-            /* person   => */ this.sharedPreferences.getSafeName()   ,
-            /* position => */ MainActivity.position++                ,
-            /* wt       => */ this.wtEditText.getText().toString()   );
-
-        assert this.samplesTable != null;
-        this.samplesTable.add(inventoryRecord);
-        this.addTableRow     (inventoryRecord);
-    }
-
 
     // region addTableRow()
     protected android.widget.TextView makeTextView(
@@ -463,6 +420,49 @@ public class MainActivity extends AppCompatActivity {
     }
     // endregion
 
+
+    private void addTableRows()
+    {
+        assert this.tableLayout != null;
+        this.tableLayout.removeAllViews();
+
+        assert this.samplesTable != null;
+        final Iterator<InventoryRecord> iterator = this.samplesTable.getAll().iterator();
+        this.samplesTable.close();
+        while (iterator.hasNext())
+        {
+            final InventoryRecord inventoryRecord = iterator.next();
+            assert inventoryRecord != null;
+            inventoryRecord.sendErrorLogMsg(org.wheatgenetics.inventory.MainActivity.TAG);
+            this.addTableRow(inventoryRecord);
+            MainActivity.position = inventoryRecord.getPosition() + 1;
+        }
+    }
+
+    /**
+     * Adds a new record to the internal list of records
+     */
+    private void addRecord() {
+        {
+            assert this.envidEditText != null;
+            final String envid = this.envidEditText.getText().toString();
+            if (envid.equals("")) return;                              // check for empty user input
+        }
+
+        assert this.boxTextView       != null;
+        assert this.sharedPreferences != null;
+        assert this.wtEditText        != null;
+        final InventoryRecord inventoryRecord = new InventoryRecord(
+            /* box      => */ this.boxTextView.getText().toString()  ,
+            /* envid    => */ this.envidEditText.getText().toString(),
+            /* person   => */ this.sharedPreferences.getSafeName()   ,
+            /* position => */ MainActivity.position++                ,
+            /* wt       => */ this.wtEditText.getText().toString()   );
+
+        assert this.samplesTable != null;
+        this.samplesTable.add(inventoryRecord);
+        this.addTableRow     (inventoryRecord);
+    }
 
     private void setBox() {
         final EditText boxEditText = new EditText(this);
