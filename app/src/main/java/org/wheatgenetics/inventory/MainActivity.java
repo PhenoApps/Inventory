@@ -1,6 +1,6 @@
 package org.wheatgenetics.inventory;
 
-// Uses android.widget.Toast.
+// Uses android.support.v4.view.GravityCompat, android.widget.TableRow and android.widget.Toast.
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -17,7 +17,6 @@ import android.content.DialogInterface;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.support.design.widget.NavigationView;
-import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -54,7 +53,6 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.ScrollView;
 import android.widget.TableLayout;
-import android.widget.TableRow;
 import android.widget.TextView;
 
 public class MainActivity extends AppCompatActivity {
@@ -166,8 +164,7 @@ public class MainActivity extends AppCompatActivity {
                 new NavigationView.OnNavigationItemSelectedListener() {
                     @Override
                     public boolean onNavigationItemSelected(MenuItem item) {
-                        selectNavigationItem(item);
-                        return true;
+                        return selectNavigationItem(item);
                     }});
         }
         this.actionBarDrawerToggle = new ActionBarDrawerToggle(this,
@@ -276,8 +273,8 @@ public class MainActivity extends AppCompatActivity {
         this.sharedPreferences =
             new org.wheatgenetics.inventory.SharedPreferences(getSharedPreferences("Settings", 0));
 
-        if (!this.sharedPreferences.firstNameIsSet()) this.setPerson();
-        if (!this.sharedPreferences.getIgnoreScale()) this.findScale();
+        if (!this.sharedPreferences.firstNameIsSet()) this.setPerson()   ;
+        if (!this.sharedPreferences.getIgnoreScale()) this.connectScale();
 
         int v = 0;
         try { v = getPackageManager().getPackageInfo(getPackageName(), 0).versionCode; }
@@ -307,11 +304,14 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+        assert this.actionBarDrawerToggle != null;
         if (this.actionBarDrawerToggle.onOptionsItemSelected(item)) return true;
 
+        assert item != null;
         switch (item.getItemId()) {
             case android.R.id.home:
-                this.drawerLayout.openDrawer(GravityCompat.START);
+                assert this.drawerLayout != null;
+                this.drawerLayout.openDrawer(android.support.v4.view.GravityCompat.START);
                 return true;
         }
 
@@ -401,45 +401,7 @@ public class MainActivity extends AppCompatActivity {
         this.addTableRow     (inventoryRecord);
     }
 
-    /**
-     * Adds a new entry to the end of the TableView
-     */
-    private void addTableRow(final InventoryRecord inventoryRecord) {
-        assert this.envidEditText != null;
-        this.envidEditText.setText("");
-
-        final TableRow tableRow = new TableRow(this);          // Create a new TableRow to be added.
-        tableRow.setLayoutParams(new TableLayout.LayoutParams(
-            LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
-
-        assert inventoryRecord != null;
-        tableRow.addView(this.makeTextView(inventoryRecord.getPositionAsString(), 0.16f));
-        tableRow.addView(this.makeTextView(inventoryRecord.getBox()             , 0.16f));
-
-        {
-            final TextView sampleTextView = this.makeTextView(inventoryRecord.getEnvId(), 0.5f);
-            sampleTextView.setTag          (inventoryRecord.getTag());
-            sampleTextView.setLongClickable(true                    );
-
-    		/* Define the listener for the longclick event. */
-            sampleTextView.setOnLongClickListener(new OnLongClickListener() {
-                @Override
-                public boolean onLongClick(View v) {
-                    delete(v.getTag());
-                    return false;
-                }});
-
-            tableRow.addView(sampleTextView);
-        }
-
-        tableRow.addView(this.makeTextView(inventoryRecord.getWt(), 0.16f));
-
-        assert this.tableLayout != null;
-        this.tableLayout.addView(tableRow, new LayoutParams(         // Add TableRow to tableLayout.
-            TableLayout.LayoutParams.MATCH_PARENT, TableLayout.LayoutParams.MATCH_PARENT));
-    }
-
-    private void delete(final java.lang.Object tag) {
+    private java.lang.Boolean delete(final java.lang.Object tag) {
         assert tag != null;
         final String tagArray[] = ((java.lang.String) tag).split(",");
         final String box        = tagArray[0];
@@ -449,17 +411,53 @@ public class MainActivity extends AppCompatActivity {
         final AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
         builder.setTitle(getString(R.string.delete_entry));
         builder.setMessage(getString(R.string.delete) + env + "?")
-               .setCancelable(true)
-               .setPositiveButton(getString(R.string.yes), new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        samplesTable.delete(new InventoryRecord(box, env, num));
-                        addTableRows();
-                    }})
-               .setNegativeButton(getString(R.string.no), new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) { dialog.cancel(); }});
+            .setCancelable(true)
+            .setPositiveButton(getString(R.string.yes), new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    samplesTable.delete(new InventoryRecord(box, env, num));
+                    addTableRows();
+                }})
+            .setNegativeButton(getString(R.string.no), new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) { dialog.cancel(); }});
         builder.create().show();
+
+        return false;
+    }
+
+    /**
+     * Adds a new entry to the end of the TableView
+     */
+    private void addTableRow(final InventoryRecord inventoryRecord) {
+        assert this.envidEditText != null;
+        this.envidEditText.setText("");
+
+        final android.widget.TableRow tableRow = new android.widget.TableRow(this);
+        tableRow.setLayoutParams(new TableLayout.LayoutParams(
+            LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
+
+        assert inventoryRecord != null;
+        tableRow.addView(this.makeTextView(inventoryRecord.getPositionAsString(), 0.16f));
+        tableRow.addView(this.makeTextView(inventoryRecord.getBox()             , 0.16f));
+
+        {
+            final TextView envidTextView = this.makeTextView(inventoryRecord.getEnvId(), 0.5f);
+            envidTextView.setTag          (inventoryRecord.getTag());
+            envidTextView.setLongClickable(true                    );
+
+            envidTextView.setOnLongClickListener(new OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View v) { return delete(v.getTag()); }});
+
+            tableRow.addView(envidTextView);
+        }
+
+        tableRow.addView(this.makeTextView(inventoryRecord.getWt(), 0.16f));
+
+        assert this.tableLayout != null;
+        this.tableLayout.addView(tableRow, new LayoutParams(         // Add TableRow to tableLayout.
+            TableLayout.LayoutParams.MATCH_PARENT, TableLayout.LayoutParams.MATCH_PARENT));
     }
 
     private void setBox() {
@@ -500,138 +498,6 @@ public class MainActivity extends AppCompatActivity {
         alert.create().show();
     }
 
-    private void showAboutDialog() {
-        final AlertDialog.Builder alert = new AlertDialog.Builder(this);
-        {
-            final View personView =
-                this.getLayoutInflater().inflate(R.layout.about, new LinearLayout(this), false);
-
-            {
-                final TextView version = (TextView) personView.findViewById(R.id.tvVersion);
-                try
-                {
-                    final PackageInfo packageInfo =
-                        this.getPackageManager().getPackageInfo(this.getPackageName(), 0);
-                    version.setText(getResources().getString(R.string.versiontitle) +
-                        " " + packageInfo.versionName);
-                }
-                catch (PackageManager.NameNotFoundException e)
-                {
-                    org.wheatgenetics.inventory.MainActivity.sendErrorLogMsg(e);
-                }
-                version.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) { showChangeLog(); }});
-            }
-
-            {
-                final TextView otherApps = (TextView) personView.findViewById(R.id.tvOtherApps);
-                otherApps.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) { showOtherAppsDialog(); }});
-            }
-
-            alert.setCancelable(true);
-            alert.setTitle(getResources().getString(R.string.about));
-            alert.setView(personView);
-        }
-        alert.setNegativeButton(getResources().getString(R.string.ok),
-            new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) { dialog.dismiss(); }});
-        alert.show();
-    }
-
-    private void setPerson() {
-        final AlertDialog.Builder builder = new AlertDialog.Builder(this);
-
-        builder.setCancelable(false);
-        builder.setTitle(getResources().getString(R.string.set_person));
-        {
-            final View personView =
-                this.getLayoutInflater().inflate(R.layout.person, new LinearLayout(this), false);
-
-            final EditText fName = (EditText) personView.findViewById(R.id.firstName);
-            final EditText lName = (EditText) personView.findViewById(R.id.lastName );
-
-            fName.setText(this.sharedPreferences.getFirstName());
-            lName.setText(this.sharedPreferences.getLastName() );
-
-            builder.setView(personView);
-            builder.setPositiveButton(getResources().getString(R.string.ok),
-                new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        final String firstName = fName.getText().toString().trim();
-                        final String lastName  = lName.getText().toString().trim();
-
-                        if (firstName.length() == 0 | lastName.length() == 0) {
-                            showToast(getResources().getString(R.string.no_blank));
-                            setPerson();
-                            return;
-                        }
-
-                        showToast(getResources().getString(R.string.person_set) +
-                            " " + firstName + " " + lastName);
-                        sharedPreferences.setName(firstName, lastName);
-                    }});
-        }
-        builder.show();
-    }
-
-    private void showOtherAppsDialog() {
-        final AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        {
-            final ListView myList = new ListView(this);
-
-            myList.setDivider(null);
-            myList.setDividerHeight(0);
-            {
-                final String[] links = {                                   //TODO update these links
-                    "https://play.google.com/store/apps/details?id=com.fieldbook.tracker",
-                    "http://wheatgenetics.org/apps"                                      ,
-                    "http://wheatgenetics.org/apps"                                      };
-                myList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                    @Override
-                    public void onItemClick(AdapterView<?> parent,
-                    View view, int position, long id) {
-                        switch (position) {
-                            case 0:
-                            case 1:
-                            case 2:
-                                startActivity(new Intent(
-                                    Intent.ACTION_VIEW, Uri.parse(links[position])));
-                                break;
-                        }
-                    }});
-            }
-            {
-                final Integer appIconIDs[] = {R.drawable.other_ic_field_book,
-                    R.drawable.other_ic_coordinate, R.drawable.other_ic_1kk};
-
-                final String[] appNames = new String[3];
-                appNames[0] = "Field Book";
-                appNames[1] = "Coordinate";
-                appNames[2] = "1KK"       ;
-                //appNames[3] = "Intercross";
-                //appNames[4] = "Rangle"    ;
-
-                myList.setAdapter(new CustomListAdapter(this, appIconIDs, appNames));
-            }
-
-            builder.setCancelable(true);
-            builder.setTitle(getResources().getString(R.string.otherapps));
-            builder.setView(myList);
-        }
-        builder.setNegativeButton(getResources().getString(R.string.ok),
-            new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    dialog.dismiss();
-                }});
-        builder.show();
-    }
-
     public class CustomListAdapter extends ArrayAdapter<String> {
         protected Context   context    ;
         protected String[]  color_names;
@@ -663,76 +529,6 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    private void clearAll() {
-        final AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
-
-        builder.setMessage(getString(R.string.delete_msg_1))
-            .setCancelable(false)
-            .setTitle(getString(R.string.clear_data))
-            .setPositiveButton(getString(R.string.yes), new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    boxTextView.setText("");
-                    showToast(getString(R.string.data_deleted));
-                    deleteAll();
-                }})
-            .setNegativeButton(getString(R.string.no), new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) { dialog.cancel(); }});
-        builder.create().show();
-    }
-
-    private void export() {
-        new AlertDialog.Builder(MainActivity.this)
-            .setTitle(getString(R.string.export_data))
-            .setMessage(getString(R.string.export_choice))
-            .setPositiveButton(getString(R.string.export_csv),
-                new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) { exportCSV(); }})
-            .setNegativeButton(getString(R.string.export_sql),
-                new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) { exportSQL(); }})
-            .setNeutralButton(getString(R.string.cancel), new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) { dialog.cancel(); }})
-            .show();
-    }
-
-    private void exportCSV() {
-        {
-            final InventoryRecords inventoryRecords = this.samplesTable.getAll();
-            this.samplesTable.close();
-            {
-                final String fileName = Utils.getExportFileName() + ".csv";
-                try { this.shareFile(inventoryRecords.writeCSV(fileName), fileName); }
-                catch (IOException e) {
-                    org.wheatgenetics.inventory.MainActivity.showToast(
-                        this.getBaseContext(), e.getMessage());
-                }
-            }
-        }
-        this.deleteAll();
-    }
-
-    private void exportSQL() {
-        {
-            final InventoryRecords inventoryRecords = this.samplesTable.getAll()    ;
-            final String           boxList          = this.samplesTable.getBoxList();
-            this.samplesTable.close();
-            {
-                final String fileName = Utils.getExportFileName() + ".sql";
-                try { this.shareFile(inventoryRecords.writeSQL(fileName, boxList), fileName); }
-                catch (IOException e) {
-                    org.wheatgenetics.inventory.MainActivity.showToast(
-                        this.getBaseContext(), e.getMessage());
-                }
-            }
-        }
-        this.deleteAll();
-    }
-
     protected void makeFileDiscoverable(final File file) {
         if (file != null)
         {
@@ -761,45 +557,9 @@ public class MainActivity extends AppCompatActivity {
         this.startActivity(Intent.createChooser(intent, getString(R.string.sending_file)));
     }
 
-    protected void selectNavigationItem(final MenuItem menuItem) {
-        assert menuItem != null;
-        switch (menuItem.getItemId()) {
-            case R.id.scaleConnect:
-                this.findScale();
-                break;
-            case R.id.person:
-                this.setPerson();
-                break;
-            case R.id.export:
-                this.export();
-                break;
-            case R.id.clearData:
-                this.clearAll();
-                break;
-            case R.id.about:
-                this.showAboutDialog();
-                break;
-        }
-        this.drawerLayout.closeDrawers();
-    }
 
-    private void showChangeLog() {
-        this.parent.setOrientation(LinearLayout.VERTICAL);
-        this.parseLog(R.raw.changelog_releases);
-
-        final AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
-        builder.setTitle(getResources().getString(R.string.updatemsg));
-        builder.setView(this.changeContainer)
-               .setCancelable(true)
-               .setPositiveButton(getResources().getString(R.string.ok),
-                    new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            dialog.dismiss();
-                        }});
-        builder.create().show();
-    }
-
+    // region Drawer Methods
+    // region Drawer Subsubaction Methods
     protected void parseLog(final int resId) {
         try {
             final InputStream       is  = getResources().openRawResource(resId);
@@ -849,8 +609,150 @@ public class MainActivity extends AppCompatActivity {
             }
         } catch (IOException e) { throw new RuntimeException(e); }
     }
+    // endregion
 
-    protected void findScale() {
+
+    // region Drawer Subaction Methods
+    private void exportCSV() {
+        {
+            final InventoryRecords inventoryRecords = this.samplesTable.getAll();
+            this.samplesTable.close();
+            {
+                final String fileName = Utils.getExportFileName() + ".csv";
+                try { this.shareFile(inventoryRecords.writeCSV(fileName), fileName); }
+                catch (IOException e) {
+                    org.wheatgenetics.inventory.MainActivity.showToast(
+                        this.getBaseContext(), e.getMessage());
+                }
+            }
+        }
+        this.deleteAll();
+    }
+
+    private void exportSQL() {
+        {
+            final InventoryRecords inventoryRecords = this.samplesTable.getAll()    ;
+            final String           boxList          = this.samplesTable.getBoxList();
+            this.samplesTable.close();
+            {
+                final String fileName = Utils.getExportFileName() + ".sql";
+                try { this.shareFile(inventoryRecords.writeSQL(fileName, boxList), fileName); }
+                catch (IOException e) {
+                    org.wheatgenetics.inventory.MainActivity.showToast(
+                        this.getBaseContext(), e.getMessage());
+                }
+            }
+        }
+        this.deleteAll();
+    }
+
+    private void showChangeLog() {
+        this.parent.setOrientation(LinearLayout.VERTICAL);
+        this.parseLog(R.raw.changelog_releases);
+
+        final AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+        builder.setTitle(getResources().getString(R.string.updatemsg));
+        builder.setView(this.changeContainer)
+            .setCancelable(true)
+            .setPositiveButton(getResources().getString(R.string.ok),
+                new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) { dialog.dismiss(); }});
+        builder.create().show();
+    }
+
+    private void showOtherAppsDialog() {
+        final AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        {
+            final ListView myList = new ListView(this);
+
+            myList.setDivider(null);
+            myList.setDividerHeight(0);
+            {
+                final String[] links = {                                   //TODO update these links
+                    "https://play.google.com/store/apps/details?id=com.fieldbook.tracker",
+                    "http://wheatgenetics.org/apps"                                      ,
+                    "http://wheatgenetics.org/apps"                                      };
+                myList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                    @Override
+                    public void onItemClick(AdapterView<?> parent,
+                    View view, int position, long id) {
+                        switch (position) {
+                            case 0:
+                            case 1:
+                            case 2:
+                                startActivity(new Intent(
+                                    Intent.ACTION_VIEW, Uri.parse(links[position])));
+                                break;
+                        }
+                    }});
+            }
+            {
+                final Integer appIconIDs[] = {R.drawable.other_ic_field_book,
+                    R.drawable.other_ic_coordinate, R.drawable.other_ic_1kk};
+
+                final String[] appNames = new String[3];
+                appNames[0] = "Field Book";
+                appNames[1] = "Coordinate";
+                appNames[2] = "1KK"       ;
+                //appNames[3] = "Intercross";
+                //appNames[4] = "Rangle"    ;
+
+                myList.setAdapter(new CustomListAdapter(this, appIconIDs, appNames));
+            }
+
+            builder.setCancelable(true);
+            builder.setTitle(getResources().getString(R.string.otherapps));
+            builder.setView(myList);
+        }
+        builder.setNegativeButton(getResources().getString(R.string.ok),
+            new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) { dialog.dismiss(); }});
+        builder.show();
+    }
+    // endregion
+
+
+    // region Drawer Action Methods
+    private void setPerson() {
+        final AlertDialog.Builder builder = new AlertDialog.Builder(this);
+
+        builder.setCancelable(false);
+        builder.setTitle(getResources().getString(R.string.set_person));
+        {
+            final View personView =
+                this.getLayoutInflater().inflate(R.layout.person, new LinearLayout(this), false);
+
+            final EditText fName = (EditText) personView.findViewById(R.id.firstName);
+            final EditText lName = (EditText) personView.findViewById(R.id.lastName );
+
+            fName.setText(this.sharedPreferences.getFirstName());
+            lName.setText(this.sharedPreferences.getLastName() );
+
+            builder.setView(personView);
+            builder.setPositiveButton(getResources().getString(R.string.ok),
+                new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        final String firstName = fName.getText().toString().trim();
+                        final String lastName  = lName.getText().toString().trim();
+
+                        if (firstName.length() == 0 | lastName.length() == 0) {
+                            showToast(getResources().getString(R.string.no_blank));
+                            setPerson();
+                            return;
+                        }
+
+                        showToast(getResources().getString(R.string.person_set) +
+                            " " + firstName + " " + lastName);
+                        sharedPreferences.setName(firstName, lastName);
+                    }});
+        }
+        builder.show();
+    }
+
+    protected void connectScale() {
         if (this.usbDevice == null) {
             final UsbManager usbManager = (UsbManager) getSystemService(Context.USB_SERVICE);
             final HashMap<String, UsbDevice> deviceList = usbManager.getDeviceList();
@@ -858,7 +760,7 @@ public class MainActivity extends AppCompatActivity {
                 this.usbDevice = usbDevice;
                 org.wheatgenetics.inventory.MainActivity.sendVerboseLogMsg(String.format(
                     "name=%s deviceId=%d productId=%d vendorId=%d " +
-                    "deviceClass=%d subClass=%d protocol=%d interfaceCount=%d",
+                        "deviceClass=%d subClass=%d protocol=%d interfaceCount=%d",
                     this.usbDevice.getDeviceName()    , this.usbDevice.getDeviceId()      ,
                     this.usbDevice.getProductId()     , this.usbDevice.getVendorId()      ,
                     this.usbDevice.getDeviceClass()   , this.usbDevice.getDeviceSubclass(),
@@ -875,20 +777,136 @@ public class MainActivity extends AppCompatActivity {
                 .setTitle(getString(R.string.no_scale))
                 .setMessage(getString(R.string.connect_scale))
                 .setCancelable(false)
-                .setPositiveButton(getString(R.string.try_again),
-                    new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) { findScale(); }})
-                .setNegativeButton(getString(R.string.ignore),
-                    new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            sharedPreferences.setIgnoreScaleToTrue();
-                            dialog.cancel();
-                        }})
-                .show();
+                    .setPositiveButton(getString(R.string.try_again),
+                        new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which)
+                            {
+                                connectScale();
+                            }})
+                    .setNegativeButton(getString(R.string.ignore),
+                        new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                sharedPreferences.setIgnoreScaleToTrue();
+                                dialog.cancel();
+                            }})
+                    .show();
         }
     }
+
+    private void export() {
+        new AlertDialog.Builder(MainActivity.this)
+            .setTitle(getString(R.string.export_data))
+            .setMessage(getString(R.string.export_choice))
+            .setPositiveButton(getString(R.string.export_csv),
+                new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) { exportCSV(); }})
+            .setNegativeButton(getString(R.string.export_sql),
+                new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) { exportSQL(); }})
+            .setNeutralButton(getString(R.string.cancel), new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) { dialog.cancel(); }})
+            .show();
+    }
+
+    private void clearAll() {
+        final AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+
+        builder.setMessage(getString(R.string.delete_msg_1))
+            .setCancelable(false)
+            .setTitle(getString(R.string.clear_data))
+            .setPositiveButton(getString(R.string.yes), new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    boxTextView.setText("");
+                    showToast(getString(R.string.data_deleted));
+                    deleteAll();
+                }})
+            .setNegativeButton(getString(R.string.no), new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) { dialog.cancel(); }});
+        builder.create().show();
+    }
+
+    private void showAboutDialog() {
+        final AlertDialog.Builder alert = new AlertDialog.Builder(this);
+        {
+            final View personView =
+                this.getLayoutInflater().inflate(R.layout.about, new LinearLayout(this), false);
+
+            {
+                final TextView version = (TextView) personView.findViewById(R.id.tvVersion);
+                try
+                {
+                    final PackageInfo packageInfo =
+                        this.getPackageManager().getPackageInfo(this.getPackageName(), 0);
+                    version.setText(getResources().getString(R.string.versiontitle) +
+                        " " + packageInfo.versionName);
+                }
+                catch (PackageManager.NameNotFoundException e)
+                {
+                    org.wheatgenetics.inventory.MainActivity.sendErrorLogMsg(e);
+                }
+                version.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) { showChangeLog(); }});
+            }
+
+            {
+                final TextView otherApps = (TextView) personView.findViewById(R.id.tvOtherApps);
+                otherApps.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) { showOtherAppsDialog(); }});
+            }
+
+            alert.setCancelable(true);
+            alert.setTitle(getResources().getString(R.string.about));
+            alert.setView(personView);
+        }
+        alert.setNegativeButton(getResources().getString(R.string.ok),
+            new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) { dialog.dismiss(); }});
+        alert.show();
+    }
+    // endregion
+
+
+    // region Drawer Selector Method
+    protected java.lang.Boolean selectNavigationItem(final MenuItem menuItem)
+    {
+        assert menuItem != null;
+        switch (menuItem.getItemId())
+        {
+            case R.id.person:
+                this.setPerson();
+                break;
+            case R.id.scaleConnect:
+                this.connectScale();
+                break;
+            case R.id.export:
+                this.export();
+                break;
+            case R.id.clearData:
+                this.clearAll();
+                break;
+            case R.id.about:
+                this.showAboutDialog();
+                break;
+        }
+
+        assert this.drawerLayout != null;
+        this.drawerLayout.closeDrawers();
+
+        return true;
+    }
+    // endregion
+    // endregion
+
 
     private class ScaleListener extends AsyncTask<Void, Double, Void> {
         private double mLastWeight = 0;
