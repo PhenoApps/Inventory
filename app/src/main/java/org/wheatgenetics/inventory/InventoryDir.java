@@ -2,11 +2,15 @@ package org.wheatgenetics.inventory;
 
 // Uses android.os.Environment and android.net.Uri.
 
-class InventoryDir
+class InventoryDir extends java.lang.Object
 {
-    private static java.io.File PATH =
+    // region Private Class Constant
+    final private static java.io.File PATH =
         new java.io.File(android.os.Environment.getExternalStorageDirectory(), "Inventory");
+    // endregion
 
+
+    // region Package Class Methods
     /**
      * The following code was originally in MainActivity.createDir().  This name gives a clue as to
      * the purpose of the code, although it doesn't explain why blankHiddenFile is created.
@@ -45,4 +49,5 @@ class InventoryDir
         file.createNewFile();                                          // throws java.io.IOException
         return file;
     }
+    // endregion
 }

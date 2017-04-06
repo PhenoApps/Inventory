@@ -5,14 +5,14 @@ package org.wheatgenetics.inventory;
 
 class SamplesTable extends android.database.sqlite.SQLiteOpenHelper
 {
-    // region Private Constants
-    // region Database Private Constants
+    // region Private Class Constants
+    // region Database Private Class Constants
     private static final int              DATABASE_VERSION = 3            ;
     private static final java.lang.String DATABASE_NAME    = "InventoryDB";
     // endregion
 
 
-    // region Table Private Constants
+    // region Table Private Class Constants
     private static final java.lang.String TABLE_NAME = "samples";
 
     private static final java.lang.String ID_FIELD_NAME       = "id"      ;
@@ -26,17 +26,33 @@ class SamplesTable extends android.database.sqlite.SQLiteOpenHelper
     // endregion
 
 
-    SamplesTable(final android.content.Context context)
+    // region Private Class Method
+    static private android.content.ContentValues makeContentValues(
+    final org.wheatgenetics.inventory.InventoryRecord inventoryRecord)
     {
-        super(
-            /* context => */ context                                                  ,
-            /* name    => */ org.wheatgenetics.inventory.SamplesTable.DATABASE_NAME   ,
-            /* factory => */ null                                                     ,
-            /* version => */ org.wheatgenetics.inventory.SamplesTable.DATABASE_VERSION);
+        assert inventoryRecord != null;
+
+        final android.content.ContentValues contentValues = new android.content.ContentValues();
+
+        contentValues.put(org.wheatgenetics.inventory.SamplesTable.BOX_FIELD_NAME,
+            inventoryRecord.getBox());
+        contentValues.put(org.wheatgenetics.inventory.SamplesTable.ENVID_FIELD_NAME,
+            inventoryRecord.getEnvId());
+        contentValues.put(org.wheatgenetics.inventory.SamplesTable.PERSON_FIELD_NAME,
+            inventoryRecord.getPerson());
+        contentValues.put(org.wheatgenetics.inventory.SamplesTable.DATE_FIELD_NAME,
+            inventoryRecord.getDate());
+        contentValues.put(org.wheatgenetics.inventory.SamplesTable.POSITION_FIELD_NAME,
+            inventoryRecord.getPosition());
+        contentValues.put(org.wheatgenetics.inventory.SamplesTable.WT_FIELD_NAME,
+            inventoryRecord.getWt());
+
+        return contentValues;
     }
+    // endregion
 
 
-    // region Overridden Methods
+    // region Public Overridden Methods
     @Override
     public void onCreate(android.database.sqlite.SQLiteDatabase db)
     {
@@ -61,29 +77,6 @@ class SamplesTable extends android.database.sqlite.SQLiteOpenHelper
     }
     // endregion
 
-
-    static private android.content.ContentValues makeContentValues(
-    final org.wheatgenetics.inventory.InventoryRecord inventoryRecord)
-    {
-        assert inventoryRecord != null;
-
-        final android.content.ContentValues contentValues = new android.content.ContentValues();
-
-        contentValues.put(org.wheatgenetics.inventory.SamplesTable.BOX_FIELD_NAME,
-            inventoryRecord.getBox());
-        contentValues.put(org.wheatgenetics.inventory.SamplesTable.ENVID_FIELD_NAME,
-            inventoryRecord.getEnvId());
-        contentValues.put(org.wheatgenetics.inventory.SamplesTable.PERSON_FIELD_NAME,
-            inventoryRecord.getPerson());
-        contentValues.put(org.wheatgenetics.inventory.SamplesTable.DATE_FIELD_NAME,
-            inventoryRecord.getDate());
-        contentValues.put(org.wheatgenetics.inventory.SamplesTable.POSITION_FIELD_NAME,
-            inventoryRecord.getPosition());
-        contentValues.put(org.wheatgenetics.inventory.SamplesTable.WT_FIELD_NAME,
-            inventoryRecord.getWt());
-
-        return contentValues;
-    }
 
     // region Protected Methods
     protected int internalDelete(final java.lang.String whereClause)
@@ -163,6 +156,18 @@ class SamplesTable extends android.database.sqlite.SQLiteOpenHelper
 
 
     // region Package Methods
+    // region Constructor Package Method
+    SamplesTable(final android.content.Context context)
+    {
+        super(
+            /* context => */ context                                                  ,
+            /* name    => */ org.wheatgenetics.inventory.SamplesTable.DATABASE_NAME   ,
+            /* factory => */ null                                                     ,
+            /* version => */ org.wheatgenetics.inventory.SamplesTable.DATABASE_VERSION);
+    }
+    // endregion
+
+
     // region Single-Record Package Methods
     void add(final org.wheatgenetics.inventory.InventoryRecord inventoryRecord)
     {

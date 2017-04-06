@@ -3,7 +3,7 @@ package org.wheatgenetics.inventory;
 // Uses android.util.Log.
 
 class InventoryRecord extends java.lang.Object {
-    // region Fields
+    // region Protected Fields
     protected int              id;
     protected java.lang.String box    = null;
     protected java.lang.String envid  = null;
@@ -14,7 +14,18 @@ class InventoryRecord extends java.lang.Object {
     // endregion
 
 
-    // region Constructors
+    // region Public Overridden Method
+    @Override
+    public java.lang.String toString()
+    {
+        return this.box + "," + this.envid + "," + this.person +
+            "," + this.date + "," + this.position + "," + this.wt;
+    }
+    // endregion
+
+
+    // region Package Methods
+    // region Constructor Package Methods
     InventoryRecord() { super(); }
 
     InventoryRecord(final java.lang.String box, final java.lang.String envid, final int position)
@@ -44,15 +55,7 @@ class InventoryRecord extends java.lang.Object {
     // endregion
 
 
-    @Override
-    public java.lang.String toString()
-    {
-        return this.box + "," + this.envid + "," + this.person +
-            "," + this.date + "," + this.position + "," + this.wt;
-    }
-
-
-    // region Getters and Setters
+    // region Getters and Setter Package Methods
     int  getId()             { return this.id; }
     void setId(final int id) { this.id = id  ; }
 
@@ -110,6 +113,8 @@ class InventoryRecord extends java.lang.Object {
         this.wt       = wt                                  ;
     }
 
+
+    // region Log Package Methods
     int sendDebugLogMsg(final java.lang.String tag)
     {
         return android.util.Log.d(tag, this.toString());
@@ -120,4 +125,6 @@ class InventoryRecord extends java.lang.Object {
         return android.util.Log.e(tag,
             this.box + " " + this.getPositionAsString() + " " + this.envid + " " + this.wt);
     }
+    // endregion
+    // endregion
 }

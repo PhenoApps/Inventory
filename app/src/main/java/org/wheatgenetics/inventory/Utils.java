@@ -1,6 +1,6 @@
 package org.wheatgenetics.inventory;
 
-class Utils
+class Utils extends java.lang.Object
 {
     static java.lang.String[] makeStringArray(final java.lang.String value)
     {

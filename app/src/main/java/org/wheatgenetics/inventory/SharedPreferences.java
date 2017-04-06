@@ -4,7 +4,7 @@ package org.wheatgenetics.inventory;
 
 class SharedPreferences extends java.lang.Object
 {
-    // region Constants
+    // region Private Class Constants
     static final private java.lang.String FIRST_NAME     = "FirstName"    ;
     static final private java.lang.String LAST_NAME      = "LastName"     ;
     static final private java.lang.String IGNORE_SCALE   = "ignoreScale"  ;
@@ -12,7 +12,9 @@ class SharedPreferences extends java.lang.Object
     // endregion
 
 
+    // region Protected Field
     protected android.content.SharedPreferences sharedPreferences;
+    // endregion
 
 
     // region Protected Methods
@@ -56,15 +58,17 @@ class SharedPreferences extends java.lang.Object
 
 
     // region Package Methods
+    // region Constructor Package Method
     SharedPreferences(final android.content.SharedPreferences sharedPreferences)
     {
         super();
         assert sharedPreferences != null;
         this.sharedPreferences = sharedPreferences;
     }
+    // endregion
 
 
-    // region FirstName Methods
+    // region FirstName Package Methods
     java.lang.Boolean firstNameIsSet() { return this.getFirstName().length() > 0; }
 
     java.lang.String getFirstName()
@@ -74,7 +78,7 @@ class SharedPreferences extends java.lang.Object
     // endregion
 
 
-    // region LastName Method
+    // region LastName Package Method
     java.lang.String getLastName()
     {
         return this.getString(org.wheatgenetics.inventory.SharedPreferences.LAST_NAME);
@@ -82,7 +86,7 @@ class SharedPreferences extends java.lang.Object
     // endregion
 
 
-    // region Name Methods
+    // region Name Package Methods
     void setName(final java.lang.String firstName, final java.lang.String lastName)
     {
         this.setString(org.wheatgenetics.inventory.SharedPreferences.FIRST_NAME,
@@ -101,7 +105,7 @@ class SharedPreferences extends java.lang.Object
     // endregion
 
 
-    // region ignoreScale Methods
+    // region IgnoreScale Package Methods
     java.lang.Boolean getIgnoreScale()
     {
         assert this.sharedPreferences != null;
@@ -124,7 +128,7 @@ class SharedPreferences extends java.lang.Object
     // endregion
 
 
-    // region UpdateVersion Methods
+    // region UpdateVersion Package Methods
     java.lang.Boolean updateVersionIsSet(final int newUpdateVersion)
     {
         return this.getUpdateVersion() >= newUpdateVersion;

@@ -4,9 +4,13 @@ package org.wheatgenetics.inventory;
 
 class InventoryRecords extends java.lang.Object
 {
-    protected java.util.LinkedList<org.wheatgenetics.inventory.InventoryRecord> linkedList =
+    // region Protected Constant
+    final protected java.util.LinkedList<org.wheatgenetics.inventory.InventoryRecord> linkedList =
         new java.util.LinkedList<org.wheatgenetics.inventory.InventoryRecord>();
+    // endregion
 
+
+    // region Package Methods
     boolean add(final org.wheatgenetics.inventory.InventoryRecord inventoryRecord)
     {
         assert this.linkedList != null;
@@ -93,4 +97,5 @@ class InventoryRecords extends java.lang.Object
     {
         return android.util.Log.d(tag, this.toString());
     }
+    // endregion
 }

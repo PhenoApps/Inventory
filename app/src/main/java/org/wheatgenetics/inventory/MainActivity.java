@@ -559,7 +559,7 @@ public class MainActivity extends AppCompatActivity {
         spacer.setText("\n");
 
 
-        while ((line = bufferedReader.readLine()) != null)                     // throws IOException
+        while ((line = bufferedReader.readLine()) != null)             // throws java.io.IOException
             if (line.length() == 0)
             {
                 version = null;
