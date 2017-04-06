@@ -323,16 +323,6 @@ public class MainActivity extends AppCompatActivity {
         org.wheatgenetics.inventory.MainActivity.showToast(this, text);
     }
 
-    private void goToBottom() {
-        assert this.scrollView != null;
-        this.scrollView.post(new Runnable() {
-            @Override
-            public void run() {
-                scrollView.fullScroll(ScrollView.FOCUS_DOWN);
-                envidEditText.requestFocus();
-            }});
-    }
-
 
     // region addTableRow()
     protected android.widget.TextView makeTextView(
@@ -431,6 +421,16 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    private void goToBottom() {
+        assert this.scrollView != null;
+        this.scrollView.post(new Runnable() {
+            @Override
+            public void run() {
+                scrollView.fullScroll(ScrollView.FOCUS_DOWN);
+                envidEditText.requestFocus();
+            }});
+    }
+
     /**
      * Adds values in widgets to samples database table and to bottom half of screen.
      */
@@ -457,44 +457,6 @@ public class MainActivity extends AppCompatActivity {
         this.addTableRow     (inventoryRecord);
 
         this.goToBottom();
-    }
-
-    private void setBox() {
-        final EditText boxEditText = new EditText(this);
-        boxEditText.setText(this.box);
-        boxEditText.selectAll();
-        boxEditText.setSingleLine();
-
-        final AlertDialog.Builder alert = new AlertDialog.Builder(this);
-        alert.setTitle(getString(R.string.setbox));
-        alert.setView(boxEditText);
-
-        alert.setPositiveButton(getString(R.string.ok), new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                {
-                    final String value = boxEditText.getText().toString().trim();
-
-                    boxTextView.setText(value);
-                    box = value;
-                }
-
-                final InputMethodManager imm =
-                    (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-                imm.hideSoftInputFromWindow(boxEditText.getWindowToken(), 0);
-            }});
-
-        alert.setNegativeButton(getString(R.string.cancel), new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.cancel();
-
-                final InputMethodManager imm =
-                    (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-                imm.hideSoftInputFromWindow(boxEditText.getWindowToken(), 0);
-            }});
-
-        alert.create().show();
     }
 
     public class CustomListAdapter extends ArrayAdapter<String> {
@@ -906,6 +868,45 @@ public class MainActivity extends AppCompatActivity {
     // endregion
     // endregion
 
+
+    private void setBox() {
+        final EditText boxEditText = new EditText(this);
+        boxEditText.setText(this.box);
+        boxEditText.selectAll();
+        boxEditText.setSingleLine();
+
+        final AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle(getString(R.string.setbox));
+        builder.setView(boxEditText);
+
+        builder.setPositiveButton(getString(R.string.ok), new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                {
+                    final String value = boxEditText.getText().toString().trim();
+
+                    boxTextView.setText(value);
+                    box = value;
+                }
+
+                final InputMethodManager imm =
+                    (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                imm.hideSoftInputFromWindow(boxEditText.getWindowToken(), 0);
+            }});
+
+        builder.setNegativeButton(getString(R.string.cancel),
+            new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    dialog.cancel();
+
+                    final InputMethodManager imm =
+                        (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                    imm.hideSoftInputFromWindow(boxEditText.getWindowToken(), 0);
+                }});
+
+        builder.create().show();
+    }
 
     private class ScaleListener extends AsyncTask<Void, Double, Void> {
         private double mLastWeight = 0;
