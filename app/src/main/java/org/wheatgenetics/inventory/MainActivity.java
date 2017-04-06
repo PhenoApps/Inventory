@@ -323,6 +323,16 @@ public class MainActivity extends AppCompatActivity {
         org.wheatgenetics.inventory.MainActivity.showToast(this, text);
     }
 
+    protected void makeFileDiscoverable(final File file) {
+        if (file != null)
+        {
+            MediaScannerConnection.scanFile(this,
+                Utils.makeStringArray(file.getPath()), null, null);
+            this.sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE,
+                Uri.fromFile(file)));
+        }
+    }
+
 
     // region addTableRow()
     protected android.widget.TextView makeTextView(
@@ -490,22 +500,15 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    protected void makeFileDiscoverable(final File file) {
-        if (file != null)
-        {
-            MediaScannerConnection.scanFile(this,
-                Utils.makeStringArray(file.getPath()), null, null);
-            this.sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE,
-                Uri.fromFile(file)));
-        }
-    }
-
     private void deleteAll() {
         this.samplesTable.deleteAll();
         this.tableLayout.removeAllViews();
         MainActivity.position = 1;
     }
 
+
+    // region Drawer Methods
+    // region Drawer Subsubaction Methods
     private void shareFile(final File file, final String fileName) {
         this.makeFileDiscoverable(file);
         this.showToast(getString(R.string.export_success));
@@ -518,9 +521,6 @@ public class MainActivity extends AppCompatActivity {
         this.startActivity(Intent.createChooser(intent, getString(R.string.sending_file)));
     }
 
-
-    // region Drawer Methods
-    // region Drawer Subsubaction Methods
     protected void parseLog(final int resId) {
         try {
             final InputStream       is  = getResources().openRawResource(resId);
