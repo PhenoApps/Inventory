@@ -2,11 +2,8 @@ package org.wheatgenetics.inventory;
 
 // Uses android.support.v4.view.GravityCompat, android.widget.TableRow and android.widget.Toast.
 
-import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.util.HashMap;
 import java.util.Iterator;
 
@@ -521,54 +518,68 @@ public class MainActivity extends AppCompatActivity {
         this.startActivity(Intent.createChooser(intent, getString(R.string.sending_file)));
     }
 
-    protected void parseLog(final int resId) {
-        try {
-            final InputStream       is  = getResources().openRawResource(resId);
-            final InputStreamReader isr = new InputStreamReader(is)            ;
-            final BufferedReader    br  = new BufferedReader(isr, 8192)        ;
+    protected void parseLog() throws java.io.IOException
+    {
+        final java.io.InputStreamReader inputStreamReader = new java.io.InputStreamReader(
+            this.getResources().openRawResource(R.raw.changelog_releases));
+        final java.io.BufferedReader bufferedReader =
+            new java.io.BufferedReader(inputStreamReader, 8192);
 
-            final LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT);
-            lp.setMargins(20, 5, 20, 0);
+        java.lang.String line;
+        java.lang.String version = null;
 
-            String curVersionName = null;
-            String line;
 
-            while ((line = br.readLine()) != null) {
-                final TextView header  = new TextView(this);
-                final TextView content = new TextView(this);
-                final TextView spacer  = new TextView(this);
-                final View     ruler   = new View    (this);
+        final android.widget.TextView header  = new android.widget.TextView(this);
+        final android.view.View       ruler   = new android.view.View      (this);
+        final android.widget.TextView content = new android.widget.TextView(this);
+        final android.widget.TextView spacer  = new android.widget.TextView(this);
 
-                header.setLayoutParams (lp);
-                content.setLayoutParams(lp);
-                spacer.setLayoutParams (lp);
-                ruler.setLayoutParams  (lp);
+        {
+            final android.widget.LinearLayout.LayoutParams layoutParams =
+                new android.widget.LinearLayout.LayoutParams(
+                    /* width  => */ android.widget.LinearLayout.LayoutParams.MATCH_PARENT,
+                    /* height => */ android.widget.LinearLayout.LayoutParams.MATCH_PARENT);
 
-                spacer.setTextSize(5);
+            layoutParams.setMargins(
+                /* left   => */ 20,
+                /* top    => */  5,
+                /* right  => */ 20,
+                /* bottom => */  0);
 
-                ruler.setBackgroundColor(getResources().getColor(R.color.main_colorAccent));
-                header.setTextAppearance (getApplicationContext(), R.style.ChangelogTitles );
-                content.setTextAppearance(getApplicationContext(), R.style.ChangelogContent);
+            header.setLayoutParams (layoutParams);
+            ruler.setLayoutParams  (layoutParams);
+            content.setLayoutParams(layoutParams);
+            spacer.setLayoutParams (layoutParams);
+        }
 
-                if (line.length() == 0) {
-                    curVersionName = null;
-                    spacer.setText("\n");
-                    this.parent.addView(spacer);
-                } else if (curVersionName == null) {
-                    {
-                        final String[] lineSplit = line.split("/");
-                        curVersionName = lineSplit[1];
-                    }
-                    header.setText(curVersionName);
-                    this.parent.addView(header);
-                    this.parent.addView(ruler);
-                } else {
-                    content.setText("•  " + line);
-                    this.parent.addView(content);
-                }
+        ruler.setBackgroundColor(this.getResources().getColor(R.color.main_colorAccent));
+        header.setTextAppearance (this.getApplicationContext(), R.style.ChangelogTitles );
+        content.setTextAppearance(this.getApplicationContext(), R.style.ChangelogContent);
+        spacer.setTextSize(5);
+        spacer.setText("\n");
+
+
+        while ((line = bufferedReader.readLine()) != null)                     // throws IOException
+            if (line.length() == 0)
+            {
+                version = null;
+                this.parent.addView(spacer);
             }
-        } catch (IOException e) { throw new RuntimeException(e); }
+            else if (version == null)
+            {
+                {
+                    final java.lang.String[] splitLine = line.split("/");
+                    version = splitLine[1];
+                }
+                header.setText(version);
+                this.parent.addView(header);
+                this.parent.addView(ruler );
+            }
+            else
+            {
+                content.setText("•  " + line);
+                this.parent.addView(content);
+            }
     }
     // endregion
 
@@ -609,7 +620,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void showChangeLog() {
         this.parent.setOrientation(LinearLayout.VERTICAL);
-        this.parseLog(R.raw.changelog_releases);
+        try { this.parseLog(); } catch (java.io.IOException e) { throw new RuntimeException(e); }
 
         final AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
         builder.setTitle(getResources().getString(R.string.updatemsg));
