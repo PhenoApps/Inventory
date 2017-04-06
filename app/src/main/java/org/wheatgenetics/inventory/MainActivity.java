@@ -221,17 +221,13 @@ public class MainActivity extends AppCompatActivity {
                         mgr.showSoftInput(envidEditText, InputMethodManager.HIDE_IMPLICIT_ONLY);
                     }
                     if (event.getAction() != KeyEvent.ACTION_DOWN) return true;
-                    addRecord(); // Add the current record to the table
-                    goToBottom();
+                    addRecord();
                     envidEditText.requestFocus(); // Set focus back to Enter box
                 }
 
                 if (keyCode == KeyEvent.KEYCODE_NUMPAD_ENTER) {
                     if (event.getAction() == KeyEvent.ACTION_DOWN) return true;
-                    if (event.getAction() == KeyEvent.ACTION_UP) {
-                        addRecord(); // Add the current record to the table
-                        goToBottom();
-                    }
+                    if (event.getAction() == KeyEvent.ACTION_UP) addRecord();
                     envidEditText.requestFocus(); // Set focus back to Enter box
                 }
                 return false;
@@ -247,8 +243,7 @@ public class MainActivity extends AppCompatActivity {
                         mgr.showSoftInput(envidEditText, InputMethodManager.HIDE_IMPLICIT_ONLY);
                     }
                     if (event.getAction() != KeyEvent.ACTION_DOWN) return true;
-                    addRecord(); // Add the current record to the table
-                    goToBottom();
+                    addRecord();
 
                     if (usbDevice != null) wtEditText.setText("");
                     envidEditText.requestFocus(); // Set focus back to Enter box
@@ -256,10 +251,7 @@ public class MainActivity extends AppCompatActivity {
 
                 if (keyCode == KeyEvent.KEYCODE_NUMPAD_ENTER) {
                     if (event.getAction() == KeyEvent.ACTION_DOWN) return true;
-                    if (event.getAction() == KeyEvent.ACTION_UP) {
-                        addRecord(); // Add the current record to the table
-                        goToBottom();
-                    }
+                    if (event.getAction() == KeyEvent.ACTION_UP) addRecord();
                     envidEditText.requestFocus(); // Set focus back to Enter box
                 }
                 return false;
@@ -440,9 +432,10 @@ public class MainActivity extends AppCompatActivity {
     }
 
     /**
-     * Adds a new record to the internal list of records
+     * Adds values in widgets to samples database table and to bottom half of screen.
      */
-    private void addRecord() {
+    private void addRecord()
+    {
         {
             assert this.envidEditText != null;
             final String envid = this.envidEditText.getText().toString();
@@ -462,6 +455,8 @@ public class MainActivity extends AppCompatActivity {
         assert this.samplesTable != null;
         this.samplesTable.add(inventoryRecord);
         this.addTableRow     (inventoryRecord);
+
+        this.goToBottom();
     }
 
     private void setBox() {
