@@ -331,23 +331,6 @@ public class MainActivity extends AppCompatActivity {
         org.wheatgenetics.inventory.MainActivity.showToast(this, text);
     }
 
-    protected android.widget.TextView makeTextView(
-    final java.lang.CharSequence text, final float initWeight)
-    {
-        final android.widget.TextView textView = new android.widget.TextView(this);
-
-        textView.setGravity  (android.view.Gravity.CENTER | android.view.Gravity.BOTTOM);
-        textView.setTextColor(android.graphics.Color.BLACK                             );
-        textView.setTextSize (20.0f                                                    );
-        textView.setText     (text                                                     );
-        textView.setLayoutParams(new android.widget.TableRow.LayoutParams(
-            /* w          => */ 0                                               ,
-            /* h          => */ android.view.ViewGroup.LayoutParams.WRAP_CONTENT,
-            /* initWeight => */ initWeight                                      ));
-
-        return textView;
-    }
-
     private void goToBottom() {
         assert this.scrollView != null;
         this.scrollView.post(new Runnable() {
@@ -399,6 +382,25 @@ public class MainActivity extends AppCompatActivity {
         assert this.samplesTable != null;
         this.samplesTable.add(inventoryRecord);
         this.addTableRow     (inventoryRecord);
+    }
+
+
+    // region addTableRow()
+    protected android.widget.TextView makeTextView(
+    final java.lang.CharSequence text, final float initWeight)
+    {
+        final android.widget.TextView textView = new android.widget.TextView(this);
+
+        textView.setGravity  (android.view.Gravity.CENTER | android.view.Gravity.BOTTOM);
+        textView.setTextColor(android.graphics.Color.BLACK                             );
+        textView.setTextSize (20.0f                                                    );
+        textView.setText     (text                                                     );
+        textView.setLayoutParams(new android.widget.TableRow.LayoutParams(
+            /* w          => */ 0                                               ,
+            /* h          => */ android.view.ViewGroup.LayoutParams.WRAP_CONTENT,
+            /* initWeight => */ initWeight                                      ));
+
+        return textView;
     }
 
     private java.lang.Boolean delete(final java.lang.Object tag) {
@@ -459,6 +461,8 @@ public class MainActivity extends AppCompatActivity {
         this.tableLayout.addView(tableRow, new LayoutParams(         // Add TableRow to tableLayout.
             TableLayout.LayoutParams.MATCH_PARENT, TableLayout.LayoutParams.MATCH_PARENT));
     }
+    // endregion
+
 
     private void setBox() {
         final EditText boxEditText = new EditText(this);
