@@ -1,6 +1,12 @@
 package org.wheatgenetics.inventory;
 
-// Uses android.support.v4.view.GravityCompat, android.widget.TableRow and android.widget.Toast.
+/**
+ * Uses:
+ * android.support.v4.view.GravityCompat
+ * android.support.v7.app.AppCompatActivity
+ * android.widget.TableRow
+ * android.widget.Toast
+*/
 
 import java.io.File;
 import java.io.IOException;
@@ -17,7 +23,6 @@ import android.support.design.widget.NavigationView;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarDrawerToggle;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.content.Intent;
 import android.content.res.Configuration;
@@ -52,14 +57,15 @@ import android.widget.ScrollView;
 import android.widget.TableLayout;
 import android.widget.TextView;
 
-public class MainActivity extends AppCompatActivity {
+class MainActivity extends android.support.v7.app.AppCompatActivity
+{
     private final static String TAG = "Inventory";
 
     private static int position = 1;
 
 
-    // region Instance Fields
-    // region Widget Instance Fields
+    // region Protected Fields
+    // region Widget Protected Fields
     private android.support.v4.widget.DrawerLayout       drawerLayout         ;
     private android.support.v7.app.ActionBarDrawerToggle actionBarDrawerToggle;
 
@@ -70,8 +76,8 @@ public class MainActivity extends AppCompatActivity {
     private android.widget.TableLayout tableLayout;
     private android.widget.ScrollView  scrollView ;
 
-    private android.widget.LinearLayout parent         ;
-    private android.widget.ScrollView   changeContainer;
+    private android.widget.LinearLayout changeLogLinearLayout;
+    private android.widget.ScrollView   changeLogScrollView  ;
     // endregion
 
 
@@ -188,10 +194,10 @@ public class MainActivity extends AppCompatActivity {
         this.tableLayout = (TableLayout) this.findViewById(R.id.tlInventory);
         this.scrollView  = (ScrollView ) this.findViewById(R.id.svData     );
 
-        this.parent = new LinearLayout(this);
-        this.changeContainer = new ScrollView(this);
-        this.changeContainer.removeAllViews();
-        this.changeContainer.addView(this.parent);
+        this.changeLogScrollView = new ScrollView(this);
+        this.changeLogScrollView.removeAllViews();
+        this.changeLogLinearLayout = new LinearLayout(this);
+        this.changeLogScrollView.addView(this.changeLogLinearLayout);
 
         this.samplesTable = new SamplesTable(this);
 
@@ -563,7 +569,7 @@ public class MainActivity extends AppCompatActivity {
             if (line.length() == 0)
             {
                 version = null;
-                this.parent.addView(spacer);
+                this.changeLogLinearLayout.addView(spacer);
             }
             else if (version == null)
             {
@@ -572,13 +578,13 @@ public class MainActivity extends AppCompatActivity {
                     version = splitLine[1];
                 }
                 header.setText(version);
-                this.parent.addView(header);
-                this.parent.addView(ruler );
+                this.changeLogLinearLayout.addView(header);
+                this.changeLogLinearLayout.addView(ruler );
             }
             else
             {
                 content.setText("•  " + line);
-                this.parent.addView(content);
+                this.changeLogLinearLayout.addView(content);
             }
     }
     // endregion
@@ -618,13 +624,15 @@ public class MainActivity extends AppCompatActivity {
         this.deleteAll();
     }
 
-    private void showChangeLog() {
-        this.parent.setOrientation(LinearLayout.VERTICAL);
+    private void showChangeLog()
+    {
+        assert this.changeLogLinearLayout != null;
+        this.changeLogLinearLayout.setOrientation(LinearLayout.VERTICAL);
         try { this.parseLog(); } catch (java.io.IOException e) { throw new RuntimeException(e); }
 
         final AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
         builder.setTitle(getResources().getString(R.string.updatemsg));
-        builder.setView(this.changeContainer)
+        builder.setView(this.changeLogScrollView)
             .setCancelable(true)
             .setPositiveButton(getResources().getString(R.string.ok),
                 new DialogInterface.OnClickListener() {
