@@ -83,7 +83,7 @@ public class MainActivity extends android.support.v7.app.AppCompatActivity
     protected org.wheatgenetics.inventory.SharedPreferences sharedPreferences;
     protected java.lang.String                              box              ;
 
-    protected org.wheatgenetics.inventory.ChangeLogScrollView changeLogScrollView = null;
+    protected org.wheatgenetics.inventory.ChangeLogAlertDialog changeLogAlertDialog = null;
     // endregion
 
 
@@ -556,27 +556,27 @@ public class MainActivity extends android.support.v7.app.AppCompatActivity
 
     private void showChangeLog()
     {
-        final AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
-        builder.setTitle(getResources().getString(R.string.updatemsg));
-
-        if (this.changeLogScrollView == null)
+        if (this.changeLogAlertDialog == null)
         {
-            final java.io.InputStreamReader inputStreamReader = new java.io.InputStreamReader(
-                this.getResources().openRawResource(R.raw.changelog_releases));
-            this.changeLogScrollView = new org.wheatgenetics.inventory.ChangeLogScrollView(
-                /* context            => */ this                        ,
-                /* applicationContext => */ this.getApplicationContext(),
-                /* inputStreamReader  => */ inputStreamReader           );
-        }
-        try { builder.setView(this.changeLogScrollView.get()); }
-        catch (java.io.IOException e) { throw new RuntimeException(e); }
+            final android.content.res.Resources resources = this.getResources();
 
-        builder.setCancelable(true)
-            .setPositiveButton(getResources().getString(R.string.ok),
-                new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) { dialog.dismiss(); }});
-        builder.create().show();
+            assert resources != null;
+            final java.io.InputStreamReader inputStreamReader = new java.io.InputStreamReader(
+                resources.openRawResource(org.wheatgenetics.inventory.R.raw.changelog_releases));
+
+            this.changeLogAlertDialog = new org.wheatgenetics.inventory.ChangeLogAlertDialog(
+                /* context            => */ this                                         ,
+                /* applicationContext => */ this.getApplicationContext()                 ,
+                /* inputStreamReader  => */ inputStreamReader                            ,
+                /* activityClass      => */ org.wheatgenetics.inventory.MainActivity.this,
+                /* title => */
+                    resources.getString(org.wheatgenetics.inventory.R.string.updatemsg),
+                /* positiveButtonText => */
+                    resources.getString(org.wheatgenetics.inventory.R.string.ok));
+        }
+        try { this.changeLogAlertDialog.show(); }
+        catch (java.io.IOException e) { throw new java.lang.RuntimeException(e); }
+
     }
 
     private void showOtherAppsDialog() {
