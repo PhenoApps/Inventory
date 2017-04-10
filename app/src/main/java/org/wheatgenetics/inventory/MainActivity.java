@@ -1,13 +1,5 @@
 package org.wheatgenetics.inventory;
 
-/**
- * Uses:
- * android.support.v4.view.GravityCompat
- * android.support.v7.app.AppCompatActivity
- * android.widget.TableRow
- * android.widget.Toast
-*/
-
 import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
@@ -57,6 +49,14 @@ import android.widget.ScrollView;
 import android.widget.TableLayout;
 import android.widget.TextView;
 
+/**
+ * Uses:
+ * android.support.v4.view.GravityCompat
+ * android.support.v7.app.AppCompatActivity
+ * android.widget.TableRow
+ * android.widget.Toast
+ */
+
 public class MainActivity extends android.support.v7.app.AppCompatActivity
 {
     private final static String TAG = "Inventory";
@@ -75,9 +75,6 @@ public class MainActivity extends android.support.v7.app.AppCompatActivity
 
     private android.widget.TableLayout tableLayout;
     private android.widget.ScrollView  scrollView ;
-
-    private android.widget.LinearLayout changeLogLinearLayout;
-    private android.widget.ScrollView   changeLogScrollView  ;
     // endregion
 
 
@@ -85,6 +82,8 @@ public class MainActivity extends android.support.v7.app.AppCompatActivity
     protected android.hardware.usb.UsbDevice                usbDevice        ;
     protected org.wheatgenetics.inventory.SharedPreferences sharedPreferences;
     protected java.lang.String                              box              ;
+
+    protected org.wheatgenetics.inventory.ChangeLogScrollView changeLogScrollView = null;
     // endregion
 
 
@@ -193,11 +192,6 @@ public class MainActivity extends android.support.v7.app.AppCompatActivity
 
         this.tableLayout = (TableLayout) this.findViewById(R.id.tlInventory);
         this.scrollView  = (ScrollView ) this.findViewById(R.id.svData     );
-
-        this.changeLogScrollView = new ScrollView(this);
-        this.changeLogScrollView.removeAllViews();
-        this.changeLogLinearLayout = new LinearLayout(this);
-        this.changeLogScrollView.addView(this.changeLogLinearLayout);
 
         this.samplesTable = new SamplesTable(this);
 
@@ -523,70 +517,6 @@ public class MainActivity extends android.support.v7.app.AppCompatActivity
 
         this.startActivity(Intent.createChooser(intent, getString(R.string.sending_file)));
     }
-
-    protected void parseLog() throws java.io.IOException
-    {
-        final java.io.InputStreamReader inputStreamReader = new java.io.InputStreamReader(
-            this.getResources().openRawResource(R.raw.changelog_releases));
-        final java.io.BufferedReader bufferedReader =
-            new java.io.BufferedReader(inputStreamReader, 8192);
-
-        java.lang.String line;
-        java.lang.String version = null;
-
-
-        final android.widget.TextView header  = new android.widget.TextView(this);
-        final android.view.View       ruler   = new android.view.View      (this);
-        final android.widget.TextView content = new android.widget.TextView(this);
-        final android.widget.TextView spacer  = new android.widget.TextView(this);
-
-        {
-            final android.widget.LinearLayout.LayoutParams layoutParams =
-                new android.widget.LinearLayout.LayoutParams(
-                    /* width  => */ android.widget.LinearLayout.LayoutParams.MATCH_PARENT,
-                    /* height => */ android.widget.LinearLayout.LayoutParams.MATCH_PARENT);
-
-            layoutParams.setMargins(
-                /* left   => */ 20,
-                /* top    => */  5,
-                /* right  => */ 20,
-                /* bottom => */  0);
-
-            header.setLayoutParams (layoutParams);
-            ruler.setLayoutParams  (layoutParams);
-            content.setLayoutParams(layoutParams);
-            spacer.setLayoutParams (layoutParams);
-        }
-
-        ruler.setBackgroundColor(this.getResources().getColor(R.color.main_colorAccent));
-        header.setTextAppearance (this.getApplicationContext(), R.style.ChangelogTitles );
-        content.setTextAppearance(this.getApplicationContext(), R.style.ChangelogContent);
-        spacer.setTextSize(5);
-        spacer.setText("\n");
-
-
-        while ((line = bufferedReader.readLine()) != null)             // throws java.io.IOException
-            if (line.length() == 0)
-            {
-                version = null;
-                this.changeLogLinearLayout.addView(spacer);
-            }
-            else if (version == null)
-            {
-                {
-                    final java.lang.String[] splitLine = line.split("/");
-                    version = splitLine[1];
-                }
-                header.setText(version);
-                this.changeLogLinearLayout.addView(header);
-                this.changeLogLinearLayout.addView(ruler );
-            }
-            else
-            {
-                content.setText("•  " + line);
-                this.changeLogLinearLayout.addView(content);
-            }
-    }
     // endregion
 
 
@@ -626,14 +556,22 @@ public class MainActivity extends android.support.v7.app.AppCompatActivity
 
     private void showChangeLog()
     {
-        assert this.changeLogLinearLayout != null;
-        this.changeLogLinearLayout.setOrientation(LinearLayout.VERTICAL);
-        try { this.parseLog(); } catch (java.io.IOException e) { throw new RuntimeException(e); }
-
         final AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
         builder.setTitle(getResources().getString(R.string.updatemsg));
-        builder.setView(this.changeLogScrollView)
-            .setCancelable(true)
+
+        if (this.changeLogScrollView == null)
+        {
+            final java.io.InputStreamReader inputStreamReader = new java.io.InputStreamReader(
+                this.getResources().openRawResource(R.raw.changelog_releases));
+            this.changeLogScrollView = new org.wheatgenetics.inventory.ChangeLogScrollView(
+                /* context            => */ this                        ,
+                /* applicationContext => */ this.getApplicationContext(),
+                /* inputStreamReader  => */ inputStreamReader           );
+        }
+        try { builder.setView(this.changeLogScrollView.get()); }
+        catch (java.io.IOException e) { throw new RuntimeException(e); }
+
+        builder.setCancelable(true)
             .setPositiveButton(getResources().getString(R.string.ok),
                 new DialogInterface.OnClickListener() {
                     @Override
