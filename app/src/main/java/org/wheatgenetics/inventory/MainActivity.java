@@ -57,7 +57,7 @@ import android.widget.ScrollView;
 import android.widget.TableLayout;
 import android.widget.TextView;
 
-class MainActivity extends android.support.v7.app.AppCompatActivity
+public class MainActivity extends android.support.v7.app.AppCompatActivity
 {
     private final static String TAG = "Inventory";
 
