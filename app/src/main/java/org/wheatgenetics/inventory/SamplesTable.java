@@ -1,7 +1,13 @@
 package org.wheatgenetics.inventory;
 
-// Uses android.content.ContentValues, android.content.Context, android.database.Cursor,
-//  android.database.sqlite.SQLiteDatabase, and android.database.sqlite.SQLiteOpenHelper.
+/**
+ * Uses:
+ * android.content.ContentValues
+ * android.content.Context
+ * android.database.Cursor
+ * android.database.sqlite.SQLiteDatabase
+ * android.database.sqlite.SQLiteOpenHelper
+ */
 
 class SamplesTable extends android.database.sqlite.SQLiteOpenHelper
 {

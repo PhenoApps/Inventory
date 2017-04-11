@@ -1,6 +1,9 @@
 package org.wheatgenetics.inventory;
 
-// Uses android.util.Log.
+/**
+ * Uses:
+ * android.util.Log
+ */
 
 class InventoryRecords extends java.lang.Object
 {

@@ -1,6 +1,9 @@
 package org.wheatgenetics.inventory;
 
-// Uses android.content.SharedPreferences.
+/** Uses:
+ * android.content.SharedPreferences
+ * android.content.SharedPreferences.Editor
+ */
 
 class SharedPreferences extends java.lang.Object
 {

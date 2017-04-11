@@ -1,10 +1,5 @@
 package org.wheatgenetics.inventory;
 
-import java.io.File;
-import java.io.IOException;
-import java.util.HashMap;
-import java.util.Iterator;
-
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
@@ -18,15 +13,9 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
 import android.content.Intent;
 import android.content.res.Configuration;
-import android.hardware.usb.UsbConstants;
-import android.hardware.usb.UsbDevice;
-import android.hardware.usb.UsbDeviceConnection;
-import android.hardware.usb.UsbEndpoint;
-import android.hardware.usb.UsbInterface;
 import android.hardware.usb.UsbManager;
 import android.media.MediaScannerConnection;
 import android.net.Uri;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -51,6 +40,12 @@ import android.widget.TextView;
 
 /**
  * Uses:
+ * android.hardware.usb.UsbConstants
+ * android.hardware.usb.UsbDevice
+ * android.hardware.usb.UsbDeviceConnection
+ * android.hardware.usb.UsbEndpoint;
+ * android.hardware.usb.UsbInterface;
+ * android.os.AsyncTask
  * android.support.v4.view.GravityCompat
  * android.support.v7.app.AppCompatActivity
  * android.widget.TableRow
@@ -255,7 +250,10 @@ public class MainActivity extends android.support.v7.app.AppCompatActivity
             }});
 
         try { this.makeFileDiscoverable(InventoryDir.createIfMissing()); }
-        catch (IOException e) { org.wheatgenetics.inventory.MainActivity.sendErrorLogMsg(e); }
+        catch (java.io.IOException e)
+        {
+            org.wheatgenetics.inventory.MainActivity.sendErrorLogMsg(e);
+        }
         this.addTableRows();
         this.goToBottom();
 
@@ -320,7 +318,7 @@ public class MainActivity extends android.support.v7.app.AppCompatActivity
         org.wheatgenetics.inventory.MainActivity.showToast(this, text);
     }
 
-    protected void makeFileDiscoverable(final File file) {
+    protected void makeFileDiscoverable(final java.io.File file) {
         if (file != null)
         {
             MediaScannerConnection.scanFile(this,
@@ -404,7 +402,7 @@ public class MainActivity extends android.support.v7.app.AppCompatActivity
         tableRow.addView(this.makeTextView(inventoryRecord.getWt(), 0.16f));
 
         assert this.tableLayout != null;
-        this.tableLayout.addView(tableRow, new LayoutParams(         // Add TableRow to tableLayout.
+        this.tableLayout.addView(tableRow, new LayoutParams(         // Add tableRow to tableLayout.
             TableLayout.LayoutParams.MATCH_PARENT, TableLayout.LayoutParams.MATCH_PARENT));
     }
     // endregion
@@ -416,7 +414,7 @@ public class MainActivity extends android.support.v7.app.AppCompatActivity
         this.tableLayout.removeAllViews();
 
         assert this.samplesTable != null;
-        final Iterator<InventoryRecord> iterator = this.samplesTable.getAll().iterator();
+        final java.util.Iterator<InventoryRecord> iterator = this.samplesTable.getAll().iterator();
         this.samplesTable.close();
         while (iterator.hasNext())
         {
@@ -506,7 +504,7 @@ public class MainActivity extends android.support.v7.app.AppCompatActivity
 
     // region Drawer Methods
     // region Drawer Subsubaction Methods
-    private void shareFile(final File file, final String fileName) {
+    private void shareFile(final java.io.File file, final String fileName) {
         this.makeFileDiscoverable(file);
         this.showToast(getString(R.string.export_success));
 
@@ -528,7 +526,8 @@ public class MainActivity extends android.support.v7.app.AppCompatActivity
             {
                 final String fileName = Utils.getExportFileName() + ".csv";
                 try { this.shareFile(inventoryRecords.writeCSV(fileName), fileName); }
-                catch (IOException e) {
+                catch (java.io.IOException e)
+                {
                     org.wheatgenetics.inventory.MainActivity.showToast(
                         this.getBaseContext(), e.getMessage());
                 }
@@ -545,7 +544,8 @@ public class MainActivity extends android.support.v7.app.AppCompatActivity
             {
                 final String fileName = Utils.getExportFileName() + ".sql";
                 try { this.shareFile(inventoryRecords.writeSQL(fileName, boxList), fileName); }
-                catch (IOException e) {
+                catch (java.io.IOException e)
+                {
                     org.wheatgenetics.inventory.MainActivity.showToast(
                         this.getBaseContext(), e.getMessage());
                 }
@@ -582,16 +582,16 @@ public class MainActivity extends android.support.v7.app.AppCompatActivity
     private void showOtherAppsDialog() {
         final AlertDialog.Builder builder = new AlertDialog.Builder(this);
         {
-            final ListView myList = new ListView(this);
+            final ListView listView = new ListView(this);
 
-            myList.setDivider(null);
-            myList.setDividerHeight(0);
+            listView.setDivider(null);
+            listView.setDividerHeight(0);
             {
                 final String[] links = {                                   //TODO update these links
                     "https://play.google.com/store/apps/details?id=com.fieldbook.tracker",
                     "http://wheatgenetics.org/apps"                                      ,
                     "http://wheatgenetics.org/apps"                                      };
-                myList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                     @Override
                     public void onItemClick(AdapterView<?> parent,
                     View view, int position, long id) {
@@ -616,12 +616,12 @@ public class MainActivity extends android.support.v7.app.AppCompatActivity
                 //appNames[3] = "Intercross";
                 //appNames[4] = "Rangle"    ;
 
-                myList.setAdapter(new CustomListAdapter(this, appIconIDs, appNames));
+                listView.setAdapter(new CustomListAdapter(this, appIconIDs, appNames));
             }
 
             builder.setCancelable(true);
             builder.setTitle(getResources().getString(R.string.otherapps));
-            builder.setView(myList);
+            builder.setView(listView);
         }
         builder.setNegativeButton(getResources().getString(R.string.ok),
             new DialogInterface.OnClickListener() {
@@ -671,10 +671,17 @@ public class MainActivity extends android.support.v7.app.AppCompatActivity
     }
 
     protected void connectScale() {
-        if (this.usbDevice == null) {
-            final UsbManager usbManager = (UsbManager) getSystemService(Context.USB_SERVICE);
-            final HashMap<String, UsbDevice> deviceList = usbManager.getDeviceList();
-            for (UsbDevice usbDevice : deviceList.values()) {
+        if (this.usbDevice == null)
+        {
+            final android.hardware.usb.UsbManager usbManager = (android.hardware.usb.UsbManager)
+                this.getSystemService(android.content.Context.USB_SERVICE);
+
+            assert usbManager != null;
+            final java.util.HashMap<java.lang.String, android.hardware.usb.UsbDevice> deviceList =
+                usbManager.getDeviceList();
+
+            for (android.hardware.usb.UsbDevice usbDevice : deviceList.values())
+            {
                 this.usbDevice = usbDevice;
                 org.wheatgenetics.inventory.MainActivity.sendVerboseLogMsg(String.format(
                     "name=%s deviceId=%d productId=%d vendorId=%d " +
@@ -687,10 +694,12 @@ public class MainActivity extends android.support.v7.app.AppCompatActivity
             }
         }
 
-        if (this.usbDevice != null) {
+        if (this.usbDevice != null)
+        {
             this.wtEditText.setText("0");
             new ScaleListener().execute();
-        } else {
+        }
+        else
             new AlertDialog.Builder(MainActivity.this)
                 .setTitle(getString(R.string.no_scale))
                 .setMessage(getString(R.string.connect_scale))
@@ -710,7 +719,6 @@ public class MainActivity extends android.support.v7.app.AppCompatActivity
                                 dialog.cancel();
                             }})
                     .show();
-        }
     }
 
     private void export() {
@@ -865,41 +873,59 @@ public class MainActivity extends android.support.v7.app.AppCompatActivity
         builder.create().show();
     }
 
-    private class ScaleListener extends AsyncTask<Void, Double, Void> {
-        private double mLastWeight = 0;
+    private class ScaleListener extends android.os.AsyncTask<
+    java.lang.Void, java.lang.Double, java.lang.Void>
+    {
+        protected double lastWeight = 0;
 
         @Override
-        protected Void doInBackground(Void... params) {
+        protected java.lang.Void doInBackground(java.lang.Void... params)
+        {
             org.wheatgenetics.inventory.MainActivity.sendVerboseLogMsg("start transfer");
 
-            if (usbDevice == null) {
+            if (usbDevice == null)
+            {
                 org.wheatgenetics.inventory.MainActivity.sendErrorLogMsg("no device");
                 return null;
             }
-            final UsbInterface intf = usbDevice.getInterface(0);
-            org.wheatgenetics.inventory.MainActivity.sendVerboseLogMsg(
-                String.format("endpoint count = %d", intf.getEndpointCount()));
-            final UsbEndpoint endpoint = intf.getEndpoint(0);
-            org.wheatgenetics.inventory.MainActivity.sendVerboseLogMsg(
-                String.format("endpoint direction = %d out = %d in = %d",
-                endpoint.getDirection(), UsbConstants.USB_DIR_OUT, UsbConstants.USB_DIR_IN));
-            final UsbManager usbManager = (UsbManager) getSystemService(Context.USB_SERVICE);
-            final UsbDeviceConnection connection = usbManager.openDevice(usbDevice);
-            connection.claimInterface(intf, true);
-            final byte[] data = new byte[128];
-            while (true) {
-                final int length = connection.bulkTransfer(endpoint,
-                    data, data.length, /* timeout => */ 2000);
+            final android.hardware.usb.UsbInterface usbInterface = usbDevice.getInterface(0);
 
-                if (length != 6) {
+            assert usbInterface != null;
+            org.wheatgenetics.inventory.MainActivity.sendVerboseLogMsg(
+                java.lang.String.format("endpoint count = %d", usbInterface.getEndpointCount()));
+            final android.hardware.usb.UsbEndpoint usbEndpoint = usbInterface.getEndpoint(0);
+
+            assert usbEndpoint != null;
+            org.wheatgenetics.inventory.MainActivity.sendVerboseLogMsg(
+                java.lang.String.format("usbEndpoint direction = %d out = %d in = %d",
+                usbEndpoint.getDirection(), android.hardware.usb.UsbConstants.USB_DIR_OUT,
+                android.hardware.usb.UsbConstants.USB_DIR_IN));
+
+            final android.hardware.usb.UsbManager usbManager =
+                (android.hardware.usb.UsbManager) getSystemService(Context.USB_SERVICE);
+
+            final android.hardware.usb.UsbDeviceConnection usbDeviceConnection =
+                usbManager.openDevice(usbDevice);
+            assert usbDeviceConnection != null;
+            usbDeviceConnection.claimInterface(usbInterface, true);
+
+            final byte[] data = new byte[128];
+
+            while (true)
+            {
+                final int length = usbDeviceConnection.bulkTransfer(
+                    usbEndpoint, data, data.length, /* timeout => */ 2000);
+
+                if (length != 6)
+                {
                     org.wheatgenetics.inventory.MainActivity.sendErrorLogMsg(
-                        String.format("invalid length: %d", length));
+                        java.lang.String.format("invalid length: %d", length));
                     return null;
                 }
 
                 final byte report = data[0];
                 final byte status = data[1];
-                //    byte exp    = data[3];
+                // final byte exp = data[3];
                 final short weightLSB = (short) (data[4] & 0xff);
                 final short weightMSB = (short) (data[5] & 0xff);
 
@@ -907,38 +933,41 @@ public class MainActivity extends android.support.v7.app.AppCompatActivity
                 //   "report=%x status=%x exp=%x lsb=%x msb=%x",
                 //   report, status, exp, weightLSB, weightMSB));
 
-                if (report != 3) {
+                if (report != 3)
+                {
                     org.wheatgenetics.inventory.MainActivity.sendVerboseLogMsg(
-                        String.format("scale status error %d", status));
+                        java.lang.String.format("scale status error %d", status));
                     return null;
                 }
 
-                double mWeightGrams = weightLSB + weightMSB * 256.0;
-                if (usbDevice.getProductId() == 519) mWeightGrams /= 10.0;
-                final double mZeroGrams = 0;
-                final double zWeight    = mWeightGrams - mZeroGrams;
+                double weightGrams = weightLSB + weightMSB * 256.0;
+                if (usbDevice.getProductId() == 519) weightGrams /= 10.0;
+                final double zeroGrams = 0;
+                final double weight    = weightGrams - zeroGrams;
 
-                switch (status) {
+                switch (status)
+                {
                     case 1:
                         org.wheatgenetics.inventory.MainActivity.sendWarnLogMsg(
                             "Scale reports FAULT!\n");
                         break;
                     case 3:
                         org.wheatgenetics.inventory.MainActivity.sendInfoLogMsg("Weighing...");
-                        if (mLastWeight != zWeight) publishProgress(zWeight);
+                        if (this.lastWeight != weight) this.publishProgress(weight);
                         break;
                     case 2:
                     case 4:
-                        if (mLastWeight != zWeight) {
+                        if (this.lastWeight != weight)
+                        {
                             org.wheatgenetics.inventory.MainActivity.sendInfoLogMsg(
-                                String.format("Final Weight: %f", zWeight));
-                            publishProgress(zWeight);
+                                String.format("Final Weight: %f", weight));
+                            this.publishProgress(weight);
                         }
                         break;
                     case 5:
                         org.wheatgenetics.inventory.MainActivity.sendWarnLogMsg(
                             "Scale reports Under Zero");
-                        if (mLastWeight != zWeight) publishProgress(0.0);
+                        if (this.lastWeight != weight) this.publishProgress(0.0);
                         break;
                     case 6:
                         org.wheatgenetics.inventory.MainActivity.sendWarnLogMsg(
@@ -958,22 +987,24 @@ public class MainActivity extends android.support.v7.app.AppCompatActivity
                         break;
                 }
 
-                mLastWeight = zWeight;
+                this.lastWeight = weight;
             }
         }
 
         @Override
-        protected void onProgressUpdate(Double... values) {
+        protected void onProgressUpdate(java.lang.Double... values)
+        {
             org.wheatgenetics.inventory.MainActivity.sendInfoLogMsg("update progress");
 
-            final String weightText = String.format("%.1f", values[0]);
+            final java.lang.String weightText = java.lang.String.format("%.1f", values[0]);
             org.wheatgenetics.inventory.MainActivity.sendInfoLogMsg(weightText);
             wtEditText.setText(weightText);
             wtEditText.invalidate();
         }
 
         @Override
-        protected void onPostExecute(Void result) {
+        protected void onPostExecute(java.lang.Void result)
+        {
             org.wheatgenetics.inventory.MainActivity.showToast(getApplicationContext(),
                 getString(R.string.scale_disconnect), android.widget.Toast.LENGTH_LONG);
             usbDevice = null;

@@ -1,6 +1,9 @@
 package org.wheatgenetics.inventory;
 
-// Uses android.util.Log.
+/**
+ * Uses:
+ * android.util.Log
+ */
 
 class InventoryRecord extends java.lang.Object {
     // region Protected Fields

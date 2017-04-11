@@ -1,6 +1,10 @@
 package org.wheatgenetics.inventory;
 
-// Uses android.os.Environment and android.net.Uri.
+/**
+ * Uses:
+ * android.net.Uri
+ * android.os.Environment
+ */
 
 class InventoryDir extends java.lang.Object
 {

@@ -6,6 +6,7 @@ package org.wheatgenetics.inventory;
  * android.app.AlertDialog.Builder
  * android.content.Context
  * android.content.DialogInterface
+ * android.content.DialogInterface.OnClickListener
  * android.widget.LinearLayout
  * android.widget.LinearLayout.LayoutParams
  * android.widget.ScrollView
