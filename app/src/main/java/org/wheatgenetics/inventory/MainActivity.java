@@ -1,18 +1,5 @@
 package org.wheatgenetics.inventory;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Locale;
-
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
@@ -20,28 +7,16 @@ import android.content.DialogInterface;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.support.design.widget.NavigationView;
-import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarDrawerToggle;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.content.res.Configuration;
-import android.graphics.Color;
-import android.hardware.usb.UsbConstants;
-import android.hardware.usb.UsbDevice;
-import android.hardware.usb.UsbDeviceConnection;
-import android.hardware.usb.UsbEndpoint;
-import android.hardware.usb.UsbInterface;
 import android.hardware.usb.UsbManager;
 import android.media.MediaScannerConnection;
 import android.net.Uri;
-import android.os.AsyncTask;
 import android.os.Bundle;
-import android.speech.tts.TextToSpeech.OnInitListener;
-import android.util.Log;
-import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -61,1129 +36,979 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.ScrollView;
 import android.widget.TableLayout;
-import android.widget.TableRow;
 import android.widget.TextView;
-import android.widget.Toast;
 
-public class MainActivity extends AppCompatActivity implements OnInitListener {
+/**
+ * Uses:
+ * android.hardware.usb.UsbConstants
+ * android.hardware.usb.UsbDevice
+ * android.hardware.usb.UsbDeviceConnection
+ * android.hardware.usb.UsbEndpoint;
+ * android.hardware.usb.UsbInterface;
+ * android.os.AsyncTask
+ * android.support.v4.view.GravityCompat
+ * android.support.v7.app.AppCompatActivity
+ * android.widget.TableRow
+ * android.widget.Toast
+ */
 
-    public final static String TAG = "Inventory";
-    private SharedPreferences ep;
-    private UsbDevice mDevice;
+public class MainActivity extends android.support.v7.app.AppCompatActivity
+{
+    private final static String TAG = "Inventory";
 
-    private String boxNumber;
-    private EditText mWeightEditText;
-    private TextView boxNumTextView;
+    private static int position = 1;
 
-    private EditText inputText;
-    private TableLayout InventoryTable;
-    private MySQLiteHelper db;
-    private String firstName = "";
-    private String lastName = "";
-    private List<InventoryRecord> list;
-    private int itemCount;
-    private ScrollView sv1;
-    private static int currentItemNum = 1;
 
-    private LinearLayout parent;
-    private ScrollView changeContainer;
+    // region Protected Fields
+    // region Widget Protected Fields
+    private android.support.v4.widget.DrawerLayout       drawerLayout         ;
+    private android.support.v7.app.ActionBarDrawerToggle actionBarDrawerToggle;
 
-    private ActionBarDrawerToggle mDrawerToggle;
-    private DrawerLayout mDrawerLayout;
+    private android.widget.TextView boxTextView  ;
+    private android.widget.EditText envidEditText;
+    private android.widget.EditText wtEditText   ;
 
+    private android.widget.TableLayout tableLayout;
+    private android.widget.ScrollView  scrollView ;
+    // endregion
+
+
+    protected org.wheatgenetics.inventory.SamplesTable      samplesTable     ;
+    protected android.hardware.usb.UsbDevice                usbDevice        ;
+    protected org.wheatgenetics.inventory.SharedPreferences sharedPreferences;
+    protected java.lang.String                              box              ;
+
+    protected org.wheatgenetics.inventory.ChangeLogAlertDialog changeLogAlertDialog = null;
+    // endregion
+
+
+    // region Class Methods
+    // region Log Class Methods
+    static private int sendVerboseLogMsg(final java.lang.String msg)
+    {
+        return android.util.Log.v(org.wheatgenetics.inventory.MainActivity.TAG, msg);
+    }
+
+    static private int sendInfoLogMsg(final java.lang.String msg)
+    {
+        return android.util.Log.i(org.wheatgenetics.inventory.MainActivity.TAG, msg);
+    }
+
+    static private int sendWarnLogMsg(final java.lang.String msg)
+    {
+        return android.util.Log.w(org.wheatgenetics.inventory.MainActivity.TAG, msg);
+    }
+
+    static private int sendErrorLogMsg(final java.lang.String msg)
+    {
+        return android.util.Log.e(org.wheatgenetics.inventory.MainActivity.TAG, msg);
+    }
+
+    static private int sendErrorLogMsg(final java.lang.Exception exception)
+    {
+        return org.wheatgenetics.inventory.MainActivity.sendErrorLogMsg(exception.getMessage());
+    }
+    // endregion
+
+
+    // region Toast Class Methods
+    static private void showToast(final android.content.Context context,
+    final java.lang.CharSequence text, final int duration)
+    {
+        android.widget.Toast.makeText(context, text, duration).show();
+    }
+
+    static private void showToast(
+    final android.content.Context context, final java.lang.CharSequence text)
+    {
+        org.wheatgenetics.inventory.MainActivity.showToast(
+            context, text, android.widget.Toast.LENGTH_SHORT);
+    }
+    // endregion
+    // endregion
+
+
+    // region Overridden Methods
     @Override
-    public void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.main_layout);
-        Log.v(TAG, "onCreate");
+        this.setContentView(R.layout.main_layout);
+        org.wheatgenetics.inventory.MainActivity.sendVerboseLogMsg("onCreate()");
 
-        getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        this.getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+        {
+            final Toolbar toolbar = (Toolbar) this.findViewById(R.id.toolbar);
 
-        setSupportActionBar(toolbar);
-        toolbar.bringToFront();
-
-        if (getSupportActionBar() != null) {
-            getSupportActionBar().setTitle(null);
-            getSupportActionBar().getThemedContext();
-            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-            getSupportActionBar().setHomeButtonEnabled(true);
+            this.setSupportActionBar(toolbar);
+            toolbar.bringToFront();
         }
 
-        ep = getSharedPreferences("Settings", 0);
+        {
+            final ActionBar supportActionBar = this.getSupportActionBar();
 
-        mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
-        NavigationView nvDrawer = (NavigationView) findViewById(R.id.nvView);
-        setupDrawerContent(nvDrawer);
-        setupDrawer();
-
-        sv1 = (ScrollView) findViewById(R.id.svData);
-        mWeightEditText = (EditText) findViewById(R.id.etWeight);
-        mWeightEditText.setText(getString(R.string.not_connected));
-        boxNumTextView = (TextView) findViewById(R.id.tvBoxNum);
-        boxNumTextView.setText("");
-        Button setBox = (Button) findViewById(R.id.btBox);
-        inputText = (EditText) findViewById(R.id.etInput);
-        InventoryTable = (TableLayout) findViewById(R.id.tlInventory);
-
-        parent = new LinearLayout(this);
-        changeContainer = new ScrollView(this);
-        changeContainer.removeAllViews();
-        changeContainer.addView(parent);
-
-        db = new MySQLiteHelper(this);
-
-        setBox.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                setBoxDialog();
+            if (supportActionBar != null) {
+                supportActionBar.setTitle(null);
+                supportActionBar.getThemedContext();         // This appears to do nothing.  Remove?
+                supportActionBar.setDisplayHomeAsUpEnabled(true);
+                supportActionBar.setHomeButtonEnabled(true);
             }
-        });
+        }
 
-        InventoryTable.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-            }
-        });
+        this.drawerLayout = (DrawerLayout) this.findViewById(R.id.drawer_layout);
+        {
+            final NavigationView navigationView = (NavigationView) this.findViewById(R.id.nvView);
+            navigationView.setNavigationItemSelectedListener(
+                new NavigationView.OnNavigationItemSelectedListener() {
+                    @Override
+                    public boolean onNavigationItemSelected(MenuItem item) {
+                        return selectNavigationItem(item);
+                    }});
+        }
+        this.actionBarDrawerToggle = new ActionBarDrawerToggle(this,
+            this.drawerLayout, R.string.drawer_open, R.string.drawer_close) {
+                @Override
+                public void onDrawerOpened(View drawerView) {
+                    final TextView personTextView = (TextView) findViewById(R.id.nameLabel);
+                    personTextView.setText(sharedPreferences.getName());
+                }
 
-        Intent intent = getIntent();
-        mDevice = intent
-                .getParcelableExtra(UsbManager.EXTRA_DEVICE);
+                @Override
+                public void onDrawerClosed(View drawerView) {}};
+        this.actionBarDrawerToggle.setDrawerIndicatorEnabled(true);
+        this.drawerLayout.setDrawerListener(this.actionBarDrawerToggle);
 
-        inputText.setOnKeyListener(new View.OnKeyListener() {
+        this.boxTextView = (TextView) this.findViewById(R.id.tvBoxNum);
+        this.boxTextView.setText("");
+
+        this.envidEditText = (EditText) this.findViewById(R.id.etInput);
+
+        this.wtEditText = (EditText) this.findViewById(R.id.etWeight);
+        this.wtEditText.setText(getString(R.string.not_connected));
+
+        this.tableLayout = (TableLayout) this.findViewById(R.id.tlInventory);
+        this.scrollView  = (ScrollView ) this.findViewById(R.id.svData     );
+
+        this.samplesTable = new SamplesTable(this);
+
+        {
+            final Button setBoxButton = (Button) this.findViewById(R.id.btBox);
+            setBoxButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) { setBox(); }});
+        }
+
+        this.tableLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {}});
+
+        this.usbDevice = this.getIntent().getParcelableExtra(UsbManager.EXTRA_DEVICE);
+
+        this.envidEditText.setOnKeyListener(new View.OnKeyListener() {
+            @Override
             public boolean onKey(View v, int keyCode, KeyEvent event) {
                 if (keyCode == KeyEvent.KEYCODE_ENTER) {
-                    InputMethodManager mgr = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-                    mgr.showSoftInput(inputText,
-                            InputMethodManager.HIDE_IMPLICIT_ONLY);
-                    if (event.getAction() != KeyEvent.ACTION_DOWN)
-                        return true;
-                    addRecord(); // Add the current record to the table
-                    goToBottom();
-                    inputText.requestFocus(); // Set focus back to Enter box
+                    {
+                        final InputMethodManager mgr =
+                            (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                        mgr.showSoftInput(envidEditText, InputMethodManager.HIDE_IMPLICIT_ONLY);
+                    }
+                    if (event.getAction() != KeyEvent.ACTION_DOWN) return true;
+                    addRecord();
+                    envidEditText.requestFocus(); // Set focus back to Enter box
                 }
 
                 if (keyCode == KeyEvent.KEYCODE_NUMPAD_ENTER) {
-                    if (event.getAction() == KeyEvent.ACTION_DOWN) {
-                        return true;
-                    }
-                    if (event.getAction() == KeyEvent.ACTION_UP) {
-                        addRecord(); // Add the current record to the table
-                        goToBottom();
-                    }
-                    inputText.requestFocus(); // Set focus back to Enter box
+                    if (event.getAction() == KeyEvent.ACTION_DOWN) return true;
+                    if (event.getAction() == KeyEvent.ACTION_UP) addRecord();
+                    envidEditText.requestFocus(); // Set focus back to Enter box
                 }
                 return false;
-            }
-        });
+            }});
 
-        mWeightEditText.setOnKeyListener(new View.OnKeyListener() {
+        this.wtEditText.setOnKeyListener(new View.OnKeyListener() {
+            @Override
             public boolean onKey(View v, int keyCode, KeyEvent event) {
-                if ((keyCode == KeyEvent.KEYCODE_ENTER || keyCode == KeyEvent.KEYCODE_NUMPAD_ENTER)) {
-                    InputMethodManager mgr = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-                    mgr.showSoftInput(inputText,
-                            InputMethodManager.HIDE_IMPLICIT_ONLY);
-                    if (event.getAction() != KeyEvent.ACTION_DOWN)
-                        return true;
-                    addRecord(); // Add the current record to the table
-                    goToBottom();
-
-                    if (mDevice != null) {
-                        mWeightEditText.setText("");
+                if (keyCode == KeyEvent.KEYCODE_ENTER || keyCode == KeyEvent.KEYCODE_NUMPAD_ENTER) {
+                    {
+                        final InputMethodManager mgr =
+                            (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                        mgr.showSoftInput(envidEditText, InputMethodManager.HIDE_IMPLICIT_ONLY);
                     }
-                    inputText.requestFocus(); // Set focus back to Enter box
+                    if (event.getAction() != KeyEvent.ACTION_DOWN) return true;
+                    addRecord();
+
+                    if (usbDevice != null) wtEditText.setText("");
+                    envidEditText.requestFocus(); // Set focus back to Enter box
                 }
 
                 if (keyCode == KeyEvent.KEYCODE_NUMPAD_ENTER) {
-                    if (event.getAction() == KeyEvent.ACTION_DOWN) {
-                        return true;
-                    }
-                    if (event.getAction() == KeyEvent.ACTION_UP) {
-                        addRecord(); // Add the current record to the table
-                        goToBottom();
-                    }
-                    inputText.requestFocus(); // Set focus back to Enter box
+                    if (event.getAction() == KeyEvent.ACTION_DOWN) return true;
+                    if (event.getAction() == KeyEvent.ACTION_UP) addRecord();
+                    envidEditText.requestFocus(); // Set focus back to Enter box
                 }
                 return false;
-            }
-        });
+            }});
 
-        createDir(Constants.MAIN_PATH);
-        parseDbToTable();
-        goToBottom();
-
-        SharedPreferences.Editor ed = ep.edit();
-        if (ep.getString("FirstName", "").length() == 0) {
-            setPersonDialog();
+        try { this.makeFileDiscoverable(InventoryDir.createIfMissing()); }
+        catch (java.io.IOException e)
+        {
+            org.wheatgenetics.inventory.MainActivity.sendErrorLogMsg(e);
         }
+        this.addTableRows();
+        this.goToBottom();
 
-        if (!ep.getBoolean("ignoreScale", false)) {
-            findScale();
-        }
+        this.sharedPreferences =
+            new org.wheatgenetics.inventory.SharedPreferences(getSharedPreferences("Settings", 0));
 
-        if (ep.getInt("UpdateVersion", -1) < getVersion()) {
-            ed.putInt("UpdateVersion", getVersion());
-            ed.apply();
-            changelog();
-        }
-    }
+        if (!this.sharedPreferences.firstNameIsSet()) this.setPerson()   ;
+        if (!this.sharedPreferences.getIgnoreScale()) this.connectScale();
 
-    public int getVersion() {
         int v = 0;
-        try {
-            v = getPackageManager().getPackageInfo(getPackageName(), 0).versionCode;
-        } catch (PackageManager.NameNotFoundException e) {
-            Log.e("Inventory", "" + e.getMessage());
+        try { v = getPackageManager().getPackageInfo(getPackageName(), 0).versionCode; }
+        catch (PackageManager.NameNotFoundException e) {
+            org.wheatgenetics.inventory.MainActivity.sendErrorLogMsg(e);
         }
-        return v;
-    }
-
-    private void goToBottom() {
-        sv1.post(new Runnable() {
-            public void run() {
-                sv1.fullScroll(ScrollView.FOCUS_DOWN);
-                inputText.requestFocus();
-            }
-        });
-    }
-
-    private void parseDbToTable() {
-        InventoryTable.removeAllViews();
-        list = db.getAllSamples();
-        itemCount = list.size();
-        if (itemCount != 0) {
-            for (int i = 0; i < itemCount; i++) {
-                String[] temp = list.get(i).toString().split(",");
-                Log.e(TAG, temp[0] + " " + Integer.parseInt(temp[4]) + " "
-                        + temp[1] + " " + temp[5]);
-                createNewTableEntry(temp[0], Integer.parseInt(temp[4]),
-                        temp[1], temp[5]);
-                currentItemNum = Integer.parseInt(temp[4]) + 1;
-            }
+        if (!this.sharedPreferences.updateVersionIsSet(v)) {
+            this.sharedPreferences.setUpdateVersion(v);
+            this.showChangeLog();
         }
-    }
-
-    /**
-     * Adds a new record to the internal list of records
-     */
-    private void addRecord() {
-        String ut;
-        String date = getDate();
-
-        ut = inputText.getText().toString();
-        if (ut.equals("")) {
-            return; // check for empty user input
-        }
-
-        String weight;
-        if (mDevice == null && mWeightEditText.getText().toString().equals(getString(R.string.not_connected))) {
-            weight = getString(R.string.not_connected);
-        } else {
-            weight = mWeightEditText.getText().toString();
-        }
-
-        db.addSample(new InventoryRecord(boxNumTextView.getText().toString(), inputText
-                .getText().toString(), ep.getString("FirstName", "") + "_" + ep.getString("LastName", ""), date, currentItemNum, weight)); // add
-        // to
-        // database
-
-        createNewTableEntry(boxNumTextView.getText().toString(),
-                currentItemNum, inputText.getText().toString(), weight);
-        currentItemNum++;
-    }
-
-    private String getDate() {
-        Calendar cal = Calendar.getInstance();
-        SimpleDateFormat date = new SimpleDateFormat(
-                "yyyy-MM-dd-hh-mm-ss", Locale.getDefault());
-        return date.format(cal.getTime());
-    }
-
-    /**
-     * Adds a new entry to the end of the TableView
-     *
-     * @param bn - Box ID
-     * @param in - Position
-     * @param en - Sample ID
-     * @param wt - Sample weight
-     */
-    private void createNewTableEntry(String bn, int in, String en, String wt) {
-        String tag = bn + "," + en + "," + in;
-        inputText.setText("");
-
-		
-		/* Create a new row to be added. */
-        TableRow tr = new TableRow(this);
-        tr.setLayoutParams(new TableLayout.LayoutParams(
-                LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
-
-		/* Create the item number field */
-        TextView itemNumTV = new TextView(this);
-        itemNumTV.setGravity(Gravity.CENTER | Gravity.BOTTOM);
-        itemNumTV.setTextColor(Color.BLACK);
-        itemNumTV.setTextSize(20.0f);
-        itemNumTV.setText("" + in);
-        itemNumTV.setLayoutParams(new TableRow.LayoutParams(0,
-                LayoutParams.WRAP_CONTENT, 0.16f));
-
-		/* Create the box number field */
-        TextView boxNumTV = new TextView(this);
-        boxNumTV.setGravity(Gravity.CENTER | Gravity.BOTTOM);
-        boxNumTV.setTextColor(Color.BLACK);
-        boxNumTV.setTextSize(20.0f);
-        boxNumTV.setText(bn);
-        boxNumTV.setLayoutParams(new TableRow.LayoutParams(0,
-                LayoutParams.WRAP_CONTENT, 0.16f));
-
-		/* Create the Envelope ID field */
-        TextView envIDTV = new TextView(this);
-        envIDTV.setGravity(Gravity.CENTER | Gravity.BOTTOM);
-        envIDTV.setTextColor(Color.BLACK);
-        envIDTV.setTextSize(20.0f);
-        envIDTV.setText(en);
-        envIDTV.setTag(tag);
-        envIDTV.setLayoutParams(new TableRow.LayoutParams(0,
-                LayoutParams.WRAP_CONTENT, 0.5f));
-        envIDTV.setLongClickable(true);
-
-		/* Define the listener for the longclick event */
-        envIDTV.setOnLongClickListener(new OnLongClickListener() {
-            public boolean onLongClick(View v) {
-                final String tag = (String) v.getTag();
-                deleteDialog(tag);
-                return false;
-            }
-        });
-
-		/* Create the Weight field */
-        TextView weightTV = new TextView(this);
-        weightTV.setGravity(Gravity.CENTER | Gravity.BOTTOM);
-        weightTV.setTextColor(Color.BLACK);
-        weightTV.setTextSize(20.0f);
-        weightTV.setText(wt);
-        weightTV.setLayoutParams(new TableRow.LayoutParams(0,
-                LayoutParams.WRAP_CONTENT, 0.16f));
-
-		/* Add UI elements to row and add row to table */
-        tr.addView(itemNumTV);
-        tr.addView(boxNumTV);
-        tr.addView(envIDTV);
-        tr.addView(weightTV);
-        InventoryTable.addView(tr, new LayoutParams(
-                TableLayout.LayoutParams.MATCH_PARENT,
-                TableLayout.LayoutParams.MATCH_PARENT));
-    }
-
-    private void deleteDialog(String tag) {
-        final String tagArray[] = tag.split(",");
-        final String fBox = tagArray[0];
-        final String fEnv = tagArray[1];
-        final int fNum = Integer.parseInt(tagArray[2]);
-
-        AlertDialog.Builder builder = new AlertDialog.Builder(
-                MainActivity.this);
-        builder.setTitle(getString(R.string.delete_entry));
-        builder.setMessage(getString(R.string.delete) + fEnv + "?")
-                .setCancelable(true)
-                .setPositiveButton(getString(R.string.yes),
-                        new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int id) {
-                                InventoryRecord temp = new InventoryRecord(fBox, fEnv, null, null,
-                                        fNum, null);
-                                db.deleteSample(temp);
-                                parseDbToTable();
-                            }
-                        })
-                .setNegativeButton(getString(R.string.no), new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
-                        dialog.cancel();
-                    }
-                });
-        AlertDialog alert = builder.create();
-        alert.show();
-
-    }
-
-    private void createDir(File path) {
-        File blankFile = new File(path, ".inventory");
-
-        if (!path.exists()) {
-            path.mkdirs();
-
-            try {
-                blankFile.getParentFile().mkdirs();
-                blankFile.createNewFile();
-                makeFileDiscoverable(blankFile, this);
-            } catch (IOException e) {
-                Log.e(TAG, e.getMessage());
-            }
-        }
-    }
-
-    private void setBoxDialog() {
-        final AlertDialog.Builder alert = new AlertDialog.Builder(this);
-        final EditText input = new EditText(this);
-        input.setText(boxNumber);
-        input.selectAll();
-        input.setSingleLine();
-        alert.setTitle(getString(R.string.setbox));
-        alert.setView(input);
-        alert.setPositiveButton(getString(R.string.ok), new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int whichButton) {
-                String value = input.getText().toString().trim();
-                boxNumTextView.setText(value);
-
-                boxNumber = value;
-
-                InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-                imm.hideSoftInputFromWindow(input.getWindowToken(), 0);
-            }
-        });
-
-        alert.setNegativeButton(getString(R.string.cancel),
-                new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int whichButton) {
-                        dialog.cancel();
-                        InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-                        imm.hideSoftInputFromWindow(input.getWindowToken(), 0);
-                    }
-                });
-        AlertDialog alertD = alert.create();
-        alertD.show();
     }
 
     @Override
-    public void onDestroy() {
-        super.onDestroy();
-
+    protected void onPostCreate(Bundle savedInstanceState) {
+        super.onPostCreate(savedInstanceState);
+        this.actionBarDrawerToggle.syncState();
     }
 
     @Override
-    public void onStart() {
+    protected void onStart() {
         super.onStart();
-        Log.v(TAG, "onStart");
-
+        org.wheatgenetics.inventory.MainActivity.sendVerboseLogMsg("onStart()");
     }
 
     @Override
-    protected void onStop() {
-        super.onStop();
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        return true;
-    }
+    public boolean onCreateOptionsMenu(Menu menu) { return true; }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if (mDrawerToggle.onOptionsItemSelected(item)) {
-            return true;
-        }
+        assert this.actionBarDrawerToggle != null;
+        if (this.actionBarDrawerToggle.onOptionsItemSelected(item)) return true;
 
+        assert item != null;
         switch (item.getItemId()) {
             case android.R.id.home:
-                mDrawerLayout.openDrawer(GravityCompat.START);
+                assert this.drawerLayout != null;
+                this.drawerLayout.openDrawer(android.support.v4.view.GravityCompat.START);
                 return true;
         }
 
         return true;
     }
 
-    private void aboutDialog() {
-        final AlertDialog.Builder alert = new AlertDialog.Builder(this);
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        this.actionBarDrawerToggle.onConfigurationChanged(newConfig);
+    }
+    // endregion
 
-        LayoutInflater inflater = this.getLayoutInflater();
-        final View personView = inflater.inflate(R.layout.about, new LinearLayout(this), false);
-        TextView version = (TextView) personView.findViewById(R.id.tvVersion);
-        TextView otherApps = (TextView) personView.findViewById(R.id.tvOtherApps);
 
-        final PackageManager packageManager = this.getPackageManager();
-        try {
-            PackageInfo packageInfo = packageManager.getPackageInfo(this.getPackageName(), 0);
-            version.setText(getResources().getString(R.string.versiontitle) + " " + packageInfo.versionName);
-        } catch (PackageManager.NameNotFoundException e) {
-            Log.e(TAG, e.getMessage());
+    protected void showToast(final java.lang.CharSequence text)
+    {
+        org.wheatgenetics.inventory.MainActivity.showToast(this, text);
+    }
+
+    protected void makeFileDiscoverable(final java.io.File file) {
+        if (file != null)
+        {
+            MediaScannerConnection.scanFile(this,
+                Utils.makeStringArray(file.getPath()), null, null);
+            this.sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE,
+                Uri.fromFile(file)));
+        }
+    }
+
+
+    // region addTableRow()
+    protected android.widget.TextView makeTextView(
+    final java.lang.CharSequence text, final float initWeight)
+    {
+        final android.widget.TextView textView = new android.widget.TextView(this);
+
+        textView.setGravity  (android.view.Gravity.CENTER | android.view.Gravity.BOTTOM);
+        textView.setTextColor(android.graphics.Color.BLACK                             );
+        textView.setTextSize (20.0f                                                    );
+        textView.setText     (text                                                     );
+        textView.setLayoutParams(new android.widget.TableRow.LayoutParams(
+            /* w          => */ 0                                               ,
+            /* h          => */ android.view.ViewGroup.LayoutParams.WRAP_CONTENT,
+            /* initWeight => */ initWeight                                      ));
+
+        return textView;
+    }
+
+    private java.lang.Boolean delete(final java.lang.Object tag) {
+        assert tag != null;
+        final String tagArray[] = ((java.lang.String) tag).split(",");
+        final String box        = tagArray[0];
+        final String env        = tagArray[1];
+        final int    num        = Integer.parseInt(tagArray[2]);
+
+        final AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+        builder.setTitle(getString(R.string.delete_entry));
+        builder.setMessage(getString(R.string.delete) + env + "?")
+            .setCancelable(true)
+            .setPositiveButton(getString(R.string.yes), new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    samplesTable.delete(new InventoryRecord(box, env, num));
+                    addTableRows();
+                }})
+            .setNegativeButton(getString(R.string.no), new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) { dialog.cancel(); }});
+        builder.create().show();
+
+        return false;
+    }
+
+    /**
+     * Adds a new entry to the end of the TableView
+     */
+    private void addTableRow(final InventoryRecord inventoryRecord) {
+        assert this.envidEditText != null;
+        this.envidEditText.setText("");
+
+        final android.widget.TableRow tableRow = new android.widget.TableRow(this);
+        tableRow.setLayoutParams(new TableLayout.LayoutParams(
+            LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
+
+        assert inventoryRecord != null;
+        tableRow.addView(this.makeTextView(inventoryRecord.getPositionAsString(), 0.16f));
+        tableRow.addView(this.makeTextView(inventoryRecord.getBox()             , 0.16f));
+
+        {
+            final TextView envidTextView = this.makeTextView(inventoryRecord.getEnvId(), 0.5f);
+            envidTextView.setTag          (inventoryRecord.getTag());
+            envidTextView.setLongClickable(true                    );
+
+            envidTextView.setOnLongClickListener(new OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View v) { return delete(v.getTag()); }});
+
+            tableRow.addView(envidTextView);
         }
 
-        version.setOnClickListener(new View.OnClickListener() {
+        tableRow.addView(this.makeTextView(inventoryRecord.getWt(), 0.16f));
+
+        assert this.tableLayout != null;
+        this.tableLayout.addView(tableRow, new LayoutParams(         // Add tableRow to tableLayout.
+            TableLayout.LayoutParams.MATCH_PARENT, TableLayout.LayoutParams.MATCH_PARENT));
+    }
+    // endregion
+
+
+    private void addTableRows()
+    {
+        assert this.tableLayout != null;
+        this.tableLayout.removeAllViews();
+
+        assert this.samplesTable != null;
+        final java.util.Iterator<InventoryRecord> iterator = this.samplesTable.getAll().iterator();
+        this.samplesTable.close();
+        while (iterator.hasNext())
+        {
+            final InventoryRecord inventoryRecord = iterator.next();
+            assert inventoryRecord != null;
+            inventoryRecord.sendErrorLogMsg(org.wheatgenetics.inventory.MainActivity.TAG);
+            this.addTableRow(inventoryRecord);
+            MainActivity.position = inventoryRecord.getPosition() + 1;
+        }
+    }
+
+    private void goToBottom() {
+        assert this.scrollView != null;
+        this.scrollView.post(new Runnable() {
             @Override
-            public void onClick(View v) {
-                changelog();
-            }
-        });
-
-        otherApps.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                showOtherAppsDialog();
-            }
-        });
-
-
-        alert.setCancelable(true);
-        alert.setTitle(getResources().getString(R.string.about));
-        alert.setView(personView);
-        alert.setNegativeButton(getResources().getString(R.string.ok), new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int whichButton) {
-                dialog.dismiss();
-            }
-        });
-        alert.show();
+            public void run() {
+                scrollView.fullScroll(ScrollView.FOCUS_DOWN);
+                envidEditText.requestFocus();
+            }});
     }
 
+    /**
+     * Adds values in widgets to samples database table and to bottom half of screen.
+     */
+    private void addRecord()
+    {
+        {
+            assert this.envidEditText != null;
+            final String envid = this.envidEditText.getText().toString();
+            if (envid.equals("")) return;                              // check for empty user input
+        }
 
-    public void makeToast(String message) {
-        Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
-    }
+        assert this.boxTextView       != null;
+        assert this.sharedPreferences != null;
+        assert this.wtEditText        != null;
+        final InventoryRecord inventoryRecord = new InventoryRecord(
+            /* box      => */ this.boxTextView.getText().toString()  ,
+            /* envid    => */ this.envidEditText.getText().toString(),
+            /* person   => */ this.sharedPreferences.getSafeName()   ,
+            /* position => */ MainActivity.position++                ,
+            /* wt       => */ this.wtEditText.getText().toString()   );
 
-    private void setPersonDialog() {
-        final AlertDialog.Builder alert = new AlertDialog.Builder(this);
-        LayoutInflater inflater = this.getLayoutInflater();
-        final View personView = inflater.inflate(R.layout.person, new LinearLayout(this), false);
+        assert this.samplesTable != null;
+        this.samplesTable.add(inventoryRecord);
+        this.addTableRow     (inventoryRecord);
 
-        final EditText fName = (EditText) personView
-                .findViewById(R.id.firstName);
-        final EditText lName = (EditText) personView
-                .findViewById(R.id.lastName);
-
-        fName.setText(ep.getString("FirstName", ""));
-        lName.setText(ep.getString("LastName", ""));
-
-        alert.setCancelable(false);
-        alert.setTitle(getResources().getString(R.string.set_person));
-        alert.setView(personView);
-        alert.setPositiveButton(getResources().getString(R.string.ok), new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int whichButton) {
-                firstName = fName.getText().toString().trim();
-                lastName = lName.getText().toString().trim();
-
-                if (firstName.length() == 0 | lastName.length() == 0) {
-                    makeToast(getResources().getString(R.string.no_blank));
-                    setPersonDialog();
-                    return;
-                }
-
-                makeToast(getResources().getString(R.string.person_set) + " " + firstName + " " + lastName);
-                SharedPreferences.Editor ed = ep.edit();
-                ed.putString("FirstName", firstName);
-                ed.putString("LastName", lastName);
-                ed.apply();
-            }
-        });
-        alert.show();
-    }
-
-    private void showOtherAppsDialog() {
-        final AlertDialog.Builder otherAppsAlert = new AlertDialog.Builder(this);
-
-        ListView myList = new ListView(this);
-        myList.setDivider(null);
-        myList.setDividerHeight(0);
-        String[] appsArray = new String[3];
-
-        appsArray[0] = "Field Book";
-        appsArray[1] = "Coordinate";
-        appsArray[2] = "1KK";
-        //appsArray[3] = "Intercross";
-        //appsArray[4] = "Rangle";
-
-        Integer app_images[] = {R.drawable.other_ic_field_book, R.drawable.other_ic_coordinate, R.drawable.other_ic_1kk};
-        final String[] links = {"https://play.google.com/store/apps/details?id=com.fieldbook.tracker",
-                "http://wheatgenetics.org/apps",
-                "http://wheatgenetics.org/apps"}; //TODO update these links
-
-        myList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            public void onItemClick(AdapterView<?> av, View arg1, int which, long arg3) {
-                Uri uri = Uri.parse(links[which]);
-                Intent intent;
-
-                switch (which) {
-                    case 0:
-                        intent = new Intent(Intent.ACTION_VIEW, uri);
-                        startActivity(intent);
-                        break;
-                    case 1:
-                        intent = new Intent(Intent.ACTION_VIEW, uri);
-                        startActivity(intent);
-                        break;
-                    case 2:
-                        intent = new Intent(Intent.ACTION_VIEW, uri);
-                        startActivity(intent);
-                        break;
-                }
-            }
-        });
-
-        CustomListAdapter adapterImg = new CustomListAdapter(this, app_images, appsArray);
-        myList.setAdapter(adapterImg);
-
-        otherAppsAlert.setCancelable(true);
-        otherAppsAlert.setTitle(getResources().getString(R.string.otherapps));
-        otherAppsAlert.setView(myList);
-        otherAppsAlert.setNegativeButton(getResources().getString(R.string.ok), new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int whichButton) {
-                dialog.dismiss();
-            }
-        });
-        otherAppsAlert.show();
+        this.goToBottom();
     }
 
     public class CustomListAdapter extends ArrayAdapter<String> {
-        String[] color_names;
-        Integer[] image_id;
-        Context context;
+        protected Context   context    ;
+        protected String[]  color_names;
+        protected Integer[] image_ids  ;
 
-        public CustomListAdapter(Activity context, Integer[] image_id, String[] text) {
-            super(context, R.layout.appline, text);
-            this.color_names = text;
-            this.image_id = image_id;
-            this.context = context;
+        public CustomListAdapter(final Activity context,
+        final Integer[] image_ids, final String[] color_names) {
+            super(context, R.layout.appline, color_names);
+
+            this.context     = context    ;
+            this.color_names = color_names;
+            this.image_ids   = image_ids  ;
         }
 
         @Override
         public View getView(int position, View convertView, ViewGroup parent) {
-            LayoutInflater inflater = (LayoutInflater) context
-                    .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            View single_row = inflater.inflate(R.layout.appline, null, true);
-            TextView textView = (TextView) single_row.findViewById(R.id.txt);
-            ImageView imageView = (ImageView) single_row.findViewById(R.id.img);
-            textView.setText(color_names[position]);
-            imageView.setImageResource(image_id[position]);
+            final LayoutInflater inflater =
+                (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+            final View single_row = inflater.inflate(R.layout.appline, null, true);
+            {
+                final TextView textView = (TextView) single_row.findViewById(R.id.txt);
+                textView.setText(color_names[position]);
+            }
+            {
+                final ImageView imageView = (ImageView) single_row.findViewById(R.id.img);
+                imageView.setImageResource(image_ids[position]);
+            }
             return single_row;
         }
     }
 
-    private void clearDialog() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(
-                MainActivity.this);
-        builder.setMessage(
-                getString(R.string.delete_msg_1))
+    private void deleteAll() {
+        this.samplesTable.deleteAll();
+        this.tableLayout.removeAllViews();
+        MainActivity.position = 1;
+    }
+
+
+    // region Drawer Methods
+    // region Drawer Subsubaction Methods
+    private void shareFile(final java.io.File file, final String fileName) {
+        this.makeFileDiscoverable(file);
+        this.showToast(getString(R.string.export_success));
+
+        final Intent intent = new Intent(android.content.Intent.ACTION_SEND);
+
+        intent.setType ("text/plain");
+        intent.putExtra(Intent.EXTRA_STREAM, InventoryDir.parse(fileName));
+
+        this.startActivity(Intent.createChooser(intent, getString(R.string.sending_file)));
+    }
+    // endregion
+
+
+    // region Drawer Subaction Methods
+    private void exportCSV() {
+        {
+            final InventoryRecords inventoryRecords = this.samplesTable.getAll();
+            this.samplesTable.close();
+            {
+                final String fileName = Utils.getExportFileName() + ".csv";
+                try { this.shareFile(inventoryRecords.writeCSV(fileName), fileName); }
+                catch (java.io.IOException e)
+                {
+                    org.wheatgenetics.inventory.MainActivity.showToast(
+                        this.getBaseContext(), e.getMessage());
+                }
+            }
+        }
+        this.deleteAll();
+    }
+
+    private void exportSQL() {
+        {
+            final InventoryRecords inventoryRecords = this.samplesTable.getAll()    ;
+            final String           boxList          = this.samplesTable.getBoxList();
+            this.samplesTable.close();
+            {
+                final String fileName = Utils.getExportFileName() + ".sql";
+                try { this.shareFile(inventoryRecords.writeSQL(fileName, boxList), fileName); }
+                catch (java.io.IOException e)
+                {
+                    org.wheatgenetics.inventory.MainActivity.showToast(
+                        this.getBaseContext(), e.getMessage());
+                }
+            }
+        }
+        this.deleteAll();
+    }
+
+    private void showChangeLog()
+    {
+        if (this.changeLogAlertDialog == null)
+        {
+            final android.content.res.Resources resources = this.getResources();
+
+            assert resources != null;
+            final java.io.InputStreamReader inputStreamReader = new java.io.InputStreamReader(
+                resources.openRawResource(org.wheatgenetics.inventory.R.raw.changelog_releases));
+
+            this.changeLogAlertDialog = new org.wheatgenetics.inventory.ChangeLogAlertDialog(
+                /* context            => */ this                                         ,
+                /* applicationContext => */ this.getApplicationContext()                 ,
+                /* inputStreamReader  => */ inputStreamReader                            ,
+                /* activityClass      => */ org.wheatgenetics.inventory.MainActivity.this,
+                /* title => */
+                    resources.getString(org.wheatgenetics.inventory.R.string.updatemsg),
+                /* positiveButtonText => */
+                    resources.getString(org.wheatgenetics.inventory.R.string.ok));
+        }
+        try { this.changeLogAlertDialog.show(); }
+        catch (java.io.IOException e) { throw new java.lang.RuntimeException(e); }
+
+    }
+
+    private void showOtherAppsDialog() {
+        final AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        {
+            final ListView listView = new ListView(this);
+
+            listView.setDivider(null);
+            listView.setDividerHeight(0);
+            {
+                final String[] links = {                                   //TODO update these links
+                    "https://play.google.com/store/apps/details?id=com.fieldbook.tracker",
+                    "http://wheatgenetics.org/apps"                                      ,
+                    "http://wheatgenetics.org/apps"                                      };
+                listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                    @Override
+                    public void onItemClick(AdapterView<?> parent,
+                    View view, int position, long id) {
+                        switch (position) {
+                            case 0:
+                            case 1:
+                            case 2:
+                                startActivity(new Intent(
+                                    Intent.ACTION_VIEW, Uri.parse(links[position])));
+                                break;
+                        }
+                    }});
+            }
+            {
+                final Integer appIconIDs[] = {R.drawable.other_ic_field_book,
+                    R.drawable.other_ic_coordinate, R.drawable.other_ic_1kk};
+
+                final String[] appNames = new String[3];
+                appNames[0] = "Field Book";
+                appNames[1] = "Coordinate";
+                appNames[2] = "1KK"       ;
+                //appNames[3] = "Intercross";
+                //appNames[4] = "Rangle"    ;
+
+                listView.setAdapter(new CustomListAdapter(this, appIconIDs, appNames));
+            }
+
+            builder.setCancelable(true);
+            builder.setTitle(getResources().getString(R.string.otherapps));
+            builder.setView(listView);
+        }
+        builder.setNegativeButton(getResources().getString(R.string.ok),
+            new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) { dialog.dismiss(); }});
+        builder.show();
+    }
+    // endregion
+
+
+    // region Drawer Action Methods
+    private void setPerson() {
+        final AlertDialog.Builder builder = new AlertDialog.Builder(this);
+
+        builder.setCancelable(false);
+        builder.setTitle(getResources().getString(R.string.set_person));
+        {
+            final View personView =
+                this.getLayoutInflater().inflate(R.layout.person, new LinearLayout(this), false);
+
+            final EditText fName = (EditText) personView.findViewById(R.id.firstName);
+            final EditText lName = (EditText) personView.findViewById(R.id.lastName );
+
+            fName.setText(this.sharedPreferences.getFirstName());
+            lName.setText(this.sharedPreferences.getLastName() );
+
+            builder.setView(personView);
+            builder.setPositiveButton(getResources().getString(R.string.ok),
+                new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        final String firstName = fName.getText().toString().trim();
+                        final String lastName  = lName.getText().toString().trim();
+
+                        if (firstName.length() == 0 | lastName.length() == 0) {
+                            showToast(getResources().getString(R.string.no_blank));
+                            setPerson();
+                            return;
+                        }
+
+                        showToast(getResources().getString(R.string.person_set) +
+                            " " + firstName + " " + lastName);
+                        sharedPreferences.setName(firstName, lastName);
+                    }});
+        }
+        builder.show();
+    }
+
+    protected void connectScale() {
+        if (this.usbDevice == null)
+        {
+            final android.hardware.usb.UsbManager usbManager = (android.hardware.usb.UsbManager)
+                this.getSystemService(android.content.Context.USB_SERVICE);
+
+            assert usbManager != null;
+            final java.util.HashMap<java.lang.String, android.hardware.usb.UsbDevice> deviceList =
+                usbManager.getDeviceList();
+
+            for (android.hardware.usb.UsbDevice usbDevice : deviceList.values())
+            {
+                this.usbDevice = usbDevice;
+                org.wheatgenetics.inventory.MainActivity.sendVerboseLogMsg(String.format(
+                    "name=%s deviceId=%d productId=%d vendorId=%d " +
+                        "deviceClass=%d subClass=%d protocol=%d interfaceCount=%d",
+                    this.usbDevice.getDeviceName()    , this.usbDevice.getDeviceId()      ,
+                    this.usbDevice.getProductId()     , this.usbDevice.getVendorId()      ,
+                    this.usbDevice.getDeviceClass()   , this.usbDevice.getDeviceSubclass(),
+                    this.usbDevice.getDeviceProtocol(), this.usbDevice.getInterfaceCount()));
+                break;
+            }
+        }
+
+        if (this.usbDevice != null)
+        {
+            this.wtEditText.setText("0");
+            new ScaleListener().execute();
+        }
+        else
+            new AlertDialog.Builder(MainActivity.this)
+                .setTitle(getString(R.string.no_scale))
+                .setMessage(getString(R.string.connect_scale))
                 .setCancelable(false)
-                .setTitle(getString(R.string.clear_data))
-                .setPositiveButton(getString(R.string.yes),
+                    .setPositiveButton(getString(R.string.try_again),
                         new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int id) {
-                                boxNumTextView.setText("");
-                                makeToast(getString(R.string.data_deleted));
-                                dropTables();
-                            }
-                        })
-                .setNegativeButton(getString(R.string.no), new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
-                        dialog.cancel();
-                    }
-                });
-        AlertDialog alert = builder.create();
-        alert.show();
+                            @Override
+                            public void onClick(DialogInterface dialog, int which)
+                            {
+                                connectScale();
+                            }})
+                    .setNegativeButton(getString(R.string.ignore),
+                        new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                sharedPreferences.setIgnoreScaleToTrue();
+                                dialog.cancel();
+                            }})
+                    .show();
     }
 
     private void export() {
         new AlertDialog.Builder(MainActivity.this)
-                .setTitle(getString(R.string.export_data))
-                .setMessage(getString(R.string.export_choice))
-                .setPositiveButton(getString(R.string.export_csv),
-                        new DialogInterface.OnClickListener() {
-
-                            public void onClick(DialogInterface dialog,
-                                                int which) {
-                                exportCSV();
-                            }
-
-                        })
-                .setNegativeButton(getString(R.string.export_sql),
-                        new DialogInterface.OnClickListener() {
-
-                            public void onClick(DialogInterface dialog,
-                                                int which) {
-                                exportSQL();
-                            }
-
-                        })
-                .setNeutralButton(getString(R.string.cancel),
-                        new DialogInterface.OnClickListener() {
-
-                            public void onClick(DialogInterface dialog,
-                                                int which) {
-                                dialog.cancel();
-                            }
-
-                        }).show();
-    }
-
-    private void exportCSV() {
-        String date = getDate();
-
-        try {
-            writeCSV("inventory_" + date + ".csv");
-        } catch (Exception e) {
-            Toast.makeText(getBaseContext(), e.getMessage(), Toast.LENGTH_SHORT)
-                    .show();
-        }
-
-        dropTables();
-    }
-
-    private void exportSQL() {
-        String date = getDate();
-
-        try {
-            writeSQL("inventory_" + date + ".sql");
-        } catch (Exception e) {
-            Toast.makeText(getBaseContext(), e.getMessage(), Toast.LENGTH_SHORT)
-                    .show();
-        }
-
-        dropTables();
-    }
-
-    private void writeCSV(String filename) {
-        String record;
-        File myFile;
-        list = db.getAllSamples();
-        itemCount = list.size();
-        if (itemCount != 0) {
-            try {
-                myFile = new File(Constants.MAIN_PATH, filename);
-                myFile.createNewFile();
-                FileOutputStream fOut = new FileOutputStream(myFile);
-                OutputStreamWriter myOutWriter = new OutputStreamWriter(fOut);
-
-                record = "box_id,seed_id,inventory_date,inventory_person,weight_gram\r\n";
-                myOutWriter.append(record);
-
-                for (int i = 0; i < itemCount; i++) {
-
-                    String[] temp = list.get(i).toString().split(",");
-                    record = temp[0] + ","; // box
-                    record += temp[1] + ","; // seed id
-                    record += temp[3] + ","; // date
-                    record += temp[2] + ","; // person
-                    record += temp[5] + "\r\n"; // weight
-
-                    myOutWriter.append(record);
-                }
-                myOutWriter.close();
-                fOut.close();
-                makeFileDiscoverable(myFile, this);
-                makeToast("File exported successfully.");
-            } catch (Exception e) {
-                Toast.makeText(getBaseContext(), e.getMessage(),
-                        Toast.LENGTH_SHORT).show();
-            }
-
-        }
-        db.close();
-        shareFile(filename);
-        dropTables();
-    }
-
-    private void writeSQL(String filename) {
-        String record;
-        String boxList = "";
-        File myFile;
-        list = db.getAllSamples();
-        itemCount = list.size();
-
-        String[] boxes = db.getBoxList();
-
-        if (itemCount != 0) {
-            try {
-                myFile = new File(Constants.MAIN_PATH, filename);
-                myFile.createNewFile();
-                FileOutputStream fOut = new FileOutputStream(myFile);
-                OutputStreamWriter myOutWriter = new OutputStreamWriter(fOut);
-
-                // get boxes
-                for (int i = 0; i < boxes.length; i++) {
-                    if (i == boxes.length - 1 && boxes[i] != null) {
-                        boxList = boxList + "'" + boxes[i] + "'";
-                    } else if (boxes[i] != null) {
-                        boxList = boxList + "'" + boxes[i] + "'" + ",";
-                    }
-                }
-
-                record = "DELETE FROM seedinv WHERE seedinv.box_id in ("
-                        + boxList + ");\n";
-                record += "INSERT INTO seedinv(`box_id`,`seed_id`,`inventory_date`,`inventory_person`,`weight_gram`)\r\nVALUES";
-                myOutWriter.append(record);
-
-                for (int i = 0; i < itemCount; i++) {
-                    String[] temp = list.get(i).toString().split(",");
-
-                    for (int j = 0; j < temp.length; j++) {
-                        if (temp[j].length() == 0) {
-                            temp[j] = "null";
-                        }
-                    }
-
-                    record = "(";
-                    record += addTicks(temp[0]) + ","; // box
-                    record += addTicks(temp[1]) + ","; // seed id
-                    record += addTicks(temp[3]) + ","; // date
-                    record += addTicks(temp[2]) + ","; // person
-                    record += addTicks(temp[5]); // weight
-                    record += ")";
-
-                    if (i == itemCount - 1) {
-                        record += ";\r\n";
-                    } else {
-                        record += ",\r\n";
-                    }
-
-                    myOutWriter.append(record);
-                }
-                myOutWriter.close();
-                fOut.close();
-                makeFileDiscoverable(myFile, this);
-
-                makeToast(getString(R.string.export_success));
-            } catch (Exception e) {
-                Toast.makeText(getBaseContext(), e.getMessage(),
-                        Toast.LENGTH_SHORT).show();
-            }
-        }
-        db.close();
-        shareFile(filename);
-        dropTables();
-    }
-
-    public void makeFileDiscoverable(File file, Context context) {
-        MediaScannerConnection.scanFile(context, new String[]{file.getPath()}, null, null);
-        context.sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE,
-                Uri.fromFile(file)));
-    }
-
-    private String addTicks(String entry) {
-        String newEntry;
-        if (entry.contains(getString(R.string.not_connected))) {
-            newEntry = getString(R.string.not_connected);
-        } else {
-            newEntry = "'" + entry + "'";
-        }
-        return newEntry;
-    }
-
-    private void dropTables() {
-        db.deleteAllSamples();
-        InventoryTable.removeAllViews();
-        currentItemNum = 1;
-    }
-
-    private void shareFile(String filePath) {
-        filePath = Constants.MAIN_PATH.toString() + filePath;
-        Intent intent = new Intent();
-        intent.setAction(android.content.Intent.ACTION_SEND);
-        intent.setType("text/plain");
-        intent.putExtra(Intent.EXTRA_STREAM, Uri.parse(filePath));
-        startActivity(Intent.createChooser(intent, getString(R.string.sending_file)));
-    }
-
-    private void setupDrawer() {
-        mDrawerToggle = new ActionBarDrawerToggle(this, mDrawerLayout,
-                R.string.drawer_open, R.string.drawer_close) {
-
-            public void onDrawerOpened(View drawerView) {
-                TextView person = (TextView) findViewById(R.id.nameLabel);
-                person.setText(ep.getString("FirstName", "") + " " + ep.getString("LastName", ""));
-            }
-
-            public void onDrawerClosed(View view) {
-            }
-        };
-
-        mDrawerToggle.setDrawerIndicatorEnabled(true);
-        mDrawerLayout.setDrawerListener(mDrawerToggle);
-    }
-
-    private void setupDrawerContent(NavigationView navigationView) {
-        navigationView.setNavigationItemSelectedListener(
-                new NavigationView.OnNavigationItemSelectedListener() {
+            .setTitle(getString(R.string.export_data))
+            .setMessage(getString(R.string.export_choice))
+            .setPositiveButton(getString(R.string.export_csv),
+                new DialogInterface.OnClickListener() {
                     @Override
-                    public boolean onNavigationItemSelected(MenuItem menuItem) {
-                        selectDrawerItem(menuItem);
-                        return true;
-                    }
-                });
+                    public void onClick(DialogInterface dialog, int which) { exportCSV(); }})
+            .setNegativeButton(getString(R.string.export_sql),
+                new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) { exportSQL(); }})
+            .setNeutralButton(getString(R.string.cancel), new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) { dialog.cancel(); }})
+            .show();
     }
 
-    public void selectDrawerItem(MenuItem menuItem) {
-        switch (menuItem.getItemId()) {
-            case R.id.scaleConnect:
-                findScale();
-                break;
-            case R.id.person:
-                setPersonDialog();
-                break;
-            case R.id.export:
-                export();
-                break;
-            case R.id.clearData:
-                clearDialog();
-                break;
-            case R.id.about:
-                aboutDialog();
-                break;
+    private void clearAll() {
+        final AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+
+        builder.setMessage(getString(R.string.delete_msg_1))
+            .setCancelable(false)
+            .setTitle(getString(R.string.clear_data))
+            .setPositiveButton(getString(R.string.yes), new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    boxTextView.setText("");
+                    showToast(getString(R.string.data_deleted));
+                    deleteAll();
+                }})
+            .setNegativeButton(getString(R.string.no), new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) { dialog.cancel(); }});
+        builder.create().show();
+    }
+
+    private void showAboutDialog() {
+        final AlertDialog.Builder alert = new AlertDialog.Builder(this);
+        {
+            final View personView =
+                this.getLayoutInflater().inflate(R.layout.about, new LinearLayout(this), false);
+
+            {
+                final TextView version = (TextView) personView.findViewById(R.id.tvVersion);
+                try
+                {
+                    final PackageInfo packageInfo =
+                        this.getPackageManager().getPackageInfo(this.getPackageName(), 0);
+                    version.setText(getResources().getString(R.string.versiontitle) +
+                        " " + packageInfo.versionName);
+                }
+                catch (PackageManager.NameNotFoundException e)
+                {
+                    org.wheatgenetics.inventory.MainActivity.sendErrorLogMsg(e);
+                }
+                version.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) { showChangeLog(); }});
+            }
+
+            {
+                final TextView otherApps = (TextView) personView.findViewById(R.id.tvOtherApps);
+                otherApps.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) { showOtherAppsDialog(); }});
+            }
+
+            alert.setCancelable(true);
+            alert.setTitle(getResources().getString(R.string.about));
+            alert.setView(personView);
         }
-
-        mDrawerLayout.closeDrawers();
-    }
-
-    private void changelog() {
-        parent.setOrientation(LinearLayout.VERTICAL);
-        parseLog(R.raw.changelog_releases);
-
-        AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
-        builder.setTitle(getResources().getString(R.string.updatemsg));
-        builder.setView(changeContainer)
-                .setCancelable(true)
-                .setPositiveButton(getResources().getString(R.string.ok),
-                        new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int id) {
-                                dialog.dismiss();
-                            }
-                        });
-        AlertDialog alert = builder.create();
+        alert.setNegativeButton(getResources().getString(R.string.ok),
+            new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) { dialog.dismiss(); }});
         alert.show();
     }
-
-    public void parseLog(int resId) {
-        try {
-            InputStream is = getResources().openRawResource(resId);
-            InputStreamReader isr = new InputStreamReader(is);
-            BufferedReader br = new BufferedReader(isr, 8192);
-
-            LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT);
-            lp.setMargins(20, 5, 20, 0);
-
-            String curVersionName = null;
-            String line;
-
-            while ((line = br.readLine()) != null) {
-                TextView header = new TextView(this);
-                TextView content = new TextView(this);
-                TextView spacer = new TextView(this);
-                View ruler = new View(this);
-
-                header.setLayoutParams(lp);
-                content.setLayoutParams(lp);
-                spacer.setLayoutParams(lp);
-                ruler.setLayoutParams(lp);
-
-                spacer.setTextSize(5);
-
-                ruler.setBackgroundColor(getResources().getColor(R.color.main_colorAccent));
-                header.setTextAppearance(getApplicationContext(), R.style.ChangelogTitles);
-                content.setTextAppearance(getApplicationContext(), R.style.ChangelogContent);
-
-                if (line.length() == 0) {
-                    curVersionName = null;
-                    spacer.setText("\n");
-                    parent.addView(spacer);
-                } else if (curVersionName == null) {
-                    final String[] lineSplit = line.split("/");
-                    curVersionName = lineSplit[1];
-                    header.setText(curVersionName);
-                    parent.addView(header);
-                    parent.addView(ruler);
-                } else {
-                    content.setText("•  " + line);
-                    parent.addView(content);
-                }
-            }
-
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-    }
+    // endregion
 
 
-    @Override
-    protected void onPostCreate(Bundle savedInstanceState) {
-        super.onPostCreate(savedInstanceState);
-        mDrawerToggle.syncState();
-    }
-
-    public void findScale() {
-        if (mDevice == null) {
-            UsbManager usbManager = (UsbManager) getSystemService(Context.USB_SERVICE);
-            HashMap<String, UsbDevice> deviceList = usbManager.getDeviceList();
-            for (UsbDevice usbDevice : deviceList.values()) {
-                mDevice = usbDevice;
-                Log.v(TAG,
-                        String.format(
-                                "name=%s deviceId=%d productId=%d vendorId=%d deviceClass=%d subClass=%d protocol=%d interfaceCount=%d",
-                                mDevice.getDeviceName(), mDevice.getDeviceId(),
-                                mDevice.getProductId(), mDevice.getVendorId(),
-                                mDevice.getDeviceClass(),
-                                mDevice.getDeviceSubclass(),
-                                mDevice.getDeviceProtocol(),
-                                mDevice.getInterfaceCount()));
+    // region Drawer Selector Method
+    protected java.lang.Boolean selectNavigationItem(final MenuItem menuItem)
+    {
+        assert menuItem != null;
+        switch (menuItem.getItemId())
+        {
+            case R.id.person:
+                this.setPerson();
                 break;
-            }
+            case R.id.scaleConnect:
+                this.connectScale();
+                break;
+            case R.id.export:
+                this.export();
+                break;
+            case R.id.clearData:
+                this.clearAll();
+                break;
+            case R.id.about:
+                this.showAboutDialog();
+                break;
         }
 
-        if (mDevice != null) {
-            mWeightEditText.setText("0");
-            new ScaleListener().execute();
-        } else {
-            new AlertDialog.Builder(MainActivity.this)
-                    .setTitle(getString(R.string.no_scale))
-                    .setMessage(
-                            getString(R.string.connect_scale))
-                    .setCancelable(false)
-                    .setPositiveButton(getString(R.string.try_again),
-                            new DialogInterface.OnClickListener() {
+        assert this.drawerLayout != null;
+        this.drawerLayout.closeDrawers();
 
-                                public void onClick(DialogInterface dialog,
-                                                    int which) {
-                                    findScale();
-                                }
+        return true;
+    }
+    // endregion
+    // endregion
 
-                            })
-                    .setNegativeButton(getString(R.string.ignore),
-                            new DialogInterface.OnClickListener() {
 
-                                public void onClick(DialogInterface dialog,
-                                                    int which) {
-                                    SharedPreferences.Editor ed = ep.edit();
-                                    ed.putBoolean("ignoreScale", true);
-                                    ed.apply();
-                                    dialog.cancel();
-                                }
-                            }).show();
-        }
+    private void setBox() {
+        final EditText boxEditText = new EditText(this);
+        boxEditText.setText(this.box);
+        boxEditText.selectAll();
+        boxEditText.setSingleLine();
+
+        final AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle(getString(R.string.setbox));
+        builder.setView(boxEditText);
+
+        builder.setPositiveButton(getString(R.string.ok), new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                {
+                    final String value = boxEditText.getText().toString().trim();
+
+                    boxTextView.setText(value);
+                    box = value;
+                }
+
+                final InputMethodManager imm =
+                    (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                imm.hideSoftInputFromWindow(boxEditText.getWindowToken(), 0);
+            }});
+
+        builder.setNegativeButton(getString(R.string.cancel),
+            new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    dialog.cancel();
+
+                    final InputMethodManager imm =
+                        (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                    imm.hideSoftInputFromWindow(boxEditText.getWindowToken(), 0);
+                }});
+
+        builder.create().show();
     }
 
-
-    private class ScaleListener extends AsyncTask<Void, Double, Void> {
-        private double mLastWeight = 0;
+    private class ScaleListener extends android.os.AsyncTask<
+    java.lang.Void, java.lang.Double, java.lang.Void>
+    {
+        protected double lastWeight = 0;
 
         @Override
-        protected Void doInBackground(Void... arg0) {
-            byte[] data = new byte[128];
-            int TIMEOUT = 2000;
+        protected java.lang.Void doInBackground(java.lang.Void... params)
+        {
+            org.wheatgenetics.inventory.MainActivity.sendVerboseLogMsg("start transfer");
 
-            Log.v(TAG, "start transfer");
-
-            UsbManager usbManager = (UsbManager) getSystemService(Context.USB_SERVICE);
-
-            if (mDevice == null) {
-                Log.e(TAG, "no device");
+            if (usbDevice == null)
+            {
+                org.wheatgenetics.inventory.MainActivity.sendErrorLogMsg("no device");
                 return null;
             }
-            UsbInterface intf = mDevice.getInterface(0);
+            final android.hardware.usb.UsbInterface usbInterface = usbDevice.getInterface(0);
 
-            Log.v(TAG,
-                    String.format("endpoint count = %d",
-                            intf.getEndpointCount()));
-            UsbEndpoint endpoint = intf.getEndpoint(0);
-            Log.v(TAG, String.format(
-                    "endpoint direction = %d out = %d in = %d",
-                    endpoint.getDirection(), UsbConstants.USB_DIR_OUT,
-                    UsbConstants.USB_DIR_IN));
-            UsbDeviceConnection connection = usbManager.openDevice(mDevice);
-            connection.claimInterface(intf, true);
-            while (true) {
+            assert usbInterface != null;
+            org.wheatgenetics.inventory.MainActivity.sendVerboseLogMsg(
+                java.lang.String.format("endpoint count = %d", usbInterface.getEndpointCount()));
+            final android.hardware.usb.UsbEndpoint usbEndpoint = usbInterface.getEndpoint(0);
 
-                int length = connection.bulkTransfer(endpoint, data,
-                        data.length, TIMEOUT);
+            assert usbEndpoint != null;
+            org.wheatgenetics.inventory.MainActivity.sendVerboseLogMsg(
+                java.lang.String.format("usbEndpoint direction = %d out = %d in = %d",
+                usbEndpoint.getDirection(), android.hardware.usb.UsbConstants.USB_DIR_OUT,
+                android.hardware.usb.UsbConstants.USB_DIR_IN));
 
-                if (length != 6) {
-                    Log.e(TAG, String.format("invalid length: %d", length));
+            final android.hardware.usb.UsbManager usbManager =
+                (android.hardware.usb.UsbManager) getSystemService(Context.USB_SERVICE);
+
+            final android.hardware.usb.UsbDeviceConnection usbDeviceConnection =
+                usbManager.openDevice(usbDevice);
+            assert usbDeviceConnection != null;
+            usbDeviceConnection.claimInterface(usbInterface, true);
+
+            final byte[] data = new byte[128];
+
+            while (true)
+            {
+                final int length = usbDeviceConnection.bulkTransfer(
+                    usbEndpoint, data, data.length, /* timeout => */ 2000);
+
+                if (length != 6)
+                {
+                    org.wheatgenetics.inventory.MainActivity.sendErrorLogMsg(
+                        java.lang.String.format("invalid length: %d", length));
                     return null;
                 }
 
-                byte report = data[0];
-                byte status = data[1];
-                //byte exp = data[3];
-                short weightLSB = (short) (data[4] & 0xff);
-                short weightMSB = (short) (data[5] & 0xff);
+                final byte report = data[0];
+                final byte status = data[1];
+                // final byte exp = data[3];
+                final short weightLSB = (short) (data[4] & 0xff);
+                final short weightMSB = (short) (data[5] & 0xff);
 
-                // Log.v(TAG, String.format(
-                // "report=%x status=%x exp=%x lsb=%x msb=%x", report,
-                // status, exp, weightLSB, weightMSB));
+                // org.wheatgenetics.inventory.MainActivity.sendVerboseLogMsg(String.format(
+                //   "report=%x status=%x exp=%x lsb=%x msb=%x",
+                //   report, status, exp, weightLSB, weightMSB));
 
-                if (report != 3) {
-                    Log.v(TAG, String.format("scale status error %d", status));
+                if (report != 3)
+                {
+                    org.wheatgenetics.inventory.MainActivity.sendVerboseLogMsg(
+                        java.lang.String.format("scale status error %d", status));
                     return null;
                 }
 
-                double mWeightGrams;
+                double weightGrams = weightLSB + weightMSB * 256.0;
+                if (usbDevice.getProductId() == 519) weightGrams /= 10.0;
+                final double zeroGrams = 0;
+                final double weight    = weightGrams - zeroGrams;
 
-                if (mDevice.getProductId() == 519) {
-                    mWeightGrams = (weightLSB + weightMSB * 256.0) / 10.0;
-                } else {
-                    mWeightGrams = (weightLSB + weightMSB * 256.0);
-                }
-                double mZeroGrams = 0;
-                double zWeight = (mWeightGrams - mZeroGrams);
-
-                switch (status) {
+                switch (status)
+                {
                     case 1:
-                        Log.w(TAG, "Scale reports FAULT!\n");
+                        org.wheatgenetics.inventory.MainActivity.sendWarnLogMsg(
+                            "Scale reports FAULT!\n");
                         break;
                     case 3:
-                        Log.i(TAG, "Weighing...");
-                        if (mLastWeight != zWeight) {
-                            publishProgress(zWeight);
-                        }
+                        org.wheatgenetics.inventory.MainActivity.sendInfoLogMsg("Weighing...");
+                        if (this.lastWeight != weight) this.publishProgress(weight);
                         break;
                     case 2:
                     case 4:
-                        if (mLastWeight != zWeight) {
-                            Log.i(TAG, String.format("Final Weight: %f", zWeight));
-                            publishProgress(zWeight);
+                        if (this.lastWeight != weight)
+                        {
+                            org.wheatgenetics.inventory.MainActivity.sendInfoLogMsg(
+                                String.format("Final Weight: %f", weight));
+                            this.publishProgress(weight);
                         }
                         break;
                     case 5:
-                        Log.w(TAG, "Scale reports Under Zero");
-                        if (mLastWeight != zWeight) {
-                            publishProgress(0.0);
-                        }
+                        org.wheatgenetics.inventory.MainActivity.sendWarnLogMsg(
+                            "Scale reports Under Zero");
+                        if (this.lastWeight != weight) this.publishProgress(0.0);
                         break;
                     case 6:
-                        Log.w(TAG, "Scale reports Over Weight!");
+                        org.wheatgenetics.inventory.MainActivity.sendWarnLogMsg(
+                            "Scale reports Over Weight!");
                         break;
                     case 7:
-                        Log.e(TAG, "Scale reports Calibration Needed!");
+                        org.wheatgenetics.inventory.MainActivity.sendErrorLogMsg(
+                            "Scale reports Calibration Needed!");
                         break;
                     case 8:
-                        Log.e(TAG, "Scale reports Re-zeroing Needed!\n");
+                        org.wheatgenetics.inventory.MainActivity.sendErrorLogMsg(
+                            "Scale reports Re-zeroing Needed!\n");
                         break;
                     default:
-                        Log.e(TAG, "Unknown status code");
+                        org.wheatgenetics.inventory.MainActivity.sendErrorLogMsg(
+                            "Unknown status code");
                         break;
                 }
 
-                mLastWeight = zWeight;
+                this.lastWeight = weight;
             }
         }
 
         @Override
-        protected void onProgressUpdate(Double... weights) {
-            Double weight = weights[0];
-            Log.i(TAG, "update progress");
-            String weightText = String.format("%.1f", weight);
-            Log.i(TAG, weightText);
-            mWeightEditText.setText(weightText);
-            mWeightEditText.invalidate();
+        protected void onProgressUpdate(java.lang.Double... values)
+        {
+            org.wheatgenetics.inventory.MainActivity.sendInfoLogMsg("update progress");
+
+            final java.lang.String weightText = java.lang.String.format("%.1f", values[0]);
+            org.wheatgenetics.inventory.MainActivity.sendInfoLogMsg(weightText);
+            wtEditText.setText(weightText);
+            wtEditText.invalidate();
         }
 
         @Override
-        protected void onPostExecute(Void result) {
-            Toast.makeText(getApplicationContext(), getString(R.string.scale_disconnect),
-                    Toast.LENGTH_LONG).show();
-            mDevice = null;
-            mWeightEditText.setText(getString(R.string.not_connected));
+        protected void onPostExecute(java.lang.Void result)
+        {
+            org.wheatgenetics.inventory.MainActivity.showToast(getApplicationContext(),
+                getString(R.string.scale_disconnect), android.widget.Toast.LENGTH_LONG);
+            usbDevice = null;
+            wtEditText.setText(getString(R.string.not_connected));
         }
-    }
-
-    public void onInit(int status) {
-
-    }
-
-    @Override
-    public void onConfigurationChanged(final Configuration newConfig) {
-        super.onConfigurationChanged(newConfig);
-        mDrawerToggle.onConfigurationChanged(newConfig);
     }
 }
