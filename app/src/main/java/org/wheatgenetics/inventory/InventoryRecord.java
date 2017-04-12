@@ -92,9 +92,9 @@ class InventoryRecord extends java.lang.Object {
         final java.lang.String[] fields = this.toString().split(",");
         for (int i = 0; i < fields.length; i++)
             if (fields[i].length() <= 0)
-                fields[i] = "'null'";
+                fields[i] = "null";
             else
-                fields[i] = "'" + fields[i] + "'";
+                if (!fields[i].equals("null")) fields[i] = "'" + fields[i] + "'";
 
         return "(" +
             fields[0] + "," + // box
