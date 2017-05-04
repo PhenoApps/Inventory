@@ -23,7 +23,7 @@ implements java.lang.Iterable<org.wheatgenetics.inventory.InventoryRecord>
         return this.linkedList.add(inventoryRecord);
     }
 
-    @Override
+    @java.lang.Override
     public java.util.Iterator<org.wheatgenetics.inventory.InventoryRecord> iterator()
     {
         assert this.linkedList != null;

@@ -22,6 +22,7 @@ package org.wheatgenetics.inventory;
  * android.os.AsyncTask
  * android.os.Bundle
  * android.R
+ * android.support.annotation.NonNull
  * android.support.design.widget.NavigationView
  * android.support.v4.view.GravityCompat
  * android.support.v4.widget.DrawerLayout
@@ -131,7 +132,7 @@ public class MainActivity extends android.support.v7.app.AppCompatActivity
 
 
     // region Overridden Methods
-    @Override
+    @java.lang.Override
     protected void onCreate(final android.os.Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
@@ -170,7 +171,7 @@ public class MainActivity extends android.support.v7.app.AppCompatActivity
             navigationView.setNavigationItemSelectedListener(
                 new android.support.design.widget.NavigationView.OnNavigationItemSelectedListener()
                 {
-                    @Override
+                    @java.lang.Override
                     public boolean onNavigationItemSelected(final android.view.MenuItem item)
                     {
                         return org.wheatgenetics.inventory.MainActivity.this.selectNavigationItem(
@@ -182,7 +183,7 @@ public class MainActivity extends android.support.v7.app.AppCompatActivity
             this.drawerLayout, org.wheatgenetics.inventory.R.string.drawer_open,
             org.wheatgenetics.inventory.R.string.drawer_close)
             {
-                @Override
+                @java.lang.Override
                 public void onDrawerOpened(final android.view.View drawerView)
                 {
                     final android.widget.TextView personTextView = (android.widget.TextView)
@@ -193,7 +194,7 @@ public class MainActivity extends android.support.v7.app.AppCompatActivity
                         org.wheatgenetics.inventory.MainActivity.this.sharedPreferences.getName());
                 }
 
-                @Override
+                @java.lang.Override
                 public void onDrawerClosed(final android.view.View drawerView) {}
             };
         this.actionBarDrawerToggle.setDrawerIndicatorEnabled(true);
@@ -226,7 +227,7 @@ public class MainActivity extends android.support.v7.app.AppCompatActivity
             assert setBoxButton != null;
             setBoxButton.setOnClickListener(new android.view.View.OnClickListener()
                 {
-                    @Override
+                    @java.lang.Override
                     public void onClick(final android.view.View v)
                     { org.wheatgenetics.inventory.MainActivity.this.setBox(); }
                 });
@@ -235,7 +236,7 @@ public class MainActivity extends android.support.v7.app.AppCompatActivity
         assert this.tableLayout != null;
         this.tableLayout.setOnClickListener(new android.view.View.OnClickListener()
             {
-                @Override
+                @java.lang.Override
                 public void onClick(final android.view.View v) {}
             });
 
@@ -245,7 +246,7 @@ public class MainActivity extends android.support.v7.app.AppCompatActivity
         assert this.envidEditText != null;
         this.envidEditText.setOnKeyListener(new android.view.View.OnKeyListener()
             {
-                @Override
+                @java.lang.Override
                 public boolean onKey(final android.view.View v, final int keyCode,
                 final android.view.KeyEvent event)
                 {
@@ -280,7 +281,7 @@ public class MainActivity extends android.support.v7.app.AppCompatActivity
 
         this.wtEditText.setOnKeyListener(new android.view.View.OnKeyListener()
             {
-                @Override
+                @java.lang.Override
                 public boolean onKey(final android.view.View v, final int keyCode,
                 final android.view.KeyEvent event)
                 {
@@ -342,24 +343,24 @@ public class MainActivity extends android.support.v7.app.AppCompatActivity
         }
     }
 
-    @Override
+    @java.lang.Override
     protected void onPostCreate(final android.os.Bundle savedInstanceState)
     {
         super.onPostCreate(savedInstanceState);
         this.actionBarDrawerToggle.syncState();
     }
 
-    @Override
+    @java.lang.Override
     protected void onStart()
     {
         super.onStart();
         org.wheatgenetics.inventory.MainActivity.sendVerboseLogMsg("onStart()");
     }
 
-    @Override
+    @java.lang.Override
     public boolean onCreateOptionsMenu(final android.view.Menu menu) { return true; }
 
-    @Override
+    @java.lang.Override
     public boolean onOptionsItemSelected(final android.view.MenuItem item)
     {
         assert this.actionBarDrawerToggle != null;
@@ -377,7 +378,7 @@ public class MainActivity extends android.support.v7.app.AppCompatActivity
         return true;
     }
 
-    @Override
+    @java.lang.Override
     public void onConfigurationChanged(final android.content.res.Configuration newConfig)
     {
         super.onConfigurationChanged(newConfig);
@@ -436,7 +437,7 @@ public class MainActivity extends android.support.v7.app.AppCompatActivity
             .setPositiveButton(this.getString(org.wheatgenetics.inventory.R.string.yes),
                 new android.content.DialogInterface.OnClickListener()
                 {
-                    @Override
+                    @java.lang.Override
                     public void onClick(final android.content.DialogInterface dialog,
                     final int which)
                     {
@@ -448,7 +449,7 @@ public class MainActivity extends android.support.v7.app.AppCompatActivity
             .setNegativeButton(this.getString(org.wheatgenetics.inventory.R.string.no),
                 new android.content.DialogInterface.OnClickListener()
                 {
-                    @Override
+                    @java.lang.Override
                     public void onClick(final android.content.DialogInterface dialog,
                     final int which)
                     {
@@ -487,7 +488,7 @@ public class MainActivity extends android.support.v7.app.AppCompatActivity
 
             envidTextView.setOnLongClickListener(new android.view.View.OnLongClickListener()
                 {
-                    @Override
+                    @java.lang.Override
                     public boolean onLongClick(final android.view.View v)
                     {
                         assert v != null;
@@ -530,7 +531,7 @@ public class MainActivity extends android.support.v7.app.AppCompatActivity
         assert this.scrollView != null;
         this.scrollView.post(new java.lang.Runnable()
             {
-                @Override
+                @java.lang.Override
                 public void run()
                 {
                     assert org.wheatgenetics.inventory.MainActivity.this.scrollView != null;
@@ -573,48 +574,48 @@ public class MainActivity extends android.support.v7.app.AppCompatActivity
         this.goToBottom();
     }
 
-    private class CustomListAdapter extends android.widget.ArrayAdapter<java.lang.String>
+    private class OtherAppsArrayAdapter extends android.widget.ArrayAdapter<java.lang.String>
     {
-        private final android.content.Context context      ;
-        private final java.lang.String        color_names[];
-        private final java.lang.Integer       image_ids  [];
+        private final java.lang.String texts[] =
+            {"Field Book", "Coordinate", "1KK"/*,  "Intercross", "Rangle"*/ };
+        private final java.lang.Integer resIds[] = {
+            org.wheatgenetics.inventory.R.drawable.other_ic_field_book,
+            org.wheatgenetics.inventory.R.drawable.other_ic_coordinate,
+            org.wheatgenetics.inventory.R.drawable.other_ic_1kk       };
 
-        CustomListAdapter(final android.app.Activity context,
-        final java.lang.Integer image_ids[], final java.lang.String color_names[])
+        OtherAppsArrayAdapter(final android.app.Activity context)
         {
-            super(context, org.wheatgenetics.inventory.R.layout.appline, color_names);
-
-            this.context     = context    ;
-            this.color_names = color_names;
-            this.image_ids   = image_ids  ;
+            super(context, org.wheatgenetics.inventory.R.layout.appline);
+            this.addAll(this.texts);
         }
 
-        @Override
+        @java.lang.Override @android.support.annotation.NonNull
         public android.view.View getView(final int position, final android.view.View convertView,
-        final android.view.ViewGroup parent)
+        @android.support.annotation.NonNull final android.view.ViewGroup parent)
         {
-            android.view.View singleRow;
+            android.view.View appLineView;
             {
                 final android.view.LayoutInflater layoutInflater = (android.view.LayoutInflater)
-                    this.context.getSystemService(android.content.Context.LAYOUT_INFLATER_SERVICE);
+                    this.getContext().getSystemService(
+                        android.content.Context.LAYOUT_INFLATER_SERVICE);
                 assert layoutInflater != null;
-                singleRow = layoutInflater.inflate(
+                appLineView = layoutInflater.inflate(
                     org.wheatgenetics.inventory.R.layout.appline, null, true);
             }
-            assert singleRow != null;
+            assert appLineView != null;
             {
                 final android.widget.TextView textView = (android.widget.TextView)
-                    singleRow.findViewById(org.wheatgenetics.inventory.R.id.txt);
+                    appLineView.findViewById(org.wheatgenetics.inventory.R.id.txt);
                 assert textView != null;
-                textView.setText(this.color_names[position]);
+                textView.setText(this.texts[position]);
             }
             {
                 final android.widget.ImageView imageView = (android.widget.ImageView)
-                    singleRow.findViewById(org.wheatgenetics.inventory.R.id.img);
+                    appLineView.findViewById(org.wheatgenetics.inventory.R.id.img);
                 assert imageView != null;
-                imageView.setImageResource(this.image_ids[position]);
+                imageView.setImageResource(this.resIds[position]);
             }
-            return singleRow;
+            return appLineView;
         }
     }
 
@@ -732,7 +733,7 @@ public class MainActivity extends android.support.v7.app.AppCompatActivity
                 listView.setOnItemClickListener(
                     new android.widget.AdapterView.OnItemClickListener()
                     {
-                        @Override
+                        @java.lang.Override
                         public void onItemClick(final android.widget.AdapterView<?> parent,
                         final android.view.View view, final int position, final long id)
                         {
@@ -750,22 +751,8 @@ public class MainActivity extends android.support.v7.app.AppCompatActivity
                         }
                     });
             }
-            {
-                final java.lang.Integer appIconIDs[] = {
-                    org.wheatgenetics.inventory.R.drawable.other_ic_field_book,
-                    org.wheatgenetics.inventory.R.drawable.other_ic_coordinate,
-                    org.wheatgenetics.inventory.R.drawable.other_ic_1kk       };
-
-                final java.lang.String appNames[] = new java.lang.String[3];
-                appNames[0] = "Field Book";
-                appNames[1] = "Coordinate";
-                appNames[2] = "1KK"       ;
-                //appNames[3] = "Intercross";
-                //appNames[4] = "Rangle"    ;
-
-                listView.setAdapter(new org.wheatgenetics.inventory.MainActivity.CustomListAdapter(
-                    this, appIconIDs, appNames));
-            }
+            listView.setAdapter(
+                new org.wheatgenetics.inventory.MainActivity.OtherAppsArrayAdapter(this));
 
             builder.setCancelable(true);
             builder.setTitle(
@@ -776,7 +763,7 @@ public class MainActivity extends android.support.v7.app.AppCompatActivity
             this.getResources().getString(org.wheatgenetics.inventory.R.string.ok),
             new android.content.DialogInterface.OnClickListener()
                 {
-                    @Override
+                    @java.lang.Override
                     public void onClick(final android.content.DialogInterface dialog,
                     final int which)
                     {
@@ -819,7 +806,7 @@ public class MainActivity extends android.support.v7.app.AppCompatActivity
                 this.getResources().getString(org.wheatgenetics.inventory.R.string.ok),
                 new android.content.DialogInterface.OnClickListener()
                 {
-                    @Override
+                    @java.lang.Override
                     public void onClick(final android.content.DialogInterface dialog,
                     final int which)
                     {
@@ -892,7 +879,7 @@ public class MainActivity extends android.support.v7.app.AppCompatActivity
                 .setPositiveButton(this.getString(org.wheatgenetics.inventory.R.string.try_again),
                     new android.content.DialogInterface.OnClickListener()
                     {
-                        @Override
+                        @java.lang.Override
                         public void onClick(final android.content.DialogInterface dialog,
                         final int which)
                         { org.wheatgenetics.inventory.MainActivity.this.connectScale(); }
@@ -900,7 +887,7 @@ public class MainActivity extends android.support.v7.app.AppCompatActivity
                 .setNegativeButton(this.getString(org.wheatgenetics.inventory.R.string.ignore),
                     new android.content.DialogInterface.OnClickListener()
                     {
-                        @Override
+                        @java.lang.Override
                         public void onClick(final android.content.DialogInterface dialog,
                         final int which)
                         {
@@ -921,7 +908,7 @@ public class MainActivity extends android.support.v7.app.AppCompatActivity
             .setPositiveButton(this.getString(org.wheatgenetics.inventory.R.string.export_csv   ),
                 new android.content.DialogInterface.OnClickListener()
                 {
-                    @Override
+                    @java.lang.Override
                     public void onClick(final android.content.DialogInterface dialog,
                     final int which)
                     { org.wheatgenetics.inventory.MainActivity.this.exportCSV(); }
@@ -929,7 +916,7 @@ public class MainActivity extends android.support.v7.app.AppCompatActivity
             .setNegativeButton(this.getString(org.wheatgenetics.inventory.R.string.export_sql),
                 new android.content.DialogInterface.OnClickListener()
                 {
-                    @Override
+                    @java.lang.Override
                     public void onClick(final android.content.DialogInterface dialog,
                     final int which)
                     { org.wheatgenetics.inventory.MainActivity.this.exportSQL(); }
@@ -937,7 +924,7 @@ public class MainActivity extends android.support.v7.app.AppCompatActivity
             .setNeutralButton(this.getString(org.wheatgenetics.inventory.R.string.cancel),
                 new android.content.DialogInterface.OnClickListener()
                 {
-                    @Override
+                    @java.lang.Override
                     public void onClick(final android.content.DialogInterface dialog,
                     final int which)
                     {
@@ -959,7 +946,7 @@ public class MainActivity extends android.support.v7.app.AppCompatActivity
             .setPositiveButton(this.getString(org.wheatgenetics.inventory.R.string.yes),
                 new android.content.DialogInterface.OnClickListener()
                 {
-                    @Override
+                    @java.lang.Override
                     public void onClick(final android.content.DialogInterface dialog,
                     final int which)
                     {
@@ -974,7 +961,7 @@ public class MainActivity extends android.support.v7.app.AppCompatActivity
             .setNegativeButton(this.getString(org.wheatgenetics.inventory.R.string.no),
                 new android.content.DialogInterface.OnClickListener()
                 {
-                    @Override
+                    @java.lang.Override
                     public void onClick(final android.content.DialogInterface dialog,
                     final int which)
                     {
@@ -1011,7 +998,7 @@ public class MainActivity extends android.support.v7.app.AppCompatActivity
                 { org.wheatgenetics.inventory.MainActivity.sendErrorLogMsg(e); }
                 versionTextView.setOnClickListener(new android.view.View.OnClickListener()
                     {
-                        @Override
+                        @java.lang.Override
                         public void onClick(final android.view.View v)
                         { org.wheatgenetics.inventory.MainActivity.this.showChangeLog(); }
                     });
@@ -1023,7 +1010,7 @@ public class MainActivity extends android.support.v7.app.AppCompatActivity
                 assert otherAppsTextView != null;
                 otherAppsTextView.setOnClickListener(new android.view.View.OnClickListener()
                     {
-                        @Override
+                        @java.lang.Override
                         public void onClick(final android.view.View v)
                         { org.wheatgenetics.inventory.MainActivity.this.showOtherAppsDialog(); }
                     });
@@ -1038,7 +1025,7 @@ public class MainActivity extends android.support.v7.app.AppCompatActivity
             this.getResources().getString(org.wheatgenetics.inventory.R.string.ok),
             new android.content.DialogInterface.OnClickListener()
             {
-                @Override
+                @java.lang.Override
                 public void onClick(final android.content.DialogInterface dialog, final int which)
                 {
                     assert dialog != null;
@@ -1096,7 +1083,7 @@ public class MainActivity extends android.support.v7.app.AppCompatActivity
         builder.setPositiveButton(this.getString(org.wheatgenetics.inventory.R.string.ok),
             new android.content.DialogInterface.OnClickListener()
             {
-                @Override
+                @java.lang.Override
                 public void onClick(final android.content.DialogInterface dialog, final int which)
                 {
                     {
@@ -1119,7 +1106,7 @@ public class MainActivity extends android.support.v7.app.AppCompatActivity
         builder.setNegativeButton(this.getString(org.wheatgenetics.inventory.R.string.cancel),
             new android.content.DialogInterface.OnClickListener()
             {
-                @Override
+                @java.lang.Override
                 public void onClick(final android.content.DialogInterface dialog, final int which)
                 {
                     assert dialog != null;
@@ -1142,7 +1129,7 @@ public class MainActivity extends android.support.v7.app.AppCompatActivity
     {
         private double lastWeight = 0;
 
-        @Override
+        @java.lang.Override
         protected java.lang.Void doInBackground(final java.lang.Void... params)
         {
             org.wheatgenetics.inventory.MainActivity.sendVerboseLogMsg("start transfer");
@@ -1260,7 +1247,7 @@ public class MainActivity extends android.support.v7.app.AppCompatActivity
             }
         }
 
-        @Override
+        @java.lang.Override
         protected void onProgressUpdate(final java.lang.Double... values)
         {
             org.wheatgenetics.inventory.MainActivity.sendInfoLogMsg("update progress");
@@ -1274,7 +1261,7 @@ public class MainActivity extends android.support.v7.app.AppCompatActivity
             org.wheatgenetics.inventory.MainActivity.this.wtEditText.invalidate();
         }
 
-        @Override
+        @java.lang.Override
         protected void onPostExecute(final java.lang.Void result)
         {
             org.wheatgenetics.inventory.MainActivity.showToast(

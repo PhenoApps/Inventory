@@ -54,7 +54,7 @@ class ChangeLogAlertDialog extends java.lang.Object
 
 
             // region Public Overridden Methods
-            @Override
+            @java.lang.Override
             public void handleBlankLine()
             {
                 final android.widget.TextView spacerTextView = this.makeTextView();
@@ -66,7 +66,7 @@ class ChangeLogAlertDialog extends java.lang.Object
                 this.linearLayout.addView(spacerTextView);
             }
 
-            @Override
+            @java.lang.Override
             public void handleVersionLine(final java.lang.String version)
             {
                 final android.widget.TextView headerTextView = this.makeTextView();
@@ -79,7 +79,7 @@ class ChangeLogAlertDialog extends java.lang.Object
                 this.linearLayout.addView(headerTextView);
             }
 
-            @Override
+            @java.lang.Override
             public void handleContentLine(final java.lang.String content)
             {
                 final android.widget.TextView contentTextView = this.makeTextView();
@@ -244,7 +244,7 @@ class ChangeLogAlertDialog extends java.lang.Object
                     .setPositiveButton(this.positiveButtonText,
                         new android.content.DialogInterface.OnClickListener()
                         {
-                            @Override
+                            @java.lang.Override
                             public void onClick(final android.content.DialogInterface dialog,
                             final int which)
                             {

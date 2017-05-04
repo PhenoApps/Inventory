@@ -52,7 +52,7 @@ class SamplesTable extends android.database.sqlite.SQLiteOpenHelper
 
 
     // region Public Overridden Methods
-    @Override
+    @java.lang.Override
     public void onCreate(final android.database.sqlite.SQLiteDatabase db)
     {
         assert db != null;
@@ -67,7 +67,7 @@ class SamplesTable extends android.database.sqlite.SQLiteOpenHelper
             org.wheatgenetics.inventory.SamplesTable.WT_FIELD_NAME       + " TEXT)"              );
     }
 
-    @Override
+    @java.lang.Override
     public void onUpgrade(final android.database.sqlite.SQLiteDatabase db,
     final int oldVersion, final int newVersion)
     {
