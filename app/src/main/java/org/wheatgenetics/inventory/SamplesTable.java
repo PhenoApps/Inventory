@@ -7,28 +7,21 @@ package org.wheatgenetics.inventory;
  * android.database.Cursor
  * android.database.sqlite.SQLiteDatabase
  * android.database.sqlite.SQLiteOpenHelper
+ *
+ * org.wheatgenetics.inventory.InventoryRecord
+ * org.wheatgenetics.inventory.InventoryRecords
+ * org.wheatgenetics.inventory.Utils
  */
 
 class SamplesTable extends android.database.sqlite.SQLiteOpenHelper
 {
     // region Private Class Constants
-    // region Database Private Class Constants
-    private static final int              DATABASE_VERSION = 3            ;
-    private static final java.lang.String DATABASE_NAME    = "InventoryDB";
-    // endregion
-
-
-    // region Table Private Class Constants
     private static final java.lang.String TABLE_NAME = "samples";
 
-    private static final java.lang.String ID_FIELD_NAME       = "id"      ;
-    private static final java.lang.String BOX_FIELD_NAME      = "box"     ;
-    private static final java.lang.String ENVID_FIELD_NAME    = "envid"   ;
-    private static final java.lang.String PERSON_FIELD_NAME   = "person"  ;
-    private static final java.lang.String DATE_FIELD_NAME     = "date"    ;
-    private static final java.lang.String POSITION_FIELD_NAME = "position";
-    private static final java.lang.String WT_FIELD_NAME       = "wt"      ;
-    // endregion
+    private static final java.lang.String
+        ID_FIELD_NAME     = "id"    , BOX_FIELD_NAME  = "box" , ENVID_FIELD_NAME    = "envid"   ,
+        PERSON_FIELD_NAME = "person", DATE_FIELD_NAME = "date", POSITION_FIELD_NAME = "position",
+        WT_FIELD_NAME     = "wt"    ;
     // endregion
 
 
@@ -60,7 +53,7 @@ class SamplesTable extends android.database.sqlite.SQLiteOpenHelper
 
     // region Public Overridden Methods
     @Override
-    public void onCreate(android.database.sqlite.SQLiteDatabase db)
+    public void onCreate(final android.database.sqlite.SQLiteDatabase db)
     {
         assert db != null;
         db.execSQL("CREATE TABLE " + org.wheatgenetics.inventory.SamplesTable.TABLE_NAME + " ( " +
@@ -75,7 +68,8 @@ class SamplesTable extends android.database.sqlite.SQLiteOpenHelper
     }
 
     @Override
-    public void onUpgrade(android.database.sqlite.SQLiteDatabase db, int oldVersion, int newVersion)
+    public void onUpgrade(final android.database.sqlite.SQLiteDatabase db,
+    final int oldVersion, final int newVersion)
     {
         assert db != null;
         db.execSQL("DROP TABLE IF EXISTS " + org.wheatgenetics.inventory.SamplesTable.TABLE_NAME);
@@ -84,8 +78,8 @@ class SamplesTable extends android.database.sqlite.SQLiteOpenHelper
     // endregion
 
 
-    // region Protected Methods
-    protected int internalDelete(final java.lang.String whereClause)
+    // region Private Methods
+    private int internalDelete(final java.lang.String whereClause)
     {
         return this.getWritableDatabase().delete(
             /* table       => */ org.wheatgenetics.inventory.SamplesTable.TABLE_NAME,
@@ -93,12 +87,12 @@ class SamplesTable extends android.database.sqlite.SQLiteOpenHelper
             /* whereArgs   => */ null                                               );
     }
 
-    protected org.wheatgenetics.inventory.InventoryRecord get(final int id)
+    private org.wheatgenetics.inventory.InventoryRecord get(final int id)
     {
         final org.wheatgenetics.inventory.InventoryRecord inventoryRecord =
             new org.wheatgenetics.inventory.InventoryRecord();
         {
-            final java.lang.String[] FIELD_NAMES = {
+            final java.lang.String FIELD_NAMES[] = {
                 org.wheatgenetics.inventory.SamplesTable.ID_FIELD_NAME      ,
                 org.wheatgenetics.inventory.SamplesTable.BOX_FIELD_NAME     ,
                 org.wheatgenetics.inventory.SamplesTable.ENVID_FIELD_NAME   ,
@@ -117,9 +111,9 @@ class SamplesTable extends android.database.sqlite.SQLiteOpenHelper
                 /* orderBy       => */ null                                                 ,
                 /* limit         => */ null                                                 );
 
-            if (cursor != null) if (cursor.moveToFirst())
+            if (cursor != null)
             {
-                inventoryRecord.set(
+                if (cursor.moveToFirst()) inventoryRecord.set(
                     /* id       => */ cursor.getString(0),
                     /* box      => */ cursor.getString(1),
                     /* envid    => */ cursor.getString(2),
@@ -134,11 +128,12 @@ class SamplesTable extends android.database.sqlite.SQLiteOpenHelper
         return inventoryRecord;
     }
 
-    protected int update(final org.wheatgenetics.inventory.InventoryRecord inventoryRecord)
+    private int update(final org.wheatgenetics.inventory.InventoryRecord inventoryRecord)
     {
         int i;
         {
             final android.database.sqlite.SQLiteDatabase db = this.getWritableDatabase();
+            assert db != null;
             {
                 assert inventoryRecord != null;
 
@@ -166,10 +161,10 @@ class SamplesTable extends android.database.sqlite.SQLiteOpenHelper
     SamplesTable(final android.content.Context context)
     {
         super(
-            /* context => */ context                                                  ,
-            /* name    => */ org.wheatgenetics.inventory.SamplesTable.DATABASE_NAME   ,
-            /* factory => */ null                                                     ,
-            /* version => */ org.wheatgenetics.inventory.SamplesTable.DATABASE_VERSION);
+            /* context => */ context      ,
+            /* name    => */ "InventoryDB",
+            /* factory => */ null         ,
+            /* version => */ 3            );
     }
     // endregion
 
@@ -181,7 +176,7 @@ class SamplesTable extends android.database.sqlite.SQLiteOpenHelper
         inventoryRecord.sendDebugLogMsg("add()");
 
         final android.database.sqlite.SQLiteDatabase db = this.getWritableDatabase();
-
+        assert db != null;
         db.insert(
             /* table          => */ org.wheatgenetics.inventory.SamplesTable.TABLE_NAME,
             /* nullColumnHack => */ null                                               ,
@@ -190,7 +185,7 @@ class SamplesTable extends android.database.sqlite.SQLiteOpenHelper
         db.close();
     }
 
-    java.lang.Boolean delete(final org.wheatgenetics.inventory.InventoryRecord inventoryRecord)
+    boolean delete(final org.wheatgenetics.inventory.InventoryRecord inventoryRecord)
     {
         assert inventoryRecord != null;
         inventoryRecord.sendDebugLogMsg("delete()");
@@ -214,13 +209,13 @@ class SamplesTable extends android.database.sqlite.SQLiteOpenHelper
                 if (cursor.moveToFirst())
                     do
                         inventoryRecords.add(new org.wheatgenetics.inventory.InventoryRecord(
-                        /* id       => */ cursor.getString(0),
-                        /* box      => */ cursor.getString(1),
-                        /* envid    => */ cursor.getString(2),
-                        /* person   => */ cursor.getString(3),
-                        /* date     => */ cursor.getString(4),
-                        /* position => */ cursor.getString(5),
-                        /* wt       => */ cursor.getString(6)));
+                            /* id       => */ cursor.getString(0),
+                            /* box      => */ cursor.getString(1),
+                            /* envid    => */ cursor.getString(2),
+                            /* person   => */ cursor.getString(3),
+                            /* date     => */ cursor.getString(4),
+                            /* position => */ cursor.getString(5),
+                            /* wt       => */ cursor.getString(6)));
                     while (cursor.moveToNext());
                 cursor.close();
             }
@@ -251,10 +246,7 @@ class SamplesTable extends android.database.sqlite.SQLiteOpenHelper
                 {
                     java.lang.String box = cursor.getString(0);
                     while (box == null)
-                        if (cursor.moveToNext())
-                            box = cursor.getString(0);
-                        else
-                            break;
+                        if (cursor.moveToNext()) box = cursor.getString(0); else break;
 
                     if (box != null)
                     {

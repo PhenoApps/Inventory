@@ -11,6 +11,10 @@ package org.wheatgenetics.inventory;
  * android.widget.LinearLayout.LayoutParams
  * android.widget.ScrollView
  * android.widget.TextView
+ *
+ * org.wheatgenetics.inventory.ChangeLog
+ * org.wheatgenetics.inventory.ChangeLog.LineHandler
+ * org.wheatgenetics.inventory.R
  */
 
 class ChangeLogAlertDialog extends java.lang.Object
@@ -20,18 +24,15 @@ class ChangeLogAlertDialog extends java.lang.Object
         class LineHandler extends java.lang.Object
         implements org.wheatgenetics.inventory.ChangeLog.LineHandler
         {
-            // region Protected Fields
-            protected android.content.Context context            = null;
-            protected android.content.Context applicationContext = null;
-
-            protected android.widget.LinearLayout.LayoutParams layoutParams = null;
-
-            protected android.widget.LinearLayout linearLayout = null;
+            // region Private Fields
+            private android.content.Context context = null, applicationContext = null;
+            private android.widget.LinearLayout.LayoutParams layoutParams = null;
+            private android.widget.LinearLayout              linearLayout = null;
             // endregion
 
 
-            // region Protected Method
-            protected android.widget.TextView makeTextView()
+            // region Private Method
+            private android.widget.TextView makeTextView()
             {
                 if (this.layoutParams == null)
                 {
@@ -113,17 +114,16 @@ class ChangeLogAlertDialog extends java.lang.Object
         }
 
 
-        // region Protected Fields
-        protected android.content.Context   context            = null;
-        protected android.content.Context   applicationContext = null;
-        protected java.io.InputStreamReader inputStreamReader  = null;
+        // region Private Fields
+        private android.content.Context   context           = null, applicationContext = null;
+        private java.io.InputStreamReader inputStreamReader = null;
 
-        protected android.widget.LinearLayout linearLayout = null;
-        protected android.widget.ScrollView   scrollView   = null;
+        private android.widget.LinearLayout linearLayout = null;
+        private android.widget.ScrollView   scrollView   = null;
 
-        protected org.wheatgenetics.inventory.ChangeLogAlertDialog.ScrollView.LineHandler
+        private org.wheatgenetics.inventory.ChangeLogAlertDialog.ScrollView.LineHandler
             lineHandler = null;
-        protected org.wheatgenetics.inventory.ChangeLog changeLog = null;
+        private org.wheatgenetics.inventory.ChangeLog changeLog = null;
         // endregion
 
 
@@ -176,26 +176,24 @@ class ChangeLogAlertDialog extends java.lang.Object
     }
 
 
-    // region Protected Fields
-    // region scrollView Protected Fields
-    protected android.content.Context   context            = null;
-    protected android.content.Context   applicationContext = null;
-    protected java.io.InputStreamReader inputStreamReader  = null;
+    // region Private Fields
+    // region scrollView Private Fields
+    private android.content.Context   context           = null, applicationContext = null;
+    private java.io.InputStreamReader inputStreamReader = null;
 
-    protected org.wheatgenetics.inventory.ChangeLogAlertDialog.ScrollView scrollView = null;
+    private org.wheatgenetics.inventory.ChangeLogAlertDialog.ScrollView scrollView = null;
     // endregion
 
 
-    // region builder Protected Fields
-    protected android.content.Context activityClass      = null;
-    protected java.lang.CharSequence  title              = null;
-    protected java.lang.CharSequence  positiveButtonText = null;
+    // region builder Private Fields
+    private android.content.Context activityClass = null;
+    private java.lang.CharSequence  title         = null, positiveButtonText = null;
 
-    protected android.app.AlertDialog.Builder builder = null;
+    private android.app.AlertDialog.Builder builder = null;
     // endregion
 
 
-    protected android.app.AlertDialog alertDialog = null;
+    private android.app.AlertDialog alertDialog = null;
     // endregion
 
 
@@ -206,7 +204,6 @@ class ChangeLogAlertDialog extends java.lang.Object
     final java.lang.CharSequence title, final java.lang.CharSequence positiveButtonText)
     {
         super();
-
 
         // For scrollView:
         assert context != null;
@@ -241,20 +238,23 @@ class ChangeLogAlertDialog extends java.lang.Object
                         this.context, this.applicationContext, this.inputStreamReader);
 
                 this.builder = new android.app.AlertDialog.Builder(this.activityClass);
-                this.builder.setTitle(this.title)
-                    .setView(this.scrollView.get())                    // throws java.io.IOException
-                    .setCancelable(true)
+                this.builder.setTitle(this.title           )
+                    .setView         (this.scrollView.get())           // throws java.io.IOException
+                    .setCancelable   (true                 )
                     .setPositiveButton(this.positiveButtonText,
                         new android.content.DialogInterface.OnClickListener()
                         {
                             @Override
-                            public void onClick(android.content.DialogInterface dialog, int which)
+                            public void onClick(final android.content.DialogInterface dialog,
+                            final int which)
                             {
+                                assert dialog != null;
                                 dialog.dismiss();
                             }
                         });
             }
             this.alertDialog = this.builder.create();
+            assert this.alertDialog != null;
         }
         this.alertDialog.show();
     }

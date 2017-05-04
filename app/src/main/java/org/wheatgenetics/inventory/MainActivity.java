@@ -1,122 +1,124 @@
 package org.wheatgenetics.inventory;
 
-import android.app.Activity;
-import android.app.AlertDialog;
-import android.content.Context;
-import android.content.DialogInterface;
-import android.content.pm.PackageInfo;
-import android.content.pm.PackageManager;
-import android.support.design.widget.NavigationView;
-import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.ActionBar;
-import android.support.v7.app.ActionBarDrawerToggle;
-import android.support.v7.widget.Toolbar;
-import android.content.Intent;
-import android.content.res.Configuration;
-import android.hardware.usb.UsbManager;
-import android.media.MediaScannerConnection;
-import android.net.Uri;
-import android.os.Bundle;
-import android.view.KeyEvent;
-import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuItem;
-import android.view.View;
-import android.view.View.OnLongClickListener;
-import android.view.ViewGroup;
-import android.view.ViewGroup.LayoutParams;
-import android.view.WindowManager;
-import android.view.inputmethod.InputMethodManager;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.ListView;
-import android.widget.ScrollView;
-import android.widget.TableLayout;
-import android.widget.TextView;
-
 /**
  * Uses:
+ * android.app.Activity
+ * android.app.AlertDialog
+ * android.content.Context
+ * android.content.DialogInterface
+ * android.content.Intent
+ * android.content.pm.PackageInfo
+ * android.content.pm.PackageManager
+ * android.content.res.Configuration
+ * android.graphics.Color
  * android.hardware.usb.UsbConstants
  * android.hardware.usb.UsbDevice
  * android.hardware.usb.UsbDeviceConnection
- * android.hardware.usb.UsbEndpoint;
- * android.hardware.usb.UsbInterface;
+ * android.hardware.usb.UsbEndpoint
+ * android.hardware.usb.UsbInterface
+ * android.hardware.usb.UsbManager
+ * android.media.MediaScannerConnection
+ * android.net.Uri
  * android.os.AsyncTask
+ * android.os.Bundle
+ * android.R
+ * android.support.design.widget.NavigationView
  * android.support.v4.view.GravityCompat
+ * android.support.v4.widget.DrawerLayout
+ * android.support.v7.app.ActionBar
+ * android.support.v7.app.ActionBarDrawerToggle
  * android.support.v7.app.AppCompatActivity
+ * android.support.v7.widget.Toolbar
+ * android.util.Log
+ * android.view.Gravity
+ * android.view.KeyEvent
+ * android.view.LayoutInflater
+ * android.view.Menu
+ * android.view.MenuItem
+ * android.view.View.OnLongClickListener
+ * android.view.View
+ * android.view.ViewGroup
+ * android.view.ViewGroup.LayoutParams
+ * android.view.WindowManager
+ * android.view.inputmethod.InputMethodManager
+ * android.widget.AdapterView
+ * android.widget.ArrayAdapter
+ * android.widget.Button
+ * android.widget.EditText
+ * android.widget.ImageView
+ * android.widget.LinearLayout
+ * android.widget.ListView
+ * android.widget.ScrollView
+ * android.widget.TableLayout
+ * android.widget.TableLayout.LayoutParams
  * android.widget.TableRow
+ * android.widget.TextView
  * android.widget.Toast
+ *
+ * org.wheatgenetics.inventory.InventoryDir
+ * org.wheatgenetics.inventory.InventoryRecord
+ * org.wheatgenetics.inventory.InventoryRecords
+ * org.wheatgenetics.inventory.R
+ * org.wheatgenetics.inventory.SamplesTable
+ * org.wheatgenetics.inventory.SharedPreferences
+ * org.wheatgenetics.inventory.Utils
  */
 
 public class MainActivity extends android.support.v7.app.AppCompatActivity
 {
-    private final static String TAG = "Inventory";
+    private static final java.lang.String TAG = "Inventory";
 
     private static int position = 1;
 
 
-    // region Protected Fields
-    // region Widget Protected Fields
+    // region Private Fields
+    // region Widget Private Fields
     private android.support.v4.widget.DrawerLayout       drawerLayout         ;
     private android.support.v7.app.ActionBarDrawerToggle actionBarDrawerToggle;
 
-    private android.widget.TextView boxTextView  ;
-    private android.widget.EditText envidEditText;
-    private android.widget.EditText wtEditText   ;
+    private android.widget.TextView boxTextView              ;
+    private android.widget.EditText envidEditText, wtEditText;
 
     private android.widget.TableLayout tableLayout;
     private android.widget.ScrollView  scrollView ;
     // endregion
 
 
-    protected org.wheatgenetics.inventory.SamplesTable      samplesTable     ;
-    protected android.hardware.usb.UsbDevice                usbDevice        ;
-    protected org.wheatgenetics.inventory.SharedPreferences sharedPreferences;
-    protected java.lang.String                              box              ;
+    private org.wheatgenetics.inventory.SamplesTable      samplesTable     ;
+    private android.hardware.usb.UsbDevice                usbDevice        ;
+    private org.wheatgenetics.inventory.SharedPreferences sharedPreferences;
+    private java.lang.String                              box              ;
 
-    protected org.wheatgenetics.inventory.ChangeLogAlertDialog changeLogAlertDialog = null;
+    private org.wheatgenetics.inventory.ChangeLogAlertDialog changeLogAlertDialog = null;
     // endregion
 
 
     // region Class Methods
     // region Log Class Methods
-    static private int sendVerboseLogMsg(final java.lang.String msg)
-    {
-        return android.util.Log.v(org.wheatgenetics.inventory.MainActivity.TAG, msg);
-    }
+    private static int sendVerboseLogMsg(final java.lang.String msg)
+    { return android.util.Log.v(org.wheatgenetics.inventory.MainActivity.TAG, msg); }
 
-    static private int sendInfoLogMsg(final java.lang.String msg)
-    {
-        return android.util.Log.i(org.wheatgenetics.inventory.MainActivity.TAG, msg);
-    }
+    private static int sendInfoLogMsg(final java.lang.String msg)
+    { return android.util.Log.i(org.wheatgenetics.inventory.MainActivity.TAG, msg); }
 
-    static private int sendWarnLogMsg(final java.lang.String msg)
-    {
-        return android.util.Log.w(org.wheatgenetics.inventory.MainActivity.TAG, msg);
-    }
+    private static int sendWarnLogMsg(final java.lang.String msg)
+    { return android.util.Log.w(org.wheatgenetics.inventory.MainActivity.TAG, msg); }
 
-    static private int sendErrorLogMsg(final java.lang.String msg)
-    {
-        return android.util.Log.e(org.wheatgenetics.inventory.MainActivity.TAG, msg);
-    }
+    private static int sendErrorLogMsg(final java.lang.String msg)
+    { return android.util.Log.e(org.wheatgenetics.inventory.MainActivity.TAG, msg); }
 
-    static private int sendErrorLogMsg(final java.lang.Exception exception)
+    private static int sendErrorLogMsg(final java.lang.Exception exception)
     {
+        assert exception != null;
         return org.wheatgenetics.inventory.MainActivity.sendErrorLogMsg(exception.getMessage());
     }
     // endregion
 
 
     // region Toast Class Methods
-    static private void showToast(final android.content.Context context,
+    private static void showToast(final android.content.Context context,
     final java.lang.CharSequence text, final int duration)
-    {
-        android.widget.Toast.makeText(context, text, duration).show();
-    }
+    { android.widget.Toast.makeText(context, text, duration).show(); }
 
     static private void showToast(
     final android.content.Context context, final java.lang.CharSequence text)
@@ -130,172 +132,242 @@ public class MainActivity extends android.support.v7.app.AppCompatActivity
 
     // region Overridden Methods
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(final android.os.Bundle savedInstanceState)
+    {
         super.onCreate(savedInstanceState);
-        this.setContentView(R.layout.main_layout);
+        this.setContentView(org.wheatgenetics.inventory.R.layout.main_layout);
         org.wheatgenetics.inventory.MainActivity.sendVerboseLogMsg("onCreate()");
 
-        this.getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+        this.getWindow().addFlags(android.view.WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         {
-            final Toolbar toolbar = (Toolbar) this.findViewById(R.id.toolbar);
+            final android.support.v7.widget.Toolbar toolbar = (android.support.v7.widget.Toolbar)
+                this.findViewById(org.wheatgenetics.inventory.R.id.toolbar);
 
             this.setSupportActionBar(toolbar);
+            assert toolbar != null;
             toolbar.bringToFront();
         }
 
         {
-            final ActionBar supportActionBar = this.getSupportActionBar();
+            final android.support.v7.app.ActionBar supportActionBar = this.getSupportActionBar();
 
-            if (supportActionBar != null) {
+            if (supportActionBar != null)
+            {
                 supportActionBar.setTitle(null);
                 supportActionBar.getThemedContext();         // This appears to do nothing.  Remove?
                 supportActionBar.setDisplayHomeAsUpEnabled(true);
-                supportActionBar.setHomeButtonEnabled(true);
+                supportActionBar.setHomeButtonEnabled     (true);
             }
         }
 
-        this.drawerLayout = (DrawerLayout) this.findViewById(R.id.drawer_layout);
+        this.drawerLayout = (android.support.v4.widget.DrawerLayout)
+            this.findViewById(org.wheatgenetics.inventory.R.id.drawer_layout);
         {
-            final NavigationView navigationView = (NavigationView) this.findViewById(R.id.nvView);
+            final android.support.design.widget.NavigationView navigationView =
+                (android.support.design.widget.NavigationView)
+                this.findViewById(org.wheatgenetics.inventory.R.id.nvView);
+            assert navigationView != null;
             navigationView.setNavigationItemSelectedListener(
-                new NavigationView.OnNavigationItemSelectedListener() {
+                new android.support.design.widget.NavigationView.OnNavigationItemSelectedListener()
+                {
                     @Override
-                    public boolean onNavigationItemSelected(MenuItem item) {
-                        return selectNavigationItem(item);
-                    }});
+                    public boolean onNavigationItemSelected(final android.view.MenuItem item)
+                    {
+                        return org.wheatgenetics.inventory.MainActivity.this.selectNavigationItem(
+                            item);
+                    }
+                });
         }
-        this.actionBarDrawerToggle = new ActionBarDrawerToggle(this,
-            this.drawerLayout, R.string.drawer_open, R.string.drawer_close) {
+        this.actionBarDrawerToggle = new android.support.v7.app.ActionBarDrawerToggle(this,
+            this.drawerLayout, org.wheatgenetics.inventory.R.string.drawer_open,
+            org.wheatgenetics.inventory.R.string.drawer_close)
+            {
                 @Override
-                public void onDrawerOpened(View drawerView) {
-                    final TextView personTextView = (TextView) findViewById(R.id.nameLabel);
-                    personTextView.setText(sharedPreferences.getName());
+                public void onDrawerOpened(final android.view.View drawerView)
+                {
+                    final android.widget.TextView personTextView = (android.widget.TextView)
+                        findViewById(org.wheatgenetics.inventory.R.id.nameLabel);
+                    assert org.wheatgenetics.inventory.MainActivity.this.sharedPreferences != null;
+                    assert personTextView                                                  != null;
+                    personTextView.setText(
+                        org.wheatgenetics.inventory.MainActivity.this.sharedPreferences.getName());
                 }
 
                 @Override
-                public void onDrawerClosed(View drawerView) {}};
+                public void onDrawerClosed(final android.view.View drawerView) {}
+            };
         this.actionBarDrawerToggle.setDrawerIndicatorEnabled(true);
+        assert this.drawerLayout != null;
         this.drawerLayout.setDrawerListener(this.actionBarDrawerToggle);
 
-        this.boxTextView = (TextView) this.findViewById(R.id.tvBoxNum);
+        this.boxTextView =
+            (android.widget.TextView) this.findViewById(org.wheatgenetics.inventory.R.id.tvBoxNum);
+        assert this.boxTextView != null;
         this.boxTextView.setText("");
 
-        this.envidEditText = (EditText) this.findViewById(R.id.etInput);
+        this.envidEditText =
+            (android.widget.EditText) this.findViewById(org.wheatgenetics.inventory.R.id.etInput);
 
-        this.wtEditText = (EditText) this.findViewById(R.id.etWeight);
-        this.wtEditText.setText(getString(R.string.not_connected));
+        this.wtEditText =
+            (android.widget.EditText) this.findViewById(org.wheatgenetics.inventory.R.id.etWeight);
+        assert this.wtEditText != null;
+        this.wtEditText.setText(this.getString(org.wheatgenetics.inventory.R.string.not_connected));
 
-        this.tableLayout = (TableLayout) this.findViewById(R.id.tlInventory);
-        this.scrollView  = (ScrollView ) this.findViewById(R.id.svData     );
+        this.tableLayout = (android.widget.TableLayout)
+            this.findViewById(org.wheatgenetics.inventory.R.id.tlInventory);
+        this.scrollView =
+            (android.widget.ScrollView ) this.findViewById(org.wheatgenetics.inventory.R.id.svData);
 
-        this.samplesTable = new SamplesTable(this);
+        this.samplesTable = new org.wheatgenetics.inventory.SamplesTable(this);
 
         {
-            final Button setBoxButton = (Button) this.findViewById(R.id.btBox);
-            setBoxButton.setOnClickListener(new View.OnClickListener() {
+            final android.widget.Button setBoxButton =
+                (android.widget.Button) this.findViewById(org.wheatgenetics.inventory.R.id.btBox);
+            assert setBoxButton != null;
+            setBoxButton.setOnClickListener(new android.view.View.OnClickListener()
+                {
+                    @Override
+                    public void onClick(final android.view.View v)
+                    { org.wheatgenetics.inventory.MainActivity.this.setBox(); }
+                });
+        }
+
+        assert this.tableLayout != null;
+        this.tableLayout.setOnClickListener(new android.view.View.OnClickListener()
+            {
                 @Override
-                public void onClick(View v) { setBox(); }});
-        }
+                public void onClick(final android.view.View v) {}
+            });
 
-        this.tableLayout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {}});
+        this.usbDevice =
+            this.getIntent().getParcelableExtra(android.hardware.usb.UsbManager.EXTRA_DEVICE);
 
-        this.usbDevice = this.getIntent().getParcelableExtra(UsbManager.EXTRA_DEVICE);
-
-        this.envidEditText.setOnKeyListener(new View.OnKeyListener() {
-            @Override
-            public boolean onKey(View v, int keyCode, KeyEvent event) {
-                if (keyCode == KeyEvent.KEYCODE_ENTER) {
+        assert this.envidEditText != null;
+        this.envidEditText.setOnKeyListener(new android.view.View.OnKeyListener()
+            {
+                @Override
+                public boolean onKey(final android.view.View v, final int keyCode,
+                final android.view.KeyEvent event)
+                {
+                    assert event != null;
+                    if (keyCode == android.view.KeyEvent.KEYCODE_ENTER)
                     {
-                        final InputMethodManager mgr =
-                            (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-                        mgr.showSoftInput(envidEditText, InputMethodManager.HIDE_IMPLICIT_ONLY);
+                        {
+                            final android.view.inputmethod.InputMethodManager inputMethodManager =
+                                (android.view.inputmethod.InputMethodManager)
+                                org.wheatgenetics.inventory.MainActivity.this.getSystemService(
+                                    android.content.Context.INPUT_METHOD_SERVICE);
+                            assert inputMethodManager != null;
+                            inputMethodManager.showSoftInput(
+                                org.wheatgenetics.inventory.MainActivity.this.envidEditText   ,
+                                android.view.inputmethod.InputMethodManager.HIDE_IMPLICIT_ONLY);
+                        }
+                        if (event.getAction() != android.view.KeyEvent.ACTION_DOWN) return true;
+                        org.wheatgenetics.inventory.MainActivity.this.addRecord();
+                        org.wheatgenetics.inventory.MainActivity.this.envidEditText.requestFocus(); // Set focus back to Enter box
                     }
-                    if (event.getAction() != KeyEvent.ACTION_DOWN) return true;
-                    addRecord();
-                    envidEditText.requestFocus(); // Set focus back to Enter box
-                }
 
-                if (keyCode == KeyEvent.KEYCODE_NUMPAD_ENTER) {
-                    if (event.getAction() == KeyEvent.ACTION_DOWN) return true;
-                    if (event.getAction() == KeyEvent.ACTION_UP) addRecord();
-                    envidEditText.requestFocus(); // Set focus back to Enter box
-                }
-                return false;
-            }});
-
-        this.wtEditText.setOnKeyListener(new View.OnKeyListener() {
-            @Override
-            public boolean onKey(View v, int keyCode, KeyEvent event) {
-                if (keyCode == KeyEvent.KEYCODE_ENTER || keyCode == KeyEvent.KEYCODE_NUMPAD_ENTER) {
+                    if (keyCode == android.view.KeyEvent.KEYCODE_NUMPAD_ENTER)
                     {
-                        final InputMethodManager mgr =
-                            (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-                        mgr.showSoftInput(envidEditText, InputMethodManager.HIDE_IMPLICIT_ONLY);
+                        if (event.getAction() == android.view.KeyEvent.ACTION_DOWN) return true;
+                        if (event.getAction() == android.view.KeyEvent.ACTION_UP)
+                            org.wheatgenetics.inventory.MainActivity.this.addRecord();
+                        org.wheatgenetics.inventory.MainActivity.this.envidEditText.requestFocus(); // Set focus back to Enter box
                     }
-                    if (event.getAction() != KeyEvent.ACTION_DOWN) return true;
-                    addRecord();
-
-                    if (usbDevice != null) wtEditText.setText("");
-                    envidEditText.requestFocus(); // Set focus back to Enter box
+                    return false;
                 }
+            });
 
-                if (keyCode == KeyEvent.KEYCODE_NUMPAD_ENTER) {
-                    if (event.getAction() == KeyEvent.ACTION_DOWN) return true;
-                    if (event.getAction() == KeyEvent.ACTION_UP) addRecord();
-                    envidEditText.requestFocus(); // Set focus back to Enter box
+        this.wtEditText.setOnKeyListener(new android.view.View.OnKeyListener()
+            {
+                @Override
+                public boolean onKey(final android.view.View v, final int keyCode,
+                final android.view.KeyEvent event)
+                {
+                    assert event != null;
+                    if (keyCode == android.view.KeyEvent.KEYCODE_ENTER
+                    ||  keyCode == android.view.KeyEvent.KEYCODE_NUMPAD_ENTER)
+                    {
+                        {
+                            final android.view.inputmethod.InputMethodManager inputMethodManager =
+                                (android.view.inputmethod.InputMethodManager)
+                                org.wheatgenetics.inventory.MainActivity.this.getSystemService(
+                                    android.content.Context.INPUT_METHOD_SERVICE);
+                            assert inputMethodManager != null;
+                            inputMethodManager.showSoftInput(
+                                org.wheatgenetics.inventory.MainActivity.this.envidEditText   ,
+                                android.view.inputmethod.InputMethodManager.HIDE_IMPLICIT_ONLY);
+                        }
+                        if (event.getAction() != android.view.KeyEvent.ACTION_DOWN) return true;
+                        org.wheatgenetics.inventory.MainActivity.this.addRecord();
+
+                        if (org.wheatgenetics.inventory.MainActivity.this.usbDevice != null)
+                            org.wheatgenetics.inventory.MainActivity.this.wtEditText.setText("");
+                        org.wheatgenetics.inventory.MainActivity.this.envidEditText.requestFocus(); // Set focus back to Enter box
+                    }
+
+                    if (keyCode == android.view.KeyEvent.KEYCODE_NUMPAD_ENTER)
+                    {
+                        if (event.getAction() == android.view.KeyEvent.ACTION_DOWN) return true;
+                        if (event.getAction() == android.view.KeyEvent.ACTION_UP)
+                            org.wheatgenetics.inventory.MainActivity.this.addRecord();
+                        org.wheatgenetics.inventory.MainActivity.this.envidEditText.requestFocus(); // Set focus back to Enter box
+                    }
+                    return false;
                 }
-                return false;
-            }});
+            });
 
-        try { this.makeFileDiscoverable(InventoryDir.createIfMissing()); }
-        catch (java.io.IOException e)
-        {
-            org.wheatgenetics.inventory.MainActivity.sendErrorLogMsg(e);
-        }
+        try
+        { this.makeFileDiscoverable(org.wheatgenetics.inventory.InventoryDir.createIfMissing()); }
+        catch (final java.io.IOException e)
+        { org.wheatgenetics.inventory.MainActivity.sendErrorLogMsg(e); }
         this.addTableRows();
         this.goToBottom();
 
-        this.sharedPreferences =
-            new org.wheatgenetics.inventory.SharedPreferences(getSharedPreferences("Settings", 0));
+        assert this.sharedPreferences != null;
+        this.sharedPreferences = new
+            org.wheatgenetics.inventory.SharedPreferences(this.getSharedPreferences("Settings", 0));
 
-        if (!this.sharedPreferences.firstNameIsSet()) this.setPerson()   ;
+        if (!this.sharedPreferences.firstNameIsSet()) this.setPerson   ();
         if (!this.sharedPreferences.getIgnoreScale()) this.connectScale();
 
         int v = 0;
-        try { v = getPackageManager().getPackageInfo(getPackageName(), 0).versionCode; }
-        catch (PackageManager.NameNotFoundException e) {
-            org.wheatgenetics.inventory.MainActivity.sendErrorLogMsg(e);
-        }
-        if (!this.sharedPreferences.updateVersionIsSet(v)) {
+        try { v = this.getPackageManager().getPackageInfo(this.getPackageName(), 0).versionCode; }
+        catch (final android.content.pm.PackageManager.NameNotFoundException e)
+        { org.wheatgenetics.inventory.MainActivity.sendErrorLogMsg(e); }
+        if (!this.sharedPreferences.updateVersionIsSet(v))
+        {
             this.sharedPreferences.setUpdateVersion(v);
             this.showChangeLog();
         }
     }
 
     @Override
-    protected void onPostCreate(Bundle savedInstanceState) {
+    protected void onPostCreate(final android.os.Bundle savedInstanceState)
+    {
         super.onPostCreate(savedInstanceState);
         this.actionBarDrawerToggle.syncState();
     }
 
     @Override
-    protected void onStart() {
+    protected void onStart()
+    {
         super.onStart();
         org.wheatgenetics.inventory.MainActivity.sendVerboseLogMsg("onStart()");
     }
 
     @Override
-    public boolean onCreateOptionsMenu(Menu menu) { return true; }
+    public boolean onCreateOptionsMenu(final android.view.Menu menu) { return true; }
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
+    public boolean onOptionsItemSelected(final android.view.MenuItem item)
+    {
         assert this.actionBarDrawerToggle != null;
         if (this.actionBarDrawerToggle.onOptionsItemSelected(item)) return true;
 
         assert item != null;
-        switch (item.getItemId()) {
+        switch (item.getItemId())
+        {
             case android.R.id.home:
                 assert this.drawerLayout != null;
                 this.drawerLayout.openDrawer(android.support.v4.view.GravityCompat.START);
@@ -306,31 +378,32 @@ public class MainActivity extends android.support.v7.app.AppCompatActivity
     }
 
     @Override
-    public void onConfigurationChanged(Configuration newConfig) {
+    public void onConfigurationChanged(final android.content.res.Configuration newConfig)
+    {
         super.onConfigurationChanged(newConfig);
         this.actionBarDrawerToggle.onConfigurationChanged(newConfig);
     }
     // endregion
 
 
-    protected void showToast(final java.lang.CharSequence text)
-    {
-        org.wheatgenetics.inventory.MainActivity.showToast(this, text);
-    }
+    private void showToast(final java.lang.CharSequence text)
+    { org.wheatgenetics.inventory.MainActivity.showToast(this, text); }
 
-    protected void makeFileDiscoverable(final java.io.File file) {
+    private void makeFileDiscoverable(final java.io.File file)
+    {
         if (file != null)
         {
-            MediaScannerConnection.scanFile(this,
-                Utils.makeStringArray(file.getPath()), null, null);
-            this.sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE,
-                Uri.fromFile(file)));
+            android.media.MediaScannerConnection.scanFile(this,
+                org.wheatgenetics.inventory.Utils.makeStringArray(file.getPath()), null, null);
+            this.sendBroadcast(new android.content.Intent(
+                android.content.Intent.ACTION_MEDIA_SCANNER_SCAN_FILE,
+                android.net.Uri.fromFile(file)                       ));
         }
     }
 
 
     // region addTableRow()
-    protected android.widget.TextView makeTextView(
+    private android.widget.TextView makeTextView(
     final java.lang.CharSequence text, final float initWeight)
     {
         final android.widget.TextView textView = new android.widget.TextView(this);
@@ -347,26 +420,42 @@ public class MainActivity extends android.support.v7.app.AppCompatActivity
         return textView;
     }
 
-    private java.lang.Boolean delete(final java.lang.Object tag) {
+    private boolean delete(final java.lang.Object tag)
+    {
         assert tag != null;
-        final String tagArray[] = ((java.lang.String) tag).split(",");
-        final String box        = tagArray[0];
-        final String env        = tagArray[1];
-        final int    num        = Integer.parseInt(tagArray[2]);
+        final java.lang.String tagArray[] = ((java.lang.String) tag).split(",");
+        final java.lang.String box        =                            tagArray[0] ;
+        final java.lang.String env        =                            tagArray[1] ;
+        final int              num        = java.lang.Integer.parseInt(tagArray[2]);
 
-        final AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
-        builder.setTitle(getString(R.string.delete_entry));
-        builder.setMessage(getString(R.string.delete) + env + "?")
+        final android.app.AlertDialog.Builder builder =
+            new android.app.AlertDialog.Builder(org.wheatgenetics.inventory.MainActivity.this);
+        builder.setTitle(this.getString(org.wheatgenetics.inventory.R.string.delete_entry));
+        builder.setMessage(this.getString(org.wheatgenetics.inventory.R.string.delete) + env + "?")
             .setCancelable(true)
-            .setPositiveButton(getString(R.string.yes), new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    samplesTable.delete(new InventoryRecord(box, env, num));
-                    addTableRows();
-                }})
-            .setNegativeButton(getString(R.string.no), new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) { dialog.cancel(); }});
+            .setPositiveButton(this.getString(org.wheatgenetics.inventory.R.string.yes),
+                new android.content.DialogInterface.OnClickListener()
+                {
+                    @Override
+                    public void onClick(final android.content.DialogInterface dialog,
+                    final int which)
+                    {
+                        org.wheatgenetics.inventory.MainActivity.this.samplesTable.delete(
+                            new org.wheatgenetics.inventory.InventoryRecord(box, env, num));
+                        org.wheatgenetics.inventory.MainActivity.this.addTableRows();
+                    }
+                })
+            .setNegativeButton(this.getString(org.wheatgenetics.inventory.R.string.no),
+                new android.content.DialogInterface.OnClickListener()
+                {
+                    @Override
+                    public void onClick(final android.content.DialogInterface dialog,
+                    final int which)
+                    {
+                        assert dialog != null;
+                        dialog.cancel();
+                    }
+                });
         builder.create().show();
 
         return false;
@@ -375,26 +464,36 @@ public class MainActivity extends android.support.v7.app.AppCompatActivity
     /**
      * Adds a new entry to the end of the TableView
      */
-    private void addTableRow(final InventoryRecord inventoryRecord) {
+    private void addTableRow(final org.wheatgenetics.inventory.InventoryRecord inventoryRecord)
+    {
         assert this.envidEditText != null;
         this.envidEditText.setText("");
 
         final android.widget.TableRow tableRow = new android.widget.TableRow(this);
-        tableRow.setLayoutParams(new TableLayout.LayoutParams(
-            LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
+        tableRow.setLayoutParams(new android.widget.TableLayout.LayoutParams(
+            android.widget.TableLayout.LayoutParams.WRAP_CONTENT,
+            android.widget.TableLayout.LayoutParams.WRAP_CONTENT));
 
         assert inventoryRecord != null;
         tableRow.addView(this.makeTextView(inventoryRecord.getPositionAsString(), 0.16f));
         tableRow.addView(this.makeTextView(inventoryRecord.getBox()             , 0.16f));
 
         {
-            final TextView envidTextView = this.makeTextView(inventoryRecord.getEnvId(), 0.5f);
+            final android.widget.TextView envidTextView =
+                this.makeTextView(inventoryRecord.getEnvId(), 0.5f);
+            assert envidTextView != null;
             envidTextView.setTag          (inventoryRecord.getTag());
             envidTextView.setLongClickable(true                    );
 
-            envidTextView.setOnLongClickListener(new OnLongClickListener() {
-                @Override
-                public boolean onLongClick(View v) { return delete(v.getTag()); }});
+            envidTextView.setOnLongClickListener(new android.view.View.OnLongClickListener()
+                {
+                    @Override
+                    public boolean onLongClick(final android.view.View v)
+                    {
+                        assert v != null;
+                        return org.wheatgenetics.inventory.MainActivity.this.delete(v.getTag());
+                    }
+                });
 
             tableRow.addView(envidTextView);
         }
@@ -402,8 +501,9 @@ public class MainActivity extends android.support.v7.app.AppCompatActivity
         tableRow.addView(this.makeTextView(inventoryRecord.getWt(), 0.16f));
 
         assert this.tableLayout != null;
-        this.tableLayout.addView(tableRow, new LayoutParams(         // Add tableRow to tableLayout.
-            TableLayout.LayoutParams.MATCH_PARENT, TableLayout.LayoutParams.MATCH_PARENT));
+        this.tableLayout.addView(tableRow, new android.view.ViewGroup.LayoutParams(  // Add tableRow to tableLayout.
+            android.widget.TableLayout.LayoutParams.MATCH_PARENT,
+            android.widget.TableLayout.LayoutParams.MATCH_PARENT));
     }
     // endregion
 
@@ -414,26 +514,33 @@ public class MainActivity extends android.support.v7.app.AppCompatActivity
         this.tableLayout.removeAllViews();
 
         assert this.samplesTable != null;
-        final java.util.Iterator<InventoryRecord> iterator = this.samplesTable.getAll().iterator();
-        this.samplesTable.close();
-        while (iterator.hasNext())
+        for (final org.wheatgenetics.inventory.InventoryRecord inventoryRecord:
+        this.samplesTable.getAll())
         {
-            final InventoryRecord inventoryRecord = iterator.next();
             assert inventoryRecord != null;
             inventoryRecord.sendErrorLogMsg(org.wheatgenetics.inventory.MainActivity.TAG);
             this.addTableRow(inventoryRecord);
-            MainActivity.position = inventoryRecord.getPosition() + 1;
+            org.wheatgenetics.inventory.MainActivity.position = inventoryRecord.getPosition() + 1;
         }
+        this.samplesTable.close();
     }
 
-    private void goToBottom() {
+    private void goToBottom()
+    {
         assert this.scrollView != null;
-        this.scrollView.post(new Runnable() {
-            @Override
-            public void run() {
-                scrollView.fullScroll(ScrollView.FOCUS_DOWN);
-                envidEditText.requestFocus();
-            }});
+        this.scrollView.post(new java.lang.Runnable()
+            {
+                @Override
+                public void run()
+                {
+                    assert org.wheatgenetics.inventory.MainActivity.this.scrollView != null;
+                    org.wheatgenetics.inventory.MainActivity.this.scrollView.fullScroll(
+                        android.widget.ScrollView.FOCUS_DOWN);
+
+                    assert org.wheatgenetics.inventory.MainActivity.this.envidEditText != null;
+                    org.wheatgenetics.inventory.MainActivity.this.envidEditText.requestFocus();
+                }
+            });
     }
 
     /**
@@ -443,19 +550,21 @@ public class MainActivity extends android.support.v7.app.AppCompatActivity
     {
         {
             assert this.envidEditText != null;
-            final String envid = this.envidEditText.getText().toString();
+            final java.lang.String envid = this.envidEditText.getText().toString();
+            assert envid != null;
             if (envid.equals("")) return;                              // check for empty user input
         }
 
         assert this.boxTextView       != null;
         assert this.sharedPreferences != null;
         assert this.wtEditText        != null;
-        final InventoryRecord inventoryRecord = new InventoryRecord(
-            /* box      => */ this.boxTextView.getText().toString()  ,
-            /* envid    => */ this.envidEditText.getText().toString(),
-            /* person   => */ this.sharedPreferences.getSafeName()   ,
-            /* position => */ MainActivity.position++                ,
-            /* wt       => */ this.wtEditText.getText().toString()   );
+        final org.wheatgenetics.inventory.InventoryRecord inventoryRecord =
+            new org.wheatgenetics.inventory.InventoryRecord(
+                /* box      => */ this.boxTextView.getText().toString()              ,
+                /* envid    => */ this.envidEditText.getText().toString()            ,
+                /* person   => */ this.sharedPreferences.getSafeName()               ,
+                /* position => */ org.wheatgenetics.inventory.MainActivity.position++,
+                /* wt       => */ this.wtEditText.getText().toString()               );
 
         assert this.samplesTable != null;
         this.samplesTable.add(inventoryRecord);
@@ -464,14 +573,16 @@ public class MainActivity extends android.support.v7.app.AppCompatActivity
         this.goToBottom();
     }
 
-    public class CustomListAdapter extends ArrayAdapter<String> {
-        protected Context   context    ;
-        protected String[]  color_names;
-        protected Integer[] image_ids  ;
+    private class CustomListAdapter extends android.widget.ArrayAdapter<java.lang.String>
+    {
+        private final android.content.Context context      ;
+        private final java.lang.String        color_names[];
+        private final java.lang.Integer       image_ids  [];
 
-        public CustomListAdapter(final Activity context,
-        final Integer[] image_ids, final String[] color_names) {
-            super(context, R.layout.appline, color_names);
+        CustomListAdapter(final android.app.Activity context,
+        final java.lang.Integer image_ids[], final java.lang.String color_names[])
+        {
+            super(context, org.wheatgenetics.inventory.R.layout.appline, color_names);
 
             this.context     = context    ;
             this.color_names = color_names;
@@ -479,54 +590,76 @@ public class MainActivity extends android.support.v7.app.AppCompatActivity
         }
 
         @Override
-        public View getView(int position, View convertView, ViewGroup parent) {
-            final LayoutInflater inflater =
-                (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            final View single_row = inflater.inflate(R.layout.appline, null, true);
+        public android.view.View getView(final int position, final android.view.View convertView,
+        final android.view.ViewGroup parent)
+        {
+            android.view.View singleRow;
             {
-                final TextView textView = (TextView) single_row.findViewById(R.id.txt);
-                textView.setText(color_names[position]);
+                final android.view.LayoutInflater layoutInflater = (android.view.LayoutInflater)
+                    this.context.getSystemService(android.content.Context.LAYOUT_INFLATER_SERVICE);
+                assert layoutInflater != null;
+                singleRow = layoutInflater.inflate(
+                    org.wheatgenetics.inventory.R.layout.appline, null, true);
+            }
+            assert singleRow != null;
+            {
+                final android.widget.TextView textView = (android.widget.TextView)
+                    singleRow.findViewById(org.wheatgenetics.inventory.R.id.txt);
+                assert textView != null;
+                textView.setText(this.color_names[position]);
             }
             {
-                final ImageView imageView = (ImageView) single_row.findViewById(R.id.img);
-                imageView.setImageResource(image_ids[position]);
+                final android.widget.ImageView imageView = (android.widget.ImageView)
+                    singleRow.findViewById(org.wheatgenetics.inventory.R.id.img);
+                assert imageView != null;
+                imageView.setImageResource(this.image_ids[position]);
             }
-            return single_row;
+            return singleRow;
         }
     }
 
-    private void deleteAll() {
+    private void deleteAll()
+    {
         this.samplesTable.deleteAll();
         this.tableLayout.removeAllViews();
-        MainActivity.position = 1;
+        org.wheatgenetics.inventory.MainActivity.position = 1;
     }
 
 
     // region Drawer Methods
     // region Drawer Subsubaction Methods
-    private void shareFile(final java.io.File file, final String fileName) {
+    private void shareFile(final java.io.File file, final java.lang.String fileName)
+    {
         this.makeFileDiscoverable(file);
-        this.showToast(getString(R.string.export_success));
+        this.showToast(this.getString(org.wheatgenetics.inventory.R.string.export_success));
 
-        final Intent intent = new Intent(android.content.Intent.ACTION_SEND);
+        final android.content.Intent intent =
+            new android.content.Intent(android.content.Intent.ACTION_SEND);
 
         intent.setType ("text/plain");
-        intent.putExtra(Intent.EXTRA_STREAM, InventoryDir.parse(fileName));
+        intent.putExtra(android.content.Intent.EXTRA_STREAM,
+            org.wheatgenetics.inventory.InventoryDir.parse(fileName));
 
-        this.startActivity(Intent.createChooser(intent, getString(R.string.sending_file)));
+        this.startActivity(android.content.Intent.createChooser(intent,
+            this.getString(org.wheatgenetics.inventory.R.string.sending_file)));
     }
     // endregion
 
 
     // region Drawer Subaction Methods
-    private void exportCSV() {
+    private void exportCSV()
+    {
         {
-            final InventoryRecords inventoryRecords = this.samplesTable.getAll();
+            assert this.samplesTable != null;
+            final org.wheatgenetics.inventory.InventoryRecords inventoryRecords =
+                this.samplesTable.getAll();
             this.samplesTable.close();
             {
-                final String fileName = Utils.getExportFileName() + ".csv";
+                final java.lang.String fileName =
+                    org.wheatgenetics.inventory.Utils.getExportFileName() + ".csv";
+                assert inventoryRecords != null;
                 try { this.shareFile(inventoryRecords.writeCSV(fileName), fileName); }
-                catch (java.io.IOException e)
+                catch (final java.io.IOException e)
                 {
                     org.wheatgenetics.inventory.MainActivity.showToast(
                         this.getBaseContext(), e.getMessage());
@@ -536,15 +669,20 @@ public class MainActivity extends android.support.v7.app.AppCompatActivity
         this.deleteAll();
     }
 
-    private void exportSQL() {
+    private void exportSQL()
+    {
         {
-            final InventoryRecords inventoryRecords = this.samplesTable.getAll()    ;
-            final String           boxList          = this.samplesTable.getBoxList();
+            assert this.samplesTable != null;
+            final org.wheatgenetics.inventory.InventoryRecords inventoryRecords =
+                this.samplesTable.getAll();
+            final java.lang.String boxList = this.samplesTable.getBoxList();
             this.samplesTable.close();
             {
-                final String fileName = Utils.getExportFileName() + ".sql";
+                final java.lang.String fileName =
+                    org.wheatgenetics.inventory.Utils.getExportFileName() + ".sql";
+                assert inventoryRecords != null;
                 try { this.shareFile(inventoryRecords.writeSQL(fileName, boxList), fileName); }
-                catch (java.io.IOException e)
+                catch (final java.io.IOException e)
                 {
                     org.wheatgenetics.inventory.MainActivity.showToast(
                         this.getBaseContext(), e.getMessage());
@@ -569,108 +707,152 @@ public class MainActivity extends android.support.v7.app.AppCompatActivity
                 /* applicationContext => */ this.getApplicationContext()                 ,
                 /* inputStreamReader  => */ inputStreamReader                            ,
                 /* activityClass      => */ org.wheatgenetics.inventory.MainActivity.this,
-                /* title => */
+                /* title              => */
                     resources.getString(org.wheatgenetics.inventory.R.string.updatemsg),
                 /* positiveButtonText => */
                     resources.getString(org.wheatgenetics.inventory.R.string.ok));
         }
         try { this.changeLogAlertDialog.show(); }
-        catch (java.io.IOException e) { throw new java.lang.RuntimeException(e); }
-
+        catch (final java.io.IOException e) { throw new java.lang.RuntimeException(e); }
     }
 
-    private void showOtherAppsDialog() {
-        final AlertDialog.Builder builder = new AlertDialog.Builder(this);
+    private void showOtherAppsDialog()
+    {
+        final android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(this);
         {
-            final ListView listView = new ListView(this);
+            final android.widget.ListView listView = new android.widget.ListView(this);
 
             listView.setDivider(null);
             listView.setDividerHeight(0);
             {
-                final String[] links = {                                   //TODO update these links
+                final java.lang.String links[] = {                      // TODO: Update these links.
                     "https://play.google.com/store/apps/details?id=com.fieldbook.tracker",
                     "http://wheatgenetics.org/apps"                                      ,
                     "http://wheatgenetics.org/apps"                                      };
-                listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                    @Override
-                    public void onItemClick(AdapterView<?> parent,
-                    View view, int position, long id) {
-                        switch (position) {
-                            case 0:
-                            case 1:
-                            case 2:
-                                startActivity(new Intent(
-                                    Intent.ACTION_VIEW, Uri.parse(links[position])));
+                listView.setOnItemClickListener(
+                    new android.widget.AdapterView.OnItemClickListener()
+                    {
+                        @Override
+                        public void onItemClick(final android.widget.AdapterView<?> parent,
+                        final android.view.View view, final int position, final long id)
+                        {
+                            switch (position)
+                            {
+                                case 0:
+                                case 1:
+                                case 2:
+                                    org.wheatgenetics.inventory.MainActivity.this.startActivity(
+                                        new android.content.Intent(
+                                            android.content.Intent.ACTION_VIEW,
+                                            android.net.Uri.parse(links[position])));
                                 break;
+                            }
                         }
-                    }});
+                    });
             }
             {
-                final Integer appIconIDs[] = {R.drawable.other_ic_field_book,
-                    R.drawable.other_ic_coordinate, R.drawable.other_ic_1kk};
+                final java.lang.Integer appIconIDs[] = {
+                    org.wheatgenetics.inventory.R.drawable.other_ic_field_book,
+                    org.wheatgenetics.inventory.R.drawable.other_ic_coordinate,
+                    org.wheatgenetics.inventory.R.drawable.other_ic_1kk       };
 
-                final String[] appNames = new String[3];
+                final java.lang.String appNames[] = new java.lang.String[3];
                 appNames[0] = "Field Book";
                 appNames[1] = "Coordinate";
                 appNames[2] = "1KK"       ;
                 //appNames[3] = "Intercross";
                 //appNames[4] = "Rangle"    ;
 
-                listView.setAdapter(new CustomListAdapter(this, appIconIDs, appNames));
+                listView.setAdapter(new org.wheatgenetics.inventory.MainActivity.CustomListAdapter(
+                    this, appIconIDs, appNames));
             }
 
             builder.setCancelable(true);
-            builder.setTitle(getResources().getString(R.string.otherapps));
+            builder.setTitle(
+                this.getResources().getString(org.wheatgenetics.inventory.R.string.otherapps));
             builder.setView(listView);
         }
-        builder.setNegativeButton(getResources().getString(R.string.ok),
-            new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) { dialog.dismiss(); }});
+        builder.setNegativeButton(
+            this.getResources().getString(org.wheatgenetics.inventory.R.string.ok),
+            new android.content.DialogInterface.OnClickListener()
+                {
+                    @Override
+                    public void onClick(final android.content.DialogInterface dialog,
+                    final int which)
+                    {
+                        assert dialog != null;
+                        dialog.dismiss();
+                    }
+                });
         builder.show();
     }
     // endregion
 
 
     // region Drawer Action Methods
-    private void setPerson() {
-        final AlertDialog.Builder builder = new AlertDialog.Builder(this);
+    private void setPerson()
+    {
+        final android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(this);
 
         builder.setCancelable(false);
-        builder.setTitle(getResources().getString(R.string.set_person));
+        builder.setTitle     (this.getResources().getString(
+            org.wheatgenetics.inventory.R.string.set_person));
         {
-            final View personView =
-                this.getLayoutInflater().inflate(R.layout.person, new LinearLayout(this), false);
+            final android.view.View personView = this.getLayoutInflater().inflate(
+                org.wheatgenetics.inventory.R.layout.person, new android.widget.LinearLayout(this),
+                false);
 
-            final EditText fName = (EditText) personView.findViewById(R.id.firstName);
-            final EditText lName = (EditText) personView.findViewById(R.id.lastName );
+            assert personView != null;
+            final android.widget.EditText firstNameEditText = (android.widget.EditText)
+                personView.findViewById(org.wheatgenetics.inventory.R.id.firstName);
+            final android.widget.EditText lastNameEditText = (android.widget.EditText)
+                personView.findViewById(org.wheatgenetics.inventory.R.id.lastName);
 
-            fName.setText(this.sharedPreferences.getFirstName());
-            lName.setText(this.sharedPreferences.getLastName() );
+            assert this.sharedPreferences != null;
+            assert firstNameEditText      != null;
+            assert lastNameEditText       != null;
+            firstNameEditText.setText(this.sharedPreferences.getFirstName());
+            lastNameEditText.setText (this.sharedPreferences.getLastName ());
 
             builder.setView(personView);
-            builder.setPositiveButton(getResources().getString(R.string.ok),
-                new DialogInterface.OnClickListener() {
+            builder.setPositiveButton(
+                this.getResources().getString(org.wheatgenetics.inventory.R.string.ok),
+                new android.content.DialogInterface.OnClickListener()
+                {
                     @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        final String firstName = fName.getText().toString().trim();
-                        final String lastName  = lName.getText().toString().trim();
+                    public void onClick(final android.content.DialogInterface dialog,
+                    final int which)
+                    {
+                        final java.lang.String firstName =
+                            firstNameEditText.getText().toString().trim();
+                        final java.lang.String lastName =
+                            lastNameEditText.getText().toString().trim();
 
-                        if (firstName.length() == 0 | lastName.length() == 0) {
-                            showToast(getResources().getString(R.string.no_blank));
-                            setPerson();
+                        if (firstName.length() == 0 | lastName.length() == 0)
+                        {
+                            org.wheatgenetics.inventory.MainActivity.this.showToast(
+                                getResources().getString(
+                                    org.wheatgenetics.inventory.R.string.no_blank));
+                            org.wheatgenetics.inventory.MainActivity.this.setPerson();
                             return;
                         }
 
-                        showToast(getResources().getString(R.string.person_set) +
+                        org.wheatgenetics.inventory.MainActivity.this.showToast(
+                            getResources().getString(
+                                org.wheatgenetics.inventory.R.string.person_set) +
                             " " + firstName + " " + lastName);
-                        sharedPreferences.setName(firstName, lastName);
-                    }});
+                        assert
+                            org.wheatgenetics.inventory.MainActivity.this.sharedPreferences != null;
+                        org.wheatgenetics.inventory.MainActivity.this.sharedPreferences.setName(
+                            firstName, lastName);
+                    }
+                });
         }
         builder.show();
     }
 
-    protected void connectScale() {
+    private void connectScale()
+    {
         if (this.usbDevice == null)
         {
             final android.hardware.usb.UsbManager usbManager = (android.hardware.usb.UsbManager)
@@ -680,10 +862,12 @@ public class MainActivity extends android.support.v7.app.AppCompatActivity
             final java.util.HashMap<java.lang.String, android.hardware.usb.UsbDevice> deviceList =
                 usbManager.getDeviceList();
 
-            for (android.hardware.usb.UsbDevice usbDevice : deviceList.values())
+            assert deviceList != null;
+            for (final android.hardware.usb.UsbDevice usbDevice : deviceList.values())
             {
+                assert usbDevice != null;
                 this.usbDevice = usbDevice;
-                org.wheatgenetics.inventory.MainActivity.sendVerboseLogMsg(String.format(
+                org.wheatgenetics.inventory.MainActivity.sendVerboseLogMsg(java.lang.String.format(
                     "name=%s deviceId=%d productId=%d vendorId=%d " +
                         "deviceClass=%d subClass=%d protocol=%d interfaceCount=%d",
                     this.usbDevice.getDeviceName()    , this.usbDevice.getDeviceId()      ,
@@ -696,131 +880,195 @@ public class MainActivity extends android.support.v7.app.AppCompatActivity
 
         if (this.usbDevice != null)
         {
+            assert this.wtEditText != null;
             this.wtEditText.setText("0");
-            new ScaleListener().execute();
+            new org.wheatgenetics.inventory.MainActivity.ScaleListener().execute();
         }
         else
-            new AlertDialog.Builder(MainActivity.this)
-                .setTitle(getString(R.string.no_scale))
-                .setMessage(getString(R.string.connect_scale))
-                .setCancelable(false)
-                    .setPositiveButton(getString(R.string.try_again),
-                        new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which)
-                            {
-                                connectScale();
-                            }})
-                    .setNegativeButton(getString(R.string.ignore),
-                        new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
+            new android.app.AlertDialog.Builder(org.wheatgenetics.inventory.MainActivity.this)
+                .setTitle     (this.getString(org.wheatgenetics.inventory.R.string.no_scale     ))
+                .setMessage   (this.getString(org.wheatgenetics.inventory.R.string.connect_scale))
+                .setCancelable(false                                                             )
+                .setPositiveButton(this.getString(org.wheatgenetics.inventory.R.string.try_again),
+                    new android.content.DialogInterface.OnClickListener()
+                    {
+                        @Override
+                        public void onClick(final android.content.DialogInterface dialog,
+                        final int which)
+                        { org.wheatgenetics.inventory.MainActivity.this.connectScale(); }
+                    })
+                .setNegativeButton(this.getString(org.wheatgenetics.inventory.R.string.ignore),
+                    new android.content.DialogInterface.OnClickListener()
+                    {
+                        @Override
+                        public void onClick(final android.content.DialogInterface dialog,
+                        final int which)
+                        {
+                            org.wheatgenetics.inventory.MainActivity.this.
                                 sharedPreferences.setIgnoreScaleToTrue();
-                                dialog.cancel();
-                            }})
-                    .show();
+                            assert dialog != null;
+                            dialog.cancel();
+                        }
+                    })
+                .show();
     }
 
-    private void export() {
-        new AlertDialog.Builder(MainActivity.this)
-            .setTitle(getString(R.string.export_data))
-            .setMessage(getString(R.string.export_choice))
-            .setPositiveButton(getString(R.string.export_csv),
-                new DialogInterface.OnClickListener() {
+    private void export()
+    {
+        new android.app.AlertDialog.Builder(org.wheatgenetics.inventory.MainActivity.this)
+            .setTitle         (this.getString(org.wheatgenetics.inventory.R.string.export_data  ))
+            .setMessage       (this.getString(org.wheatgenetics.inventory.R.string.export_choice))
+            .setPositiveButton(this.getString(org.wheatgenetics.inventory.R.string.export_csv   ),
+                new android.content.DialogInterface.OnClickListener()
+                {
                     @Override
-                    public void onClick(DialogInterface dialog, int which) { exportCSV(); }})
-            .setNegativeButton(getString(R.string.export_sql),
-                new DialogInterface.OnClickListener() {
+                    public void onClick(final android.content.DialogInterface dialog,
+                    final int which)
+                    { org.wheatgenetics.inventory.MainActivity.this.exportCSV(); }
+                })
+            .setNegativeButton(this.getString(org.wheatgenetics.inventory.R.string.export_sql),
+                new android.content.DialogInterface.OnClickListener()
+                {
                     @Override
-                    public void onClick(DialogInterface dialog, int which) { exportSQL(); }})
-            .setNeutralButton(getString(R.string.cancel), new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) { dialog.cancel(); }})
+                    public void onClick(final android.content.DialogInterface dialog,
+                    final int which)
+                    { org.wheatgenetics.inventory.MainActivity.this.exportSQL(); }
+                })
+            .setNeutralButton(this.getString(org.wheatgenetics.inventory.R.string.cancel),
+                new android.content.DialogInterface.OnClickListener()
+                {
+                    @Override
+                    public void onClick(final android.content.DialogInterface dialog,
+                    final int which)
+                    {
+                        assert dialog != null;
+                        dialog.cancel();
+                    }
+                })
             .show();
     }
 
-    private void clearAll() {
-        final AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+    private void clearAll()
+    {
+        final android.app.AlertDialog.Builder builder =
+            new android.app.AlertDialog.Builder(org.wheatgenetics.inventory.MainActivity.this);
 
-        builder.setMessage(getString(R.string.delete_msg_1))
-            .setCancelable(false)
-            .setTitle(getString(R.string.clear_data))
-            .setPositiveButton(getString(R.string.yes), new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    boxTextView.setText("");
-                    showToast(getString(R.string.data_deleted));
-                    deleteAll();
-                }})
-            .setNegativeButton(getString(R.string.no), new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) { dialog.cancel(); }});
+        builder.setMessage(this.getString(org.wheatgenetics.inventory.R.string.delete_msg_1))
+            .setCancelable    (false                                                          )
+            .setTitle         (this.getString(org.wheatgenetics.inventory.R.string.clear_data))
+            .setPositiveButton(this.getString(org.wheatgenetics.inventory.R.string.yes),
+                new android.content.DialogInterface.OnClickListener()
+                {
+                    @Override
+                    public void onClick(final android.content.DialogInterface dialog,
+                    final int which)
+                    {
+                        assert org.wheatgenetics.inventory.MainActivity.this.boxTextView != null;
+                        org.wheatgenetics.inventory.MainActivity.this.boxTextView.setText("");
+                        org.wheatgenetics.inventory.MainActivity.this.showToast(
+                            org.wheatgenetics.inventory.MainActivity.this.getString(
+                                org.wheatgenetics.inventory.R.string.data_deleted));
+                        org.wheatgenetics.inventory.MainActivity.this.deleteAll();
+                    }
+                })
+            .setNegativeButton(this.getString(org.wheatgenetics.inventory.R.string.no),
+                new android.content.DialogInterface.OnClickListener()
+                {
+                    @Override
+                    public void onClick(final android.content.DialogInterface dialog,
+                    final int which)
+                    {
+                        assert dialog != null;
+                        dialog.cancel();
+                    }
+                });
         builder.create().show();
     }
 
-    private void showAboutDialog() {
-        final AlertDialog.Builder alert = new AlertDialog.Builder(this);
+    private void showAboutDialog()
+    {
+        final android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(this);
         {
-            final View personView =
-                this.getLayoutInflater().inflate(R.layout.about, new LinearLayout(this), false);
+            final android.view.View personView = this.getLayoutInflater().inflate(
+                org.wheatgenetics.inventory.R.layout.about, new android.widget.LinearLayout(this),
+                false);
 
             {
-                final TextView version = (TextView) personView.findViewById(R.id.tvVersion);
+                assert personView != null;
+                final android.widget.TextView versionTextView = (android.widget.TextView)
+                    personView.findViewById(org.wheatgenetics.inventory.R.id.tvVersion);
                 try
                 {
-                    final PackageInfo packageInfo =
+                    final android.content.pm.PackageInfo packageInfo =
                         this.getPackageManager().getPackageInfo(this.getPackageName(), 0);
-                    version.setText(getResources().getString(R.string.versiontitle) +
+                    assert packageInfo     != null;
+                    assert versionTextView != null;
+                    versionTextView.setText(this.getResources().getString(
+                            org.wheatgenetics.inventory.R.string.versiontitle) +
                         " " + packageInfo.versionName);
                 }
-                catch (PackageManager.NameNotFoundException e)
-                {
-                    org.wheatgenetics.inventory.MainActivity.sendErrorLogMsg(e);
-                }
-                version.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) { showChangeLog(); }});
+                catch (final android.content.pm.PackageManager.NameNotFoundException e)
+                { org.wheatgenetics.inventory.MainActivity.sendErrorLogMsg(e); }
+                versionTextView.setOnClickListener(new android.view.View.OnClickListener()
+                    {
+                        @Override
+                        public void onClick(final android.view.View v)
+                        { org.wheatgenetics.inventory.MainActivity.this.showChangeLog(); }
+                    });
             }
 
             {
-                final TextView otherApps = (TextView) personView.findViewById(R.id.tvOtherApps);
-                otherApps.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) { showOtherAppsDialog(); }});
+                final android.widget.TextView otherAppsTextView =(android.widget.TextView)
+                    personView.findViewById(org.wheatgenetics.inventory.R.id.tvOtherApps);
+                assert otherAppsTextView != null;
+                otherAppsTextView.setOnClickListener(new android.view.View.OnClickListener()
+                    {
+                        @Override
+                        public void onClick(final android.view.View v)
+                        { org.wheatgenetics.inventory.MainActivity.this.showOtherAppsDialog(); }
+                    });
             }
 
-            alert.setCancelable(true);
-            alert.setTitle(getResources().getString(R.string.about));
-            alert.setView(personView);
+            builder.setCancelable(true);
+            builder.setTitle     (this.getResources().getString(
+                org.wheatgenetics.inventory.R.string.about));
+            builder.setView(personView);
         }
-        alert.setNegativeButton(getResources().getString(R.string.ok),
-            new DialogInterface.OnClickListener() {
+        builder.setNegativeButton(
+            this.getResources().getString(org.wheatgenetics.inventory.R.string.ok),
+            new android.content.DialogInterface.OnClickListener()
+            {
                 @Override
-                public void onClick(DialogInterface dialog, int which) { dialog.dismiss(); }});
-        alert.show();
+                public void onClick(final android.content.DialogInterface dialog, final int which)
+                {
+                    assert dialog != null;
+                    dialog.dismiss();
+                }
+            });
+        builder.show();
     }
     // endregion
 
 
     // region Drawer Selector Method
-    protected java.lang.Boolean selectNavigationItem(final MenuItem menuItem)
+    private boolean selectNavigationItem(final android.view.MenuItem menuItem)
     {
         assert menuItem != null;
         switch (menuItem.getItemId())
         {
-            case R.id.person:
+            case org.wheatgenetics.inventory.R.id.person:
                 this.setPerson();
                 break;
-            case R.id.scaleConnect:
+            case org.wheatgenetics.inventory.R.id.scaleConnect:
                 this.connectScale();
                 break;
-            case R.id.export:
+            case org.wheatgenetics.inventory.R.id.export:
                 this.export();
                 break;
-            case R.id.clearData:
+            case org.wheatgenetics.inventory.R.id.clearData:
                 this.clearAll();
                 break;
-            case R.id.about:
+            case org.wheatgenetics.inventory.R.id.about:
                 this.showAboutDialog();
                 break;
         }
@@ -834,41 +1082,57 @@ public class MainActivity extends android.support.v7.app.AppCompatActivity
     // endregion
 
 
-    private void setBox() {
-        final EditText boxEditText = new EditText(this);
-        boxEditText.setText(this.box);
-        boxEditText.selectAll();
+    private void setBox()
+    {
+        final android.widget.EditText boxEditText = new android.widget.EditText(this);
+        boxEditText.setText      (this.box);
+        boxEditText.selectAll    ();
         boxEditText.setSingleLine();
 
-        final AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle(getString(R.string.setbox));
-        builder.setView(boxEditText);
+        final android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(this);
+        builder.setTitle(this.getString(org.wheatgenetics.inventory.R.string.setbox));
+        builder.setView (boxEditText);
 
-        builder.setPositiveButton(getString(R.string.ok), new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                {
-                    final String value = boxEditText.getText().toString().trim();
-
-                    boxTextView.setText(value);
-                    box = value;
-                }
-
-                final InputMethodManager imm =
-                    (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-                imm.hideSoftInputFromWindow(boxEditText.getWindowToken(), 0);
-            }});
-
-        builder.setNegativeButton(getString(R.string.cancel),
-            new DialogInterface.OnClickListener() {
+        builder.setPositiveButton(this.getString(org.wheatgenetics.inventory.R.string.ok),
+            new android.content.DialogInterface.OnClickListener()
+            {
                 @Override
-                public void onClick(DialogInterface dialog, int which) {
+                public void onClick(final android.content.DialogInterface dialog, final int which)
+                {
+                    {
+                        final java.lang.String value = boxEditText.getText().toString().trim();
+
+                        assert org.wheatgenetics.inventory.MainActivity.this.boxTextView != null;
+                        org.wheatgenetics.inventory.MainActivity.this.boxTextView.setText(value);
+                        org.wheatgenetics.inventory.MainActivity.this.box = value;
+                    }
+
+                    final android.view.inputmethod.InputMethodManager inputMethodManager =
+                        (android.view.inputmethod.InputMethodManager)
+                        org.wheatgenetics.inventory.MainActivity.this.getSystemService(
+                            android.content.Context.INPUT_METHOD_SERVICE);
+                    assert inputMethodManager != null;
+                    inputMethodManager.hideSoftInputFromWindow(boxEditText.getWindowToken(), 0);
+                }
+            });
+
+        builder.setNegativeButton(this.getString(org.wheatgenetics.inventory.R.string.cancel),
+            new android.content.DialogInterface.OnClickListener()
+            {
+                @Override
+                public void onClick(final android.content.DialogInterface dialog, final int which)
+                {
+                    assert dialog != null;
                     dialog.cancel();
 
-                    final InputMethodManager imm =
-                        (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-                    imm.hideSoftInputFromWindow(boxEditText.getWindowToken(), 0);
-                }});
+                    final android.view.inputmethod.InputMethodManager inputMethodManager =
+                        (android.view.inputmethod.InputMethodManager)
+                        org.wheatgenetics.inventory.MainActivity.this.getSystemService(
+                            android.content.Context.INPUT_METHOD_SERVICE);
+                    assert inputMethodManager != null;
+                    inputMethodManager.hideSoftInputFromWindow(boxEditText.getWindowToken(), 0);
+                }
+            });
 
         builder.create().show();
     }
@@ -876,19 +1140,20 @@ public class MainActivity extends android.support.v7.app.AppCompatActivity
     private class ScaleListener extends android.os.AsyncTask<
     java.lang.Void, java.lang.Double, java.lang.Void>
     {
-        protected double lastWeight = 0;
+        private double lastWeight = 0;
 
         @Override
-        protected java.lang.Void doInBackground(java.lang.Void... params)
+        protected java.lang.Void doInBackground(final java.lang.Void... params)
         {
             org.wheatgenetics.inventory.MainActivity.sendVerboseLogMsg("start transfer");
 
-            if (usbDevice == null)
+            if (org.wheatgenetics.inventory.MainActivity.this.usbDevice == null)
             {
                 org.wheatgenetics.inventory.MainActivity.sendErrorLogMsg("no device");
                 return null;
             }
-            final android.hardware.usb.UsbInterface usbInterface = usbDevice.getInterface(0);
+            final android.hardware.usb.UsbInterface usbInterface =
+                org.wheatgenetics.inventory.MainActivity.this.usbDevice.getInterface(0);
 
             assert usbInterface != null;
             org.wheatgenetics.inventory.MainActivity.sendVerboseLogMsg(
@@ -901,15 +1166,18 @@ public class MainActivity extends android.support.v7.app.AppCompatActivity
                 usbEndpoint.getDirection(), android.hardware.usb.UsbConstants.USB_DIR_OUT,
                 android.hardware.usb.UsbConstants.USB_DIR_IN));
 
-            final android.hardware.usb.UsbManager usbManager =
-                (android.hardware.usb.UsbManager) getSystemService(Context.USB_SERVICE);
+            final android.hardware.usb.UsbManager usbManager = (android.hardware.usb.UsbManager)
+                org.wheatgenetics.inventory.MainActivity.this.getSystemService(
+                    android.content.Context.USB_SERVICE);
 
+            assert usbManager != null;
             final android.hardware.usb.UsbDeviceConnection usbDeviceConnection =
-                usbManager.openDevice(usbDevice);
+                usbManager.openDevice(org.wheatgenetics.inventory.MainActivity.this.usbDevice);
+
             assert usbDeviceConnection != null;
             usbDeviceConnection.claimInterface(usbInterface, true);
 
-            final byte[] data = new byte[128];
+            final byte data[] = new byte[128];
 
             while (true)
             {
@@ -929,7 +1197,7 @@ public class MainActivity extends android.support.v7.app.AppCompatActivity
                 final short weightLSB = (short) (data[4] & 0xff);
                 final short weightMSB = (short) (data[5] & 0xff);
 
-                // org.wheatgenetics.inventory.MainActivity.sendVerboseLogMsg(String.format(
+                // org.wheatgenetics.inventory.MainActivity.sendVerboseLogMsg(java.lang.String.format(
                 //   "report=%x status=%x exp=%x lsb=%x msb=%x",
                 //   report, status, exp, weightLSB, weightMSB));
 
@@ -941,7 +1209,8 @@ public class MainActivity extends android.support.v7.app.AppCompatActivity
                 }
 
                 double weightGrams = weightLSB + weightMSB * 256.0;
-                if (usbDevice.getProductId() == 519) weightGrams /= 10.0;
+                if (org.wheatgenetics.inventory.MainActivity.this.usbDevice.getProductId() == 519)
+                    weightGrams /= 10.0;
                 final double zeroGrams = 0;
                 final double weight    = weightGrams - zeroGrams;
 
@@ -960,7 +1229,7 @@ public class MainActivity extends android.support.v7.app.AppCompatActivity
                         if (this.lastWeight != weight)
                         {
                             org.wheatgenetics.inventory.MainActivity.sendInfoLogMsg(
-                                String.format("Final Weight: %f", weight));
+                                java.lang.String.format("Final Weight: %f", weight));
                             this.publishProgress(weight);
                         }
                         break;
@@ -992,23 +1261,33 @@ public class MainActivity extends android.support.v7.app.AppCompatActivity
         }
 
         @Override
-        protected void onProgressUpdate(java.lang.Double... values)
+        protected void onProgressUpdate(final java.lang.Double... values)
         {
             org.wheatgenetics.inventory.MainActivity.sendInfoLogMsg("update progress");
 
+            assert values != null;
             final java.lang.String weightText = java.lang.String.format("%.1f", values[0]);
             org.wheatgenetics.inventory.MainActivity.sendInfoLogMsg(weightText);
-            wtEditText.setText(weightText);
-            wtEditText.invalidate();
+
+            assert org.wheatgenetics.inventory.MainActivity.this.wtEditText != null;
+            org.wheatgenetics.inventory.MainActivity.this.wtEditText.setText(weightText);
+            org.wheatgenetics.inventory.MainActivity.this.wtEditText.invalidate();
         }
 
         @Override
-        protected void onPostExecute(java.lang.Void result)
+        protected void onPostExecute(final java.lang.Void result)
         {
-            org.wheatgenetics.inventory.MainActivity.showToast(getApplicationContext(),
-                getString(R.string.scale_disconnect), android.widget.Toast.LENGTH_LONG);
-            usbDevice = null;
-            wtEditText.setText(getString(R.string.not_connected));
+            org.wheatgenetics.inventory.MainActivity.showToast(
+                org.wheatgenetics.inventory.MainActivity.this.getApplicationContext(),
+                org.wheatgenetics.inventory.MainActivity.this.getString(
+                    org.wheatgenetics.inventory.R.string.scale_disconnect),
+                android.widget.Toast.LENGTH_LONG                          );
+            org.wheatgenetics.inventory.MainActivity.this.usbDevice = null;
+
+            assert org.wheatgenetics.inventory.MainActivity.this.wtEditText != null;
+            org.wheatgenetics.inventory.MainActivity.this.wtEditText.setText(
+                org.wheatgenetics.inventory.MainActivity.this.getString(
+                    org.wheatgenetics.inventory.R.string.not_connected));
         }
     }
 }

@@ -35,8 +35,7 @@ class InventoryDir extends java.lang.Object
                     throw new java.io.IOException();
                 return blankHiddenFile;
             }
-            else
-                throw new java.io.IOException();
+            else throw new java.io.IOException();
     }
 
     static android.net.Uri parse(final java.lang.String fileName)

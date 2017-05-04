@@ -3,12 +3,15 @@ package org.wheatgenetics.inventory;
 /**
  * Uses:
  * android.util.Log
+ *
+ * org.wheatgenetics.inventory.InventoryRecord
  */
 
 class InventoryRecords extends java.lang.Object
+implements java.lang.Iterable<org.wheatgenetics.inventory.InventoryRecord>
 {
-    // region Protected Constant
-    final protected java.util.LinkedList<org.wheatgenetics.inventory.InventoryRecord> linkedList =
+    // region Private Constant
+    final private java.util.LinkedList<org.wheatgenetics.inventory.InventoryRecord> linkedList =
         new java.util.LinkedList<org.wheatgenetics.inventory.InventoryRecord>();
     // endregion
 
@@ -20,7 +23,8 @@ class InventoryRecords extends java.lang.Object
         return this.linkedList.add(inventoryRecord);
     }
 
-    java.util.Iterator<org.wheatgenetics.inventory.InventoryRecord> iterator()
+    @Override
+    public java.util.Iterator<org.wheatgenetics.inventory.InventoryRecord> iterator()
     {
         assert this.linkedList != null;
         return this.linkedList.iterator();
@@ -97,8 +101,6 @@ class InventoryRecords extends java.lang.Object
     }
 
     int sendDebugLogMsg(final java.lang.String tag)
-    {
-        return android.util.Log.d(tag, this.toString());
-    }
+    { return android.util.Log.d(tag, this.toString()); }
     // endregion
 }

@@ -3,14 +3,10 @@ package org.wheatgenetics.inventory;
 class Utils extends java.lang.Object
 {
     static java.lang.String[] makeStringArray(final java.lang.String value)
-    {
-        return new java.lang.String[]{value};
-    }
+    { return new java.lang.String[]{value}; }
 
     static java.lang.String[] makeStringArray(final int value)
-    {
-        return org.wheatgenetics.inventory.Utils.makeStringArray(java.lang.String.valueOf(value));
-    }
+    { return org.wheatgenetics.inventory.Utils.makeStringArray(java.lang.String.valueOf(value)); }
 
     static java.lang.String getDateTime()
     {
@@ -20,7 +16,5 @@ class Utils extends java.lang.Object
     }
 
     static java.lang.String getExportFileName()
-    {
-        return "inventory_" + org.wheatgenetics.inventory.Utils.getDateTime();
-    }
+    { return "inventory_" + org.wheatgenetics.inventory.Utils.getDateTime(); }
 }
