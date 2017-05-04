@@ -67,6 +67,205 @@ package org.wheatgenetics.inventory;
 
 public class MainActivity extends android.support.v7.app.AppCompatActivity
 {
+    private static class OtherAppsArrayAdapter extends android.widget.ArrayAdapter<java.lang.String>
+    {
+        private final java.lang.String texts[] =
+            {"Field Book", "Coordinate", "1KK"/*,  "Intercross", "Rangle"*/ };
+        private final java.lang.Integer resIds[] = {
+            org.wheatgenetics.inventory.R.drawable.other_ic_field_book,
+            org.wheatgenetics.inventory.R.drawable.other_ic_coordinate,
+            org.wheatgenetics.inventory.R.drawable.other_ic_1kk       };
+
+        OtherAppsArrayAdapter(final android.app.Activity context)
+        {
+            super(context, org.wheatgenetics.inventory.R.layout.appline);
+            this.addAll(this.texts);
+        }
+
+        @java.lang.Override @android.support.annotation.NonNull
+        public android.view.View getView(final int position, final android.view.View convertView,
+        @android.support.annotation.NonNull final android.view.ViewGroup parent)
+        {
+            android.view.View appLineView;
+            {
+                final android.view.LayoutInflater layoutInflater = (android.view.LayoutInflater)
+                    this.getContext().getSystemService(
+                        android.content.Context.LAYOUT_INFLATER_SERVICE);
+                assert layoutInflater != null;
+                appLineView = layoutInflater.inflate(
+                    org.wheatgenetics.inventory.R.layout.appline, null, true);
+            }
+            assert appLineView != null;
+            {
+                final android.widget.TextView textView = (android.widget.TextView)
+                    appLineView.findViewById(org.wheatgenetics.inventory.R.id.txt);
+                assert textView != null;
+                textView.setText(this.texts[position]);
+            }
+            {
+                final android.widget.ImageView imageView = (android.widget.ImageView)
+                    appLineView.findViewById(org.wheatgenetics.inventory.R.id.img);
+                assert imageView != null;
+                imageView.setImageResource(this.resIds[position]);
+            }
+            return appLineView;
+        }
+    }
+
+    private class ScaleListener extends android.os.AsyncTask<
+    java.lang.Void, java.lang.Double, java.lang.Void>
+    {
+        private double lastWeight = 0;
+
+        @java.lang.Override
+        protected java.lang.Void doInBackground(final java.lang.Void... params)
+        {
+            org.wheatgenetics.inventory.MainActivity.sendVerboseLogMsg("start transfer");
+
+            if (org.wheatgenetics.inventory.MainActivity.this.usbDevice == null)
+            {
+                org.wheatgenetics.inventory.MainActivity.sendErrorLogMsg("no device");
+                return null;
+            }
+            final android.hardware.usb.UsbInterface usbInterface =
+                org.wheatgenetics.inventory.MainActivity.this.usbDevice.getInterface(0);
+
+            assert usbInterface != null;
+            org.wheatgenetics.inventory.MainActivity.sendVerboseLogMsg(
+                java.lang.String.format("endpoint count = %d", usbInterface.getEndpointCount()));
+            final android.hardware.usb.UsbEndpoint usbEndpoint = usbInterface.getEndpoint(0);
+
+            assert usbEndpoint != null;
+            org.wheatgenetics.inventory.MainActivity.sendVerboseLogMsg(
+                java.lang.String.format("usbEndpoint direction = %d out = %d in = %d",
+                    usbEndpoint.getDirection(), android.hardware.usb.UsbConstants.USB_DIR_OUT,
+                    android.hardware.usb.UsbConstants.USB_DIR_IN));
+
+            final android.hardware.usb.UsbManager usbManager = (android.hardware.usb.UsbManager)
+                org.wheatgenetics.inventory.MainActivity.this.getSystemService(
+                    android.content.Context.USB_SERVICE);
+
+            assert usbManager != null;
+            final android.hardware.usb.UsbDeviceConnection usbDeviceConnection =
+                usbManager.openDevice(org.wheatgenetics.inventory.MainActivity.this.usbDevice);
+
+            assert usbDeviceConnection != null;
+            usbDeviceConnection.claimInterface(usbInterface, true);
+
+            final byte data[] = new byte[128];
+
+            while (true)
+            {
+                final int length = usbDeviceConnection.bulkTransfer(
+                    usbEndpoint, data, data.length, /* timeout => */ 2000);
+
+                if (length != 6)
+                {
+                    org.wheatgenetics.inventory.MainActivity.sendErrorLogMsg(
+                        java.lang.String.format("invalid length: %d", length));
+                    return null;
+                }
+
+                final byte report = data[0];
+                final byte status = data[1];
+                // final byte exp = data[3];
+                final short weightLSB = (short) (data[4] & 0xff);
+                final short weightMSB = (short) (data[5] & 0xff);
+
+                // org.wheatgenetics.inventory.MainActivity.sendVerboseLogMsg(java.lang.String.format(
+                //   "report=%x status=%x exp=%x lsb=%x msb=%x",
+                //   report, status, exp, weightLSB, weightMSB));
+
+                if (report != 3)
+                {
+                    org.wheatgenetics.inventory.MainActivity.sendVerboseLogMsg(
+                        java.lang.String.format("scale status error %d", status));
+                    return null;
+                }
+
+                double weightGrams = weightLSB + weightMSB * 256.0;
+                if (org.wheatgenetics.inventory.MainActivity.this.usbDevice.getProductId() == 519)
+                    weightGrams /= 10.0;
+                final double zeroGrams =                       0;
+                final double weight    = weightGrams - zeroGrams;
+
+                switch (status)
+                {
+                    case 1:
+                        org.wheatgenetics.inventory.MainActivity.sendWarnLogMsg(
+                            "Scale reports FAULT!\n");
+                        break;
+                    case 3:
+                        org.wheatgenetics.inventory.MainActivity.sendInfoLogMsg("Weighing...");
+                        if (this.lastWeight != weight) this.publishProgress(weight);
+                        break;
+                    case 2:
+                    case 4:
+                        if (this.lastWeight != weight)
+                        {
+                            org.wheatgenetics.inventory.MainActivity.sendInfoLogMsg(
+                                java.lang.String.format("Final Weight: %f", weight));
+                            this.publishProgress(weight);
+                        }
+                        break;
+                    case 5:
+                        org.wheatgenetics.inventory.MainActivity.sendWarnLogMsg(
+                            "Scale reports Under Zero");
+                        if (this.lastWeight != weight) this.publishProgress(0.0);
+                        break;
+                    case 6:
+                        org.wheatgenetics.inventory.MainActivity.sendWarnLogMsg(
+                            "Scale reports Over Weight!");
+                        break;
+                    case 7:
+                        org.wheatgenetics.inventory.MainActivity.sendErrorLogMsg(
+                            "Scale reports Calibration Needed!");
+                        break;
+                    case 8:
+                        org.wheatgenetics.inventory.MainActivity.sendErrorLogMsg(
+                            "Scale reports Re-zeroing Needed!\n");
+                        break;
+                    default:
+                        org.wheatgenetics.inventory.MainActivity.sendErrorLogMsg(
+                            "Unknown status code");
+                        break;
+                }
+
+                this.lastWeight = weight;
+            }
+        }
+
+        @java.lang.Override
+        protected void onProgressUpdate(final java.lang.Double... values)
+        {
+            org.wheatgenetics.inventory.MainActivity.sendInfoLogMsg("update progress");
+
+            assert values != null;
+            final java.lang.String weightText = java.lang.String.format("%.1f", values[0]);
+            org.wheatgenetics.inventory.MainActivity.sendInfoLogMsg(weightText);
+
+            assert org.wheatgenetics.inventory.MainActivity.this.wtEditText != null;
+            org.wheatgenetics.inventory.MainActivity.this.wtEditText.setText(weightText);
+            org.wheatgenetics.inventory.MainActivity.this.wtEditText.invalidate();
+        }
+
+        @java.lang.Override
+        protected void onPostExecute(final java.lang.Void result)
+        {
+            org.wheatgenetics.inventory.MainActivity.showToast(
+                org.wheatgenetics.inventory.MainActivity.this.getApplicationContext(),
+                org.wheatgenetics.inventory.MainActivity.this.getString(
+                    org.wheatgenetics.inventory.R.string.scale_disconnect),
+                android.widget.Toast.LENGTH_LONG                          );
+            org.wheatgenetics.inventory.MainActivity.this.usbDevice = null;
+
+            assert org.wheatgenetics.inventory.MainActivity.this.wtEditText != null;
+            org.wheatgenetics.inventory.MainActivity.this.wtEditText.setText(
+                org.wheatgenetics.inventory.MainActivity.this.getString(
+                    org.wheatgenetics.inventory.R.string.not_connected));
+        }
+    }
+
     private static final java.lang.String TAG = "Inventory";
 
     private static int position = 1;
@@ -574,51 +773,6 @@ public class MainActivity extends android.support.v7.app.AppCompatActivity
         this.goToBottom();
     }
 
-    private class OtherAppsArrayAdapter extends android.widget.ArrayAdapter<java.lang.String>
-    {
-        private final java.lang.String texts[] =
-            {"Field Book", "Coordinate", "1KK"/*,  "Intercross", "Rangle"*/ };
-        private final java.lang.Integer resIds[] = {
-            org.wheatgenetics.inventory.R.drawable.other_ic_field_book,
-            org.wheatgenetics.inventory.R.drawable.other_ic_coordinate,
-            org.wheatgenetics.inventory.R.drawable.other_ic_1kk       };
-
-        OtherAppsArrayAdapter(final android.app.Activity context)
-        {
-            super(context, org.wheatgenetics.inventory.R.layout.appline);
-            this.addAll(this.texts);
-        }
-
-        @java.lang.Override @android.support.annotation.NonNull
-        public android.view.View getView(final int position, final android.view.View convertView,
-        @android.support.annotation.NonNull final android.view.ViewGroup parent)
-        {
-            android.view.View appLineView;
-            {
-                final android.view.LayoutInflater layoutInflater = (android.view.LayoutInflater)
-                    this.getContext().getSystemService(
-                        android.content.Context.LAYOUT_INFLATER_SERVICE);
-                assert layoutInflater != null;
-                appLineView = layoutInflater.inflate(
-                    org.wheatgenetics.inventory.R.layout.appline, null, true);
-            }
-            assert appLineView != null;
-            {
-                final android.widget.TextView textView = (android.widget.TextView)
-                    appLineView.findViewById(org.wheatgenetics.inventory.R.id.txt);
-                assert textView != null;
-                textView.setText(this.texts[position]);
-            }
-            {
-                final android.widget.ImageView imageView = (android.widget.ImageView)
-                    appLineView.findViewById(org.wheatgenetics.inventory.R.id.img);
-                assert imageView != null;
-                imageView.setImageResource(this.resIds[position]);
-            }
-            return appLineView;
-        }
-    }
-
     private void deleteAll()
     {
         this.samplesTable.deleteAll();
@@ -1122,159 +1276,5 @@ public class MainActivity extends android.support.v7.app.AppCompatActivity
             });
 
         builder.create().show();
-    }
-
-    private class ScaleListener extends android.os.AsyncTask<
-    java.lang.Void, java.lang.Double, java.lang.Void>
-    {
-        private double lastWeight = 0;
-
-        @java.lang.Override
-        protected java.lang.Void doInBackground(final java.lang.Void... params)
-        {
-            org.wheatgenetics.inventory.MainActivity.sendVerboseLogMsg("start transfer");
-
-            if (org.wheatgenetics.inventory.MainActivity.this.usbDevice == null)
-            {
-                org.wheatgenetics.inventory.MainActivity.sendErrorLogMsg("no device");
-                return null;
-            }
-            final android.hardware.usb.UsbInterface usbInterface =
-                org.wheatgenetics.inventory.MainActivity.this.usbDevice.getInterface(0);
-
-            assert usbInterface != null;
-            org.wheatgenetics.inventory.MainActivity.sendVerboseLogMsg(
-                java.lang.String.format("endpoint count = %d", usbInterface.getEndpointCount()));
-            final android.hardware.usb.UsbEndpoint usbEndpoint = usbInterface.getEndpoint(0);
-
-            assert usbEndpoint != null;
-            org.wheatgenetics.inventory.MainActivity.sendVerboseLogMsg(
-                java.lang.String.format("usbEndpoint direction = %d out = %d in = %d",
-                usbEndpoint.getDirection(), android.hardware.usb.UsbConstants.USB_DIR_OUT,
-                android.hardware.usb.UsbConstants.USB_DIR_IN));
-
-            final android.hardware.usb.UsbManager usbManager = (android.hardware.usb.UsbManager)
-                org.wheatgenetics.inventory.MainActivity.this.getSystemService(
-                    android.content.Context.USB_SERVICE);
-
-            assert usbManager != null;
-            final android.hardware.usb.UsbDeviceConnection usbDeviceConnection =
-                usbManager.openDevice(org.wheatgenetics.inventory.MainActivity.this.usbDevice);
-
-            assert usbDeviceConnection != null;
-            usbDeviceConnection.claimInterface(usbInterface, true);
-
-            final byte data[] = new byte[128];
-
-            while (true)
-            {
-                final int length = usbDeviceConnection.bulkTransfer(
-                    usbEndpoint, data, data.length, /* timeout => */ 2000);
-
-                if (length != 6)
-                {
-                    org.wheatgenetics.inventory.MainActivity.sendErrorLogMsg(
-                        java.lang.String.format("invalid length: %d", length));
-                    return null;
-                }
-
-                final byte report = data[0];
-                final byte status = data[1];
-                // final byte exp = data[3];
-                final short weightLSB = (short) (data[4] & 0xff);
-                final short weightMSB = (short) (data[5] & 0xff);
-
-                // org.wheatgenetics.inventory.MainActivity.sendVerboseLogMsg(java.lang.String.format(
-                //   "report=%x status=%x exp=%x lsb=%x msb=%x",
-                //   report, status, exp, weightLSB, weightMSB));
-
-                if (report != 3)
-                {
-                    org.wheatgenetics.inventory.MainActivity.sendVerboseLogMsg(
-                        java.lang.String.format("scale status error %d", status));
-                    return null;
-                }
-
-                double weightGrams = weightLSB + weightMSB * 256.0;
-                if (org.wheatgenetics.inventory.MainActivity.this.usbDevice.getProductId() == 519)
-                    weightGrams /= 10.0;
-                final double zeroGrams = 0;
-                final double weight    = weightGrams - zeroGrams;
-
-                switch (status)
-                {
-                    case 1:
-                        org.wheatgenetics.inventory.MainActivity.sendWarnLogMsg(
-                            "Scale reports FAULT!\n");
-                        break;
-                    case 3:
-                        org.wheatgenetics.inventory.MainActivity.sendInfoLogMsg("Weighing...");
-                        if (this.lastWeight != weight) this.publishProgress(weight);
-                        break;
-                    case 2:
-                    case 4:
-                        if (this.lastWeight != weight)
-                        {
-                            org.wheatgenetics.inventory.MainActivity.sendInfoLogMsg(
-                                java.lang.String.format("Final Weight: %f", weight));
-                            this.publishProgress(weight);
-                        }
-                        break;
-                    case 5:
-                        org.wheatgenetics.inventory.MainActivity.sendWarnLogMsg(
-                            "Scale reports Under Zero");
-                        if (this.lastWeight != weight) this.publishProgress(0.0);
-                        break;
-                    case 6:
-                        org.wheatgenetics.inventory.MainActivity.sendWarnLogMsg(
-                            "Scale reports Over Weight!");
-                        break;
-                    case 7:
-                        org.wheatgenetics.inventory.MainActivity.sendErrorLogMsg(
-                            "Scale reports Calibration Needed!");
-                        break;
-                    case 8:
-                        org.wheatgenetics.inventory.MainActivity.sendErrorLogMsg(
-                            "Scale reports Re-zeroing Needed!\n");
-                        break;
-                    default:
-                        org.wheatgenetics.inventory.MainActivity.sendErrorLogMsg(
-                            "Unknown status code");
-                        break;
-                }
-
-                this.lastWeight = weight;
-            }
-        }
-
-        @java.lang.Override
-        protected void onProgressUpdate(final java.lang.Double... values)
-        {
-            org.wheatgenetics.inventory.MainActivity.sendInfoLogMsg("update progress");
-
-            assert values != null;
-            final java.lang.String weightText = java.lang.String.format("%.1f", values[0]);
-            org.wheatgenetics.inventory.MainActivity.sendInfoLogMsg(weightText);
-
-            assert org.wheatgenetics.inventory.MainActivity.this.wtEditText != null;
-            org.wheatgenetics.inventory.MainActivity.this.wtEditText.setText(weightText);
-            org.wheatgenetics.inventory.MainActivity.this.wtEditText.invalidate();
-        }
-
-        @java.lang.Override
-        protected void onPostExecute(final java.lang.Void result)
-        {
-            org.wheatgenetics.inventory.MainActivity.showToast(
-                org.wheatgenetics.inventory.MainActivity.this.getApplicationContext(),
-                org.wheatgenetics.inventory.MainActivity.this.getString(
-                    org.wheatgenetics.inventory.R.string.scale_disconnect),
-                android.widget.Toast.LENGTH_LONG                          );
-            org.wheatgenetics.inventory.MainActivity.this.usbDevice = null;
-
-            assert org.wheatgenetics.inventory.MainActivity.this.wtEditText != null;
-            org.wheatgenetics.inventory.MainActivity.this.wtEditText.setText(
-                org.wheatgenetics.inventory.MainActivity.this.getString(
-                    org.wheatgenetics.inventory.R.string.not_connected));
-        }
     }
 }
