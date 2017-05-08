@@ -71,19 +71,18 @@ public class MainActivity extends android.support.v7.app.AppCompatActivity
     {
         private final java.lang.String texts[] =
             {"Field Book", "Coordinate", "1KK"/*,  "Intercross", "Rangle"*/ };
-        private final java.lang.Integer resIds[] = {
-            org.wheatgenetics.inventory.R.drawable.other_ic_field_book,
-            org.wheatgenetics.inventory.R.drawable.other_ic_coordinate,
-            org.wheatgenetics.inventory.R.drawable.other_ic_1kk       };
 
         OtherAppsArrayAdapter(final android.app.Activity context)
         {
-            super(context, org.wheatgenetics.inventory.R.layout.appline);
+            super(
+                /* context  => */ context                                     ,
+                /* resource => */ org.wheatgenetics.inventory.R.layout.appline);
             this.addAll(this.texts);
         }
 
-        @java.lang.Override @android.support.annotation.NonNull
-        public android.view.View getView(final int position, final android.view.View convertView,
+        @java.lang.Override
+        public @android.support.annotation.NonNull android.view.View getView(final int position,
+        final android.view.View convertView,
         @android.support.annotation.NonNull final android.view.ViewGroup parent)
         {
             android.view.View appLineView;
@@ -103,10 +102,14 @@ public class MainActivity extends android.support.v7.app.AppCompatActivity
                 textView.setText(this.texts[position]);
             }
             {
+                final java.lang.Integer resIds[] = {
+                    org.wheatgenetics.inventory.R.drawable.other_ic_field_book,
+                    org.wheatgenetics.inventory.R.drawable.other_ic_coordinate,
+                    org.wheatgenetics.inventory.R.drawable.other_ic_1kk       };
                 final android.widget.ImageView imageView = (android.widget.ImageView)
                     appLineView.findViewById(org.wheatgenetics.inventory.R.id.img);
                 assert imageView != null;
-                imageView.setImageResource(this.resIds[position]);
+                imageView.setImageResource(resIds[position]);
             }
             return appLineView;
         }
@@ -874,63 +877,54 @@ public class MainActivity extends android.support.v7.app.AppCompatActivity
     private void showOtherAppsDialog()
     {
         final android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(this);
+        builder.setCancelable(true);
+        builder.setTitle(this.getResources().getString(
+            org.wheatgenetics.inventory.R.string.otherapps));
         {
             final android.widget.ListView listView = new android.widget.ListView(this);
 
-            listView.setDivider(null);
-            listView.setDividerHeight(0);
-            {
-                final java.lang.String links[] = {                      // TODO: Update these links.
-                    "https://play.google.com/store/apps/details?id=com.fieldbook.tracker",
-                    "http://wheatgenetics.org/apps"                                      ,
-                    "http://wheatgenetics.org/apps"                                      };
-                listView.setOnItemClickListener(
-                    new android.widget.AdapterView.OnItemClickListener()
+            listView.setDivider      (null);
+            listView.setDividerHeight(   0);
+            listView.setOnItemClickListener(new android.widget.AdapterView.OnItemClickListener()
+                {
+                    @java.lang.Override
+                    public void onItemClick(final android.widget.AdapterView<?> parent,
+                    final android.view.View view, final int position, final long id)
                     {
-                        @java.lang.Override
-                        public void onItemClick(final android.widget.AdapterView<?> parent,
-                        final android.view.View view, final int position, final long id)
+                        if (position >= 0 && position <= 2)
                         {
-                            switch (position)
-                            {
-                                case 0:
-                                case 1:
-                                case 2:
-                                    org.wheatgenetics.inventory.MainActivity.this.startActivity(
-                                        new android.content.Intent(
-                                            android.content.Intent.ACTION_VIEW,
-                                            android.net.Uri.parse(links[position])));
-                                break;
-                            }
+                            final java.lang.String links[] = {          // TODO: Update these links.
+                                "https://play.google.com/store/apps/" +
+                                    "details?id=com.fieldbook.tracker",
+                                "http://wheatgenetics.org/apps"       ,
+                                "http://wheatgenetics.org/apps"       };
+                            org.wheatgenetics.inventory.MainActivity.this.startActivity(
+                                new android.content.Intent(android.content.Intent.ACTION_VIEW,
+                                    android.net.Uri.parse(links[position])));
                         }
-                    });
-            }
+                    }
+                });
             listView.setAdapter(
                 new org.wheatgenetics.inventory.MainActivity.OtherAppsArrayAdapter(this));
-
-            builder.setCancelable(true);
-            builder.setTitle(
-                this.getResources().getString(org.wheatgenetics.inventory.R.string.otherapps));
             builder.setView(listView);
         }
         builder.setNegativeButton(
             this.getResources().getString(org.wheatgenetics.inventory.R.string.ok),
             new android.content.DialogInterface.OnClickListener()
+            {
+                @java.lang.Override
+                public void onClick(final android.content.DialogInterface dialog, final int which)
                 {
-                    @java.lang.Override
-                    public void onClick(final android.content.DialogInterface dialog,
-                    final int which)
-                    {
-                        assert dialog != null;
-                        dialog.dismiss();
-                    }
-                });
+                    assert dialog != null;
+                    dialog.dismiss();
+                }
+            });
         builder.show();
     }
     // endregion
 
 
-    // region Drawer Action Methods
+    // region Action Drawer Methods
     private void setPerson()
     {
         final android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(this);
@@ -1191,27 +1185,17 @@ public class MainActivity extends android.support.v7.app.AppCompatActivity
     // endregion
 
 
-    // region Drawer Selector Method
+    // region Selector Drawer Method
     private boolean selectNavigationItem(final android.view.MenuItem menuItem)
     {
         assert menuItem != null;
         switch (menuItem.getItemId())
         {
-            case org.wheatgenetics.inventory.R.id.person:
-                this.setPerson();
-                break;
-            case org.wheatgenetics.inventory.R.id.scaleConnect:
-                this.connectScale();
-                break;
-            case org.wheatgenetics.inventory.R.id.export:
-                this.export();
-                break;
-            case org.wheatgenetics.inventory.R.id.clearData:
-                this.clearAll();
-                break;
-            case org.wheatgenetics.inventory.R.id.about:
-                this.showAboutDialog();
-                break;
+            case org.wheatgenetics.inventory.R.id.person      : this.setPerson      (); break;
+            case org.wheatgenetics.inventory.R.id.scaleConnect: this.connectScale   (); break;
+            case org.wheatgenetics.inventory.R.id.export      : this.export         (); break;
+            case org.wheatgenetics.inventory.R.id.clearData   : this.clearAll       (); break;
+            case org.wheatgenetics.inventory.R.id.about       : this.showAboutDialog(); break;
         }
 
         assert this.drawerLayout != null;
