@@ -11,10 +11,9 @@ class InventoryRecords extends java.lang.Object
 implements java.lang.Iterable<org.wheatgenetics.inventory.InventoryRecord>
 {
     // region Private Constant
-    final private java.util.LinkedList<org.wheatgenetics.inventory.InventoryRecord> linkedList =
+    private final java.util.LinkedList<org.wheatgenetics.inventory.InventoryRecord> linkedList =
         new java.util.LinkedList<org.wheatgenetics.inventory.InventoryRecord>();
     // endregion
-
 
     // region Package Methods
     boolean add(final org.wheatgenetics.inventory.InventoryRecord inventoryRecord)
@@ -48,9 +47,12 @@ implements java.lang.Iterable<org.wheatgenetics.inventory.InventoryRecord>
 
                     outputStreamWriter.append(
                         "box_id,seed_id,inventory_date,inventory_person,weight_gram\r\n");
-                    for (org.wheatgenetics.inventory.InventoryRecord inventoryRecord :
+                    for (final org.wheatgenetics.inventory.InventoryRecord inventoryRecord :
                     this.linkedList)
+                    {
+                        assert inventoryRecord != null;
                         outputStreamWriter.append(inventoryRecord.getCSV());
+                    }
                     outputStreamWriter.close();
                 }
                 fileOutputStream.close();
@@ -83,12 +85,13 @@ implements java.lang.Iterable<org.wheatgenetics.inventory.InventoryRecord>
                     {
                         java.lang.String body = "";
                         {
-                            final int last = this.linkedList.size() - 1;
+                            final int  last       = this.linkedList.size() - 1;
+                                  char terminator = ','                       ;
                             for (int i = 0; i <= last; i++)
-                                if (i == last)
-                                    body += this.linkedList.get(i).getSQL() + ";\r\n";
-                                else
-                                    body += this.linkedList.get(i).getSQL() + ",\r\n";
+                            {
+                                if (i == last) terminator = ';';
+                                body += this.linkedList.get(i).getSQL() + terminator + "\r\n";
+                            }
                         }
                         outputStreamWriter.append(body);
                     }

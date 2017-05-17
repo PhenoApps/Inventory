@@ -9,10 +9,9 @@ package org.wheatgenetics.inventory;
 class InventoryDir extends java.lang.Object
 {
     // region Private Class Constant
-    final private static java.io.File PATH =
+    private static final java.io.File PATH =
         new java.io.File(android.os.Environment.getExternalStorageDirectory(), "Inventory");
     // endregion
-
 
     // region Package Class Methods
     /**
@@ -29,11 +28,13 @@ class InventoryDir extends java.lang.Object
                 final java.io.File blankHiddenFile = new java.io.File(
                     org.wheatgenetics.inventory.InventoryDir.PATH, ".inventory");
 
-                if (blankHiddenFile.getParentFile().mkdirs())          // Wasn't this already done?
-                    blankHiddenFile.createNewFile();                   // throws java.io.IOException
+                if (blankHiddenFile.getParentFile().mkdirs())     // Wasn't this already done above?
+                {
+                    blankHiddenFile.createNewFile();              // throws java.io.IOException
+                    return blankHiddenFile;
+                }
                 else
                     throw new java.io.IOException();
-                return blankHiddenFile;
             }
             else throw new java.io.IOException();
     }

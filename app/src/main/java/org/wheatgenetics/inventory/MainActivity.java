@@ -56,6 +56,7 @@ package org.wheatgenetics.inventory;
  * android.widget.TextView
  * android.widget.Toast
  *
+ * org.wheatgenetics.inventory.ChangeLogAlertDialog
  * org.wheatgenetics.inventory.InventoryDir
  * org.wheatgenetics.inventory.InventoryRecord
  * org.wheatgenetics.inventory.InventoryRecords
@@ -273,7 +274,6 @@ public class MainActivity extends android.support.v7.app.AppCompatActivity
 
     private static int position = 1;
 
-
     // region Private Fields
     // region Widget Private Fields
     private android.support.v4.widget.DrawerLayout       drawerLayout         ;
@@ -286,7 +286,6 @@ public class MainActivity extends android.support.v7.app.AppCompatActivity
     private android.widget.ScrollView  scrollView ;
     // endregion
 
-
     private org.wheatgenetics.inventory.SamplesTable      samplesTable     ;
     private android.hardware.usb.UsbDevice                usbDevice        ;
     private org.wheatgenetics.inventory.SharedPreferences sharedPreferences;
@@ -294,7 +293,6 @@ public class MainActivity extends android.support.v7.app.AppCompatActivity
 
     private org.wheatgenetics.inventory.ChangeLogAlertDialog changeLogAlertDialog = null;
     // endregion
-
 
     // region Class Methods
     // region Log Class Methods
@@ -331,7 +329,6 @@ public class MainActivity extends android.support.v7.app.AppCompatActivity
     }
     // endregion
     // endregion
-
 
     // region Overridden Methods
     @java.lang.Override
@@ -588,7 +585,6 @@ public class MainActivity extends android.support.v7.app.AppCompatActivity
     }
     // endregion
 
-
     private void showToast(final java.lang.CharSequence text)
     { org.wheatgenetics.inventory.MainActivity.showToast(this, text); }
 
@@ -603,7 +599,6 @@ public class MainActivity extends android.support.v7.app.AppCompatActivity
                 android.net.Uri.fromFile(file)                       ));
         }
     }
-
 
     // region addTableRow()
     private android.widget.TextView makeTextView(
@@ -710,7 +705,6 @@ public class MainActivity extends android.support.v7.app.AppCompatActivity
     }
     // endregion
 
-
     private void addTableRows()
     {
         assert this.tableLayout != null;
@@ -725,7 +719,6 @@ public class MainActivity extends android.support.v7.app.AppCompatActivity
             this.addTableRow(inventoryRecord);
             org.wheatgenetics.inventory.MainActivity.position = inventoryRecord.getPosition() + 1;
         }
-        this.samplesTable.close();
     }
 
     private void goToBottom()
@@ -783,9 +776,8 @@ public class MainActivity extends android.support.v7.app.AppCompatActivity
         org.wheatgenetics.inventory.MainActivity.position = 1;
     }
 
-
     // region Drawer Methods
-    // region Drawer Subsubaction Methods
+    // region Subsubaction Drawer Methods
     private void shareFile(final java.io.File file, final java.lang.String fileName)
     {
         this.makeFileDiscoverable(file);
@@ -803,15 +795,13 @@ public class MainActivity extends android.support.v7.app.AppCompatActivity
     }
     // endregion
 
-
-    // region Drawer Subaction Methods
+    // region Subaction Drawer Methods
     private void exportCSV()
     {
         {
             assert this.samplesTable != null;
             final org.wheatgenetics.inventory.InventoryRecords inventoryRecords =
                 this.samplesTable.getAll();
-            this.samplesTable.close();
             {
                 final java.lang.String fileName =
                     org.wheatgenetics.inventory.Utils.getExportFileName() + ".csv";
@@ -834,7 +824,6 @@ public class MainActivity extends android.support.v7.app.AppCompatActivity
             final org.wheatgenetics.inventory.InventoryRecords inventoryRecords =
                 this.samplesTable.getAll();
             final java.lang.String boxList = this.samplesTable.getBoxList();
-            this.samplesTable.close();
             {
                 final java.lang.String fileName =
                     org.wheatgenetics.inventory.Utils.getExportFileName() + ".sql";
@@ -922,7 +911,6 @@ public class MainActivity extends android.support.v7.app.AppCompatActivity
         builder.show();
     }
     // endregion
-
 
     // region Action Drawer Methods
     private void setPerson()
@@ -1184,7 +1172,6 @@ public class MainActivity extends android.support.v7.app.AppCompatActivity
     }
     // endregion
 
-
     // region Selector Drawer Method
     private boolean selectNavigationItem(final android.view.MenuItem menuItem)
     {
@@ -1205,7 +1192,6 @@ public class MainActivity extends android.support.v7.app.AppCompatActivity
     }
     // endregion
     // endregion
-
 
     private void setBox()
     {

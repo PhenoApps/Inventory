@@ -9,9 +9,9 @@ class ChangeLog extends java.lang.Object
         void handleContentLine(final java.lang.String content);
     }
 
-    private java.io.InputStreamReader                         inputStreamReader;
-    private org.wheatgenetics.inventory.ChangeLog.LineHandler lineHandler = null;
-    private java.lang.String                                  lines[]     = null;
+    private final java.io.InputStreamReader                         inputStreamReader;
+    private final org.wheatgenetics.inventory.ChangeLog.LineHandler lineHandler      ;
+    private       java.lang.String                                  lines[] = null   ;
 
     ChangeLog(final java.io.InputStreamReader inputStreamReader,
     final org.wheatgenetics.inventory.ChangeLog.LineHandler lineHandler)
@@ -51,14 +51,15 @@ class ChangeLog extends java.lang.Object
                 version = null;
                 this.lineHandler.handleBlankLine();
             }
-            else if (version == null)
-            {
+            else
+                if (version == null)
                 {
-                    final java.lang.String splitLine[] = line.split("/");
-                    version = splitLine[1];
+                    {
+                        final java.lang.String splitLine[] = line.split("/");
+                        version = splitLine[1];
+                    }
+                    this.lineHandler.handleVersionLine(version);
                 }
-                this.lineHandler.handleVersionLine(version);
-            }
-            else this.lineHandler.handleContentLine("•  " + line);
+                else this.lineHandler.handleContentLine("•  " + line);
     }
 }

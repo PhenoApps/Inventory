@@ -13,8 +13,41 @@ package org.wheatgenetics.inventory;
  * org.wheatgenetics.inventory.Utils
  */
 
-class SamplesTable extends android.database.sqlite.SQLiteOpenHelper
+class SamplesTable extends java.lang.Object
 {
+    private static class SQLiteOpenHelper extends android.database.sqlite.SQLiteOpenHelper
+    {
+        private final java.lang.String createStatement, dropStatement;
+
+        SQLiteOpenHelper(final android.content.Context context,
+        final java.lang.String createStatement, final java.lang.String dropStatement)
+        {
+            super(
+                /* context => */ context      ,
+                /* name    => */ "InventoryDB",
+                /* factory => */ null         ,
+                /* version => */ 3            );
+            this.createStatement = createStatement;
+            this.dropStatement   = dropStatement  ;
+        }
+
+        @java.lang.Override
+        public void onCreate(final android.database.sqlite.SQLiteDatabase db)
+        {
+            assert db != null;
+            db.execSQL(this.createStatement);
+        }
+
+        @java.lang.Override
+        public void onUpgrade(final android.database.sqlite.SQLiteDatabase db,
+        final int oldVersion, final int newVersion)
+        {
+            assert db != null;
+            db.execSQL(this.dropStatement);
+            this.onCreate(db);
+        }
+    }
+
     // region Private Class Constants
     private static final java.lang.String TABLE_NAME = "samples";
 
@@ -24,9 +57,13 @@ class SamplesTable extends android.database.sqlite.SQLiteOpenHelper
         WT_FIELD_NAME     = "wt"    ;
     // endregion
 
+    // region Private Fields
+    private final org.wheatgenetics.inventory.SamplesTable.SQLiteOpenHelper sqLiteOpenHelper;
+    private final android.database.sqlite.SQLiteDatabase writableDatabase, readableDatabase;
+    // endregion
 
     // region Private Class Method
-    static private android.content.ContentValues makeContentValues(
+    private static android.content.ContentValues makeContentValues(
     final org.wheatgenetics.inventory.InventoryRecord inventoryRecord)
     {
         assert inventoryRecord != null;
@@ -50,38 +87,11 @@ class SamplesTable extends android.database.sqlite.SQLiteOpenHelper
     }
     // endregion
 
-
-    // region Public Overridden Methods
-    @java.lang.Override
-    public void onCreate(final android.database.sqlite.SQLiteDatabase db)
-    {
-        assert db != null;
-        db.execSQL("CREATE TABLE " + org.wheatgenetics.inventory.SamplesTable.TABLE_NAME + " ( " +
-            org.wheatgenetics.inventory.SamplesTable.ID_FIELD_NAME                               +
-                " INTEGER PRIMARY KEY AUTOINCREMENT, "                                           +
-            org.wheatgenetics.inventory.SamplesTable.BOX_FIELD_NAME      + " TEXT, "             +
-            org.wheatgenetics.inventory.SamplesTable.ENVID_FIELD_NAME    + " TEXT, "             +
-            org.wheatgenetics.inventory.SamplesTable.PERSON_FIELD_NAME   + " TEXT, "             +
-            org.wheatgenetics.inventory.SamplesTable.DATE_FIELD_NAME     + " TEXT, "             +
-            org.wheatgenetics.inventory.SamplesTable.POSITION_FIELD_NAME + " TEXT, "             +
-            org.wheatgenetics.inventory.SamplesTable.WT_FIELD_NAME       + " TEXT)"              );
-    }
-
-    @java.lang.Override
-    public void onUpgrade(final android.database.sqlite.SQLiteDatabase db,
-    final int oldVersion, final int newVersion)
-    {
-        assert db != null;
-        db.execSQL("DROP TABLE IF EXISTS " + org.wheatgenetics.inventory.SamplesTable.TABLE_NAME);
-        this.onCreate(db);
-    }
-    // endregion
-
-
     // region Private Methods
     private int internalDelete(final java.lang.String whereClause)
     {
-        return this.getWritableDatabase().delete(
+        assert this.writableDatabase != null;
+        return this.writableDatabase.delete(
             /* table       => */ org.wheatgenetics.inventory.SamplesTable.TABLE_NAME,
             /* whereClause => */ whereClause                                        ,
             /* whereArgs   => */ null                                               );
@@ -92,25 +102,28 @@ class SamplesTable extends android.database.sqlite.SQLiteOpenHelper
         final org.wheatgenetics.inventory.InventoryRecord inventoryRecord =
             new org.wheatgenetics.inventory.InventoryRecord();
         {
-            final java.lang.String FIELD_NAMES[] = {
-                org.wheatgenetics.inventory.SamplesTable.ID_FIELD_NAME      ,
-                org.wheatgenetics.inventory.SamplesTable.BOX_FIELD_NAME     ,
-                org.wheatgenetics.inventory.SamplesTable.ENVID_FIELD_NAME   ,
-                org.wheatgenetics.inventory.SamplesTable.PERSON_FIELD_NAME  ,
-                org.wheatgenetics.inventory.SamplesTable.DATE_FIELD_NAME    ,
-                org.wheatgenetics.inventory.SamplesTable.POSITION_FIELD_NAME,
-                org.wheatgenetics.inventory.SamplesTable.WT_FIELD_NAME      };
-            final android.database.Cursor cursor = this.getReadableDatabase().query(
-                /* table         => */ org.wheatgenetics.inventory.SamplesTable.TABLE_NAME,
-                /* columns       => */ FIELD_NAMES                                        ,
-                /* selection     => */
-                    " " + org.wheatgenetics.inventory.SamplesTable.ID_FIELD_NAME + " = ?",
-                /* selectionArgs => */ org.wheatgenetics.inventory.Utils.makeStringArray(id),
-                /* groupBy       => */ null                                                 ,
-                /* having        => */ null                                                 ,
-                /* orderBy       => */ null                                                 ,
-                /* limit         => */ null                                                 );
-
+            android.database.Cursor cursor;
+            {
+                final java.lang.String FIELD_NAMES[] = {
+                    org.wheatgenetics.inventory.SamplesTable.ID_FIELD_NAME      ,
+                    org.wheatgenetics.inventory.SamplesTable.BOX_FIELD_NAME     ,
+                    org.wheatgenetics.inventory.SamplesTable.ENVID_FIELD_NAME   ,
+                    org.wheatgenetics.inventory.SamplesTable.PERSON_FIELD_NAME  ,
+                    org.wheatgenetics.inventory.SamplesTable.DATE_FIELD_NAME    ,
+                    org.wheatgenetics.inventory.SamplesTable.POSITION_FIELD_NAME,
+                    org.wheatgenetics.inventory.SamplesTable.WT_FIELD_NAME      };
+                assert this.readableDatabase != null;
+                cursor = this.readableDatabase.query(
+                    /* table         => */ org.wheatgenetics.inventory.SamplesTable.TABLE_NAME,
+                    /* columns       => */ FIELD_NAMES,
+                    /* selection     => */
+                        " " + org.wheatgenetics.inventory.SamplesTable.ID_FIELD_NAME + " = ?",
+                    /* selectionArgs => */ org.wheatgenetics.inventory.Utils.makeStringArray(id),
+                    /* groupBy       => */ null,
+                    /* having        => */ null,
+                    /* orderBy       => */ null,
+                    /* limit         => */ null);
+            }
             if (cursor != null)
             {
                 if (cursor.moveToFirst()) inventoryRecord.set(
@@ -132,42 +145,49 @@ class SamplesTable extends android.database.sqlite.SQLiteOpenHelper
     {
         int i;
         {
-            final android.database.sqlite.SQLiteDatabase db = this.getWritableDatabase();
-            assert db != null;
-            {
-                assert inventoryRecord != null;
+            assert inventoryRecord != null;
 
-                final int                           id            = inventoryRecord.getId();
-                final android.content.ContentValues contentValues =
-                    org.wheatgenetics.inventory.SamplesTable.makeContentValues(inventoryRecord);
+            final int                           id            = inventoryRecord.getId();
+            final android.content.ContentValues contentValues =
+                org.wheatgenetics.inventory.SamplesTable.makeContentValues(inventoryRecord);
 
-                contentValues.put(org.wheatgenetics.inventory.SamplesTable.ID_FIELD_NAME, id);
-                i = db.update(
-                    /* table       => */ org.wheatgenetics.inventory.SamplesTable.TABLE_NAME,
-                    /* values      => */ contentValues                                      ,
-                    /* whereClause => */
-                        org.wheatgenetics.inventory.SamplesTable.ID_FIELD_NAME + " = ?",
-                    /* whereArgs => */ org.wheatgenetics.inventory.Utils.makeStringArray(id));
-            }
-            db.close();
+            contentValues.put(org.wheatgenetics.inventory.SamplesTable.ID_FIELD_NAME, id);
+            assert this.writableDatabase != null;
+            i = this.writableDatabase.update(
+                /* table       => */ org.wheatgenetics.inventory.SamplesTable.TABLE_NAME,
+                /* values      => */ contentValues                                      ,
+                /* whereClause => */
+                    org.wheatgenetics.inventory.SamplesTable.ID_FIELD_NAME + " = ?",
+                /* whereArgs => */ org.wheatgenetics.inventory.Utils.makeStringArray(id));
         }
+        this.writableDatabase.close();
         return i;
     }
     // endregion
-
 
     // region Package Methods
     // region Constructor Package Method
     SamplesTable(final android.content.Context context)
     {
-        super(
-            /* context => */ context      ,
-            /* name    => */ "InventoryDB",
-            /* factory => */ null         ,
-            /* version => */ 3            );
+        super();
+
+        this.sqLiteOpenHelper = new org.wheatgenetics.inventory.SamplesTable.SQLiteOpenHelper(
+            context,
+            "CREATE TABLE " + org.wheatgenetics.inventory.SamplesTable.TABLE_NAME + " ( " +
+                org.wheatgenetics.inventory.SamplesTable.ID_FIELD_NAME                    +
+                    " INTEGER PRIMARY KEY AUTOINCREMENT, "                                +
+                org.wheatgenetics.inventory.SamplesTable.BOX_FIELD_NAME      + " TEXT, "  +
+                org.wheatgenetics.inventory.SamplesTable.ENVID_FIELD_NAME    + " TEXT, "  +
+                org.wheatgenetics.inventory.SamplesTable.PERSON_FIELD_NAME   + " TEXT, "  +
+                org.wheatgenetics.inventory.SamplesTable.DATE_FIELD_NAME     + " TEXT, "  +
+                org.wheatgenetics.inventory.SamplesTable.POSITION_FIELD_NAME + " TEXT, "  +
+                org.wheatgenetics.inventory.SamplesTable.WT_FIELD_NAME       + " TEXT)"  ,
+            "DROP TABLE IF EXISTS " + org.wheatgenetics.inventory.SamplesTable.TABLE_NAME);
+
+        this.writableDatabase = this.sqLiteOpenHelper.getWritableDatabase();
+        this.readableDatabase = this.sqLiteOpenHelper.getReadableDatabase();
     }
     // endregion
-
 
     // region Single-Record Package Methods
     void add(final org.wheatgenetics.inventory.InventoryRecord inventoryRecord)
@@ -175,14 +195,13 @@ class SamplesTable extends android.database.sqlite.SQLiteOpenHelper
         assert inventoryRecord != null;
         inventoryRecord.sendDebugLogMsg("add()");
 
-        final android.database.sqlite.SQLiteDatabase db = this.getWritableDatabase();
-        assert db != null;
-        db.insert(
+        assert this.writableDatabase != null;
+        this.writableDatabase.insert(
             /* table          => */ org.wheatgenetics.inventory.SamplesTable.TABLE_NAME,
             /* nullColumnHack => */ null                                               ,
             /* values         => */
                 org.wheatgenetics.inventory.SamplesTable.makeContentValues(inventoryRecord));
-        db.close();
+        this.writableDatabase.close();
     }
 
     boolean delete(final org.wheatgenetics.inventory.InventoryRecord inventoryRecord)
@@ -194,14 +213,14 @@ class SamplesTable extends android.database.sqlite.SQLiteOpenHelper
     }
     // endregion
 
-
     // region Multiple-Record Package Methods
     org.wheatgenetics.inventory.InventoryRecords getAll()
     {
         final org.wheatgenetics.inventory.InventoryRecords inventoryRecords =
             new org.wheatgenetics.inventory.InventoryRecords();
         {
-            final android.database.Cursor cursor = this.getWritableDatabase().rawQuery(
+            assert this.writableDatabase != null;
+            final android.database.Cursor cursor = this.writableDatabase.rawQuery(
                 "SELECT * FROM " + org.wheatgenetics.inventory.SamplesTable.TABLE_NAME, null);
 
             if (cursor != null)
@@ -220,6 +239,10 @@ class SamplesTable extends android.database.sqlite.SQLiteOpenHelper
                 cursor.close();
             }
         }
+
+        assert this.sqLiteOpenHelper != null;
+        this.sqLiteOpenHelper.close();
+
         inventoryRecords.sendDebugLogMsg("getAll()");
         return inventoryRecords;
     }
@@ -228,7 +251,8 @@ class SamplesTable extends android.database.sqlite.SQLiteOpenHelper
     {
         java.lang.String boxList = null;
         {
-            final android.database.Cursor cursor = this.getWritableDatabase().query(
+            assert this.writableDatabase != null;
+            final android.database.Cursor cursor = this.writableDatabase.query(
                 /* distinct => */ true                                               ,
                 /* table    => */ org.wheatgenetics.inventory.SamplesTable.TABLE_NAME,
                 /* columns  => */ org.wheatgenetics.inventory.Utils.makeStringArray(
@@ -258,6 +282,10 @@ class SamplesTable extends android.database.sqlite.SQLiteOpenHelper
                 cursor.close();
             }
         }
+
+        assert this.sqLiteOpenHelper != null;
+        this.sqLiteOpenHelper.close();
+
         return boxList;
     }
 

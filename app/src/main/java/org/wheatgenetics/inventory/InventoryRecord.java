@@ -16,7 +16,6 @@ class InventoryRecord extends java.lang.Object
     private java.lang.String wt = null;
     // endregion
 
-
     // region Public Overridden Method
     @java.lang.Override
     public java.lang.String toString()
@@ -25,7 +24,6 @@ class InventoryRecord extends java.lang.Object
             "," + this.getDate() + "," + this.getPosition() + "," + this.getWt();
     }
     // endregion
-
 
     // region Package Methods
     // region Constructor Package Methods
@@ -57,7 +55,6 @@ class InventoryRecord extends java.lang.Object
     }
     // endregion
 
-
     // region Getters and Setter Package Methods
     int  getId()             { return this.id; }
     void setId(final int id) { this.id = id  ; }
@@ -69,7 +66,6 @@ class InventoryRecord extends java.lang.Object
     int              getPosition() { return this.position; }
     java.lang.String getWt      () { return this.wt      ; }
     // endregion
-
 
     java.lang.String getPositionAsString()
     { return java.lang.Integer.toString(this.getPosition()); }
@@ -112,7 +108,6 @@ class InventoryRecord extends java.lang.Object
         this.position = java.lang.Integer.parseInt(position);
         this.wt       = wt                                  ;
     }
-
 
     // region Log Package Methods
     int sendDebugLogMsg(final java.lang.String tag)

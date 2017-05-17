@@ -25,11 +25,10 @@ class ChangeLogAlertDialog extends java.lang.Object
         implements org.wheatgenetics.inventory.ChangeLog.LineHandler
         {
             // region Private Fields
-            private android.content.Context context = null, applicationContext = null;
-            private android.widget.LinearLayout.LayoutParams layoutParams = null;
-            private android.widget.LinearLayout              linearLayout = null;
+            private final android.content.Context                  context, applicationContext;
+            private final android.widget.LinearLayout              linearLayout               ;
+            private       android.widget.LinearLayout.LayoutParams layoutParams = null        ;
             // endregion
-
 
             // region Private Method
             private android.widget.TextView makeTextView()
@@ -51,7 +50,6 @@ class ChangeLogAlertDialog extends java.lang.Object
                 return textView;
             }
             // endregion
-
 
             // region Public Overridden Methods
             @java.lang.Override
@@ -93,7 +91,6 @@ class ChangeLogAlertDialog extends java.lang.Object
             }
             // endregion
 
-
             // region Package Constructor Method
             LineHandler(final android.content.Context context,
             final android.content.Context applicationContext,
@@ -113,10 +110,9 @@ class ChangeLogAlertDialog extends java.lang.Object
             // endregion
         }
 
-
         // region Private Fields
-        private android.content.Context   context           = null, applicationContext = null;
-        private java.io.InputStreamReader inputStreamReader = null;
+        private final android.content.Context   context, applicationContext;
+        private final java.io.InputStreamReader inputStreamReader          ;
 
         private android.widget.LinearLayout linearLayout = null;
         private android.widget.ScrollView   scrollView   = null;
@@ -125,7 +121,6 @@ class ChangeLogAlertDialog extends java.lang.Object
             lineHandler = null;
         private org.wheatgenetics.inventory.ChangeLog changeLog = null;
         // endregion
-
 
         // region Package Methods
         ScrollView(final android.content.Context context,
@@ -175,27 +170,23 @@ class ChangeLogAlertDialog extends java.lang.Object
         // endregion
     }
 
-
     // region Private Fields
     // region scrollView Private Fields
-    private android.content.Context   context           = null, applicationContext = null;
-    private java.io.InputStreamReader inputStreamReader = null;
+    private final android.content.Context   context, applicationContext;
+    private final java.io.InputStreamReader inputStreamReader          ;
 
     private org.wheatgenetics.inventory.ChangeLogAlertDialog.ScrollView scrollView = null;
     // endregion
 
-
     // region builder Private Fields
-    private android.content.Context activityClass = null;
-    private java.lang.CharSequence  title         = null, positiveButtonText = null;
+    private final android.content.Context activityClass            ;
+    private final java.lang.CharSequence  title, positiveButtonText;
 
     private android.app.AlertDialog.Builder builder = null;
     // endregion
 
-
     private android.app.AlertDialog alertDialog = null;
     // endregion
-
 
     // region Package Methods
     ChangeLogAlertDialog(final android.content.Context context,
