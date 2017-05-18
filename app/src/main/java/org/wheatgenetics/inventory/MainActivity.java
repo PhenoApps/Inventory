@@ -56,7 +56,7 @@ package org.wheatgenetics.inventory;
  * android.widget.TextView
  * android.widget.Toast
  *
- * org.wheatgenetics.inventory.ChangeLogAlertDialog
+ * org.wheatgenetics.changelog.ChangeLogAlertDialog
  * org.wheatgenetics.inventory.InventoryDir
  * org.wheatgenetics.inventory.InventoryRecord
  * org.wheatgenetics.inventory.InventoryRecords
@@ -291,7 +291,7 @@ public class MainActivity extends android.support.v7.app.AppCompatActivity
     private org.wheatgenetics.inventory.SharedPreferences sharedPreferences;
     private java.lang.String                              box              ;
 
-    private org.wheatgenetics.inventory.ChangeLogAlertDialog changeLogAlertDialog = null;
+    private org.wheatgenetics.changelog.ChangeLogAlertDialog changeLogAlertDialog = null;
     // endregion
 
     // region Class Methods
@@ -849,7 +849,7 @@ public class MainActivity extends android.support.v7.app.AppCompatActivity
             final java.io.InputStreamReader inputStreamReader = new java.io.InputStreamReader(
                 resources.openRawResource(org.wheatgenetics.inventory.R.raw.changelog_releases));
 
-            this.changeLogAlertDialog = new org.wheatgenetics.inventory.ChangeLogAlertDialog(
+            this.changeLogAlertDialog = new org.wheatgenetics.changelog.ChangeLogAlertDialog(
                 /* context            => */ this                                                ,
                 /* applicationContext => */ this.getApplicationContext()                        ,
                 /* inputStreamReader  => */ inputStreamReader                                   ,
