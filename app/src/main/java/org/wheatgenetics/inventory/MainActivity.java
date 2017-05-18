@@ -850,10 +850,12 @@ public class MainActivity extends android.support.v7.app.AppCompatActivity
                 resources.openRawResource(org.wheatgenetics.inventory.R.raw.changelog_releases));
 
             this.changeLogAlertDialog = new org.wheatgenetics.inventory.ChangeLogAlertDialog(
-                /* context            => */ this                                         ,
-                /* applicationContext => */ this.getApplicationContext()                 ,
-                /* inputStreamReader  => */ inputStreamReader                            ,
-                /* activityClass      => */ org.wheatgenetics.inventory.MainActivity.this,
+                /* context            => */ this                                                ,
+                /* applicationContext => */ this.getApplicationContext()                        ,
+                /* inputStreamReader  => */ inputStreamReader                                   ,
+                /* versionResId       => */ org.wheatgenetics.inventory.R.style.ChangelogTitles ,
+                /* contentResId       => */ org.wheatgenetics.inventory.R.style.ChangelogContent,
+                /* activityClass      => */ org.wheatgenetics.inventory.MainActivity.this       ,
                 /* title              => */
                     resources.getString(org.wheatgenetics.inventory.R.string.updatemsg),
                 /* positiveButtonText => */
