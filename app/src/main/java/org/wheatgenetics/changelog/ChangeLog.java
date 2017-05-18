@@ -1,8 +1,8 @@
-package org.wheatgenetics.inventory;
+package org.wheatgenetics.changelog;
 
-class ChangeLog extends java.lang.Object
+public class ChangeLog extends java.lang.Object
 {
-    interface LineHandler
+    public interface LineHandler
     {
         void handleBlankLine();
         void handleVersionLine(final java.lang.String version);
@@ -10,11 +10,11 @@ class ChangeLog extends java.lang.Object
     }
 
     private final java.io.InputStreamReader                         inputStreamReader;
-    private final org.wheatgenetics.inventory.ChangeLog.LineHandler lineHandler      ;
+    private final org.wheatgenetics.changelog.ChangeLog.LineHandler lineHandler      ;
     private       java.lang.String                                  lines[] = null   ;
 
-    ChangeLog(final java.io.InputStreamReader inputStreamReader,
-    final org.wheatgenetics.inventory.ChangeLog.LineHandler lineHandler)
+    public ChangeLog(final java.io.InputStreamReader inputStreamReader,
+    final org.wheatgenetics.changelog.ChangeLog.LineHandler lineHandler)
     {
         super();
 
@@ -25,7 +25,7 @@ class ChangeLog extends java.lang.Object
         this.lineHandler = lineHandler;
     }
 
-    void iterate() throws java.io.IOException
+    public void iterate() throws java.io.IOException
     {
         if (this.lines == null)
         {

@@ -12,8 +12,8 @@ package org.wheatgenetics.inventory;
  * android.widget.ScrollView
  * android.widget.TextView
  *
- * org.wheatgenetics.inventory.ChangeLog
- * org.wheatgenetics.inventory.ChangeLog.LineHandler
+ * org.wheatgenetics.changelog.ChangeLog
+ * org.wheatgenetics.changelog.ChangeLog.LineHandler
  */
 
 class ChangeLogAlertDialog extends java.lang.Object
@@ -21,7 +21,7 @@ class ChangeLogAlertDialog extends java.lang.Object
     class ScrollView extends java.lang.Object
     {
         class LineHandler extends java.lang.Object
-        implements org.wheatgenetics.inventory.ChangeLog.LineHandler
+        implements org.wheatgenetics.changelog.ChangeLog.LineHandler
         {
             // region Private Fields
             private final android.content.Context                  context, applicationContext;
@@ -122,7 +122,7 @@ class ChangeLogAlertDialog extends java.lang.Object
 
         private org.wheatgenetics.inventory.ChangeLogAlertDialog.ScrollView.LineHandler
             lineHandler = null;
-        private org.wheatgenetics.inventory.ChangeLog changeLog = null;
+        private org.wheatgenetics.changelog.ChangeLog changeLog = null;
         // endregion
 
         // region Package Methods
@@ -168,7 +168,7 @@ class ChangeLogAlertDialog extends java.lang.Object
                         new org.wheatgenetics.inventory.ChangeLogAlertDialog.ScrollView.LineHandler(
                             this.context, this.applicationContext, this.linearLayout,
                             this.versionResId, this.contentResId);
-                this.changeLog = new org.wheatgenetics.inventory.ChangeLog(
+                this.changeLog = new org.wheatgenetics.changelog.ChangeLog(
                     this.inputStreamReader, this.lineHandler);
             }
 
