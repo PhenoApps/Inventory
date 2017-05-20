@@ -10,6 +10,7 @@ package org.wheatgenetics.inventory;
  * android.content.pm.PackageInfo
  * android.content.pm.PackageManager
  * android.content.res.Configuration
+ * android.content.res.Resources
  * android.graphics.Color
  * android.hardware.usb.UsbConstants
  * android.hardware.usb.UsbDevice
@@ -291,7 +292,7 @@ public class MainActivity extends android.support.v7.app.AppCompatActivity
     private org.wheatgenetics.inventory.SharedPreferences sharedPreferences;
     private java.lang.String                              box              ;
 
-    private org.wheatgenetics.changelog.ChangeLogAlertDialog changeLogAlertDialog = null;
+//    private org.wheatgenetics.changelog.ChangeLogAlertDialog changeLogAlertDialog = null;
     // endregion
 
     // region Class Methods
@@ -841,28 +842,28 @@ public class MainActivity extends android.support.v7.app.AppCompatActivity
 
     private void showChangeLog()
     {
-        if (this.changeLogAlertDialog == null)
-        {
-            final android.content.res.Resources resources = this.getResources();
-
-            assert resources != null;
-            final java.io.InputStreamReader inputStreamReader = new java.io.InputStreamReader(
-                resources.openRawResource(org.wheatgenetics.inventory.R.raw.changelog_releases));
-
-            this.changeLogAlertDialog = new org.wheatgenetics.changelog.ChangeLogAlertDialog(
-                /* context            => */ this                                                ,
-                /* applicationContext => */ this.getApplicationContext()                        ,
-                /* inputStreamReader  => */ inputStreamReader                                   ,
-                /* versionResId       => */ org.wheatgenetics.inventory.R.style.ChangelogTitles ,
-                /* contentResId       => */ org.wheatgenetics.inventory.R.style.ChangelogContent,
-                /* activityClass      => */ org.wheatgenetics.inventory.MainActivity.this       ,
-                /* title              => */
-                    resources.getString(org.wheatgenetics.inventory.R.string.updatemsg),
-                /* positiveButtonText => */
-                    resources.getString(org.wheatgenetics.inventory.R.string.ok));
-        }
-        try { this.changeLogAlertDialog.show(); }
-        catch (final java.io.IOException e) { throw new java.lang.RuntimeException(e); }
+//        if (this.changeLogAlertDialog == null)
+//        {
+//            final android.content.res.Resources resources = this.getResources();
+//
+//            assert resources != null;
+//            final java.io.InputStreamReader inputStreamReader = new java.io.InputStreamReader(
+//                resources.openRawResource(org.wheatgenetics.inventory.R.raw.changelog_releases));
+//
+//            this.changeLogAlertDialog = new org.wheatgenetics.changelog.ChangeLogAlertDialog(
+//                /* context            => */ this                                                ,
+//                /* applicationContext => */ this.getApplicationContext()                        ,
+//                /* inputStreamReader  => */ inputStreamReader                                   ,
+//                /* versionResId       => */ org.wheatgenetics.inventory.R.style.ChangelogTitles ,
+//                /* contentResId       => */ org.wheatgenetics.inventory.R.style.ChangelogContent,
+//                /* activityClass      => */ org.wheatgenetics.inventory.MainActivity.this       ,
+//                /* title              => */
+//                    resources.getString(org.wheatgenetics.inventory.R.string.updatemsg),
+//                /* positiveButtonText => */
+//                    resources.getString(org.wheatgenetics.inventory.R.string.ok));
+//        }
+//        try { this.changeLogAlertDialog.show(); }
+//        catch (final java.io.IOException e) { throw new java.lang.RuntimeException(e); }
     }
 
     private void showOtherAppsDialog()
