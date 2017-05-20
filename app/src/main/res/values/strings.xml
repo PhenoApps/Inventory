@@ -47,8 +47,6 @@
 
     <string name="sending_file">Sending File...</string>
 
-    <string name="updatemsg">Changelog</string>
-
     <!-- Export strings -->
     <string name="export_data">Export data</string>
     <string name="export_choice">How would you like to export the data?</string>
