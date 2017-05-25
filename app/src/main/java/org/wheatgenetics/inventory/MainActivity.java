@@ -292,7 +292,7 @@ public class MainActivity extends android.support.v7.app.AppCompatActivity
     private org.wheatgenetics.inventory.SharedPreferences sharedPreferences;
     private java.lang.String                              box              ;
 
-    private org.wheatgenetics.changelog.ChangeLogAlertDialog changeLogAlertDialog = null;
+//    private org.wheatgenetics.changelog.ChangeLogAlertDialog changeLogAlertDialog = null;
     // endregion
 
     // region Class Methods
@@ -842,12 +842,12 @@ public class MainActivity extends android.support.v7.app.AppCompatActivity
 
     private void showChangeLog()
     {
-        if (this.changeLogAlertDialog == null) this.changeLogAlertDialog =
-            new org.wheatgenetics.changelog.ChangeLogAlertDialog(
-                /* context       => */ this                                                ,
-                /* rawResourceId => */ org.wheatgenetics.inventory.R.raw.changelog_releases);
-        try { this.changeLogAlertDialog.show(); }
-        catch (final java.io.IOException e) { throw new java.lang.RuntimeException(e); }
+//        if (this.changeLogAlertDialog == null) this.changeLogAlertDialog =
+//            new org.wheatgenetics.changelog.ChangeLogAlertDialog(
+//                /* context       => */ this                                                ,
+//                /* rawResourceId => */ org.wheatgenetics.inventory.R.raw.changelog_releases);
+//        try { this.changeLogAlertDialog.show(); }
+//        catch (final java.io.IOException e) { throw new java.lang.RuntimeException(e); }
     }
 
     private void showOtherAppsDialog()
