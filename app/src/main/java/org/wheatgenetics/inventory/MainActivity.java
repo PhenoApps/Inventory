@@ -345,17 +345,16 @@ public class MainActivity extends android.support.v7.app.AppCompatActivity
                 this.findViewById(org.wheatgenetics.inventory.R.id.toolbar);
 
             this.setSupportActionBar(toolbar);
-            assert toolbar != null;
+            assert null != toolbar;
             toolbar.bringToFront();
         }
 
         {
             final android.support.v7.app.ActionBar supportActionBar = this.getSupportActionBar();
-
-            if (supportActionBar != null)
+            if (null != supportActionBar)
             {
                 supportActionBar.setTitle(null);
-                supportActionBar.getThemedContext();         // This appears to do nothing.  Remove?
+                supportActionBar.getThemedContext();   // TODO: This appears to do nothing.  Remove?
                 supportActionBar.setDisplayHomeAsUpEnabled(true);
                 supportActionBar.setHomeButtonEnabled     (true);
             }
@@ -367,7 +366,7 @@ public class MainActivity extends android.support.v7.app.AppCompatActivity
             final android.support.design.widget.NavigationView navigationView =
                 (android.support.design.widget.NavigationView)
                 this.findViewById(org.wheatgenetics.inventory.R.id.nvView);
-            assert navigationView != null;
+            assert null != navigationView;
             navigationView.setNavigationItemSelectedListener(
                 new android.support.design.widget.NavigationView.OnNavigationItemSelectedListener()
                 {
@@ -388,8 +387,8 @@ public class MainActivity extends android.support.v7.app.AppCompatActivity
                 {
                     final android.widget.TextView personTextView = (android.widget.TextView)
                         findViewById(org.wheatgenetics.inventory.R.id.nameLabel);
-                    assert org.wheatgenetics.inventory.MainActivity.this.sharedPreferences != null;
-                    assert personTextView                                                  != null;
+                    assert null != org.wheatgenetics.inventory.MainActivity.this.sharedPreferences;
+                    assert null != personTextView                                                 ;
                     personTextView.setText(
                         org.wheatgenetics.inventory.MainActivity.this.sharedPreferences.getName());
                 }
@@ -398,12 +397,12 @@ public class MainActivity extends android.support.v7.app.AppCompatActivity
                 public void onDrawerClosed(final android.view.View drawerView) {}
             };
         this.actionBarDrawerToggle.setDrawerIndicatorEnabled(true);
-        assert this.drawerLayout != null;
+        assert null != this.drawerLayout;
         this.drawerLayout.setDrawerListener(this.actionBarDrawerToggle);
 
         this.boxTextView =
             (android.widget.TextView) this.findViewById(org.wheatgenetics.inventory.R.id.tvBoxNum);
-        assert this.boxTextView != null;
+        assert null != this.boxTextView;
         this.boxTextView.setText("");
 
         this.envidEditText =
@@ -411,7 +410,7 @@ public class MainActivity extends android.support.v7.app.AppCompatActivity
 
         this.wtEditText =
             (android.widget.EditText) this.findViewById(org.wheatgenetics.inventory.R.id.etWeight);
-        assert this.wtEditText != null;
+        assert null != this.wtEditText;
         this.wtEditText.setText(this.getString(org.wheatgenetics.inventory.R.string.not_connected));
 
         this.tableLayout = (android.widget.TableLayout)
@@ -424,7 +423,7 @@ public class MainActivity extends android.support.v7.app.AppCompatActivity
         {
             final android.widget.Button setBoxButton =
                 (android.widget.Button) this.findViewById(org.wheatgenetics.inventory.R.id.btBox);
-            assert setBoxButton != null;
+            assert null != setBoxButton;
             setBoxButton.setOnClickListener(new android.view.View.OnClickListener()
                 {
                     @java.lang.Override
@@ -433,7 +432,7 @@ public class MainActivity extends android.support.v7.app.AppCompatActivity
                 });
         }
 
-        assert this.tableLayout != null;
+        assert null != this.tableLayout;
         this.tableLayout.setOnClickListener(new android.view.View.OnClickListener()
             {
                 @java.lang.Override
@@ -443,35 +442,35 @@ public class MainActivity extends android.support.v7.app.AppCompatActivity
         this.usbDevice =
             this.getIntent().getParcelableExtra(android.hardware.usb.UsbManager.EXTRA_DEVICE);
 
-        assert this.envidEditText != null;
+        assert null != this.envidEditText;
         this.envidEditText.setOnKeyListener(new android.view.View.OnKeyListener()
             {
                 @java.lang.Override
                 public boolean onKey(final android.view.View v, final int keyCode,
                 final android.view.KeyEvent event)
                 {
-                    assert event != null;
-                    if (keyCode == android.view.KeyEvent.KEYCODE_ENTER)
+                    assert null != event;
+                    if (android.view.KeyEvent.KEYCODE_ENTER == keyCode)
                     {
                         {
                             final android.view.inputmethod.InputMethodManager inputMethodManager =
                                 (android.view.inputmethod.InputMethodManager)
                                 org.wheatgenetics.inventory.MainActivity.this.getSystemService(
                                     android.content.Context.INPUT_METHOD_SERVICE);
-                            assert inputMethodManager != null;
+                            assert null != inputMethodManager;
                             inputMethodManager.showSoftInput(
                                 org.wheatgenetics.inventory.MainActivity.this.envidEditText   ,
                                 android.view.inputmethod.InputMethodManager.HIDE_IMPLICIT_ONLY);
                         }
-                        if (event.getAction() != android.view.KeyEvent.ACTION_DOWN) return true;
+                        if (android.view.KeyEvent.ACTION_DOWN != event.getAction()) return true;
                         org.wheatgenetics.inventory.MainActivity.this.addRecord();
                         org.wheatgenetics.inventory.MainActivity.this.envidEditText.requestFocus(); // Set focus back to Enter box
                     }
 
-                    if (keyCode == android.view.KeyEvent.KEYCODE_NUMPAD_ENTER)
+                    if (android.view.KeyEvent.KEYCODE_NUMPAD_ENTER == keyCode)
                     {
                         if (event.getAction() == android.view.KeyEvent.ACTION_DOWN) return true;
-                        if (event.getAction() == android.view.KeyEvent.ACTION_UP)
+                        if (event.getAction() == android.view.KeyEvent.ACTION_UP  )
                             org.wheatgenetics.inventory.MainActivity.this.addRecord();
                         org.wheatgenetics.inventory.MainActivity.this.envidEditText.requestFocus(); // Set focus back to Enter box
                     }
@@ -485,32 +484,32 @@ public class MainActivity extends android.support.v7.app.AppCompatActivity
                 public boolean onKey(final android.view.View v, final int keyCode,
                 final android.view.KeyEvent event)
                 {
-                    assert event != null;
-                    if (keyCode == android.view.KeyEvent.KEYCODE_ENTER
-                    ||  keyCode == android.view.KeyEvent.KEYCODE_NUMPAD_ENTER)
+                    assert null != event;
+                    if (android.view.KeyEvent.KEYCODE_ENTER        == keyCode
+                    ||  android.view.KeyEvent.KEYCODE_NUMPAD_ENTER == keyCode)
                     {
                         {
                             final android.view.inputmethod.InputMethodManager inputMethodManager =
                                 (android.view.inputmethod.InputMethodManager)
                                 org.wheatgenetics.inventory.MainActivity.this.getSystemService(
                                     android.content.Context.INPUT_METHOD_SERVICE);
-                            assert inputMethodManager != null;
+                            assert null != inputMethodManager;
                             inputMethodManager.showSoftInput(
                                 org.wheatgenetics.inventory.MainActivity.this.envidEditText   ,
                                 android.view.inputmethod.InputMethodManager.HIDE_IMPLICIT_ONLY);
                         }
-                        if (event.getAction() != android.view.KeyEvent.ACTION_DOWN) return true;
+                        if (android.view.KeyEvent.ACTION_DOWN != event.getAction()) return true;
                         org.wheatgenetics.inventory.MainActivity.this.addRecord();
 
-                        if (org.wheatgenetics.inventory.MainActivity.this.usbDevice != null)
+                        if (null != org.wheatgenetics.inventory.MainActivity.this.usbDevice)
                             org.wheatgenetics.inventory.MainActivity.this.wtEditText.setText("");
                         org.wheatgenetics.inventory.MainActivity.this.envidEditText.requestFocus(); // Set focus back to Enter box
                     }
 
-                    if (keyCode == android.view.KeyEvent.KEYCODE_NUMPAD_ENTER)
+                    if (android.view.KeyEvent.KEYCODE_NUMPAD_ENTER == keyCode)
                     {
-                        if (event.getAction() == android.view.KeyEvent.ACTION_DOWN) return true;
-                        if (event.getAction() == android.view.KeyEvent.ACTION_UP)
+                        if (android.view.KeyEvent.ACTION_DOWN == event.getAction()) return true;
+                        if (android.view.KeyEvent.ACTION_UP   == event.getAction())
                             org.wheatgenetics.inventory.MainActivity.this.addRecord();
                         org.wheatgenetics.inventory.MainActivity.this.envidEditText.requestFocus(); // Set focus back to Enter box
                     }
@@ -525,7 +524,7 @@ public class MainActivity extends android.support.v7.app.AppCompatActivity
         this.addTableRows();
         this.goToBottom();
 
-        assert this.sharedPreferences != null;
+        assert null != this.sharedPreferences;
         this.sharedPreferences = new
             org.wheatgenetics.inventory.SharedPreferences(this.getSharedPreferences("Settings", 0));
 
@@ -547,6 +546,7 @@ public class MainActivity extends android.support.v7.app.AppCompatActivity
     protected void onPostCreate(final android.os.Bundle savedInstanceState)
     {
         super.onPostCreate(savedInstanceState);
+        assert null != this.actionBarDrawerToggle;
         this.actionBarDrawerToggle.syncState();
     }
 
@@ -563,14 +563,14 @@ public class MainActivity extends android.support.v7.app.AppCompatActivity
     @java.lang.Override
     public boolean onOptionsItemSelected(final android.view.MenuItem item)
     {
-        assert this.actionBarDrawerToggle != null;
+        assert null != this.actionBarDrawerToggle;
         if (this.actionBarDrawerToggle.onOptionsItemSelected(item)) return true;
 
-        assert item != null;
+        assert null != item;
         switch (item.getItemId())
         {
             case android.R.id.home:
-                assert this.drawerLayout != null;
+                assert null != this.drawerLayout ;
                 this.drawerLayout.openDrawer(android.support.v4.view.GravityCompat.START);
                 return true;
         }
