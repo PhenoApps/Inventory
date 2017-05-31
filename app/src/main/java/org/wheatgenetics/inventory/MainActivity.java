@@ -36,6 +36,7 @@ package org.wheatgenetics.inventory;
  * android.view.KeyEvent
  * android.view.LayoutInflater
  * android.view.Menu
+ * android.view.MenuInflater
  * android.view.MenuItem
  * android.view.View.OnLongClickListener
  * android.view.View
@@ -57,6 +58,7 @@ package org.wheatgenetics.inventory;
  * android.widget.TextView
  * android.widget.Toast
  *
+ * org.wheatgenetics.androidlibrary.R
  * org.wheatgenetics.changelog.ChangeLogAlertDialog
  * org.wheatgenetics.inventory.InventoryDir
  * org.wheatgenetics.inventory.InventoryRecord
@@ -65,6 +67,7 @@ package org.wheatgenetics.inventory;
  * org.wheatgenetics.inventory.SamplesTable
  * org.wheatgenetics.inventory.SharedPreferences
  * org.wheatgenetics.inventory.Utils
+ * org.wheatgenetics.zxing.BarcodeScanner
  */
 
 public class MainActivity extends android.support.v7.app.AppCompatActivity
@@ -293,6 +296,7 @@ public class MainActivity extends android.support.v7.app.AppCompatActivity
     private java.lang.String                              box              ;
 
     private org.wheatgenetics.changelog.ChangeLogAlertDialog changeLogAlertDialog = null;
+    private org.wheatgenetics.zxing.BarcodeScanner           barcodeScanner       = null;
     // endregion
 
     // region Class Methods
@@ -558,7 +562,14 @@ public class MainActivity extends android.support.v7.app.AppCompatActivity
     }
 
     @java.lang.Override
-    public boolean onCreateOptionsMenu(final android.view.Menu menu) { return true; }
+    public boolean onCreateOptionsMenu(final android.view.Menu menu)
+    {
+        new android.view.MenuInflater(this).inflate(
+            org.wheatgenetics.androidlibrary.R.menu.camera_options_menu, menu);
+        assert null != menu;
+        menu.findItem(org.wheatgenetics.androidlibrary.R.id.cameraOptionsMenuItem).setVisible(true);
+        return true;
+    }
 
     @java.lang.Override
     public boolean onOptionsItemSelected(final android.view.MenuItem item)
@@ -573,6 +584,12 @@ public class MainActivity extends android.support.v7.app.AppCompatActivity
                 assert null != this.drawerLayout ;
                 this.drawerLayout.openDrawer(android.support.v4.view.GravityCompat.START);
                 return true;
+
+            case org.wheatgenetics.androidlibrary.R.id.cameraOptionsMenuItem:
+                if (null == this.barcodeScanner)
+                    this.barcodeScanner = new org.wheatgenetics.zxing.BarcodeScanner(this);
+                this.barcodeScanner.scan();
+                break;
         }
 
         return true;
