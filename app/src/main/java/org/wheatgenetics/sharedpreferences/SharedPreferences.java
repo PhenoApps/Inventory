@@ -1,4 +1,4 @@
-package org.wheatgenetics.inventory;
+package org.wheatgenetics.sharedpreferences;
 
 /** Uses:
  * android.content.SharedPreferences
@@ -7,7 +7,7 @@ package org.wheatgenetics.inventory;
  * org.wheatgenetics.inventory.BuildConfig
  */
 
-class SharedPreferences extends java.lang.Object
+public class SharedPreferences extends java.lang.Object
 {
     // region Private Class Constants
     private static final java.lang.String
@@ -24,8 +24,8 @@ class SharedPreferences extends java.lang.Object
     {
         assert null != key;
         if (org.wheatgenetics.inventory.BuildConfig.DEBUG)
-            if (!key.equals(org.wheatgenetics.inventory.SharedPreferences.FIRST_NAME)
-            &&  !key.equals(org.wheatgenetics.inventory.SharedPreferences.LAST_NAME ))
+            if (!key.equals(org.wheatgenetics.sharedpreferences.SharedPreferences.FIRST_NAME)
+            &&  !key.equals(org.wheatgenetics.sharedpreferences.SharedPreferences.LAST_NAME ))
                 throw new java.lang.AssertionError();
     }
     // endregion
@@ -33,7 +33,7 @@ class SharedPreferences extends java.lang.Object
     // region Private Methods
     private java.lang.String getString(final java.lang.String key)
     {
-        org.wheatgenetics.inventory.SharedPreferences.assertValidNameKey(key);
+        org.wheatgenetics.sharedpreferences.SharedPreferences.assertValidNameKey(key);
 
         assert null != this.sharedPreferences;
         return this.sharedPreferences.getString(key, "");
@@ -46,7 +46,7 @@ class SharedPreferences extends java.lang.Object
         if (null == newValue) newValue = "";
         if (!oldValue.equals(newValue))
         {
-            org.wheatgenetics.inventory.SharedPreferences.assertValidNameKey(key);
+            org.wheatgenetics.sharedpreferences.SharedPreferences.assertValidNameKey(key);
 
             assert null != this.sharedPreferences;
             final android.content.SharedPreferences.Editor editor = this.sharedPreferences.edit();
@@ -61,13 +61,13 @@ class SharedPreferences extends java.lang.Object
     {
         assert null != this.sharedPreferences;
         return this.sharedPreferences.getInt(
-            org.wheatgenetics.inventory.SharedPreferences.UPDATE_VERSION, -1);
+            org.wheatgenetics.sharedpreferences.SharedPreferences.UPDATE_VERSION, -1);
     }
     // endregion
 
-    // region Package Methods
-    // region Constructor Package Method
-    SharedPreferences(final android.content.SharedPreferences sharedPreferences)
+    // region Public Methods
+    // region Constructor Public Method
+    public SharedPreferences(final android.content.SharedPreferences sharedPreferences)
     {
         super();
 
@@ -76,45 +76,45 @@ class SharedPreferences extends java.lang.Object
     }
     // endregion
 
-    // region FirstName Package Methods
-    java.lang.String getFirstName()
-    { return this.getString(org.wheatgenetics.inventory.SharedPreferences.FIRST_NAME); }
+    // region FirstName Public Methods
+    public java.lang.String getFirstName()
+    { return this.getString(org.wheatgenetics.sharedpreferences.SharedPreferences.FIRST_NAME); }
 
-    java.lang.Boolean firstNameIsSet() { return this.getFirstName().length() > 0; }
+    public java.lang.Boolean firstNameIsSet() { return this.getFirstName().length() > 0; }
     // endregion
 
-    // region LastName Package Method
-    java.lang.String getLastName()
-    { return this.getString(org.wheatgenetics.inventory.SharedPreferences.LAST_NAME); }
+    // region LastName Public Method
+    public java.lang.String getLastName()
+    { return this.getString(org.wheatgenetics.sharedpreferences.SharedPreferences.LAST_NAME); }
     // endregion
 
-    // region Name Package Methods
-    void setName(final java.lang.String firstName, final java.lang.String lastName)
+    // region Name Public Methods
+    public void setName(final java.lang.String firstName, final java.lang.String lastName)
     {
-        this.setString(org.wheatgenetics.inventory.SharedPreferences.FIRST_NAME,
+        this.setString(org.wheatgenetics.sharedpreferences.SharedPreferences.FIRST_NAME,
             /* oldValue => */ this.getFirstName(), /* newValue => */ firstName);
-        this.setString(org.wheatgenetics.inventory.SharedPreferences.LAST_NAME,
+        this.setString(org.wheatgenetics.sharedpreferences.SharedPreferences.LAST_NAME,
             /* oldValue => */ this.getLastName(), /* newValue => */ lastName);
     }
 
-    java.lang.String getName() { return this.getFirstName() + " " + this.getLastName(); }
+    public java.lang.String getName() { return this.getFirstName() + " " + this.getLastName(); }
 
     /**
      * A "safe" name is a full name (first name and last name) where the first name and last name
      * are separated with an underscore ("_") instead of a space (" ").
      */
-    java.lang.String getSafeName() { return this.getFirstName() + "_" + this.getLastName(); }
+    public java.lang.String getSafeName() { return this.getFirstName() + "_" + this.getLastName(); }
     // endregion
 
-    // region IgnoreScale Package Methods
-    java.lang.Boolean getIgnoreScale()
+    // region IgnoreScale Public Methods
+    public java.lang.Boolean getIgnoreScale()
     {
         assert null != this.sharedPreferences;
         return this.sharedPreferences.getBoolean(
-            org.wheatgenetics.inventory.SharedPreferences.IGNORE_SCALE, false);
+            org.wheatgenetics.sharedpreferences.SharedPreferences.IGNORE_SCALE, false);
     }
 
-    void setIgnoreScaleToTrue()
+    public void setIgnoreScaleToTrue()
     {
         if (!this.getIgnoreScale())
         {
@@ -122,17 +122,18 @@ class SharedPreferences extends java.lang.Object
             final android.content.SharedPreferences.Editor editor = this.sharedPreferences.edit();
 
             assert null != editor;
-            editor.putBoolean(org.wheatgenetics.inventory.SharedPreferences.IGNORE_SCALE, true);
+            editor.putBoolean(org.wheatgenetics.sharedpreferences.SharedPreferences.IGNORE_SCALE,
+                true);
             editor.apply();
         }
     }
     // endregion
 
-    // region UpdateVersion Package Methods
-    java.lang.Boolean updateVersionIsSet(final int newUpdateVersion)
+    // region UpdateVersion Public Methods
+    public java.lang.Boolean updateVersionIsSet(final int newUpdateVersion)
     { return this.getUpdateVersion() >= newUpdateVersion; }
 
-    void setUpdateVersion(final int newUpdateVersion)
+    public void setUpdateVersion(final int newUpdateVersion)
     {
         if (this.getUpdateVersion() != newUpdateVersion)
         {
@@ -140,8 +141,8 @@ class SharedPreferences extends java.lang.Object
             final android.content.SharedPreferences.Editor editor = this.sharedPreferences.edit();
 
             assert null != editor;
-            editor.putInt(
-                org.wheatgenetics.inventory.SharedPreferences.UPDATE_VERSION, newUpdateVersion);
+            editor.putInt(org.wheatgenetics.sharedpreferences.SharedPreferences.UPDATE_VERSION,
+                newUpdateVersion);
             editor.apply();
         }
     }

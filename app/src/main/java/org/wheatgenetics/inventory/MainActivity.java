@@ -65,8 +65,8 @@ package org.wheatgenetics.inventory;
  * org.wheatgenetics.inventory.InventoryRecords
  * org.wheatgenetics.inventory.R
  * org.wheatgenetics.inventory.SamplesTable
- * org.wheatgenetics.inventory.SharedPreferences
  * org.wheatgenetics.inventory.Utils
+ * org.wheatgenetics.sharedpreferences.SharedPreferences
  * org.wheatgenetics.zxing.BarcodeScanner
  */
 
@@ -290,10 +290,10 @@ public class MainActivity extends android.support.v7.app.AppCompatActivity
     private android.widget.ScrollView  scrollView ;
     // endregion
 
-    private org.wheatgenetics.inventory.SamplesTable      samplesTable     ;
-    private android.hardware.usb.UsbDevice                usbDevice        ;
-    private org.wheatgenetics.inventory.SharedPreferences sharedPreferences;
-    private java.lang.String                              box              ;
+    private org.wheatgenetics.inventory.SamplesTable              samplesTable     ;
+    private android.hardware.usb.UsbDevice                        usbDevice        ;
+    private org.wheatgenetics.sharedpreferences.SharedPreferences sharedPreferences;
+    private java.lang.String                                      box              ;
 
     private org.wheatgenetics.changelog.ChangeLogAlertDialog changeLogAlertDialog = null;
     private org.wheatgenetics.zxing.BarcodeScanner           barcodeScanner       = null;
@@ -529,8 +529,8 @@ public class MainActivity extends android.support.v7.app.AppCompatActivity
         this.goToBottom();
 
         assert null != this.sharedPreferences;
-        this.sharedPreferences = new
-            org.wheatgenetics.inventory.SharedPreferences(this.getSharedPreferences("Settings", 0));
+        this.sharedPreferences = new org.wheatgenetics.sharedpreferences.SharedPreferences(
+            this.getSharedPreferences("Settings", 0));
 
         if (!this.sharedPreferences.firstNameIsSet()) this.setPerson   ();
         if (!this.sharedPreferences.getIgnoreScale()) this.connectScale();
