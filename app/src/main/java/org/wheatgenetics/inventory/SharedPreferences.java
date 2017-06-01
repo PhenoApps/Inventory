@@ -3,6 +3,8 @@ package org.wheatgenetics.inventory;
 /** Uses:
  * android.content.SharedPreferences
  * android.content.SharedPreferences.Editor
+ *
+ * org.wheatgenetics.inventory.BuildConfig
  */
 
 class SharedPreferences extends java.lang.Object
@@ -18,36 +20,38 @@ class SharedPreferences extends java.lang.Object
     // endregion
 
     // region Private Class Method
-    private static void assertValid(final java.lang.String key)
+    private static void assertValidNameKey(final java.lang.String key)
     {
-        assert key != null;
-        assert key.equals(org.wheatgenetics.inventory.SharedPreferences.FIRST_NAME)
-            || key.equals(org.wheatgenetics.inventory.SharedPreferences.LAST_NAME );
+        assert null != key;
+        if (org.wheatgenetics.inventory.BuildConfig.DEBUG)
+            if (!key.equals(org.wheatgenetics.inventory.SharedPreferences.FIRST_NAME)
+            &&  !key.equals(org.wheatgenetics.inventory.SharedPreferences.LAST_NAME ))
+                throw new java.lang.AssertionError();
     }
     // endregion
 
     // region Private Methods
     private java.lang.String getString(final java.lang.String key)
     {
-        org.wheatgenetics.inventory.SharedPreferences.assertValid(key);
+        org.wheatgenetics.inventory.SharedPreferences.assertValidNameKey(key);
 
-        assert this.sharedPreferences != null;
+        assert null != this.sharedPreferences;
         return this.sharedPreferences.getString(key, "");
     }
 
     private void setString(final java.lang.String key,
     final java.lang.String oldValue, java.lang.String newValue)
     {
-        assert oldValue != null;
-        if (newValue == null) newValue = "";
+        assert null != oldValue;
+        if (null == newValue) newValue = "";
         if (!oldValue.equals(newValue))
         {
-            org.wheatgenetics.inventory.SharedPreferences.assertValid(key);
+            org.wheatgenetics.inventory.SharedPreferences.assertValidNameKey(key);
 
-            assert this.sharedPreferences != null;
+            assert null != this.sharedPreferences;
             final android.content.SharedPreferences.Editor editor = this.sharedPreferences.edit();
 
-            assert editor != null;
+            assert null != editor;
             editor.putString(key, newValue);
             editor.apply();
         }
@@ -55,7 +59,7 @@ class SharedPreferences extends java.lang.Object
 
     private int getUpdateVersion()
     {
-        assert this.sharedPreferences != null;
+        assert null != this.sharedPreferences;
         return this.sharedPreferences.getInt(
             org.wheatgenetics.inventory.SharedPreferences.UPDATE_VERSION, -1);
     }
@@ -67,16 +71,16 @@ class SharedPreferences extends java.lang.Object
     {
         super();
 
-        assert sharedPreferences != null;
+        assert null != sharedPreferences;
         this.sharedPreferences = sharedPreferences;
     }
     // endregion
 
     // region FirstName Package Methods
-    java.lang.Boolean firstNameIsSet() { return this.getFirstName().length() > 0; }
-
     java.lang.String getFirstName()
     { return this.getString(org.wheatgenetics.inventory.SharedPreferences.FIRST_NAME); }
+
+    java.lang.Boolean firstNameIsSet() { return this.getFirstName().length() > 0; }
     // endregion
 
     // region LastName Package Method
@@ -105,7 +109,7 @@ class SharedPreferences extends java.lang.Object
     // region IgnoreScale Package Methods
     java.lang.Boolean getIgnoreScale()
     {
-        assert this.sharedPreferences != null;
+        assert null != this.sharedPreferences;
         return this.sharedPreferences.getBoolean(
             org.wheatgenetics.inventory.SharedPreferences.IGNORE_SCALE, false);
     }
@@ -114,10 +118,10 @@ class SharedPreferences extends java.lang.Object
     {
         if (!this.getIgnoreScale())
         {
-            assert this.sharedPreferences != null;
+            assert null != this.sharedPreferences;
             final android.content.SharedPreferences.Editor editor = this.sharedPreferences.edit();
 
-            assert editor != null;
+            assert null != editor;
             editor.putBoolean(org.wheatgenetics.inventory.SharedPreferences.IGNORE_SCALE, true);
             editor.apply();
         }
@@ -132,10 +136,10 @@ class SharedPreferences extends java.lang.Object
     {
         if (this.getUpdateVersion() != newUpdateVersion)
         {
-            assert this.sharedPreferences != null;
+            assert null != this.sharedPreferences;
             final android.content.SharedPreferences.Editor editor = this.sharedPreferences.edit();
 
-            assert editor != null;
+            assert null != editor;
             editor.putInt(
                 org.wheatgenetics.inventory.SharedPreferences.UPDATE_VERSION, newUpdateVersion);
             editor.apply();
