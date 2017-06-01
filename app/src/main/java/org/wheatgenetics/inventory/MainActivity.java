@@ -601,6 +601,18 @@ public class MainActivity extends android.support.v7.app.AppCompatActivity
         super.onConfigurationChanged(newConfig);
         this.actionBarDrawerToggle.onConfigurationChanged(newConfig);
     }
+
+    @java.lang.Override
+    protected void onActivityResult(final int requestCode,
+    final int resultCode, final android.content.Intent data)
+    {
+        java.lang.String barcode = org.wheatgenetics.zxing.BarcodeScanner.parseActivityResult(
+            requestCode, resultCode, data);
+        if (null == barcode) barcode = "null";
+
+        assert null != this.envidEditText;
+        this.envidEditText.setText(barcode);
+    }
     // endregion
 
     private void showToast(final java.lang.CharSequence text)
