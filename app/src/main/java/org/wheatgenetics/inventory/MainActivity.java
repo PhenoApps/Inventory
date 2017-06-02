@@ -528,7 +528,6 @@ public class MainActivity extends android.support.v7.app.AppCompatActivity
         this.addTableRows();
         this.goToBottom();
 
-        assert null != this.sharedPreferences;
         this.sharedPreferences = new org.wheatgenetics.sharedpreferences.SharedPreferences(
             this.getSharedPreferences("Settings", 0));
 
