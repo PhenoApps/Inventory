@@ -34,7 +34,7 @@ class SamplesTable extends java.lang.Object
         @java.lang.Override
         public void onCreate(final android.database.sqlite.SQLiteDatabase db)
         {
-            assert db != null;
+            assert null != db;
             db.execSQL(this.createStatement);
         }
 
@@ -42,7 +42,7 @@ class SamplesTable extends java.lang.Object
         public void onUpgrade(final android.database.sqlite.SQLiteDatabase db,
         final int oldVersion, final int newVersion)
         {
-            assert db != null;
+            assert null != db;
             db.execSQL(this.dropStatement);
             this.onCreate(db);
         }
@@ -50,7 +50,6 @@ class SamplesTable extends java.lang.Object
 
     // region Private Class Constants
     private static final java.lang.String TABLE_NAME = "samples";
-
     private static final java.lang.String
         ID_FIELD_NAME     = "id"    , BOX_FIELD_NAME  = "box" , ENVID_FIELD_NAME    = "envid"   ,
         PERSON_FIELD_NAME = "person", DATE_FIELD_NAME = "date", POSITION_FIELD_NAME = "position",
@@ -66,7 +65,7 @@ class SamplesTable extends java.lang.Object
     private static android.content.ContentValues makeContentValues(
     final org.wheatgenetics.inventory.InventoryRecord inventoryRecord)
     {
-        assert inventoryRecord != null;
+        assert null != inventoryRecord;
 
         final android.content.ContentValues contentValues = new android.content.ContentValues();
 
@@ -90,7 +89,7 @@ class SamplesTable extends java.lang.Object
     // region Private Methods
     private int internalDelete(final java.lang.String whereClause)
     {
-        assert this.writableDatabase != null;
+        assert null != this.writableDatabase;
         return this.writableDatabase.delete(
             /* table       => */ org.wheatgenetics.inventory.SamplesTable.TABLE_NAME,
             /* whereClause => */ whereClause                                        ,
@@ -104,7 +103,7 @@ class SamplesTable extends java.lang.Object
         {
             android.database.Cursor cursor;
             {
-                final java.lang.String FIELD_NAMES[] = {
+                final java.lang.String columns[] = {
                     org.wheatgenetics.inventory.SamplesTable.ID_FIELD_NAME      ,
                     org.wheatgenetics.inventory.SamplesTable.BOX_FIELD_NAME     ,
                     org.wheatgenetics.inventory.SamplesTable.ENVID_FIELD_NAME   ,
@@ -112,19 +111,19 @@ class SamplesTable extends java.lang.Object
                     org.wheatgenetics.inventory.SamplesTable.DATE_FIELD_NAME    ,
                     org.wheatgenetics.inventory.SamplesTable.POSITION_FIELD_NAME,
                     org.wheatgenetics.inventory.SamplesTable.WT_FIELD_NAME      };
-                assert this.readableDatabase != null;
+                assert null != this.readableDatabase;
                 cursor = this.readableDatabase.query(
                     /* table         => */ org.wheatgenetics.inventory.SamplesTable.TABLE_NAME,
-                    /* columns       => */ FIELD_NAMES,
+                    /* columns       => */ columns                                            ,
                     /* selection     => */
                         " " + org.wheatgenetics.inventory.SamplesTable.ID_FIELD_NAME + " = ?",
                     /* selectionArgs => */ org.wheatgenetics.inventory.Utils.makeStringArray(id),
-                    /* groupBy       => */ null,
-                    /* having        => */ null,
-                    /* orderBy       => */ null,
-                    /* limit         => */ null);
+                    /* groupBy       => */ null                                                 ,
+                    /* having        => */ null                                                 ,
+                    /* orderBy       => */ null                                                 ,
+                    /* limit         => */ null                                                 );
             }
-            if (cursor != null)
+            if (null != cursor)
             {
                 if (cursor.moveToFirst()) inventoryRecord.set(
                     /* id       => */ cursor.getString(0),
@@ -145,14 +144,14 @@ class SamplesTable extends java.lang.Object
     {
         int i;
         {
-            assert inventoryRecord != null;
+            assert null != inventoryRecord;
 
             final int                           id            = inventoryRecord.getId();
             final android.content.ContentValues contentValues =
                 org.wheatgenetics.inventory.SamplesTable.makeContentValues(inventoryRecord);
 
             contentValues.put(org.wheatgenetics.inventory.SamplesTable.ID_FIELD_NAME, id);
-            assert this.writableDatabase != null;
+            assert null != this.writableDatabase;
             i = this.writableDatabase.update(
                 /* table       => */ org.wheatgenetics.inventory.SamplesTable.TABLE_NAME,
                 /* values      => */ contentValues                                      ,
@@ -192,10 +191,10 @@ class SamplesTable extends java.lang.Object
     // region Single-Record Package Methods
     void add(final org.wheatgenetics.inventory.InventoryRecord inventoryRecord)
     {
-        assert inventoryRecord != null;
+        assert null != inventoryRecord;
         inventoryRecord.sendDebugLogMsg("add()");
 
-        assert this.writableDatabase != null;
+        assert null != this.writableDatabase;
         this.writableDatabase.insert(
             /* table          => */ org.wheatgenetics.inventory.SamplesTable.TABLE_NAME,
             /* nullColumnHack => */ null                                               ,
@@ -206,7 +205,7 @@ class SamplesTable extends java.lang.Object
 
     boolean delete(final org.wheatgenetics.inventory.InventoryRecord inventoryRecord)
     {
-        assert inventoryRecord != null;
+        assert null != inventoryRecord;
         inventoryRecord.sendDebugLogMsg("delete()");
         return this.internalDelete(org.wheatgenetics.inventory.SamplesTable.POSITION_FIELD_NAME +
             "='" + inventoryRecord.getPositionAsString() + "'") > 0;
@@ -219,28 +218,26 @@ class SamplesTable extends java.lang.Object
         final org.wheatgenetics.inventory.InventoryRecords inventoryRecords =
             new org.wheatgenetics.inventory.InventoryRecords();
         {
-            assert this.writableDatabase != null;
+            assert null != this.writableDatabase;
             final android.database.Cursor cursor = this.writableDatabase.rawQuery(
                 "SELECT * FROM " + org.wheatgenetics.inventory.SamplesTable.TABLE_NAME, null);
 
-            if (cursor != null)
+            if (null != cursor)
             {
-                if (cursor.moveToFirst())
-                    do
-                        inventoryRecords.add(new org.wheatgenetics.inventory.InventoryRecord(
-                            /* id       => */ cursor.getString(0),
-                            /* box      => */ cursor.getString(1),
-                            /* envid    => */ cursor.getString(2),
-                            /* person   => */ cursor.getString(3),
-                            /* date     => */ cursor.getString(4),
-                            /* position => */ cursor.getString(5),
-                            /* wt       => */ cursor.getString(6)));
-                    while (cursor.moveToNext());
+                while (cursor.moveToNext())
+                    inventoryRecords.add(new org.wheatgenetics.inventory.InventoryRecord(
+                        /* id       => */ cursor.getString(0),
+                        /* box      => */ cursor.getString(1),
+                        /* envid    => */ cursor.getString(2),
+                        /* person   => */ cursor.getString(3),
+                        /* date     => */ cursor.getString(4),
+                        /* position => */ cursor.getString(5),
+                        /* wt       => */ cursor.getString(6)));
                 cursor.close();
             }
         }
 
-        assert this.sqLiteOpenHelper != null;
+        assert null != this.sqLiteOpenHelper;
         this.sqLiteOpenHelper.close();
 
         inventoryRecords.sendDebugLogMsg("getAll()");
@@ -251,7 +248,7 @@ class SamplesTable extends java.lang.Object
     {
         java.lang.String boxList = null;
         {
-            assert this.writableDatabase != null;
+            assert null != this.writableDatabase;
             final android.database.Cursor cursor = this.writableDatabase.query(
                 /* distinct => */ true                                               ,
                 /* table    => */ org.wheatgenetics.inventory.SamplesTable.TABLE_NAME,
@@ -264,15 +261,15 @@ class SamplesTable extends java.lang.Object
                 /* orderBy       => */ null                                                   ,
                 /* limit         => */ null                                                   );
 
-            if (cursor != null)
+            if (null != cursor)
             {
                 if (cursor.moveToFirst())
                 {
                     java.lang.String box = cursor.getString(0);
-                    while (box == null)
+                    while (null == box)
                         if (cursor.moveToNext()) box = cursor.getString(0); else break;
 
-                    if (box != null)
+                    if (null != box)
                     {
                         boxList = "'" + box + "'";
                         while (cursor.moveToNext()) boxList += ",'" + cursor.getString(0) + "'";
@@ -283,7 +280,7 @@ class SamplesTable extends java.lang.Object
             }
         }
 
-        assert this.sqLiteOpenHelper != null;
+        assert null != this.sqLiteOpenHelper;
         this.sqLiteOpenHelper.close();
 
         return boxList;
