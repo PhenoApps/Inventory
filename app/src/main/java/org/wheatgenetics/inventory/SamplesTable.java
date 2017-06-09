@@ -168,6 +168,15 @@ class SamplesTable extends java.lang.Object
     }
     // endregion
 
+    // region Protected Method
+    @java.lang.Override
+    protected void finalize() throws java.lang.Throwable
+    {
+        this.sqLiteOpenHelper.close();
+        super.finalize();
+    }
+    // endregion
+
     // region Package Methods
     // region Constructor Package Method
     SamplesTable(final android.content.Context context)
