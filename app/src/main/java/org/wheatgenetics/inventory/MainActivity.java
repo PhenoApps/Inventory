@@ -11,8 +11,10 @@ package org.wheatgenetics.inventory;
  * android.support.v7.app.AppCompatActivity
  * android.support.v7.widget.Toolbar
  * android.view.Menu
+ * andorid.view.MenuInflater
  * android.view.MenuItem
  *
+ * org.wheatgenetics.androidlibrary.R
  * org.wheatgenetics.inventory.NavigationItemSelectedListener
  * org.wheatgenetics.inventory.NavigationItemSelectedListener.DrawerCloser
  * org.wheatgenetics.inventory.R
@@ -84,8 +86,8 @@ public class MainActivity extends android.support.v7.app.AppCompatActivity
     @java.lang.Override
     public boolean onCreateOptionsMenu(final android.view.Menu menu)
     {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        this.getMenuInflater().inflate(org.wheatgenetics.inventory.R.menu.main, menu);
+        new android.view.MenuInflater(this).inflate(
+            org.wheatgenetics.androidlibrary.R.menu.camera_options_menu, menu);
         return true;
     }
 
@@ -98,7 +100,7 @@ public class MainActivity extends android.support.v7.app.AppCompatActivity
         final int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (org.wheatgenetics.inventory.R.id.action_settings == id)           // From menu/main.xml.
+        if (org.wheatgenetics.androidlibrary.R.id.cameraOptionsMenuItem == id)
             return true;
         else
             return super.onOptionsItemSelected(item);
