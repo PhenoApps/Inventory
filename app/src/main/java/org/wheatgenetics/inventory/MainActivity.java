@@ -13,11 +13,12 @@ package org.wheatgenetics.inventory;
  * android.view.Menu
  * android.view.MenuItem
  *
+ * org.wheatgenetics.inventory.NavigationItemSelectedListener
+ * org.wheatgenetics.inventory.NavigationItemSelectedListener.DrawerCloser
  * org.wheatgenetics.inventory.R
  */
 
 public class MainActivity extends android.support.v7.app.AppCompatActivity
-implements android.support.design.widget.NavigationView.OnNavigationItemSelectedListener
 {
     private android.support.v4.widget.DrawerLayout drawerLayout = null;
 
@@ -56,7 +57,18 @@ implements android.support.design.widget.NavigationView.OnNavigationItemSelected
             (android.support.design.widget.NavigationView)
             this.findViewById(org.wheatgenetics.inventory.R.id.nav_view);       // From layout/ac-
         assert null != navigationView;                                          //  tivity_main.xml.
-        navigationView.setNavigationItemSelectedListener(this);
+        navigationView.setNavigationItemSelectedListener(
+            new org.wheatgenetics.inventory.NavigationItemSelectedListener(
+                new org.wheatgenetics.inventory.NavigationItemSelectedListener.DrawerCloser()
+                {
+                    @java.lang.Override
+                    public void closeDrawer()
+                    {
+                        assert null != org.wheatgenetics.inventory.MainActivity.this.drawerLayout;
+                        org.wheatgenetics.inventory.MainActivity.this.drawerLayout.closeDrawer(
+                            android.support.v4.view.GravityCompat.START);
+                    }
+                }));
     }
 
     @java.lang.Override
@@ -90,28 +102,5 @@ implements android.support.design.widget.NavigationView.OnNavigationItemSelected
             return true;
         else
             return super.onOptionsItemSelected(item);
-    }
-
-    /**
-     * Overrides abstract method in android.support.design.widget.NavigationView.OnNavigationItemSe-
-     * lectedListener.
-     */
-    @java.lang.Override
-    public boolean onNavigationItemSelected(final android.view.MenuItem item)
-    {
-        // Handle navigation view item clicks here.
-        switch (item.getItemId())
-        {
-            case org.wheatgenetics.inventory.R.id.nav_camera   : break;                // From
-            case org.wheatgenetics.inventory.R.id.nav_gallery  : break;                //  menu/-
-            case org.wheatgenetics.inventory.R.id.nav_slideshow: break;                //  activity-
-            case org.wheatgenetics.inventory.R.id.nav_manage   : break;                //  _main-
-            case org.wheatgenetics.inventory.R.id.nav_share    : break;                //  _drawer-
-            case org.wheatgenetics.inventory.R.id.nav_send     : break;                //  .xml.
-        }
-
-        assert null != this.drawerLayout;
-        this.drawerLayout.closeDrawer(android.support.v4.view.GravityCompat.START);
-        return true;
     }
 }
