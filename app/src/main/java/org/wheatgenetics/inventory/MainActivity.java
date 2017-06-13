@@ -18,6 +18,8 @@ package org.wheatgenetics.inventory;
 public class MainActivity extends android.support.v7.app.AppCompatActivity
 implements android.support.design.widget.NavigationView.OnNavigationItemSelectedListener
 {
+    private android.support.v4.widget.DrawerLayout drawer = null;
+
     @java.lang.Override
     protected void onCreate(final android.os.Bundle savedInstanceState)
     {
@@ -26,39 +28,35 @@ implements android.support.design.widget.NavigationView.OnNavigationItemSelected
 
         {
             final android.support.v7.widget.Toolbar toolbar = (android.support.v7.widget.Toolbar)
-                this.findViewById(org.wheatgenetics.inventory.R.id.toolbar);
-            this.setSupportActionBar(toolbar);
+                this.findViewById(org.wheatgenetics.inventory.R.id.toolbar);     // From layout/app-
+            this.setSupportActionBar(toolbar);                                   //  _bar_main.xml.
 
+            this.drawer = (android.support.v4.widget.DrawerLayout) this.findViewById(
+                org.wheatgenetics.inventory.R.id.drawer_layout);   // From layout/activity_main.xml.
             {
-                final android.support.v4.widget.DrawerLayout drawer =
-                    (android.support.v4.widget.DrawerLayout)
-                    this.findViewById(org.wheatgenetics.inventory.R.id.drawer_layout);
                 final android.support.v7.app.ActionBarDrawerToggle toggle =
-                    new android.support.v7.app.ActionBarDrawerToggle(this, drawer, toolbar,
-                        org.wheatgenetics.inventory.R.string.navigation_drawer_open,
+                    new android.support.v7.app.ActionBarDrawerToggle(this, this.drawer, toolbar,
+                        org.wheatgenetics.inventory.R.string.navigation_drawer_open ,
                         org.wheatgenetics.inventory.R.string.navigation_drawer_close);
-                assert null != drawer;
-                drawer.setDrawerListener(toggle);
+                assert null != this.drawer;
+                this.drawer.setDrawerListener(toggle);
                 toggle.syncState();
             }
         }
 
         final android.support.design.widget.NavigationView navigationView =
             (android.support.design.widget.NavigationView)
-            this.findViewById(org.wheatgenetics.inventory.R.id.nav_view);
-        assert null != navigationView;
+            this.findViewById(org.wheatgenetics.inventory.R.id.nav_view);       // From layout/ac-
+        assert null != navigationView;                                          //  tivity_main.xml.
         navigationView.setNavigationItemSelectedListener(this);
     }
 
     @java.lang.Override
     public void onBackPressed()
     {
-        final android.support.v4.widget.DrawerLayout drawer =
-            (android.support.v4.widget.DrawerLayout)
-            this.findViewById(org.wheatgenetics.inventory.R.id.drawer_layout);
-        assert null != drawer;
-        if (drawer.isDrawerOpen(android.support.v4.view.GravityCompat.START))
-            drawer.closeDrawer(android.support.v4.view.GravityCompat.START);
+        assert null != this.drawer;
+        if (this.drawer.isDrawerOpen(android.support.v4.view.GravityCompat.START))
+            this.drawer.closeDrawer(android.support.v4.view.GravityCompat.START);
         else
             super.onBackPressed();
     }
@@ -80,7 +78,7 @@ implements android.support.design.widget.NavigationView.OnNavigationItemSelected
         final int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (org.wheatgenetics.inventory.R.id.action_settings == id)
+        if (org.wheatgenetics.inventory.R.id.action_settings == id)           // From menu/main.xml.
             return true;
         else
             return super.onOptionsItemSelected(item);
@@ -96,19 +94,16 @@ implements android.support.design.widget.NavigationView.OnNavigationItemSelected
         // Handle navigation view item clicks here.
         switch (item.getItemId())
         {
-            case org.wheatgenetics.inventory.R.id.nav_camera   : break;
-            case org.wheatgenetics.inventory.R.id.nav_gallery  : break;
-            case org.wheatgenetics.inventory.R.id.nav_slideshow: break;
-            case org.wheatgenetics.inventory.R.id.nav_manage   : break;
-            case org.wheatgenetics.inventory.R.id.nav_share    : break;
-            case org.wheatgenetics.inventory.R.id.nav_send     : break;
+            case org.wheatgenetics.inventory.R.id.nav_camera   : break;                // From
+            case org.wheatgenetics.inventory.R.id.nav_gallery  : break;                //  menu/-
+            case org.wheatgenetics.inventory.R.id.nav_slideshow: break;                //  activity-
+            case org.wheatgenetics.inventory.R.id.nav_manage   : break;                //  _main-
+            case org.wheatgenetics.inventory.R.id.nav_share    : break;                //  _drawer-
+            case org.wheatgenetics.inventory.R.id.nav_send     : break;                //  .xml.
         }
 
-        final android.support.v4.widget.DrawerLayout drawer =
-            (android.support.v4.widget.DrawerLayout)
-            this.findViewById(org.wheatgenetics.inventory.R.id.drawer_layout);
-        assert null != drawer;
-        drawer.closeDrawer(android.support.v4.view.GravityCompat.START);
+        assert null != this.drawer;
+        this.drawer.closeDrawer(android.support.v4.view.GravityCompat.START);
         return true;
     }
 }
