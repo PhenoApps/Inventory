@@ -3,9 +3,7 @@ package org.wheatgenetics.inventory;
 /**
  * Uses:
  * android.os.Bundle
- * android.support.design.widget.FloatingActionButton
  * android.support.design.widget.NavigationView
- * android.support.design.widget.Snackbar
  * android.support.v4.view.GravityCompat
  * android.support.v4.widget.DrawerLayout
  * android.support.v7.app.ActionBarDrawerToggle
@@ -13,7 +11,6 @@ package org.wheatgenetics.inventory;
  * android.support.v7.widget.Toolbar
  * android.view.Menu
  * android.view.MenuItem
- * android.view.View
  *
  * org.wheatgenetics.inventory.R
  */
@@ -31,24 +28,6 @@ implements android.support.design.widget.NavigationView.OnNavigationItemSelected
             final android.support.v7.widget.Toolbar toolbar = (android.support.v7.widget.Toolbar)
                 this.findViewById(org.wheatgenetics.inventory.R.id.toolbar);
             this.setSupportActionBar(toolbar);
-
-            {
-                final android.support.design.widget.FloatingActionButton fab =
-                    (android.support.design.widget.FloatingActionButton)
-                    this.findViewById(org.wheatgenetics.inventory.R.id.fab);
-                assert null != fab;
-                fab.setOnClickListener(new android.view.View.OnClickListener()
-                    {
-                        @java.lang.Override
-                        public void onClick(final android.view.View view)
-                        {
-                            android.support.design.widget.Snackbar.make(view,
-                                "Replace with your own action",
-                                android.support.design.widget.Snackbar.LENGTH_LONG).setAction(
-                                    "Action", null).show();
-                        }
-                    });
-            }
 
             {
                 final android.support.v4.widget.DrawerLayout drawer =
