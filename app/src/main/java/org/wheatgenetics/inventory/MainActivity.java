@@ -20,13 +20,15 @@ package org.wheatgenetics.inventory;
  * org.wheatgenetics.inventory.NavigationItemSelectedListener
  * org.wheatgenetics.inventory.NavigationItemSelectedListener.DrawerCloser
  * org.wheatgenetics.inventory.R
+ * org.wheatgenetics.sharedpreferences.SharedPreferences
  * org.wheatgenetics.zxing.BarcodeScanner
  */
 
 public class MainActivity extends android.support.v7.app.AppCompatActivity
 {
-    private android.support.v4.widget.DrawerLayout drawerLayout   = null;
-    private org.wheatgenetics.zxing.BarcodeScanner barcodeScanner = null;
+    private android.support.v4.widget.DrawerLayout                drawerLayout   = null;
+    private org.wheatgenetics.zxing.BarcodeScanner                barcodeScanner = null;
+    private org.wheatgenetics.sharedpreferences.SharedPreferences sharedPreferences;
 
     @java.lang.Override
     protected void onCreate(final android.os.Bundle savedInstanceState)
@@ -75,6 +77,9 @@ public class MainActivity extends android.support.v7.app.AppCompatActivity
                             android.support.v4.view.GravityCompat.START);
                     }
                 }));
+
+        this.sharedPreferences = new org.wheatgenetics.sharedpreferences.SharedPreferences(
+            this.getSharedPreferences("Settings", 0));
     }
 
     @java.lang.Override
