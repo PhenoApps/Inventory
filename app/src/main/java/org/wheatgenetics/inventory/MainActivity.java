@@ -2,6 +2,7 @@ package org.wheatgenetics.inventory;
 
 /**
  * Uses:
+ * android.content.Intent
  * android.os.Bundle
  * android.support.design.widget.NavigationView
  * android.support.v4.view.GravityCompat
@@ -13,16 +14,19 @@ package org.wheatgenetics.inventory;
  * android.view.Menu
  * andorid.view.MenuInflater
  * android.view.MenuItem
+ * android.widget.TextView
  *
  * org.wheatgenetics.androidlibrary.R
  * org.wheatgenetics.inventory.NavigationItemSelectedListener
  * org.wheatgenetics.inventory.NavigationItemSelectedListener.DrawerCloser
  * org.wheatgenetics.inventory.R
+ * org.wheatgenetics.zxing.BarcodeScanner
  */
 
 public class MainActivity extends android.support.v7.app.AppCompatActivity
 {
-    private android.support.v4.widget.DrawerLayout drawerLayout = null;
+    private android.support.v4.widget.DrawerLayout drawerLayout   = null;
+    private org.wheatgenetics.zxing.BarcodeScanner barcodeScanner = null;
 
     @java.lang.Override
     protected void onCreate(final android.os.Bundle savedInstanceState)
@@ -101,8 +105,27 @@ public class MainActivity extends android.support.v7.app.AppCompatActivity
 
         //noinspection SimplifiableIfStatement
         if (org.wheatgenetics.androidlibrary.R.id.cameraOptionsMenuItem == id)
+        {
+            if (null == this.barcodeScanner)
+                this.barcodeScanner = new org.wheatgenetics.zxing.BarcodeScanner(this);
+            this.barcodeScanner.scan();
             return true;
+        }
         else
             return super.onOptionsItemSelected(item);
+    }
+
+    @java.lang.Override
+    protected void onActivityResult(final int requestCode,
+    final int resultCode, final android.content.Intent data)
+    {
+        java.lang.String barcode = org.wheatgenetics.zxing.BarcodeScanner.parseActivityResult(
+            requestCode, resultCode, data);
+        if (null == barcode) barcode = "null";
+
+        final android.widget.TextView textView =
+            (android.widget.TextView) this.findViewById(org.wheatgenetics.inventory.R.id.textView);
+        assert null != textView;
+        textView.setText(barcode);
     }
 }
