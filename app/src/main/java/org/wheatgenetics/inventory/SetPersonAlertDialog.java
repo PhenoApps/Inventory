@@ -19,15 +19,15 @@ package org.wheatgenetics.inventory;
 
 class SetPersonAlertDialog extends java.lang.Object
 {
-    interface PersonSetter
+    interface PersonStorer
     {
-        void setPerson(@android.support.annotation.NonNull
+        void storePerson(@android.support.annotation.NonNull
         final org.wheatgenetics.inventory.model.Person person);
     }
 
     // region Fields
     private final android.content.Context                                       context     ;
-    private final org.wheatgenetics.inventory.SetPersonAlertDialog.PersonSetter personSetter;
+    private final org.wheatgenetics.inventory.SetPersonAlertDialog.PersonStorer personStorer;
 
     private android.app.AlertDialog alertDialog       = null                         ;
     private android.widget.EditText firstNameEditText = null, lastNameEditText = null;
@@ -35,12 +35,12 @@ class SetPersonAlertDialog extends java.lang.Object
 
     SetPersonAlertDialog(@android.support.annotation.NonNull final android.content.Context context,
     @android.support.annotation.NonNull
-    final org.wheatgenetics.inventory.SetPersonAlertDialog.PersonSetter personSetter)
+    final org.wheatgenetics.inventory.SetPersonAlertDialog.PersonStorer personStorer)
     {
         super();
 
         this.context      = context     ;
-        this.personSetter = personSetter;
+        this.personStorer = personStorer;
     }
 
     // region Private Methods
@@ -53,7 +53,7 @@ class SetPersonAlertDialog extends java.lang.Object
             this.lastNameEditText.getText ().toString());
     }
 
-    private void sendPerson() { this.personSetter.setPerson(this.makePerson()); }
+    private void storePerson() { this.personStorer.storePerson(this.makePerson()); }
     // endregion
 
     void show(final org.wheatgenetics.inventory.model.Person person)
@@ -87,7 +87,7 @@ class SetPersonAlertDialog extends java.lang.Object
                                 final int which)
                                 {
                                     org.wheatgenetics.inventory.
-                                        SetPersonAlertDialog.this.sendPerson();
+                                        SetPersonAlertDialog.this.storePerson();
                                 }
                             });
                 }

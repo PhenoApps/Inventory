@@ -15,6 +15,7 @@ package org.wheatgenetics.inventory;
  * android.view.Menu
  * andorid.view.MenuInflater
  * android.view.MenuItem
+ * android.view.View
  * android.widget.TextView
  * android.widget.Toast
  *
@@ -23,7 +24,7 @@ package org.wheatgenetics.inventory;
  * org.wheatgenetics.inventory.NavigationItemSelectedListener.DrawerCloser
  * org.wheatgenetics.inventory.R
  * org.wheatgenetics.inventory.SetPersonAlertDialog
- * org.wheatgenetics.inventory.SetPersonAlertDialog.PersonSetter
+ * org.wheatgenetics.inventory.SetPersonAlertDialog.PersonStorer
  * org.wheatgenetics.sharedpreferences.SharedPreferences
  * org.wheatgenetics.zxing.BarcodeScanner
  */
@@ -35,6 +36,7 @@ public class MainActivity extends android.support.v7.app.AppCompatActivity
     private org.wheatgenetics.inventory.SetPersonAlertDialog      setPersonAlertDialog = null;
     private org.wheatgenetics.zxing.BarcodeScanner                barcodeScanner       = null;
 
+    // region Overridden Methods
     @java.lang.Override
     protected void onCreate(final android.os.Bundle savedInstanceState)
     {
@@ -59,7 +61,12 @@ public class MainActivity extends android.support.v7.app.AppCompatActivity
                 final android.support.v7.app.ActionBarDrawerToggle toggle = new
                     android.support.v7.app.ActionBarDrawerToggle(this, this.drawerLayout, toolbar,
                         org.wheatgenetics.inventory.R.string.navigation_drawer_open ,
-                        org.wheatgenetics.inventory.R.string.navigation_drawer_close);
+                        org.wheatgenetics.inventory.R.string.navigation_drawer_close)
+                        {
+                            @java.lang.Override
+                            public void onDrawerOpened(final android.view.View drawerView)
+                            { org.wheatgenetics.inventory.MainActivity.this.displayPerson(); }
+                        };
                 assert null != this.drawerLayout;
                 this.drawerLayout.setDrawerListener(toggle);
                 toggle.syncState();
@@ -89,12 +96,12 @@ public class MainActivity extends android.support.v7.app.AppCompatActivity
         {
             if (null == this.setPersonAlertDialog) this.setPersonAlertDialog =
                 new org.wheatgenetics.inventory.SetPersonAlertDialog(this,
-                    new org.wheatgenetics.inventory.SetPersonAlertDialog.PersonSetter()
+                    new org.wheatgenetics.inventory.SetPersonAlertDialog.PersonStorer()
                     {
                         @java.lang.Override
-                        public void setPerson(@android.support.annotation.NonNull
+                        public void storePerson(@android.support.annotation.NonNull
                         final org.wheatgenetics.inventory.model.Person person)
-                        { org.wheatgenetics.inventory.MainActivity.this.setPerson(person); }
+                        { org.wheatgenetics.inventory.MainActivity.this.storePerson(person); }
                     });
             this.setPersonAlertDialog.show();
         }
@@ -151,11 +158,13 @@ public class MainActivity extends android.support.v7.app.AppCompatActivity
         assert null != textView;
         textView.setText(barcode);
     }
+    // endregion
 
+    // region Private Methods
     private void showToast(final java.lang.CharSequence text)
     { android.widget.Toast.makeText(this, text, android.widget.Toast.LENGTH_SHORT).show(); }
 
-    private void setPerson(@android.support.annotation.NonNull
+    private void storePerson(@android.support.annotation.NonNull
     final org.wheatgenetics.inventory.model.Person person)
     {
         assert null != this.sharedPreferences;
@@ -164,4 +173,14 @@ public class MainActivity extends android.support.v7.app.AppCompatActivity
             this.getResources().getString(org.wheatgenetics.inventory.R.string.setPersonMsg) +
             person.toString()                                                               );
     }
+
+    private void displayPerson()
+    {
+        final android.widget.TextView personTextView = (android.widget.TextView)
+            this.findViewById(org.wheatgenetics.inventory.R.id.personTextView);
+        assert null != this.sharedPreferences;
+        assert null != personTextView        ;
+        personTextView.setText(this.sharedPreferences.getPerson().toString());
+    }
+    // endregion
 }

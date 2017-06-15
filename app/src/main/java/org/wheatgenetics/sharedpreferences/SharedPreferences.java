@@ -86,11 +86,13 @@ extends org.wheatgenetics.sharedpreferences.UpdateVersionSharedPreferences
     // endregion
 
     // region Person Public Methods
-    public boolean personIsSet()
+    public org.wheatgenetics.inventory.model.Person getPerson()
     {
         return new org.wheatgenetics.inventory.model.Person(
-            this.getFirstName(), this.getLastName()).isSet();
+            this.getFirstName(), this.getLastName());
     }
+
+    public boolean personIsSet() { return this.getPerson().isSet(); }
 
     public void setPerson(final org.wheatgenetics.inventory.model.Person person)
     {
