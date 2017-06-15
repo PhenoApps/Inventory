@@ -98,7 +98,7 @@ public class MainActivity extends android.support.v7.app.AppCompatActivity
                     {
                         @java.lang.Override
                         public void setPerson()
-                        { org.wheatgenetics.inventory.MainActivity.this.setPerson(); }
+                        { org.wheatgenetics.inventory.MainActivity.this.setPerson(true); }
                     }));
         }
         // endregion
@@ -106,7 +106,7 @@ public class MainActivity extends android.support.v7.app.AppCompatActivity
         // region Set person.
         this.sharedPreferences = new org.wheatgenetics.sharedpreferences.SharedPreferences(
             this.getSharedPreferences("Settings", 0));
-        if (!this.sharedPreferences.personIsSet()) this.setPerson();
+        if (!this.sharedPreferences.personIsSet()) this.setPerson(false);
         // endregion
 
         // region Set version.
@@ -136,7 +136,7 @@ public class MainActivity extends android.support.v7.app.AppCompatActivity
     {
         assert null != this.drawerLayout;
         if (this.drawerLayout.isDrawerOpen(android.support.v4.view.GravityCompat.START))
-            this.drawerLayout.closeDrawer(android.support.v4.view.GravityCompat.START);
+            this.closeDrawer();
         else
             super.onBackPressed();
     }
@@ -185,6 +185,7 @@ public class MainActivity extends android.support.v7.app.AppCompatActivity
     // endregion
 
     // region Private Methods
+    // region Private Private Methods
     private void showToast(final java.lang.CharSequence text)
     { android.widget.Toast.makeText(this, text, android.widget.Toast.LENGTH_SHORT).show(); }
 
@@ -197,6 +198,7 @@ public class MainActivity extends android.support.v7.app.AppCompatActivity
             this.getResources().getString(org.wheatgenetics.inventory.R.string.setPersonMsg) +
                 person.toString()                                                               );
     }
+    // endregion
 
     private void displayPerson()
     {
@@ -213,7 +215,7 @@ public class MainActivity extends android.support.v7.app.AppCompatActivity
         this.drawerLayout.closeDrawer(android.support.v4.view.GravityCompat.START);
     }
 
-    private void setPerson()
+    private void setPerson(final boolean fromMenu)
     {
         if (null == this.setPersonAlertDialog)
             this.setPersonAlertDialog = new org.wheatgenetics.inventory.SetPersonAlertDialog(this,
@@ -224,7 +226,13 @@ public class MainActivity extends android.support.v7.app.AppCompatActivity
                     final org.wheatgenetics.inventory.model.Person person)
                     { org.wheatgenetics.inventory.MainActivity.this.storePerson(person); }
                 });
-        this.setPersonAlertDialog.show();
+
+        if (fromMenu)
+        {
+            assert null != this.sharedPreferences;
+            this.setPersonAlertDialog.show(this.sharedPreferences.getPerson());
+        }
+        else this.setPersonAlertDialog.show();
     }
     // endregion
 }
