@@ -2,8 +2,11 @@ package org.wheatgenetics.sharedpreferences;
 
 /** Uses:
  * android.content.SharedPreferences
+ * android.support.annotation.NonNull
+ * android.util.Log
  *
  * org.wheatgenetics.inventory.BuildConfig
+ * org.wheatgenetics.inventory.PersonModel
  * org.wheatgenetics.sharedpreferences.UpdateVersionSharedPreferences
  */
 
@@ -14,9 +17,8 @@ extends org.wheatgenetics.sharedpreferences.UpdateVersionSharedPreferences
         FIRST_NAME = "FirstName", LAST_NAME = "LastName", IGNORE_SCALE = "ignoreScale";
 
     @java.lang.Override
-    void validateStringKey(final java.lang.String key)
+    void validateStringKey(@android.support.annotation.NonNull final java.lang.String key)
     {
-        assert null != key;
         if (org.wheatgenetics.inventory.BuildConfig.DEBUG
         &&  !key.equals(org.wheatgenetics.sharedpreferences.SharedPreferences.FIRST_NAME)
         &&  !key.equals(org.wheatgenetics.sharedpreferences.SharedPreferences.LAST_NAME ))
@@ -24,17 +26,57 @@ extends org.wheatgenetics.sharedpreferences.UpdateVersionSharedPreferences
     }
 
     // region Private Methods
-    private java.lang.String getFirstName()
+    private static int sendDebugLogMsg(
+    @android.support.annotation.NonNull final java.lang.String tag,
+    @android.support.annotation.NonNull       java.lang.String msg)
     {
-        return this.getString(org.wheatgenetics.sharedpreferences.SharedPreferences.FIRST_NAME,
-            /* validateKey => */ true);
+        if (msg.equals("")) msg = "empty";
+        return android.util.Log.d("SharedPreferences." + tag, msg);
     }
 
+    // region First Name Private Methods
+    private java.lang.String getFirstName()
+    {
+        final java.lang.String firstName = this.getString(
+            org.wheatgenetics.sharedpreferences.SharedPreferences.FIRST_NAME,
+            /* validateKey => */ true                                       );
+        org.wheatgenetics.sharedpreferences.SharedPreferences.sendDebugLogMsg(
+            "getFirstName()", firstName);
+        return firstName;
+    }
+
+    private void setFirstName(final java.lang.String firstName)
+    {
+        this.setString(org.wheatgenetics.sharedpreferences.SharedPreferences.FIRST_NAME,
+            /* oldValue    => */ this.getFirstName(),
+            /* newValue    => */ firstName          ,
+            /* validateKey => */ true               );
+        org.wheatgenetics.sharedpreferences.SharedPreferences.sendDebugLogMsg(
+            "setFirstName()", this.getFirstName());
+    }
+    // endregion
+
+    // region Last Name Private Methods
     private java.lang.String getLastName()
     {
-        return this.getString(org.wheatgenetics.sharedpreferences.SharedPreferences.LAST_NAME,
-            /* validateKey => */ true);
+        final java.lang.String lastName = this.getString(
+            org.wheatgenetics.sharedpreferences.SharedPreferences.LAST_NAME,
+            /* validateKey => */ true                                      );
+        org.wheatgenetics.sharedpreferences.SharedPreferences.sendDebugLogMsg(
+            "getLastName()", lastName);
+        return lastName;
     }
+
+    private void setLastName(final java.lang.String lastName)
+    {
+        this.setString(org.wheatgenetics.sharedpreferences.SharedPreferences.LAST_NAME,
+            /* oldValue    => */ this.getLastName(),
+            /* newValue    => */ lastName          ,
+            /* validateKey => */ true              );
+        org.wheatgenetics.sharedpreferences.SharedPreferences.sendDebugLogMsg(
+            "setLastName()", this.getLastName());
+    }
+    // endregion
     // endregion
 
     // region Public Methods
@@ -43,9 +85,26 @@ extends org.wheatgenetics.sharedpreferences.UpdateVersionSharedPreferences
     { super(sharedPreferences); }
     // endregion
 
-    // region Person Public Method
+    // region Person Public Methods
     public boolean personIsSet()
-    { return this.getFirstName().length() > 0 && this.getLastName().length() > 0; }
+    { return this.getFirstName().length() > 0 || this.getLastName().length() > 0; }
+
+    public void setPerson(final org.wheatgenetics.inventory.PersonModel personModel)
+    {
+        java.lang.String firstName, lastName;
+        if (null == personModel)
+        {
+            firstName = null;
+            lastName  = null;
+        }
+        else
+        {
+            firstName = personModel.firstName;
+            lastName  = personModel.lastName ;
+        }
+        this.setFirstName(firstName);
+        this.setLastName (lastName );
+    }
     // endregion
 
     // region FirstName Public Methods
