@@ -3,6 +3,7 @@ package org.wheatgenetics.inventory;
 /**
  * Uses:
  * android.content.Intent
+ * android.content.pm.PackageManager.NameNotFoundException
  * android.os.Bundle
  * android.support.annotation.NonNull
  * android.support.design.widget.NavigationView
@@ -20,6 +21,7 @@ package org.wheatgenetics.inventory;
  * android.widget.Toast
  *
  * org.wheatgenetics.androidlibrary.R
+ * org.wheatgenetics.changelog.ChangeLogAlertDialog
  * org.wheatgenetics.inventory.NavigationItemSelectedListener
  * org.wheatgenetics.inventory.NavigationItemSelectedListener.DrawerCloser
  * org.wheatgenetics.inventory.R
@@ -31,10 +33,15 @@ package org.wheatgenetics.inventory;
 
 public class MainActivity extends android.support.v7.app.AppCompatActivity
 {
-    private android.support.v4.widget.DrawerLayout                drawerLayout         = null;
+    // region Fields
+    private android.support.v4.widget.DrawerLayout drawerLayout = null;
+
     private org.wheatgenetics.sharedpreferences.SharedPreferences sharedPreferences          ;
-    private org.wheatgenetics.inventory.SetPersonAlertDialog      setPersonAlertDialog = null;
+    private org.wheatgenetics.changelog.ChangeLogAlertDialog      changeLogAlertDialog = null;
     private org.wheatgenetics.zxing.BarcodeScanner                barcodeScanner       = null;
+
+    private org.wheatgenetics.inventory.SetPersonAlertDialog setPersonAlertDialog = null;
+    // endregion
 
     // region Overridden Methods
     @java.lang.Override
@@ -46,6 +53,7 @@ public class MainActivity extends android.support.v7.app.AppCompatActivity
         this.drawerLayout = (android.support.v4.widget.DrawerLayout) this.findViewById(
             org.wheatgenetics.inventory.R.id.drawer_layout);       // From layout/activity_main.xml.
 
+        // region Configure action bar.
         {
             final android.support.v7.widget.Toolbar toolbar = (android.support.v7.widget.Toolbar)
                 this.findViewById(org.wheatgenetics.inventory.R.id.toolbar);     // From layout/app-
@@ -57,44 +65,70 @@ public class MainActivity extends android.support.v7.app.AppCompatActivity
                 if (null != supportActionBar) supportActionBar.setTitle(null);
             }
 
-            {
-                final android.support.v7.app.ActionBarDrawerToggle toggle = new
-                    android.support.v7.app.ActionBarDrawerToggle(this, this.drawerLayout, toolbar,
-                        org.wheatgenetics.inventory.R.string.navigation_drawer_open ,
-                        org.wheatgenetics.inventory.R.string.navigation_drawer_close)
-                        {
-                            @java.lang.Override
-                            public void onDrawerOpened(final android.view.View drawerView)
-                            { org.wheatgenetics.inventory.MainActivity.this.displayPerson(); }
-                        };
-                assert null != this.drawerLayout;
-                this.drawerLayout.setDrawerListener(toggle);
-                toggle.syncState();
-            }
+            final android.support.v7.app.ActionBarDrawerToggle toggle =
+                new android.support.v7.app.ActionBarDrawerToggle(this, this.drawerLayout, toolbar,
+                org.wheatgenetics.inventory.R.string.navigation_drawer_open ,
+                org.wheatgenetics.inventory.R.string.navigation_drawer_close)
+                {
+                    @java.lang.Override
+                    public void onDrawerOpened(final android.view.View drawerView)
+                    { org.wheatgenetics.inventory.MainActivity.this.displayPerson(); }
+                };
+            assert null != this.drawerLayout;
+            this.drawerLayout.setDrawerListener(toggle);
+            toggle.syncState();
         }
+        // endregion
 
-        final android.support.design.widget.NavigationView navigationView =
-            (android.support.design.widget.NavigationView)
-                this.findViewById(org.wheatgenetics.inventory.R.id.nav_view);   // From layout/ac-
-        assert null != navigationView;                                          //  tivity_main.xml.
-        navigationView.setNavigationItemSelectedListener(
-            new org.wheatgenetics.inventory.NavigationItemSelectedListener(
-                new org.wheatgenetics.inventory.NavigationItemSelectedListener.DrawerCloser()
-                {
-                    @java.lang.Override
-                    public void closeDrawer()
-                    { org.wheatgenetics.inventory.MainActivity.this.closeDrawer(); }
-                },
-                new org.wheatgenetics.inventory.NavigationItemSelectedListener.PersonSetter()
-                {
-                    @java.lang.Override
-                    public void setPerson()
-                    { org.wheatgenetics.inventory.MainActivity.this.setPerson(); }
-                }));
+        // region Configure navigation menu.
+        {
+            final android.support.design.widget.NavigationView navigationView =
+                (android.support.design.widget.NavigationView) this.findViewById(
+                    org.wheatgenetics.inventory.R.id.nav_view);                 // From layout/ac-
+            assert null != navigationView;                                      //  tivity_main.xml.
+            navigationView.setNavigationItemSelectedListener(
+                new org.wheatgenetics.inventory.NavigationItemSelectedListener(
+                    new org.wheatgenetics.inventory.NavigationItemSelectedListener.DrawerCloser()
+                    {
+                        @java.lang.Override
+                        public void closeDrawer()
+                        { org.wheatgenetics.inventory.MainActivity.this.closeDrawer(); }
+                    },
+                    new org.wheatgenetics.inventory.NavigationItemSelectedListener.PersonSetter()
+                    {
+                        @java.lang.Override
+                        public void setPerson()
+                        { org.wheatgenetics.inventory.MainActivity.this.setPerson(); }
+                    }));
+        }
+        // endregion
 
+        // region Set person.
         this.sharedPreferences = new org.wheatgenetics.sharedpreferences.SharedPreferences(
             this.getSharedPreferences("Settings", 0));
         if (!this.sharedPreferences.personIsSet()) this.setPerson();
+        // endregion
+
+        // region Set version.
+        int versionCode;
+        try
+        {
+            versionCode = this.getPackageManager().getPackageInfo(
+                this.getPackageName(), 0).versionCode;
+        }
+        catch (final android.content.pm.PackageManager.NameNotFoundException e) { versionCode = 0; }
+
+        if (!this.sharedPreferences.updateVersionIsSet(versionCode))
+        {
+            this.sharedPreferences.setUpdateVersion(versionCode);
+            if (null == this.changeLogAlertDialog) this.changeLogAlertDialog =
+                new org.wheatgenetics.changelog.ChangeLogAlertDialog(
+                    /* context                => */ this,
+                    /* changeLogRawResourceId => */
+                        org.wheatgenetics.inventory.R.raw.changelog_releases);
+            try { this.changeLogAlertDialog.show(); } catch (final java.io.IOException e) {}
+        }
+        // endregion
     }
 
     @java.lang.Override

@@ -112,39 +112,7 @@ extends org.wheatgenetics.sharedpreferences.UpdateVersionSharedPreferences
     }
     // endregion
 
-    // region FirstName Public Methods
-//    public java.lang.String getFirstName()
-//    {
-//        return this.getString(org.wheatgenetics.sharedpreferences.SharedPreferences.FIRST_NAME,
-//            /* validateKey => */ true);
-//    }
-
-//    public boolean firstNameIsSet() { return this.getFirstName().length() > 0; }
-    // endregion
-
-    // region LastName Public Method
-//    public java.lang.String getLastName()
-//    {
-//        return this.getString(org.wheatgenetics.sharedpreferences.SharedPreferences.LAST_NAME,
-//            /* validateKey => */ true);
-//    }
-    // endregion
-
-    // region Name Public Methods
-//    public void setName(final java.lang.String firstName, final java.lang.String lastName)
-//    {
-//        this.setString(org.wheatgenetics.sharedpreferences.SharedPreferences.FIRST_NAME,
-//            /* oldValue    => */ this.getFirstName(),
-//            /* newValue    => */ firstName          ,
-//            /* validateKey => */ true               );
-//        this.setString(org.wheatgenetics.sharedpreferences.SharedPreferences.LAST_NAME,
-//            /* oldValue    => */ this.getLastName(),
-//            /* newValue    => */ lastName          ,
-//            /* validateKey => */ true              );
-//    }
-
-//    public java.lang.String getName() { return this.getFirstName() + " " + this.getLastName(); }
-
+    // region Name Public Method
     /**
      * A "safe" name is a full name (first name and last name) where the first name and last name
      * are separated with an underscore ("_") instead of a space (" ").
