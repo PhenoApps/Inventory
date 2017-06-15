@@ -84,6 +84,12 @@ public class MainActivity extends android.support.v7.app.AppCompatActivity
                     @java.lang.Override
                     public void closeDrawer()
                     { org.wheatgenetics.inventory.MainActivity.this.closeDrawer(); }
+                },
+                new org.wheatgenetics.inventory.NavigationItemSelectedListener.PersonSetter()
+                {
+                    @java.lang.Override
+                    public void setPerson()
+                    { org.wheatgenetics.inventory.MainActivity.this.setPerson(); }
                 }));
 
         this.sharedPreferences = new org.wheatgenetics.sharedpreferences.SharedPreferences(
