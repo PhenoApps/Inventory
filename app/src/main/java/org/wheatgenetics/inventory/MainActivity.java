@@ -83,11 +83,7 @@ public class MainActivity extends android.support.v7.app.AppCompatActivity
                 {
                     @java.lang.Override
                     public void closeDrawer()
-                    {
-                        assert null != org.wheatgenetics.inventory.MainActivity.this.drawerLayout;
-                        org.wheatgenetics.inventory.MainActivity.this.drawerLayout.closeDrawer(
-                            android.support.v4.view.GravityCompat.START);
-                    }
+                    { org.wheatgenetics.inventory.MainActivity.this.closeDrawer(); }
                 }));
 
         this.sharedPreferences = new org.wheatgenetics.sharedpreferences.SharedPreferences(
@@ -164,6 +160,21 @@ public class MainActivity extends android.support.v7.app.AppCompatActivity
     private void showToast(final java.lang.CharSequence text)
     { android.widget.Toast.makeText(this, text, android.widget.Toast.LENGTH_SHORT).show(); }
 
+    private void displayPerson()
+    {
+        final android.widget.TextView personTextView = (android.widget.TextView)
+            this.findViewById(org.wheatgenetics.inventory.R.id.personTextView);
+        assert null != this.sharedPreferences;
+        assert null != personTextView        ;
+        personTextView.setText(this.sharedPreferences.getPerson().toString());
+    }
+
+    private void closeDrawer()
+    {
+        assert null != this.drawerLayout;
+        this.drawerLayout.closeDrawer(android.support.v4.view.GravityCompat.START);
+    }
+
     private void storePerson(@android.support.annotation.NonNull
     final org.wheatgenetics.inventory.model.Person person)
     {
@@ -172,15 +183,6 @@ public class MainActivity extends android.support.v7.app.AppCompatActivity
         this.showToast(
             this.getResources().getString(org.wheatgenetics.inventory.R.string.setPersonMsg) +
             person.toString()                                                               );
-    }
-
-    private void displayPerson()
-    {
-        final android.widget.TextView personTextView = (android.widget.TextView)
-            this.findViewById(org.wheatgenetics.inventory.R.id.personTextView);
-        assert null != this.sharedPreferences;
-        assert null != personTextView        ;
-        personTextView.setText(this.sharedPreferences.getPerson().toString());
     }
     // endregion
 }
