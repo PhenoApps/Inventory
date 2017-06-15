@@ -6,7 +6,7 @@ package org.wheatgenetics.sharedpreferences;
  * android.util.Log
  *
  * org.wheatgenetics.inventory.BuildConfig
- * org.wheatgenetics.inventory.PersonModel
+ * org.wheatgenetics.inventory.model.Person
  * org.wheatgenetics.sharedpreferences.UpdateVersionSharedPreferences
  */
 
@@ -87,20 +87,23 @@ extends org.wheatgenetics.sharedpreferences.UpdateVersionSharedPreferences
 
     // region Person Public Methods
     public boolean personIsSet()
-    { return this.getFirstName().length() > 0 || this.getLastName().length() > 0; }
+    {
+        return new org.wheatgenetics.inventory.model.Person(
+            this.getFirstName(), this.getLastName()).isSet();
+    }
 
-    public void setPerson(final org.wheatgenetics.inventory.PersonModel personModel)
+    public void setPerson(final org.wheatgenetics.inventory.model.Person person)
     {
         java.lang.String firstName, lastName;
-        if (null == personModel)
+        if (null == person)
         {
             firstName = null;
             lastName  = null;
         }
         else
         {
-            firstName = personModel.firstName;
-            lastName  = personModel.lastName ;
+            firstName = person.firstName;
+            lastName  = person.lastName ;
         }
         this.setFirstName(firstName);
         this.setLastName (lastName );
