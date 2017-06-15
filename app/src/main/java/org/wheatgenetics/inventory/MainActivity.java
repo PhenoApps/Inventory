@@ -88,19 +88,7 @@ public class MainActivity extends android.support.v7.app.AppCompatActivity
 
         this.sharedPreferences = new org.wheatgenetics.sharedpreferences.SharedPreferences(
             this.getSharedPreferences("Settings", 0));
-        if (!this.sharedPreferences.personIsSet())
-        {
-            if (null == this.setPersonAlertDialog) this.setPersonAlertDialog =
-                new org.wheatgenetics.inventory.SetPersonAlertDialog(this,
-                    new org.wheatgenetics.inventory.SetPersonAlertDialog.PersonStorer()
-                    {
-                        @java.lang.Override
-                        public void storePerson(@android.support.annotation.NonNull
-                        final org.wheatgenetics.inventory.model.Person person)
-                        { org.wheatgenetics.inventory.MainActivity.this.storePerson(person); }
-                    });
-            this.setPersonAlertDialog.show();
-        }
+        if (!this.sharedPreferences.personIsSet()) this.setPerson();
     }
 
     @java.lang.Override
@@ -160,6 +148,16 @@ public class MainActivity extends android.support.v7.app.AppCompatActivity
     private void showToast(final java.lang.CharSequence text)
     { android.widget.Toast.makeText(this, text, android.widget.Toast.LENGTH_SHORT).show(); }
 
+    private void storePerson(@android.support.annotation.NonNull
+    final org.wheatgenetics.inventory.model.Person person)
+    {
+        assert null != this.sharedPreferences;
+        this.sharedPreferences.setPerson(person);
+        this.showToast(
+            this.getResources().getString(org.wheatgenetics.inventory.R.string.setPersonMsg) +
+                person.toString()                                                               );
+    }
+
     private void displayPerson()
     {
         final android.widget.TextView personTextView = (android.widget.TextView)
@@ -175,14 +173,18 @@ public class MainActivity extends android.support.v7.app.AppCompatActivity
         this.drawerLayout.closeDrawer(android.support.v4.view.GravityCompat.START);
     }
 
-    private void storePerson(@android.support.annotation.NonNull
-    final org.wheatgenetics.inventory.model.Person person)
+    private void setPerson()
     {
-        assert null != this.sharedPreferences;
-        this.sharedPreferences.setPerson(person);
-        this.showToast(
-            this.getResources().getString(org.wheatgenetics.inventory.R.string.setPersonMsg) +
-            person.toString()                                                               );
+        if (null == this.setPersonAlertDialog)
+            this.setPersonAlertDialog = new org.wheatgenetics.inventory.SetPersonAlertDialog(this,
+                new org.wheatgenetics.inventory.SetPersonAlertDialog.PersonStorer()
+                {
+                    @java.lang.Override
+                    public void storePerson(@android.support.annotation.NonNull
+                    final org.wheatgenetics.inventory.model.Person person)
+                    { org.wheatgenetics.inventory.MainActivity.this.storePerson(person); }
+                });
+        this.setPersonAlertDialog.show();
     }
     // endregion
 }
