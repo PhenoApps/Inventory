@@ -4,6 +4,7 @@ package org.wheatgenetics.inventory;
  * Uses:
  * android.content.Intent
  * android.os.Bundle
+ * android.support.annotation.NonNull
  * android.support.design.widget.NavigationView
  * android.support.v4.view.GravityCompat
  * android.support.v4.widget.DrawerLayout
@@ -15,20 +16,24 @@ package org.wheatgenetics.inventory;
  * andorid.view.MenuInflater
  * android.view.MenuItem
  * android.widget.TextView
+ * android.widget.Toast
  *
  * org.wheatgenetics.androidlibrary.R
  * org.wheatgenetics.inventory.NavigationItemSelectedListener
  * org.wheatgenetics.inventory.NavigationItemSelectedListener.DrawerCloser
  * org.wheatgenetics.inventory.R
+ * org.wheatgenetics.inventory.SetPersonAlertDialog
+ * org.wheatgenetics.inventory.SetPersonAlertDialog.PersonSetter
  * org.wheatgenetics.sharedpreferences.SharedPreferences
  * org.wheatgenetics.zxing.BarcodeScanner
  */
 
 public class MainActivity extends android.support.v7.app.AppCompatActivity
 {
-    private android.support.v4.widget.DrawerLayout                drawerLayout   = null;
-    private org.wheatgenetics.zxing.BarcodeScanner                barcodeScanner = null;
-    private org.wheatgenetics.sharedpreferences.SharedPreferences sharedPreferences;
+    private android.support.v4.widget.DrawerLayout                drawerLayout         = null;
+    private org.wheatgenetics.sharedpreferences.SharedPreferences sharedPreferences          ;
+    private org.wheatgenetics.inventory.SetPersonAlertDialog      setPersonAlertDialog = null;
+    private org.wheatgenetics.zxing.BarcodeScanner                barcodeScanner       = null;
 
     @java.lang.Override
     protected void onCreate(final android.os.Bundle savedInstanceState)
@@ -63,7 +68,7 @@ public class MainActivity extends android.support.v7.app.AppCompatActivity
 
         final android.support.design.widget.NavigationView navigationView =
             (android.support.design.widget.NavigationView)
-            this.findViewById(org.wheatgenetics.inventory.R.id.nav_view);       // From layout/ac-
+                this.findViewById(org.wheatgenetics.inventory.R.id.nav_view);   // From layout/ac-
         assert null != navigationView;                                          //  tivity_main.xml.
         navigationView.setNavigationItemSelectedListener(
             new org.wheatgenetics.inventory.NavigationItemSelectedListener(
@@ -80,6 +85,19 @@ public class MainActivity extends android.support.v7.app.AppCompatActivity
 
         this.sharedPreferences = new org.wheatgenetics.sharedpreferences.SharedPreferences(
             this.getSharedPreferences("Settings", 0));
+        if (!this.sharedPreferences.personIsSet())
+        {
+            if (null == this.setPersonAlertDialog) this.setPersonAlertDialog =
+                new org.wheatgenetics.inventory.SetPersonAlertDialog(this,
+                    new org.wheatgenetics.inventory.SetPersonAlertDialog.PersonSetter()
+                    {
+                        @java.lang.Override
+                        public void setPerson(@android.support.annotation.NonNull
+                        final org.wheatgenetics.inventory.model.Person person)
+                        { org.wheatgenetics.inventory.MainActivity.this.setPerson(person); }
+                    });
+            this.setPersonAlertDialog.show();
+        }
     }
 
     @java.lang.Override
@@ -132,5 +150,18 @@ public class MainActivity extends android.support.v7.app.AppCompatActivity
             (android.widget.TextView) this.findViewById(org.wheatgenetics.inventory.R.id.textView);
         assert null != textView;
         textView.setText(barcode);
+    }
+
+    private void showToast(final java.lang.CharSequence text)
+    { android.widget.Toast.makeText(this, text, android.widget.Toast.LENGTH_SHORT).show(); }
+
+    private void setPerson(@android.support.annotation.NonNull
+    final org.wheatgenetics.inventory.model.Person person)
+    {
+        assert null != this.sharedPreferences;
+        this.sharedPreferences.setPerson(person);
+        this.showToast(
+            this.getResources().getString(org.wheatgenetics.inventory.R.string.setPersonMsg) +
+            person.toString()                                                               );
     }
 }

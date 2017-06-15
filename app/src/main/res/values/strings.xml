@@ -3,4 +3,9 @@
 
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
+
+    <string name="positiveButtonText">OK</string>
+
+    <string name="setPersonAlertDialogTitle">Set Person</string>
+    <string name="setPersonMsg">Person set as: </string>
 </resources>
