@@ -18,6 +18,7 @@ package org.wheatgenetics.inventory;
  * andorid.view.MenuInflater
  * android.view.MenuItem
  * android.view.View
+ * android.view.View.OnClickListener
  * android.widget.TextView
  * android.widget.Toast
  *
@@ -69,8 +70,8 @@ public class MainActivity extends android.support.v7.app.AppCompatActivity
 
             final android.support.v7.app.ActionBarDrawerToggle toggle =
                 new android.support.v7.app.ActionBarDrawerToggle(this, this.drawerLayout, toolbar,
-                org.wheatgenetics.inventory.R.string.navigation_drawer_open ,
-                org.wheatgenetics.inventory.R.string.navigation_drawer_close)
+                    org.wheatgenetics.inventory.R.string.navigation_drawer_open ,
+                    org.wheatgenetics.inventory.R.string.navigation_drawer_close)
                 {
                     @java.lang.Override
                     public void onDrawerOpened(final android.view.View drawerView)
@@ -124,6 +125,11 @@ public class MainActivity extends android.support.v7.app.AppCompatActivity
                         @java.lang.Override
                         public void closeDrawer()
                         { org.wheatgenetics.inventory.MainActivity.this.closeDrawer(); }
+                    }, new android.view.View.OnClickListener()
+                    {
+                        @java.lang.Override
+                        public void onClick(android.view.View v)
+                        { org.wheatgenetics.inventory.MainActivity.this.showChangeLog(); }
                     }));
         }
         // endregion
@@ -138,12 +144,7 @@ public class MainActivity extends android.support.v7.app.AppCompatActivity
         if (!this.sharedPreferences.updateVersionIsSet(versionCode))
         {
             this.sharedPreferences.setUpdateVersion(versionCode);
-            if (null == this.changeLogAlertDialog) this.changeLogAlertDialog =
-                new org.wheatgenetics.changelog.ChangeLogAlertDialog(
-                    /* context                => */ this,
-                    /* changeLogRawResourceId => */
-                        org.wheatgenetics.inventory.R.raw.changelog_releases);
-            try { this.changeLogAlertDialog.show(); } catch (final java.io.IOException e) {}
+            this.showChangeLog();
         }
         // endregion
     }
@@ -182,8 +183,7 @@ public class MainActivity extends android.support.v7.app.AppCompatActivity
             this.barcodeScanner.scan();
             return true;
         }
-        else
-            return super.onOptionsItemSelected(item);
+        else return super.onOptionsItemSelected(item);
     }
 
     @java.lang.Override
@@ -213,7 +213,7 @@ public class MainActivity extends android.support.v7.app.AppCompatActivity
         this.sharedPreferences.setPerson(person);
         this.showToast(
             this.getResources().getString(org.wheatgenetics.inventory.R.string.setPersonMsg) +
-                person.toString()                                                               );
+                person.toString());
     }
     // endregion
 
@@ -230,6 +230,17 @@ public class MainActivity extends android.support.v7.app.AppCompatActivity
     {
         assert null != this.drawerLayout;
         this.drawerLayout.closeDrawer(android.support.v4.view.GravityCompat.START);
+    }
+
+    private void showChangeLog()
+    {
+        if (null == this.changeLogAlertDialog)
+            this.changeLogAlertDialog = new org.wheatgenetics.changelog.ChangeLogAlertDialog(
+                /* context                => */ this,
+                /* changeLogRawResourceId => */
+                    org.wheatgenetics.inventory.R.raw.changelog_releases);
+        try { this.changeLogAlertDialog.show(); }
+        catch (final java.io.IOException e) { throw new java.lang.RuntimeException(e); }
     }
 
     private void setPerson(final boolean fromMenu)

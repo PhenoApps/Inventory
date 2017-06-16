@@ -6,6 +6,7 @@ package org.wheatgenetics.inventory;
  * android.support.annotation.NonNull
  * android.support.design.widget.NavigationView
  * android.view.MenuItem
+ * android.view.View.OnClickListener
  *
  * org.wheatgenetics.inventory.AboutAlertDialog
  * org.wheatgenetics.inventory.R
@@ -23,6 +24,7 @@ implements android.support.design.widget.NavigationView.OnNavigationItemSelected
     private final android.content.Context                                            context;
     private final java.lang.String                        aboutAlertDialogTitle, versionName;
     private final org.wheatgenetics.inventory.NavigationItemSelectedListener.Handler handler;
+    private final android.view.View.OnClickListener                   versionOnClickListener;
 
     private org.wheatgenetics.inventory.AboutAlertDialog aboutAlertDialog = null;
 
@@ -31,14 +33,17 @@ implements android.support.design.widget.NavigationView.OnNavigationItemSelected
     @android.support.annotation.NonNull final java.lang.String        aboutAlertDialogTitle,
     @android.support.annotation.NonNull final java.lang.String        versionName          ,
     @android.support.annotation.NonNull
-        final org.wheatgenetics.inventory.NavigationItemSelectedListener.Handler handler)
+        final org.wheatgenetics.inventory.NavigationItemSelectedListener.Handler handler,
+    @android.support.annotation.NonNull
+        final android.view.View.OnClickListener versionOnClickListener)
     {
         super();
 
-        this.context               = context              ;
-        this.aboutAlertDialogTitle = aboutAlertDialogTitle;
-        this.versionName           = versionName          ;
-        this.handler               = handler              ;
+        this.context                = context               ;
+        this.aboutAlertDialogTitle  = aboutAlertDialogTitle ;
+        this.versionName            = versionName           ;
+        this.handler                = handler               ;
+        this.versionOnClickListener = versionOnClickListener;
     }
 
     @java.lang.Override
@@ -58,9 +63,9 @@ implements android.support.design.widget.NavigationView.OnNavigationItemSelected
             case org.wheatgenetics.inventory.R.id.nav_delete        : break;
 
             case org.wheatgenetics.inventory.R.id.nav_show_about :
-                if (null == this.aboutAlertDialog)
-                    this.aboutAlertDialog = new org.wheatgenetics.inventory.AboutAlertDialog(
-                        this.context, this.aboutAlertDialogTitle, this.versionName);
+                if (null == this.aboutAlertDialog) this.aboutAlertDialog =
+                    new org.wheatgenetics.inventory.AboutAlertDialog(this.context,
+                        this.aboutAlertDialogTitle, this.versionName, this.versionOnClickListener);
                 this.aboutAlertDialog.show(); break;
         }
 

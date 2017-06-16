@@ -17,19 +17,25 @@ package org.wheatgenetics.inventory;
 
 class AboutAlertDialog extends java.lang.Object
 {
-    private final android.content.Context context           ;
-    private final java.lang.String        title, versionName;
-    private       android.app.AlertDialog alertDialog = null;
+    private final android.content.Context           context               ;
+    private final java.lang.String                  title, versionName    ;
+    private final android.view.View.OnClickListener versionOnClickListener;
 
-    AboutAlertDialog(@android.support.annotation.NonNull final android.content.Context context,
-    @android.support.annotation.NonNull final java.lang.String title      ,
-    @android.support.annotation.NonNull final java.lang.String versionName)
+    private android.app.AlertDialog alertDialog = null;
+
+    AboutAlertDialog(
+    @android.support.annotation.NonNull final android.content.Context context,
+    @android.support.annotation.NonNull final java.lang.String title         ,
+    @android.support.annotation.NonNull final java.lang.String versionName   ,
+    @android.support.annotation.NonNull
+        final android.view.View.OnClickListener versionOnClickListener)
     {
         super();
 
-        this.context     = context    ;
-        this.title       = title      ;
-        this.versionName = versionName;
+        this.context                = context              ;
+        this.title                  = title                ;
+        this.versionName            = versionName           ;
+        this.versionOnClickListener = versionOnClickListener;
     }
 
     void show()
@@ -52,11 +58,18 @@ class AboutAlertDialog extends java.lang.Object
                                 org.wheatgenetics.inventory.R.id.aboutVersionTextView);
                         assert null != versionTextView;
                         versionTextView.setText(versionTextView.getText() + " " + this.versionName);
-                        versionTextView.setOnClickListener(new android.view.View.OnClickListener()
-                        {
-                            @java.lang.Override
-                            public void onClick(final android.view.View v) {}
-                        });
+                        versionTextView.setOnClickListener(this.versionOnClickListener);
+                    }
+                    {
+                        final android.widget.TextView otherAppsTextView = (android.widget.TextView)
+                            aboutView.findViewById(
+                                org.wheatgenetics.inventory.R.id.aboutOtherAppsTextView);
+                        assert null != otherAppsTextView;
+                        otherAppsTextView.setOnClickListener(new android.view.View.OnClickListener()
+                            {
+                                @java.lang.Override
+                                public void onClick(final android.view.View v) {}
+                            });
                     }
                     builder.setCancelable(true)
                         .setTitle(this.title)
