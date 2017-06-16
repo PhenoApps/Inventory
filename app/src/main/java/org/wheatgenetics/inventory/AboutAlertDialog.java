@@ -12,6 +12,7 @@ package org.wheatgenetics.inventory;
  * android.widget.LinearLayout
  * android.widget.TextView
  *
+ * org.wheatgenetics.androidlibrary.Utils
  * org.wheatgenetics.inventory.R
  */
 
@@ -75,6 +76,8 @@ class AboutAlertDialog extends java.lang.Object
                         .setTitle(this.title)
                         .setView (aboutView );
                 }
+                builder.setNegativeButton(org.wheatgenetics.inventory.R.string.positiveButtonText,
+                    org.wheatgenetics.androidlibrary.Utils.dismissingOnClickListener());
                 this.alertDialog = builder.create();
             }
             assert null != this.alertDialog;
