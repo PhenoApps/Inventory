@@ -2,7 +2,7 @@ package org.wheatgenetics.inventory.model;
 
 /**
  * Uses:
- * org.wheatgenetics.inventory.utility.Utility
+ * org.wheatgenetics.javalib.Utils
  */
 
 public class Person extends java.lang.Object
@@ -13,8 +13,8 @@ public class Person extends java.lang.Object
     {
         super();
 
-        this.firstName = org.wheatgenetics.inventory.utility.Utility.adjust(firstName);
-        this.lastName  = org.wheatgenetics.inventory.utility.Utility.adjust(lastName );
+        this.firstName = org.wheatgenetics.javalib.Utils.adjust(firstName);
+        this.lastName  = org.wheatgenetics.javalib.Utils.adjust(lastName );
     }
 
     @java.lang.Override

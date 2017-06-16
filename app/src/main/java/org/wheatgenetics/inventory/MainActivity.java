@@ -28,7 +28,7 @@ package org.wheatgenetics.inventory;
  * org.wheatgenetics.inventory.R
  * org.wheatgenetics.inventory.SetPersonAlertDialog
  * org.wheatgenetics.inventory.SetPersonAlertDialog.PersonStorer
- * org.wheatgenetics.inventory.utility.Utility
+ * org.wheatgenetics.javalib.Utils
  * org.wheatgenetics.sharedpreferences.SharedPreferences
  * org.wheatgenetics.zxing.BarcodeScanner
  */
@@ -99,8 +99,8 @@ public class MainActivity extends android.support.v7.app.AppCompatActivity
         }
         catch (final android.content.pm.PackageManager.NameNotFoundException e)
         {
-            versionCode = 0                                                       ;
-            versionName = org.wheatgenetics.inventory.utility.Utility.adjust(null);
+            versionCode = 0                                           ;
+            versionName = org.wheatgenetics.javalib.Utils.adjust(null);
         }
         // endregion
 
