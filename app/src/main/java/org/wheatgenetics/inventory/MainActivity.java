@@ -3,6 +3,7 @@ package org.wheatgenetics.inventory;
 /**
  * Uses:
  * android.content.Intent
+ * android.content.pm.PackageInfo
  * android.content.pm.PackageManager.NameNotFoundException
  * android.os.Bundle
  * android.support.annotation.NonNull
@@ -27,6 +28,7 @@ package org.wheatgenetics.inventory;
  * org.wheatgenetics.inventory.R
  * org.wheatgenetics.inventory.SetPersonAlertDialog
  * org.wheatgenetics.inventory.SetPersonAlertDialog.PersonStorer
+ * org.wheatgenetics.inventory.utility.Utility
  * org.wheatgenetics.sharedpreferences.SharedPreferences
  * org.wheatgenetics.zxing.BarcodeScanner
  */
@@ -80,6 +82,28 @@ public class MainActivity extends android.support.v7.app.AppCompatActivity
         }
         // endregion
 
+        // region Set version, part 1.
+        // Before there was one region called "Set version.".  It consisted of the current part 1
+        // and part 2 concatenated together and located where part 2 is now.  Why was this change
+        // made?  So that versionName would be set earlier.  Why should versionName be set earlier?
+        // So that its value could be passed to NavigationItemSelectedListener().
+        int              versionCode;
+        java.lang.String versionName;
+        try
+        {
+            final android.content.pm.PackageInfo packageInfo =
+                this.getPackageManager().getPackageInfo(this.getPackageName(), 0);
+            assert null != packageInfo;
+            versionCode = packageInfo.versionCode;
+            versionName = packageInfo.versionName;
+        }
+        catch (final android.content.pm.PackageManager.NameNotFoundException e)
+        {
+            versionCode = 0                                                       ;
+            versionName = org.wheatgenetics.inventory.utility.Utility.adjust(null);
+        }
+        // endregion
+
         // region Configure navigation menu.
         {
             final android.support.design.widget.NavigationView navigationView =
@@ -87,7 +111,10 @@ public class MainActivity extends android.support.v7.app.AppCompatActivity
                     org.wheatgenetics.inventory.R.id.nav_view);                 // From layout/ac-
             assert null != navigationView;                                      //  tivity_main.xml.
             navigationView.setNavigationItemSelectedListener(
-                new org.wheatgenetics.inventory.NavigationItemSelectedListener(
+                new org.wheatgenetics.inventory.NavigationItemSelectedListener(this,
+                    this.getResources().getString(
+                        org.wheatgenetics.inventory.R.string.aboutAlertDialogTitle),
+                    versionName,
                     new org.wheatgenetics.inventory.NavigationItemSelectedListener.DrawerCloser()
                     {
                         @java.lang.Override
@@ -109,15 +136,7 @@ public class MainActivity extends android.support.v7.app.AppCompatActivity
         if (!this.sharedPreferences.personIsSet()) this.setPerson(false);
         // endregion
 
-        // region Set version.
-        int versionCode;
-        try
-        {
-            versionCode = this.getPackageManager().getPackageInfo(
-                this.getPackageName(), 0).versionCode;
-        }
-        catch (final android.content.pm.PackageManager.NameNotFoundException e) { versionCode = 0; }
-
+        // region Set version, part 2.
         if (!this.sharedPreferences.updateVersionIsSet(versionCode))
         {
             this.sharedPreferences.setUpdateVersion(versionCode);

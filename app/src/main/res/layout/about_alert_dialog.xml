@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:paddingStart="25dp"
+    android:paddingEnd="20dp"
+    android:paddingTop="5dp"
+    android:paddingBottom="5dp">
+
+    <TextView
+        android:id="@+id/aboutVersionTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:clickable="true"
+        android:paddingStart="10dp"
+        android:paddingBottom="10dp"
+        android:text="@string/aboutVersionTextViewText"
+        android:textColor="@color/colorAccent"
+        android:textSize="@dimen/text_size_small"
+        android:textStyle="bold" />
+
+
+    <TextView
+        android:id="@+id/aboutOtherAppsTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:clickable="true"
+        android:paddingStart="10dp"
+        android:paddingBottom="10dp"
+        android:text="@string/aboutOtherAppsTextViewText"
+        android:textColor="@color/colorAccent"
+        android:textSize="@dimen/text_size_small"
+        android:textStyle="bold" />
+
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/aboutTrevorName"
+        android:textSize="@dimen/text_size_small" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="15dip"
+        android:text="@string/aboutUniversity"
+        android:textSize="@dimen/text_size_small" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="15dip"
+        android:autoLink="email"
+        android:text="@string/aboutTrevorEMail"
+        android:textSize="@dimen/text_size_small" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:text="@string/aboutJesseName"
+        android:textSize="@dimen/text_size_small" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="15dip"
+        android:text="@string/aboutUniversity"
+        android:textSize="@dimen/text_size_small" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="15dip"
+        android:autoLink="email"
+        android:text="@string/aboutJesseEMail"
+        android:textSize="@dimen/text_size_small" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="15dip"
+        android:autoLink="web"
+        android:text="@string/aboutWheatGeneticsWebSite"
+        android:textSize="@dimen/text_size_small" />
+
+    <View
+        android:layout_width="fill_parent"
+        android:layout_height="1dip"
+        android:background="@color/colorAccent" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:autoLink="web"
+        android:text="\nInventory is a free and open source application that can be used to catalog individuals while also collecting and storing sample weight data. The app was designed to work with Elane USB Plus 5kg Scales (http://www.elane.net).\n"
+        android:textSize="15dp" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Inventory uses code from the following open source projects:"
+        android:textSize="15dp" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="15dip"
+        android:autoLink="web"
+        android:text="theUltimateScale ( https://github.com/theUltimateLabs/theUtimateScale )"
+        android:textSize="15dp" />
+
+</LinearLayout>

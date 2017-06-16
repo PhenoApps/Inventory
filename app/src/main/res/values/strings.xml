@@ -8,4 +8,14 @@
 
     <string name="setPersonAlertDialogTitle">Set Person</string>
     <string name="setPersonMsg">Person set as: </string>
+
+    <string name="aboutAlertDialogTitle">About Inventory</string>
+    <string name="aboutVersionTextViewText">Version</string>
+    <string name="aboutOtherAppsTextViewText">Other Apps</string>
+    <string name="aboutTrevorName">Trevor Rife</string>
+    <string name="aboutTrevorEMail">trife@ksu.edu</string>
+    <string name="aboutUniversity">Kansas State University</string>
+    <string name="aboutJesseName">Jesse Poland</string>
+    <string name="aboutJesseEMail">jpoland@ksu.edu</string>
+    <string name="aboutWheatGeneticsWebSite">http://wheatgenetics.org\n</string>
 </resources>
