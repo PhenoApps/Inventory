@@ -14,15 +14,15 @@ package org.wheatgenetics.inventory;
 class NavigationItemSelectedListener extends java.lang.Object
 implements android.support.design.widget.NavigationView.OnNavigationItemSelectedListener
 {
-    interface DrawerCloser { void closeDrawer(); }  // TODO: Consider combining into one interface.
-    interface PersonSetter { void setPerson  (); }  // TODO: Consider combining into one interface.
+    interface Handler
+    {
+        void setPerson  ();
+        void closeDrawer();
+    }
 
-    private final android.content.Context context                           ;
-    private final java.lang.String        aboutAlertDialogTitle, versionName;
-    private final org.wheatgenetics.inventory.NavigationItemSelectedListener.DrawerCloser
-        drawerCloser;
-    private final org.wheatgenetics.inventory.NavigationItemSelectedListener.PersonSetter
-        personSetter;
+    private final android.content.Context                                            context;
+    private final java.lang.String                        aboutAlertDialogTitle, versionName;
+    private final org.wheatgenetics.inventory.NavigationItemSelectedListener.Handler handler;
 
     private org.wheatgenetics.inventory.AboutAlertDialog aboutAlertDialog = null;
 
@@ -31,17 +31,14 @@ implements android.support.design.widget.NavigationView.OnNavigationItemSelected
     @android.support.annotation.NonNull final java.lang.String        aboutAlertDialogTitle,
     @android.support.annotation.NonNull final java.lang.String        versionName          ,
     @android.support.annotation.NonNull
-        final org.wheatgenetics.inventory.NavigationItemSelectedListener.DrawerCloser drawerCloser,
-    @android.support.annotation.NonNull
-        final org.wheatgenetics.inventory.NavigationItemSelectedListener.PersonSetter personSetter)
+        final org.wheatgenetics.inventory.NavigationItemSelectedListener.Handler handler)
     {
         super();
 
         this.context               = context              ;
         this.aboutAlertDialogTitle = aboutAlertDialogTitle;
         this.versionName           = versionName          ;
-        this.drawerCloser          = drawerCloser         ;
-        this.personSetter          = personSetter         ;
+        this.handler               = handler              ;
     }
 
     @java.lang.Override
@@ -54,7 +51,7 @@ implements android.support.design.widget.NavigationView.OnNavigationItemSelected
             // The following five ids that have names that start with "nav_" come from
             // menu/activity_main_drawer.xml.
             case org.wheatgenetics.inventory.R.id.nav_set_person :
-                this.personSetter.setPerson(); break;
+                this.handler.setPerson(); break;
 
             case org.wheatgenetics.inventory.R.id.nav_connect_scale : break;
             case org.wheatgenetics.inventory.R.id.nav_export        : break;
@@ -67,7 +64,7 @@ implements android.support.design.widget.NavigationView.OnNavigationItemSelected
                 this.aboutAlertDialog.show(); break;
         }
 
-        this.drawerCloser.closeDrawer();
+        this.handler.closeDrawer();
         return true;
     }
 }

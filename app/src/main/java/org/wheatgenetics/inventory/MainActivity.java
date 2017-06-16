@@ -115,17 +115,15 @@ public class MainActivity extends android.support.v7.app.AppCompatActivity
                     this.getResources().getString(
                         org.wheatgenetics.inventory.R.string.aboutAlertDialogTitle),
                     versionName,
-                    new org.wheatgenetics.inventory.NavigationItemSelectedListener.DrawerCloser()
-                    {
-                        @java.lang.Override
-                        public void closeDrawer()
-                        { org.wheatgenetics.inventory.MainActivity.this.closeDrawer(); }
-                    },
-                    new org.wheatgenetics.inventory.NavigationItemSelectedListener.PersonSetter()
+                    new org.wheatgenetics.inventory.NavigationItemSelectedListener.Handler()
                     {
                         @java.lang.Override
                         public void setPerson()
                         { org.wheatgenetics.inventory.MainActivity.this.setPerson(true); }
+
+                        @java.lang.Override
+                        public void closeDrawer()
+                        { org.wheatgenetics.inventory.MainActivity.this.closeDrawer(); }
                     }));
         }
         // endregion
