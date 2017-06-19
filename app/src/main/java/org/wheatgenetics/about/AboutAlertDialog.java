@@ -1,4 +1,4 @@
-package org.wheatgenetics.inventory;
+package org.wheatgenetics.about;
 
 /**
  * Uses:
@@ -12,34 +12,55 @@ package org.wheatgenetics.inventory;
  * android.widget.LinearLayout
  * android.widget.TextView
  *
+ * org.wheatgenetics.about.OtherApps
+ * org.wheatgenetics.about.OtherApps.Index
+ * org.wheatgenetics.about.OtherAppsAlertDialog
+ * org.wheatgenetics.about.OtherAppsAlertDialog.Handler
+ * org.wheatgenetics.androidlibrary.R
  * org.wheatgenetics.androidlibrary.Utils
  * org.wheatgenetics.inventory.R
  */
 
-class AboutAlertDialog extends java.lang.Object
+public class AboutAlertDialog extends java.lang.Object
 {
-    private final android.content.Context           context               ;
-    private final java.lang.String                  title, versionName    ;
-    private final android.view.View.OnClickListener versionOnClickListener;
+    private final android.content.Context                              context               ;
+    private final java.lang.String                                     title, versionName    ;
+    private final android.view.View.OnClickListener                    versionOnClickListener;
+    private final org.wheatgenetics.about.OtherAppsAlertDialog.Handler otherAppsHandler      ;
 
-    private android.app.AlertDialog alertDialog = null;
+    private org.wheatgenetics.about.OtherAppsAlertDialog otherAppsAlertDialog = null;
+    private android.app.AlertDialog                      alertDialog          = null;
 
-    AboutAlertDialog(
+    private void showOtherAppsAlertDialog()
+    {
+        if (null == this.otherAppsAlertDialog)
+            this.otherAppsAlertDialog = new org.wheatgenetics.about.OtherAppsAlertDialog(
+                this.context,
+                new org.wheatgenetics.about.OtherApps(
+                    org.wheatgenetics.about.OtherApps.Index.INVENTORY),
+                this.otherAppsHandler);
+        this.otherAppsAlertDialog.show();
+    }
+
+    public AboutAlertDialog(
     @android.support.annotation.NonNull final android.content.Context context,
     @android.support.annotation.NonNull final java.lang.String title         ,
     @android.support.annotation.NonNull final java.lang.String versionName   ,
     @android.support.annotation.NonNull
-        final android.view.View.OnClickListener versionOnClickListener)
+        final android.view.View.OnClickListener versionOnClickListener,
+    @android.support.annotation.NonNull
+        final org.wheatgenetics.about.OtherAppsAlertDialog.Handler otherAppsHandler)
     {
         super();
 
-        this.context                = context              ;
-        this.title                  = title                ;
+        this.context                = context               ;
+        this.title                  = title                 ;
         this.versionName            = versionName           ;
         this.versionOnClickListener = versionOnClickListener;
+        this.otherAppsHandler       = otherAppsHandler      ;
     }
 
-    void show()
+    public void show()
     {
         if (null == this.alertDialog)
         {
@@ -69,14 +90,18 @@ class AboutAlertDialog extends java.lang.Object
                         otherAppsTextView.setOnClickListener(new android.view.View.OnClickListener()
                             {
                                 @java.lang.Override
-                                public void onClick(final android.view.View v) {}
+                                public void onClick(final android.view.View v)
+                                {
+                                    org.wheatgenetics.about.
+                                        AboutAlertDialog.this.showOtherAppsAlertDialog();
+                                }
                             });
                     }
                     builder.setCancelable(true)
                         .setTitle(this.title)
                         .setView (aboutView );
                 }
-                builder.setNegativeButton(org.wheatgenetics.inventory.R.string.positiveButtonText,
+                builder.setNegativeButton(org.wheatgenetics.androidlibrary.R.string.okButtonText,
                     org.wheatgenetics.androidlibrary.Utils.dismissingOnClickListener());
                 this.alertDialog = builder.create();
             }

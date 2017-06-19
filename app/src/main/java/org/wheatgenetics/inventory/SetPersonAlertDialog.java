@@ -13,6 +13,7 @@ package org.wheatgenetics.inventory;
  * android.widget.EditText
  * android.widget.LinearLayout
  *
+ * org.wheatgenetics.androidlibrary.R
  * org.wheatgenetics.inventory.model.Person
  * org.wheatgenetics.inventory.R
  */
@@ -21,7 +22,7 @@ class SetPersonAlertDialog extends java.lang.Object
 {
     interface PersonStorer
     {
-        void storePerson(@android.support.annotation.NonNull
+        public abstract void storePerson(@android.support.annotation.NonNull
         final org.wheatgenetics.inventory.model.Person person);
     }
 
@@ -79,7 +80,7 @@ class SetPersonAlertDialog extends java.lang.Object
                     builder.setCancelable(false)
                         .setTitle(org.wheatgenetics.inventory.R.string.setPersonAlertDialogTitle)
                         .setView (setPersonView                                                 )
-                        .setPositiveButton(org.wheatgenetics.inventory.R.string.positiveButtonText,
+                        .setPositiveButton(org.wheatgenetics.androidlibrary.R.string.okButtonText,
                             new android.content.DialogInterface.OnClickListener()
                             {
                                 @java.lang.Override

@@ -5,6 +5,7 @@ package org.wheatgenetics.inventory;
  * android.content.Intent
  * android.content.pm.PackageInfo
  * android.content.pm.PackageManager.NameNotFoundException
+ * android.net.Uri
  * android.os.Bundle
  * android.support.annotation.NonNull
  * android.support.design.widget.NavigationView
@@ -125,6 +126,13 @@ public class MainActivity extends android.support.v7.app.AppCompatActivity
                         @java.lang.Override
                         public void closeDrawer()
                         { org.wheatgenetics.inventory.MainActivity.this.closeDrawer(); }
+
+                        @java.lang.Override
+                        public void handleOtherAppsItemClick(final java.lang.String uriString)
+                        {
+                            org.wheatgenetics.inventory.MainActivity.this.handleOtherAppsItemClick(
+                                uriString);
+                        };
                     }, new android.view.View.OnClickListener()
                     {
                         @java.lang.Override
@@ -230,6 +238,12 @@ public class MainActivity extends android.support.v7.app.AppCompatActivity
     {
         assert null != this.drawerLayout;
         this.drawerLayout.closeDrawer(android.support.v4.view.GravityCompat.START);
+    }
+
+    private void handleOtherAppsItemClick(final java.lang.String uriString)
+    {
+        this.startActivity(new android.content.Intent(
+            android.content.Intent.ACTION_VIEW, android.net.Uri.parse(uriString)));
     }
 
     private void showChangeLog()

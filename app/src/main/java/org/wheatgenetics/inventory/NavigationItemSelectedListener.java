@@ -8,7 +8,8 @@ package org.wheatgenetics.inventory;
  * android.view.MenuItem
  * android.view.View.OnClickListener
  *
- * org.wheatgenetics.inventory.AboutAlertDialog
+ * org.wheatgenetics.about.AboutAlertDialog
+ * org.wheatgenetics.about.OtherAppsAlertDialog.Handler
  * org.wheatgenetics.inventory.R
  */
 
@@ -17,8 +18,9 @@ implements android.support.design.widget.NavigationView.OnNavigationItemSelected
 {
     interface Handler
     {
-        void setPerson  ();
-        void closeDrawer();
+        public abstract void setPerson  ();
+        public abstract void closeDrawer();
+        public abstract void handleOtherAppsItemClick(java.lang.String uriString);
     }
 
     private final android.content.Context                                            context;
@@ -26,7 +28,10 @@ implements android.support.design.widget.NavigationView.OnNavigationItemSelected
     private final org.wheatgenetics.inventory.NavigationItemSelectedListener.Handler handler;
     private final android.view.View.OnClickListener                   versionOnClickListener;
 
-    private org.wheatgenetics.inventory.AboutAlertDialog aboutAlertDialog = null;
+    private org.wheatgenetics.about.AboutAlertDialog aboutAlertDialog = null;
+
+    private void handleOtherAppsItemClick(final java.lang.String uriString)
+    { this.handler.handleOtherAppsItemClick(uriString); }
 
     NavigationItemSelectedListener(
     @android.support.annotation.NonNull final android.content.Context context              ,
@@ -64,8 +69,17 @@ implements android.support.design.widget.NavigationView.OnNavigationItemSelected
 
             case org.wheatgenetics.inventory.R.id.nav_show_about :
                 if (null == this.aboutAlertDialog) this.aboutAlertDialog =
-                    new org.wheatgenetics.inventory.AboutAlertDialog(this.context,
-                        this.aboutAlertDialogTitle, this.versionName, this.versionOnClickListener);
+                    new org.wheatgenetics.about.AboutAlertDialog(this.context,
+                        this.aboutAlertDialogTitle, this.versionName, this.versionOnClickListener,
+                        new org.wheatgenetics.about.OtherAppsAlertDialog.Handler()
+                        {
+                            @java.lang.Override
+                            public void handleItemClick(final java.lang.String uriString)
+                            {
+                                org.wheatgenetics.inventory.NavigationItemSelectedListener.
+                                    this.handleOtherAppsItemClick(uriString);
+                            }
+                        });
                 this.aboutAlertDialog.show(); break;
         }
 
