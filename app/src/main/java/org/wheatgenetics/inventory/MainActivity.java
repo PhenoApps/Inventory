@@ -5,7 +5,6 @@ package org.wheatgenetics.inventory;
  * android.content.Intent
  * android.content.pm.PackageInfo
  * android.content.pm.PackageManager.NameNotFoundException
- * android.net.Uri
  * android.os.Bundle
  * android.support.annotation.NonNull
  * android.support.design.widget.NavigationView
@@ -86,15 +85,16 @@ public class MainActivity extends android.support.v7.app.AppCompatActivity
 
         // region Set version, part 1.
         // Before there was one region called "Set version.".  It consisted of the current part 1
-        // and part 2 concatenated together and located where part 2 is now.  Why was this change
-        // made?  So that versionName would be set earlier.  Why should versionName be set earlier?
-        // So that its value could be passed to NavigationItemSelectedListener().
+        // and part 2 regions concatenated together and located where part 2 is now.  Why did I
+        // turn one region into two?  So that versionName would be set earlier.  Why should
+        // versionName be set earlier?  So that its value could be passed to
+        // NavigationItemSelectedListener().
         int              versionCode;
         java.lang.String versionName;
         try
         {
             final android.content.pm.PackageInfo packageInfo =
-                this.getPackageManager().getPackageInfo(this.getPackageName(), 0);
+                this.getPackageManager().getPackageInfo(this.getPackageName(), /* flags => */ 0);
             assert null != packageInfo;
             versionCode = packageInfo.versionCode;
             versionName = packageInfo.versionName;
@@ -126,13 +126,6 @@ public class MainActivity extends android.support.v7.app.AppCompatActivity
                         @java.lang.Override
                         public void closeDrawer()
                         { org.wheatgenetics.inventory.MainActivity.this.closeDrawer(); }
-
-                        @java.lang.Override
-                        public void handleOtherAppsItemClick(final java.lang.String uriString)
-                        {
-                            org.wheatgenetics.inventory.MainActivity.this.handleOtherAppsItemClick(
-                                uriString);
-                        };
                     }, new android.view.View.OnClickListener()
                     {
                         @java.lang.Override
@@ -238,12 +231,6 @@ public class MainActivity extends android.support.v7.app.AppCompatActivity
     {
         assert null != this.drawerLayout;
         this.drawerLayout.closeDrawer(android.support.v4.view.GravityCompat.START);
-    }
-
-    private void handleOtherAppsItemClick(final java.lang.String uriString)
-    {
-        this.startActivity(new android.content.Intent(
-            android.content.Intent.ACTION_VIEW, android.net.Uri.parse(uriString)));
     }
 
     private void showChangeLog()

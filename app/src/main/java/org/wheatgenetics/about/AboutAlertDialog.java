@@ -15,7 +15,6 @@ package org.wheatgenetics.about;
  * org.wheatgenetics.about.OtherApps
  * org.wheatgenetics.about.OtherApps.Index
  * org.wheatgenetics.about.OtherAppsAlertDialog
- * org.wheatgenetics.about.OtherAppsAlertDialog.Handler
  * org.wheatgenetics.androidlibrary.R
  * org.wheatgenetics.androidlibrary.Utils
  * org.wheatgenetics.inventory.R
@@ -23,10 +22,9 @@ package org.wheatgenetics.about;
 
 public class AboutAlertDialog extends java.lang.Object
 {
-    private final android.content.Context                              context               ;
-    private final java.lang.String                                     title, versionName    ;
-    private final android.view.View.OnClickListener                    versionOnClickListener;
-    private final org.wheatgenetics.about.OtherAppsAlertDialog.Handler otherAppsHandler      ;
+    private final android.content.Context           context               ;
+    private final java.lang.String                  title, versionName    ;
+    private final android.view.View.OnClickListener versionOnClickListener;
 
     private org.wheatgenetics.about.OtherAppsAlertDialog otherAppsAlertDialog = null;
     private android.app.AlertDialog                      alertDialog          = null;
@@ -37,8 +35,7 @@ public class AboutAlertDialog extends java.lang.Object
             this.otherAppsAlertDialog = new org.wheatgenetics.about.OtherAppsAlertDialog(
                 this.context,
                 new org.wheatgenetics.about.OtherApps(
-                    org.wheatgenetics.about.OtherApps.Index.INVENTORY),
-                this.otherAppsHandler);
+                    org.wheatgenetics.about.OtherApps.Index.INVENTORY));
         this.otherAppsAlertDialog.show();
     }
 
@@ -47,17 +44,21 @@ public class AboutAlertDialog extends java.lang.Object
     @android.support.annotation.NonNull final java.lang.String title         ,
     @android.support.annotation.NonNull final java.lang.String versionName   ,
     @android.support.annotation.NonNull
-        final android.view.View.OnClickListener versionOnClickListener,
-    @android.support.annotation.NonNull
-        final org.wheatgenetics.about.OtherAppsAlertDialog.Handler otherAppsHandler)
+        final android.view.View.OnClickListener versionOnClickListener)
     {
         super();
 
-        this.context                = context               ;
-        this.title                  = title                 ;
-        this.versionName            = versionName           ;
+        assert null != context;
+        this.context = context;
+
+        assert null != title;
+        this.title = title;
+
+        assert null != versionName;
+        this.versionName = versionName;
+
+        assert null != versionOnClickListener;
         this.versionOnClickListener = versionOnClickListener;
-        this.otherAppsHandler       = otherAppsHandler      ;
     }
 
     public void show()
