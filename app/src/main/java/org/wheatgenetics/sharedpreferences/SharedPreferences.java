@@ -121,15 +121,13 @@ extends org.wheatgenetics.sharedpreferences.UpdateVersionSharedPreferences
     // endregion
 
     // region IgnoreScale Public Methods
-    /* public boolean getIgnoreScale()
+    public boolean getIgnoreScale()
     {
         return this.getBoolean(org.wheatgenetics.sharedpreferences.SharedPreferences.IGNORE_SCALE);
     }
 
     public void setIgnoreScaleToTrue()
-    {
-        this.setBooleanToTrue(org.wheatgenetics.sharedpreferences.SharedPreferences.IGNORE_SCALE);
-    }*/
+    { this.setBooleanToTrue(org.wheatgenetics.sharedpreferences.SharedPreferences.IGNORE_SCALE); }
     // endregion
     // endregion
 }

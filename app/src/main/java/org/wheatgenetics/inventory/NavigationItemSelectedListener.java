@@ -17,8 +17,9 @@ implements android.support.design.widget.NavigationView.OnNavigationItemSelected
 {
     interface Handler
     {
-        public abstract void setPerson  ();
-        public abstract void closeDrawer();
+        public abstract void setPerson   ();
+        public abstract void connectScale();
+        public abstract void closeDrawer ();
     }
 
     private final android.content.Context                                            context;
@@ -66,12 +67,13 @@ implements android.support.design.widget.NavigationView.OnNavigationItemSelected
         {
             // The following five ids that have names that start with "nav_" come from
             // menu/activity_main_drawer.xml.
-            case org.wheatgenetics.inventory.R.id.nav_set_person :
-                this.handler.setPerson(); break;
+            case org.wheatgenetics.inventory.R.id.nav_set_person : this.handler.setPerson(); break;
 
-            case org.wheatgenetics.inventory.R.id.nav_connect_scale : break;
-            case org.wheatgenetics.inventory.R.id.nav_export        : break;
-            case org.wheatgenetics.inventory.R.id.nav_delete        : break;
+            case org.wheatgenetics.inventory.R.id.nav_connect_scale :
+                this.handler.connectScale(); break;
+
+            case org.wheatgenetics.inventory.R.id.nav_export : break;
+            case org.wheatgenetics.inventory.R.id.nav_delete : break;
 
             case org.wheatgenetics.inventory.R.id.nav_show_about :
                 if (null == this.aboutAlertDialog) this.aboutAlertDialog =
