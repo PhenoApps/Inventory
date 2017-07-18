@@ -1,11 +1,11 @@
 package org.wheatgenetics.sharedpreferences;
 
-/** Uses:
+/**
+ * Uses:
  * android.content.SharedPreferences
  * android.support.annotation.NonNull
  * android.util.Log
  *
- * org.wheatgenetics.inventory.BuildConfig
  * org.wheatgenetics.inventory.model.Person
  * org.wheatgenetics.sharedpreferences.UpdateVersionSharedPreferences
  */
@@ -19,10 +19,9 @@ extends org.wheatgenetics.sharedpreferences.UpdateVersionSharedPreferences
     @java.lang.Override
     void validateStringKey(@android.support.annotation.NonNull final java.lang.String key)
     {
-        if (org.wheatgenetics.inventory.BuildConfig.DEBUG
-        &&  !key.equals(org.wheatgenetics.sharedpreferences.SharedPreferences.FIRST_NAME)
+        if (!key.equals(org.wheatgenetics.sharedpreferences.SharedPreferences.FIRST_NAME)
         &&  !key.equals(org.wheatgenetics.sharedpreferences.SharedPreferences.LAST_NAME ))
-            throw new java.lang.AssertionError();
+            super.validateStringKey(key);
     }
 
     // region Private Methods
@@ -81,8 +80,8 @@ extends org.wheatgenetics.sharedpreferences.UpdateVersionSharedPreferences
 
     // region Public Methods
     // region Constructor Public Method
-    public SharedPreferences(final android.content.SharedPreferences sharedPreferences)
-    { super(sharedPreferences); }
+    public SharedPreferences(@android.support.annotation.NonNull
+    final android.content.SharedPreferences sharedPreferences) { super(sharedPreferences); }
     // endregion
 
     // region Person Public Methods
