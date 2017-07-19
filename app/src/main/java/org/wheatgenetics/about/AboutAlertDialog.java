@@ -22,12 +22,15 @@ package org.wheatgenetics.about;
 
 public class AboutAlertDialog extends java.lang.Object
 {
+    // region Fields
     private final android.content.Context           context               ;
     private final java.lang.String                  title, versionName    ;
     private final android.view.View.OnClickListener versionOnClickListener;
 
     private org.wheatgenetics.about.OtherAppsAlertDialog otherAppsAlertDialog = null;
+    private android.app.AlertDialog.Builder              builder              = null;
     private android.app.AlertDialog                      alertDialog          = null;
+    // endregion
 
     private void showOtherAppsAlertDialog()
     {
@@ -39,6 +42,7 @@ public class AboutAlertDialog extends java.lang.Object
         this.otherAppsAlertDialog.show();
     }
 
+    // region Public Methods
     public AboutAlertDialog(
     @android.support.annotation.NonNull final android.content.Context context,
     @android.support.annotation.NonNull final java.lang.String title         ,
@@ -65,15 +69,15 @@ public class AboutAlertDialog extends java.lang.Object
     {
         if (null == this.alertDialog)
         {
+            if (null == this.builder)
             {
-                final android.app.AlertDialog.Builder builder =
-                    new android.app.AlertDialog.Builder(this.context);
+                this.builder = new android.app.AlertDialog.Builder(this.context);
                 {
                     final android.view.View aboutView =
                         android.view.LayoutInflater.from(this.context).inflate(
-                            org.wheatgenetics.inventory.R.layout.about_alert_dialog,
-                            new android.widget.LinearLayout(this.context)          ,
-                            false                                                  );
+                            org.wheatgenetics.inventory.R.layout.about_alert_dialog            ,
+                            /* root         => */ new android.widget.LinearLayout(this.context),
+                            /* attachToRoot => */ false                                        );
                     {
                         assert null != aboutView;
                         final android.widget.TextView versionTextView = (android.widget.TextView)
@@ -102,12 +106,14 @@ public class AboutAlertDialog extends java.lang.Object
                         .setTitle(this.title)
                         .setView (aboutView );
                 }
-                builder.setNegativeButton(org.wheatgenetics.androidlibrary.R.string.okButtonText,
+                this.builder.setNegativeButton(
+                    org.wheatgenetics.androidlibrary.R.string.okButtonText            ,
                     org.wheatgenetics.androidlibrary.Utils.dismissingOnClickListener());
-                this.alertDialog = builder.create();
             }
+            this.alertDialog = this.builder.create();
             assert null != this.alertDialog;
         }
         this.alertDialog.show();
     }
+    // endregion
 }

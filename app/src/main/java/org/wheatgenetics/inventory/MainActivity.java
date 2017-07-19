@@ -211,11 +211,10 @@ public class MainActivity extends android.support.v7.app.AppCompatActivity
     protected void onActivityResult(final int requestCode,
     final int resultCode, final android.content.Intent data)
     {
-        java.lang.String barcode = org.wheatgenetics.zxing.BarcodeScanner.parseActivityResult(
-            requestCode, resultCode, data);
-        if (null == barcode) barcode = "null";
-
-        this.setTextViewText(barcode);
+        this.setTextViewText(org.wheatgenetics.javalib.Utils.replaceIfNull(
+            org.wheatgenetics.zxing.BarcodeScanner.parseActivityResult(
+                requestCode, resultCode, data),
+            "null"));
     }
     // endregion
 
@@ -331,7 +330,7 @@ public class MainActivity extends android.support.v7.app.AppCompatActivity
                 /* context                => */ this,
                 /* changeLogRawResourceId => */
                     org.wheatgenetics.inventory.R.raw.changelog_releases);
-        try { this.changeLogAlertDialog.show(); }
+        try                                 { this.changeLogAlertDialog.show()       ; }
         catch (final java.io.IOException e) { throw new java.lang.RuntimeException(e); }
     }
     // endregion
