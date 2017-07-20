@@ -9,6 +9,7 @@ package org.wheatgenetics.inventory;
  * android.view.View.OnClickListener
  *
  * org.wheatgenetics.about.AboutAlertDialog
+ * org.wheatgenetics.about.OtherApps.Index
  * org.wheatgenetics.inventory.R
  */
 
@@ -89,7 +90,8 @@ implements android.support.design.widget.NavigationView.OnNavigationItemSelected
                             "Inventory uses code from the following open source projects:",
                             "theUltimateScale ( https://github.com/" +
                                 "theUltimateLabs/theUtimateScale )" },
-                        this.versionOnClickListener);
+                        org.wheatgenetics.about.OtherApps.Index.INVENTORY,
+                        this.versionOnClickListener                      );
                 this.aboutAlertDialog.show(); break;
         }
 
