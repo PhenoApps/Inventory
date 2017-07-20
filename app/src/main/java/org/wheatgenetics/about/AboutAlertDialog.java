@@ -12,7 +12,6 @@ package org.wheatgenetics.about;
  * android.widget.LinearLayout
  * android.widget.TextView
  *
- * org.wheatgenetics.about.OtherApps
  * org.wheatgenetics.about.OtherApps.Index
  * org.wheatgenetics.about.OtherAppsAlertDialog
  * org.wheatgenetics.androidlibrary.R
@@ -36,9 +35,8 @@ public class AboutAlertDialog extends java.lang.Object
     {
         if (null == this.otherAppsAlertDialog)
             this.otherAppsAlertDialog = new org.wheatgenetics.about.OtherAppsAlertDialog(
-                this.context,
-                new org.wheatgenetics.about.OtherApps(
-                    org.wheatgenetics.about.OtherApps.Index.INVENTORY));
+                this.context                                     ,
+                org.wheatgenetics.about.OtherApps.Index.INVENTORY);
         this.otherAppsAlertDialog.show();
     }
 
