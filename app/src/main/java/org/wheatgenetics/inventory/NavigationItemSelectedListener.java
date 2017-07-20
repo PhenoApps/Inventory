@@ -80,7 +80,16 @@ implements android.support.design.widget.NavigationView.OnNavigationItemSelected
             case org.wheatgenetics.inventory.R.id.nav_show_about :
                 if (null == this.aboutAlertDialog) this.aboutAlertDialog =
                     new org.wheatgenetics.about.AboutAlertDialog(this.context,
-                        this.aboutAlertDialogTitle, this.versionName, this.versionOnClickListener);
+                        this.aboutAlertDialogTitle, this.versionName,
+                        new java.lang.String[] {
+                            "\nInventory is a free and open source application that can be used t" +
+                                "o catalog individuals while also collecting and storing sample w" +
+                                "eight data. The app was designed to work with Elane USB Plus 5kg" +
+                                " Scales (http://www.elane.net).\n",
+                            "Inventory uses code from the following open source projects:",
+                            "theUltimateScale ( https://github.com/" +
+                                "theUltimateLabs/theUtimateScale )" },
+                        this.versionOnClickListener);
                 this.aboutAlertDialog.show(); break;
         }
 

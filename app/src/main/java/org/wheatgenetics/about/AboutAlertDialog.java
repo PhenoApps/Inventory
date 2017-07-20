@@ -22,9 +22,9 @@ package org.wheatgenetics.about;
 public class AboutAlertDialog extends java.lang.Object
 {
     // region Fields
-    private final android.content.Context           context               ;
-    private final java.lang.String                  title, versionName    ;
-    private final android.view.View.OnClickListener versionOnClickListener;
+    private final android.content.Context           context                   ;
+    private final java.lang.String                  title, versionName, msgs[];
+    private final android.view.View.OnClickListener versionOnClickListener    ;
 
     private android.app.AlertDialog.Builder builder     = null;
     private android.app.AlertDialog         alertDialog = null;
@@ -35,6 +35,7 @@ public class AboutAlertDialog extends java.lang.Object
     @android.support.annotation.NonNull final android.content.Context context,
     @android.support.annotation.NonNull final java.lang.String title         ,
     @android.support.annotation.NonNull final java.lang.String versionName   ,
+    @android.support.annotation.NonNull final java.lang.String msgs[]        ,
     @android.support.annotation.NonNull
         final android.view.View.OnClickListener versionOnClickListener)
     {
@@ -48,6 +49,9 @@ public class AboutAlertDialog extends java.lang.Object
 
         assert null != versionName;
         this.versionName = versionName;
+
+        assert null != msgs;
+        this.msgs = msgs;
 
         assert null != versionOnClickListener;
         this.versionOnClickListener = versionOnClickListener;
@@ -83,6 +87,57 @@ public class AboutAlertDialog extends java.lang.Object
                         otherAppsTextView.setOnClickListener(
                             new org.wheatgenetics.about.OtherAppsOnClickListener(
                                 this.context, org.wheatgenetics.about.OtherApps.Index.INVENTORY));
+                    }
+                    {
+                        class MsgSetter extends java.lang.Object
+                        {
+                            private final android.view.View aboutView;
+                            private final java.lang.String  msgs[]   ;
+
+                            private MsgSetter(final android.view.View aboutView,
+                            final java.lang.String msgs[])
+                            {
+                                super();
+
+                                assert null != aboutView;
+                                this.aboutView = aboutView;
+
+                                assert null != msgs;
+                                this.msgs = msgs;
+                            }
+
+                            private void execute()
+                            {
+                                if (null != this.msgs)
+                                {
+                                    final int length = this.msgs.length;
+                                    if (length >= 1 && length <= 3)
+                                    {
+                                        assert null != this.aboutView;
+                                        int i = 1, msgTextViewId = 0;
+                                        for (final java.lang.String msg: this.msgs)
+                                        {
+                                            switch (i++)
+                                            {
+                                                case 1: msgTextViewId = org.wheatgenetics.inventory.
+                                                    R.id.aboutMsg1TextView; break;
+                                                case 2: msgTextViewId = org.wheatgenetics.inventory.
+                                                    R.id.aboutMsg2TextView; break;
+                                                case 3: msgTextViewId = org.wheatgenetics.inventory.
+                                                    R.id.aboutMsg3TextView; break;
+                                            }
+
+                                            final android.widget.TextView msgTextView =
+                                                (android.widget.TextView)
+                                                    this.aboutView.findViewById(msgTextViewId);
+                                            assert null != msgTextView;
+                                            msgTextView.setText(msg);
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                        new MsgSetter(aboutView, this.msgs).execute();
                     }
                     builder.setCancelable(true)
                         .setTitle(this.title)
