@@ -13,7 +13,7 @@ package org.wheatgenetics.about;
  * android.widget.TextView
  *
  * org.wheatgenetics.about.OtherApps.Index
- * org.wheatgenetics.about.OtherAppsAlertDialog
+ * org.wheatgenetics.about.OtherAppsOnClickListener
  * org.wheatgenetics.androidlibrary.R
  * org.wheatgenetics.androidlibrary.Utils
  * org.wheatgenetics.inventory.R
@@ -26,19 +26,9 @@ public class AboutAlertDialog extends java.lang.Object
     private final java.lang.String                  title, versionName    ;
     private final android.view.View.OnClickListener versionOnClickListener;
 
-    private org.wheatgenetics.about.OtherAppsAlertDialog otherAppsAlertDialog = null;
-    private android.app.AlertDialog.Builder              builder              = null;
-    private android.app.AlertDialog                      alertDialog          = null;
+    private android.app.AlertDialog.Builder builder     = null;
+    private android.app.AlertDialog         alertDialog = null;
     // endregion
-
-    private void showOtherAppsAlertDialog()
-    {
-        if (null == this.otherAppsAlertDialog)
-            this.otherAppsAlertDialog = new org.wheatgenetics.about.OtherAppsAlertDialog(
-                this.context                                     ,
-                org.wheatgenetics.about.OtherApps.Index.INVENTORY);
-        this.otherAppsAlertDialog.show();
-    }
 
     // region Public Methods
     public AboutAlertDialog(
@@ -90,15 +80,9 @@ public class AboutAlertDialog extends java.lang.Object
                             aboutView.findViewById(
                                 org.wheatgenetics.inventory.R.id.aboutOtherAppsTextView);
                         assert null != otherAppsTextView;
-                        otherAppsTextView.setOnClickListener(new android.view.View.OnClickListener()
-                            {
-                                @java.lang.Override
-                                public void onClick(final android.view.View v)
-                                {
-                                    org.wheatgenetics.about.
-                                        AboutAlertDialog.this.showOtherAppsAlertDialog();
-                                }
-                            });
+                        otherAppsTextView.setOnClickListener(
+                            new org.wheatgenetics.about.OtherAppsOnClickListener(
+                                this.context, org.wheatgenetics.about.OtherApps.Index.INVENTORY));
                     }
                     builder.setCancelable(true)
                         .setTitle(this.title)

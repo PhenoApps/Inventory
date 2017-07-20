@@ -22,12 +22,14 @@ implements android.support.design.widget.NavigationView.OnNavigationItemSelected
         public abstract void closeDrawer ();
     }
 
+    // region Fields
     private final android.content.Context                                            context;
     private final java.lang.String                        aboutAlertDialogTitle, versionName;
     private final org.wheatgenetics.inventory.NavigationItemSelectedListener.Handler handler;
     private final android.view.View.OnClickListener                   versionOnClickListener;
 
     private org.wheatgenetics.about.AboutAlertDialog aboutAlertDialog = null;
+    // endregion
 
     NavigationItemSelectedListener(
     @android.support.annotation.NonNull final android.content.Context context              ,
