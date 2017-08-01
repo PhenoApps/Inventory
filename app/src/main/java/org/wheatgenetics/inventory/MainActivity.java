@@ -20,16 +20,12 @@ package org.wheatgenetics.inventory;
  * android.view.View
  * android.view.View.OnClickListener
  * android.widget.TextView
- * android.widget.Toast
+ *
+ * org.wheatgenetics.javalib.Utils
  *
  * org.wheatgenetics.androidlibrary.R
+ * org.wheatgenetics.androidlibrary.Utils
  * org.wheatgenetics.changelog.ChangeLogAlertDialog
- * org.wheatgenetics.inventory.NavigationItemSelectedListener
- * org.wheatgenetics.inventory.NavigationItemSelectedListener.DrawerCloser
- * org.wheatgenetics.inventory.R
- * org.wheatgenetics.inventory.SetPersonAlertDialog
- * org.wheatgenetics.inventory.SetPersonAlertDialog.PersonStorer
- * org.wheatgenetics.javalib.Utils
  * org.wheatgenetics.sharedpreferences.SharedPreferences
  * org.wheatgenetics.usb.Device.Exception
  * org.wheatgenetics.usb.ScaleExceptionAlertDialog
@@ -37,8 +33,13 @@ package org.wheatgenetics.inventory;
  * org.wheatgenetics.usb.ScaleReader
  * org.wheatgenetics.usb.ScaleReader.Handler
  * org.wheatgenetics.zxing.BarcodeScanner
+ *
+ * org.wheatgenetics.inventory.NavigationItemSelectedListener
+ * org.wheatgenetics.inventory.NavigationItemSelectedListener.DrawerCloser
+ * org.wheatgenetics.inventory.R
+ * org.wheatgenetics.inventory.SetPersonAlertDialog
+ * org.wheatgenetics.inventory.SetPersonAlertDialog.PersonStorer
  */
-
 public class MainActivity extends android.support.v7.app.AppCompatActivity
 {
     // region Fields
@@ -97,7 +98,7 @@ public class MainActivity extends android.support.v7.app.AppCompatActivity
         // and part 2 regions concatenated together and located where part 2 is now.  Why did I
         // turn one region into two?  So that versionName would be set earlier.  Why should
         // versionName be set earlier?  So that its value could be passed to
-        // NavigationItemSelectedListener().
+        // NavigationItemSelectedListener() in the "Configure navigation menu" region, below.
         int              versionCode;
         java.lang.String versionName;
         try
@@ -122,32 +123,35 @@ public class MainActivity extends android.support.v7.app.AppCompatActivity
                     org.wheatgenetics.inventory.R.id.nav_view);                 // From layout/ac-
             assert null != navigationView;                                      //  tivity_main.xml.
             navigationView.setNavigationItemSelectedListener(
-                new org.wheatgenetics.inventory.NavigationItemSelectedListener(this,
-                    this.getResources().getString(
+                new org.wheatgenetics.inventory.NavigationItemSelectedListener(
+                    /* context               => */ this,
+                    /* aboutAlertDialogTitle => */ this.getResources().getString(
                         org.wheatgenetics.inventory.R.string.aboutAlertDialogTitle),
-                    versionName,
-                    new org.wheatgenetics.inventory.NavigationItemSelectedListener.Handler()
-                    {
-                        @java.lang.Override
-                        public void setPerson()
+                    /* versionName => */ versionName,
+                    /* handler     => */
+                        new org.wheatgenetics.inventory.NavigationItemSelectedListener.Handler()
                         {
-                            org.wheatgenetics.inventory.MainActivity.this.setPerson(
-                                /* fromMenu => */ true);
-                        }
+                            @java.lang.Override
+                            public void setPerson()
+                            {
+                                org.wheatgenetics.inventory.MainActivity.this.setPerson(
+                                    /* fromMenu => */ true);
+                            }
 
-                        @java.lang.Override
-                        public void connectScale()
-                        { org.wheatgenetics.inventory.MainActivity.this.connectScale(); }
+                            @java.lang.Override
+                            public void connectScale()
+                            { org.wheatgenetics.inventory.MainActivity.this.connectScale(); }
 
-                        @java.lang.Override
-                        public void closeDrawer()
-                        { org.wheatgenetics.inventory.MainActivity.this.closeDrawer(); }
-                    }, new android.view.View.OnClickListener()
-                    {
-                        @java.lang.Override
-                        public void onClick(android.view.View v)
-                        { org.wheatgenetics.inventory.MainActivity.this.showChangeLog(); }
-                    }));
+                            @java.lang.Override
+                            public void closeDrawer()
+                            { org.wheatgenetics.inventory.MainActivity.this.closeDrawer(); }
+                        },
+                    /* versionOnClickListener => */ new android.view.View.OnClickListener()
+                        {
+                            @java.lang.Override
+                            public void onClick(android.view.View v)
+                            { org.wheatgenetics.inventory.MainActivity.this.showChangeLog(); }
+                        }));
         }
         // endregion
 
@@ -220,19 +224,8 @@ public class MainActivity extends android.support.v7.app.AppCompatActivity
 
     // region Private Methods
     // region Private Private Methods
-    private void setTextViewText(final java.lang.String text)
-    {
-        if (null == this.textView)
-        {
-            this.textView = (android.widget.TextView)
-                this.findViewById(org.wheatgenetics.inventory.R.id.textView);
-            assert null != this.textView;
-        }
-        this.textView.setText(text);
-    }
-
     private void showToast(final java.lang.CharSequence text)
-    { android.widget.Toast.makeText(this, text, android.widget.Toast.LENGTH_SHORT).show(); }
+    { org.wheatgenetics.androidlibrary.Utils.showShortToast(this, text); }
 
     private void storePerson(@android.support.annotation.NonNull
     final org.wheatgenetics.inventory.model.Person person)
@@ -240,8 +233,7 @@ public class MainActivity extends android.support.v7.app.AppCompatActivity
         assert null != this.sharedPreferences;
         this.sharedPreferences.setPerson(person);
         this.showToast(
-            this.getResources().getString(org.wheatgenetics.inventory.R.string.setPersonMsg) +
-                person.toString());
+            this.getString(org.wheatgenetics.inventory.R.string.setPersonMsg) + person.toString());
     }
 
     private void ignoreScale()
@@ -332,6 +324,17 @@ public class MainActivity extends android.support.v7.app.AppCompatActivity
                     org.wheatgenetics.inventory.R.raw.changelog_releases);
         try                                 { this.changeLogAlertDialog.show()       ; }
         catch (final java.io.IOException e) { throw new java.lang.RuntimeException(e); }
+    }
+
+    private void setTextViewText(final java.lang.String text)
+    {
+        if (null == this.textView)
+        {
+            this.textView = (android.widget.TextView)
+                this.findViewById(org.wheatgenetics.inventory.R.id.textView);
+            assert null != this.textView;
+        }
+        this.textView.setText(text);
     }
     // endregion
 }

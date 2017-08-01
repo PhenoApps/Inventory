@@ -10,9 +10,9 @@ package org.wheatgenetics.inventory;
  *
  * org.wheatgenetics.about.AboutAlertDialog
  * org.wheatgenetics.about.OtherApps.Index
+ *
  * org.wheatgenetics.inventory.R
  */
-
 class NavigationItemSelectedListener extends java.lang.Object
 implements android.support.design.widget.NavigationView.OnNavigationItemSelectedListener
 {
