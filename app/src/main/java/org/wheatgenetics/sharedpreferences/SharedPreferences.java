@@ -9,7 +9,6 @@ package org.wheatgenetics.sharedpreferences;
  * org.wheatgenetics.inventory.model.Person
  * org.wheatgenetics.sharedpreferences.UpdateVersionSharedPreferences
  */
-
 public class SharedPreferences
 extends org.wheatgenetics.sharedpreferences.UpdateVersionSharedPreferences
 {
@@ -79,10 +78,8 @@ extends org.wheatgenetics.sharedpreferences.UpdateVersionSharedPreferences
     // endregion
 
     // region Public Methods
-    // region Constructor Public Method
     public SharedPreferences(@android.support.annotation.NonNull
     final android.content.SharedPreferences sharedPreferences) { super(sharedPreferences); }
-    // endregion
 
     // region Person Public Methods
     public org.wheatgenetics.inventory.model.Person getPerson()
@@ -121,9 +118,7 @@ extends org.wheatgenetics.sharedpreferences.UpdateVersionSharedPreferences
 
     // region IgnoreScale Public Methods
     public boolean getIgnoreScale()
-    {
-        return this.getBoolean(org.wheatgenetics.sharedpreferences.SharedPreferences.IGNORE_SCALE);
-    }
+    { return this.getBoolean(org.wheatgenetics.sharedpreferences.SharedPreferences.IGNORE_SCALE); }
 
     public void setIgnoreScaleToTrue()
     { this.setBooleanToTrue(org.wheatgenetics.sharedpreferences.SharedPreferences.IGNORE_SCALE); }

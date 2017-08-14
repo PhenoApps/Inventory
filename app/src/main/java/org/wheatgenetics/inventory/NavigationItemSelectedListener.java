@@ -43,19 +43,10 @@ implements android.support.design.widget.NavigationView.OnNavigationItemSelected
     {
         super();
 
-        assert null != context;
-        this.context = context;
-
-        assert null != aboutAlertDialogTitle;
-        this.aboutAlertDialogTitle  = aboutAlertDialogTitle;
-
-        assert null != versionName;
-        this.versionName = versionName;
-
-        assert null != handler;
-        this.handler = handler;
-
-        assert null != versionOnClickListener;
+        this.context                = context               ;
+        this.aboutAlertDialogTitle  = aboutAlertDialogTitle ;
+        this.versionName            = versionName           ;
+        this.handler                = handler               ;
         this.versionOnClickListener = versionOnClickListener;
     }
 
