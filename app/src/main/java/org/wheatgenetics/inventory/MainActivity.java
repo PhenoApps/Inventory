@@ -23,6 +23,7 @@ package org.wheatgenetics.inventory;
  *
  * org.wheatgenetics.javalib.Utils
  *
+ * org.wheatgenetics.androidlibrary.Dir
  * org.wheatgenetics.androidlibrary.R
  * org.wheatgenetics.androidlibrary.Utils
  * org.wheatgenetics.changelog.ChangeLogAlertDialog
@@ -53,6 +54,7 @@ public class MainActivity extends android.support.v7.app.AppCompatActivity
     private org.wheatgenetics.zxing.BarcodeScanner                barcodeScanner            = null;
     private org.wheatgenetics.usb.ScaleReader                     scaleReaderInstance       = null;
     private org.wheatgenetics.usb.ScaleExceptionAlertDialog       scaleExceptionAlertDialog = null;
+    private org.wheatgenetics.androidlibrary.Dir                  inventoryDir                    ;
 
     private org.wheatgenetics.inventory.SetPersonAlertDialog setPersonAlertDialog = null;
     // endregion
@@ -172,6 +174,10 @@ public class MainActivity extends android.support.v7.app.AppCompatActivity
             this.showChangeLog();
         }
         // endregion
+
+        this.inventoryDir =
+            new org.wheatgenetics.androidlibrary.Dir(this, "Inventory", ".inventory");
+        this.inventoryDir.createIfMissing();
     }
 
     @java.lang.Override
