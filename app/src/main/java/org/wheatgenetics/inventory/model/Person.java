@@ -4,7 +4,6 @@ package org.wheatgenetics.inventory.model;
  * Uses:
  * org.wheatgenetics.javalib.Utils
  */
-
 public class Person extends java.lang.Object
 {
     public final java.lang.String firstName, lastName;

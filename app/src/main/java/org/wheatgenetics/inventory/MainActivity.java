@@ -34,8 +34,9 @@ package org.wheatgenetics.inventory;
  * org.wheatgenetics.usb.ScaleReader.Handler
  * org.wheatgenetics.zxing.BarcodeScanner
  *
+ * org.wheatgenetics.inventory.model.Person
  * org.wheatgenetics.inventory.NavigationItemSelectedListener
- * org.wheatgenetics.inventory.NavigationItemSelectedListener.DrawerCloser
+ * org.wheatgenetics.inventory.NavigationItemSelectedListener.Handler
  * org.wheatgenetics.inventory.R
  * org.wheatgenetics.inventory.SetPersonAlertDialog
  * org.wheatgenetics.inventory.SetPersonAlertDialog.PersonStorer
@@ -80,15 +81,14 @@ public class MainActivity extends android.support.v7.app.AppCompatActivity
 
             final android.support.v7.app.ActionBarDrawerToggle toggle =
                 new android.support.v7.app.ActionBarDrawerToggle(this, this.drawerLayout, toolbar,
-                    org.wheatgenetics.inventory.R.string.navigation_drawer_open ,
-                    org.wheatgenetics.inventory.R.string.navigation_drawer_close)
+                org.wheatgenetics.inventory.R.string.navigation_drawer_open ,
+                org.wheatgenetics.inventory.R.string.navigation_drawer_close)
                 {
                     @java.lang.Override
                     public void onDrawerOpened(final android.view.View drawerView)
                     { org.wheatgenetics.inventory.MainActivity.this.displayPerson(); }
                 };
-            assert null != this.drawerLayout;
-            this.drawerLayout.setDrawerListener(toggle);
+            assert null != this.drawerLayout; this.drawerLayout.setDrawerListener(toggle);
             toggle.syncState();
         }
         // endregion
@@ -125,8 +125,8 @@ public class MainActivity extends android.support.v7.app.AppCompatActivity
             navigationView.setNavigationItemSelectedListener(
                 new org.wheatgenetics.inventory.NavigationItemSelectedListener(
                     /* context               => */ this,
-                    /* aboutAlertDialogTitle => */ this.getResources().getString(
-                        org.wheatgenetics.inventory.R.string.aboutAlertDialogTitle),
+                    /* aboutAlertDialogTitle => */
+                        org.wheatgenetics.inventory.R.string.aboutAlertDialogTitle,
                     /* versionName => */ versionName,
                     /* handler     => */
                         new org.wheatgenetics.inventory.NavigationItemSelectedListener.Handler()
@@ -149,7 +149,7 @@ public class MainActivity extends android.support.v7.app.AppCompatActivity
                     /* versionOnClickListener => */ new android.view.View.OnClickListener()
                         {
                             @java.lang.Override
-                            public void onClick(android.view.View v)
+                            public void onClick(final android.view.View v)
                             { org.wheatgenetics.inventory.MainActivity.this.showChangeLog(); }
                         }));
         }
@@ -197,11 +197,10 @@ public class MainActivity extends android.support.v7.app.AppCompatActivity
     {
         // Handle action bar item clicks here. The action bar will automatically handle clicks on
         // the Home/Up button, so long as you specify a parent activity in AndroidManifest.xml.
-        assert null != item;
-        final int id = item.getItemId();
+        assert null != item; final int itemId = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (org.wheatgenetics.androidlibrary.R.id.cameraOptionsMenuItem == id)
+        if (org.wheatgenetics.androidlibrary.R.id.cameraOptionsMenuItem == itemId)
         {
             if (null == this.barcodeScanner)
                 this.barcodeScanner = new org.wheatgenetics.zxing.BarcodeScanner(this);
@@ -230,17 +229,13 @@ public class MainActivity extends android.support.v7.app.AppCompatActivity
     private void storePerson(@android.support.annotation.NonNull
     final org.wheatgenetics.inventory.model.Person person)
     {
-        assert null != this.sharedPreferences;
-        this.sharedPreferences.setPerson(person);
+        assert null != this.sharedPreferences; this.sharedPreferences.setPerson(person);
         this.showToast(
             this.getString(org.wheatgenetics.inventory.R.string.setPersonMsg) + person.toString());
     }
 
     private void ignoreScale()
-    {
-        assert null != this.sharedPreferences;
-        this.sharedPreferences.setIgnoreScaleToTrue();
-    }
+    { assert null != this.sharedPreferences; this.sharedPreferences.setIgnoreScaleToTrue(); }
 
     private void reportException(final org.wheatgenetics.usb.Device.Exception e)
     {
@@ -282,8 +277,7 @@ public class MainActivity extends android.support.v7.app.AppCompatActivity
     {
         final android.widget.TextView personTextView = (android.widget.TextView)
             this.findViewById(org.wheatgenetics.inventory.R.id.personTextView);
-        assert null != this.sharedPreferences;
-        assert null != personTextView        ;
+        assert null != personTextView; assert null != this.sharedPreferences;
         personTextView.setText(this.sharedPreferences.getPerson().toString());
     }
 

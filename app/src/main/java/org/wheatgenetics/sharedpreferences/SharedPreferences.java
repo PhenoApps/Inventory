@@ -26,11 +26,8 @@ extends org.wheatgenetics.sharedpreferences.UpdateVersionSharedPreferences
     // region Private Methods
     private static int sendDebugLogMsg(
     @android.support.annotation.NonNull final java.lang.String tag,
-    @android.support.annotation.NonNull       java.lang.String msg)
-    {
-        if (msg.equals("")) msg = "empty";
-        return android.util.Log.d("SharedPreferences." + tag, msg);
-    }
+    @android.support.annotation.NonNull final java.lang.String msg)
+    { return android.util.Log.d("SharedPreferences." + tag, msg.equals("") ? "empty" : msg); }
 
     // region First Name Private Methods
     private java.lang.String getFirstName()
