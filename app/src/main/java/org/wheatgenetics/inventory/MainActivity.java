@@ -23,7 +23,6 @@ package org.wheatgenetics.inventory;
  *
  * org.wheatgenetics.javalib.Utils
  *
- * org.wheatgenetics.androidlibrary.Dir
  * org.wheatgenetics.androidlibrary.R
  * org.wheatgenetics.androidlibrary.Utils
  * org.wheatgenetics.changelog.ChangeLogAlertDialog
@@ -36,10 +35,12 @@ package org.wheatgenetics.inventory;
  * org.wheatgenetics.zxing.BarcodeScanner
  *
  * org.wheatgenetics.inventory.ExportAlertDialog.Handler
+ * org.wheatgenetics.inventory.InventoryDir
  * org.wheatgenetics.inventory.model.Person
  * org.wheatgenetics.inventory.NavigationItemSelectedListener
  * org.wheatgenetics.inventory.NavigationItemSelectedListener.Handler
  * org.wheatgenetics.inventory.R
+ * org.wheatgenetics.inventory.SamplesTable
  * org.wheatgenetics.inventory.SetPersonAlertDialog
  * org.wheatgenetics.inventory.SetPersonAlertDialog.PersonStorer
  */
@@ -55,9 +56,10 @@ public class MainActivity extends android.support.v7.app.AppCompatActivity
     private org.wheatgenetics.zxing.BarcodeScanner                barcodeScanner            = null;
     private org.wheatgenetics.usb.ScaleReader                     scaleReaderInstance       = null;
     private org.wheatgenetics.usb.ScaleExceptionAlertDialog       scaleExceptionAlertDialog = null;
-    private org.wheatgenetics.androidlibrary.Dir                  inventoryDir                    ;
 
     private org.wheatgenetics.inventory.SetPersonAlertDialog setPersonAlertDialog = null;
+    private org.wheatgenetics.inventory.InventoryDir         inventoryDir               ;
+    private org.wheatgenetics.inventory.SamplesTable         samplesTableInstance = null;
     // endregion
 
     // region Overridden Methods
@@ -188,8 +190,7 @@ public class MainActivity extends android.support.v7.app.AppCompatActivity
         // endregion
 
         // region Create inventoryDir.
-        this.inventoryDir =
-            new org.wheatgenetics.androidlibrary.Dir(this, "Inventory", ".inventory");
+        this.inventoryDir = new org.wheatgenetics.inventory.InventoryDir(this);
         this.inventoryDir.createIfMissing();
         // endregion
     }
@@ -290,6 +291,13 @@ public class MainActivity extends android.support.v7.app.AppCompatActivity
                     { org.wheatgenetics.inventory.MainActivity.this.reportException(e); }
                 });
         return this.scaleReaderInstance;
+    }
+
+    private org.wheatgenetics.inventory.SamplesTable samplesTable()
+    {
+        if (null == this.samplesTableInstance)
+            this.samplesTableInstance = new org.wheatgenetics.inventory.SamplesTable(this);
+        return this.samplesTableInstance;
     }
     // endregion
 
