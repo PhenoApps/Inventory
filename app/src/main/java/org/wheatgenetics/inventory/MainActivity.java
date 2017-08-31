@@ -35,6 +35,7 @@ package org.wheatgenetics.inventory;
  * org.wheatgenetics.usb.ScaleReader.Handler
  * org.wheatgenetics.zxing.BarcodeScanner
  *
+ * org.wheatgenetics.inventory.ExportAlertDialog.Handler
  * org.wheatgenetics.inventory.model.Person
  * org.wheatgenetics.inventory.NavigationItemSelectedListener
  * org.wheatgenetics.inventory.NavigationItemSelectedListener.Handler
@@ -129,8 +130,8 @@ public class MainActivity extends android.support.v7.app.AppCompatActivity
                     /* context               => */ this,
                     /* aboutAlertDialogTitle => */
                         org.wheatgenetics.inventory.R.string.aboutAlertDialogTitle,
-                    /* versionName => */ versionName,
-                    /* handler     => */
+                    /* versionName     => */ versionName,
+                    /* listenerHandler => */
                         new org.wheatgenetics.inventory.NavigationItemSelectedListener.Handler()
                         {
                             @java.lang.Override
@@ -147,6 +148,17 @@ public class MainActivity extends android.support.v7.app.AppCompatActivity
                             @java.lang.Override
                             public void closeDrawer()
                             { org.wheatgenetics.inventory.MainActivity.this.closeDrawer(); }
+                        },
+                    /* exportHandler => */
+                        new org.wheatgenetics.inventory.ExportAlertDialog.Handler()
+                        {
+                            @java.lang.Override
+                            public void exportCSV()
+                            { org.wheatgenetics.inventory.MainActivity.this.exportCSV(); }
+
+                            @java.lang.Override
+                            public void exportSQL()
+                            { org.wheatgenetics.inventory.MainActivity.this.exportSQL(); }
                         },
                     /* versionOnClickListener => */ new android.view.View.OnClickListener()
                         {
@@ -175,9 +187,11 @@ public class MainActivity extends android.support.v7.app.AppCompatActivity
         }
         // endregion
 
+        // region Create inventoryDir.
         this.inventoryDir =
             new org.wheatgenetics.androidlibrary.Dir(this, "Inventory", ".inventory");
         this.inventoryDir.createIfMissing();
+        // endregion
     }
 
     @java.lang.Override
@@ -314,6 +328,10 @@ public class MainActivity extends android.support.v7.app.AppCompatActivity
         assert null != this.drawerLayout;
         this.drawerLayout.closeDrawer(android.support.v4.view.GravityCompat.START);
     }
+
+    private void exportCSV() {}
+
+    private void exportSQL() {}
 
     private void showChangeLog()
     {

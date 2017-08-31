@@ -59,9 +59,9 @@ class SetPersonAlertDialog extends java.lang.Object
         {
             if (null == this.builder)
             {
-                this.builder = new android.app.AlertDialog.Builder(this.context);
-                this.builder.setCancelable(false).setTitle(
-                    org.wheatgenetics.inventory.R.string.setPersonAlertDialogTitle);
+                this.builder = new android.app.AlertDialog.Builder(this.context)
+                    .setCancelable(false).setTitle(
+                        org.wheatgenetics.inventory.R.string.setPersonAlertDialogTitle);
                 {
                     final android.view.View setPersonView =
                         android.view.LayoutInflater.from(this.context).inflate(
