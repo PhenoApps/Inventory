@@ -13,6 +13,7 @@
     <string name="exportAlertDialogMsg">How would you like to export the data?</string>
     <string name="exportAlertDialogPositive">Flat file (CSV)</string>
     <string name="exportAlertDialogNegative">Query file (SQL)</string>
+    <string name="exportSuccess">File exported successfully.</string>
 
     <string name="aboutAlertDialogTitle">About Inventory</string>
 </resources>

@@ -16,8 +16,11 @@ implements java.lang.Iterable<org.wheatgenetics.inventory.model.InventoryRecord>
     public java.util.Iterator<org.wheatgenetics.inventory.model.InventoryRecord> iterator()
     { return this.linkedList.iterator(); }
 
-    // region Package Methods
-    java.io.File writeCSV(final java.io.File file)
+    // region Public Methods
+    public boolean add(final org.wheatgenetics.inventory.model.InventoryRecord inventoryRecord)
+    { return this.linkedList.add(inventoryRecord); }
+
+    public java.io.File writeCSV(final java.io.File file)
     {
         if (this.linkedList.isEmpty())
             return null;
@@ -59,7 +62,7 @@ implements java.lang.Iterable<org.wheatgenetics.inventory.model.InventoryRecord>
         }
     }
 
-    java.io.File writeSQL(final java.io.File file, final java.lang.String boxList)
+    public java.io.File writeSQL(final java.io.File file, final java.lang.String boxList)
     {
         if (this.linkedList.isEmpty())
             return null;
@@ -110,11 +113,6 @@ implements java.lang.Iterable<org.wheatgenetics.inventory.model.InventoryRecord>
             return file;
         }
     }
-    // endregion
-
-    // region Public Methods
-    public boolean add(final org.wheatgenetics.inventory.model.InventoryRecord inventoryRecord)
-    { return this.linkedList.add(inventoryRecord); }
 
     public int sendDebugLogMsg(final java.lang.String tag)
     { return android.util.Log.d(tag, this.toString()); }
