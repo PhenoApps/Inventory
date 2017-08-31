@@ -34,6 +34,7 @@ package org.wheatgenetics.inventory;
  * org.wheatgenetics.usb.ScaleReader.Handler
  * org.wheatgenetics.zxing.BarcodeScanner
  *
+ * org.wheatgenetics.inventory.DeleteAlertDialog.Handler
  * org.wheatgenetics.inventory.ExportAlertDialog.Handler
  * org.wheatgenetics.inventory.InventoryDir
  * org.wheatgenetics.inventory.model.InventoryRecords
@@ -162,6 +163,15 @@ public class MainActivity extends android.support.v7.app.AppCompatActivity
                             @java.lang.Override
                             public void exportSQL()
                             { org.wheatgenetics.inventory.MainActivity.this.exportSQL(); }
+                        },
+                    /* deleteHandler => */
+                        new org.wheatgenetics.inventory.DeleteAlertDialog.Handler()
+                        {
+                            @java.lang.Override
+                            public void delete()
+                            {
+                                // TODO
+                            }
                         },
                     /* versionOnClickListener => */ new android.view.View.OnClickListener()
                         {

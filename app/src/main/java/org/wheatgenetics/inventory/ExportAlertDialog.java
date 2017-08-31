@@ -17,8 +17,8 @@ class ExportAlertDialog extends java.lang.Object
     interface Handler { public abstract void exportCSV(); public abstract void exportSQL(); }
 
     // region Fields
-    private final org.wheatgenetics.inventory.ExportAlertDialog.Handler handler;
     private final android.content.Context                               context;
+    private final org.wheatgenetics.inventory.ExportAlertDialog.Handler handler;
 
     private android.app.AlertDialog         alertDialog = null;
     private android.app.AlertDialog.Builder builder     = null;
@@ -59,7 +59,7 @@ class ExportAlertDialog extends java.lang.Object
                             final int which)
                             { org.wheatgenetics.inventory.ExportAlertDialog.this.exportSQL(); }
                         })
-                    .setNeutralButton(org.wheatgenetics.inventory.R.string.cancel,
+                    .setNeutralButton(org.wheatgenetics.inventory.R.string.exportAlertDialogNeutral,
                         org.wheatgenetics.androidlibrary.Utils.cancellingOnClickListener());
             this.alertDialog = this.builder.create();
             assert null != this.alertDialog;

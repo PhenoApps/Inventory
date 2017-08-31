@@ -11,6 +11,8 @@ package org.wheatgenetics.inventory;
  * org.wheatgenetics.about.AboutAlertDialog
  * org.wheatgenetics.about.OtherApps.Index
  *
+ * org.wheatgenetics.inventory.DeleteAlertDialog
+ * org.wheatgenetics.inventory.DeleteAlertDialog.Handler
  * org.wheatgenetics.inventory.ExportAlertDialog
  * org.wheatgenetics.inventory.ExportAlertDialog.Handler
  * org.wheatgenetics.inventory.R
@@ -31,17 +33,20 @@ implements android.support.design.widget.NavigationView.OnNavigationItemSelected
     private final org.wheatgenetics.inventory.NavigationItemSelectedListener.Handler
         listenerHandler;
     private final org.wheatgenetics.inventory.ExportAlertDialog.Handler exportHandler         ;
+    private final org.wheatgenetics.inventory.DeleteAlertDialog.Handler deleteHandler         ;
     private final android.view.View.OnClickListener                     versionOnClickListener;
 
     private org.wheatgenetics.inventory.ExportAlertDialog exportAlertDialog = null;
+    private org.wheatgenetics.inventory.DeleteAlertDialog deleteAlertDialog = null;
     private org.wheatgenetics.about.AboutAlertDialog      aboutAlertDialog  = null;
     // endregion
 
     NavigationItemSelectedListener(final android.content.Context context,
     final int aboutAlertDialogTitle, final java.lang.String versionName,
-    final org.wheatgenetics.inventory.NavigationItemSelectedListener.Handler listenerHandler,
-    final org.wheatgenetics.inventory.ExportAlertDialog.Handler exportHandler,
-    final android.view.View.OnClickListener versionOnClickListener)
+    final org.wheatgenetics.inventory.NavigationItemSelectedListener.Handler listenerHandler       ,
+    final org.wheatgenetics.inventory.ExportAlertDialog.Handler              exportHandler         ,
+    final org.wheatgenetics.inventory.DeleteAlertDialog.Handler              deleteHandler         ,
+    final android.view.View.OnClickListener                                  versionOnClickListener)
     {
         super();
 
@@ -50,6 +55,7 @@ implements android.support.design.widget.NavigationView.OnNavigationItemSelected
         this.versionName            = versionName           ;
         this.listenerHandler        = listenerHandler       ;
         this.exportHandler          = exportHandler         ;
+        this.deleteHandler          = deleteHandler         ;
         this.versionOnClickListener = versionOnClickListener;
     }
 
@@ -75,7 +81,11 @@ implements android.support.design.widget.NavigationView.OnNavigationItemSelected
                         this.context, this.exportHandler);
                 this.exportAlertDialog.show(); break;
 
-            case org.wheatgenetics.inventory.R.id.nav_delete : break;
+            case org.wheatgenetics.inventory.R.id.nav_delete :
+                if (null == this.deleteAlertDialog)
+                    this.deleteAlertDialog = new org.wheatgenetics.inventory.DeleteAlertDialog(
+                        this.context, this.deleteHandler);
+                this.deleteAlertDialog.show(); break;
 
             case org.wheatgenetics.inventory.R.id.nav_show_about :
                 if (null == this.aboutAlertDialog)
