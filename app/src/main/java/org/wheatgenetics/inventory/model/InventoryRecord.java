@@ -6,7 +6,7 @@ package org.wheatgenetics.inventory.model;
  *
  * org.wheatgenetics.javalib.Utils
  */
-class InventoryRecord extends java.lang.Object
+public class InventoryRecord extends java.lang.Object
 {
     // region Fields
     private int              id                                                  ;
@@ -24,8 +24,6 @@ class InventoryRecord extends java.lang.Object
 
     // region Package Methods
     // region Constructor Package Methods
-    InventoryRecord() { super(); }
-
     InventoryRecord(final java.lang.String box, final java.lang.String envid, final int position)
     { this(); this.box = box; this.envid = envid; this.position = position; }
 
@@ -37,26 +35,9 @@ class InventoryRecord extends java.lang.Object
         this.date   = org.wheatgenetics.javalib.Utils.getDateTime();
         this.wt     = wt                                           ;
     }
-
-    InventoryRecord(final java.lang.String id, final java.lang.String box,
-    final java.lang.String envid, final java.lang.String person, final java.lang.String date,
-    final java.lang.String position, final java.lang.String wt)
-    { this(); this.set(id, box, envid, person, date, position, wt); }
     // endregion
 
-    // region Getters and Setter Package Methods
-    int  getId() { return this.id; } void setId(final int id) { this.id = id; }
-
-    java.lang.String getBox     () { return this.box     ; }
-    java.lang.String getEnvId   () { return this.envid   ; }
-    java.lang.String getPerson  () { return this.person  ; }
-    java.lang.String getDate    () { return this.date    ; }
-    int              getPosition() { return this.position; }
-    java.lang.String getWt      () { return this.wt      ; }
-    // endregion
-
-    java.lang.String getPositionAsString()
-    { return java.lang.Integer.toString(this.getPosition()); }
+    void setId(final int id) { this.id = id; }
 
     java.lang.String getTag()
     { return this.getBox() + "," + this.getEnvId() + "," + this.getPositionAsString(); }
@@ -84,9 +65,40 @@ class InventoryRecord extends java.lang.Object
             fields[5] + ")" ;  // wt
     }
 
-    void set(final java.lang.String id, final java.lang.String box, final java.lang.String envid,
-    final java.lang.String person, final java.lang.String date, final java.lang.String position,
-    final java.lang.String wt)
+    int sendErrorLogMsg(final java.lang.String tag)
+    {
+        return android.util.Log.e(tag, this.getBox() + " " +
+            this.getPositionAsString() + " " + this.getEnvId() + " " + this.getWt());
+    }
+    // endregion
+
+    // region Public Methods
+    // region Constructor Public Methods
+    public InventoryRecord() { super(); }
+
+    public InventoryRecord(final java.lang.String id, final java.lang.String box,
+    final java.lang.String envid, final java.lang.String person, final java.lang.String date,
+    final java.lang.String position, final java.lang.String wt)
+    { this(); this.set(id, box, envid, person, date, position, wt); }
+    // endregion
+
+    // region Getters and Setter Public Methods
+    public int getId() { return this.id; }
+
+    public java.lang.String getBox     () { return this.box     ; }
+    public java.lang.String getEnvId   () { return this.envid   ; }
+    public java.lang.String getPerson  () { return this.person  ; }
+    public java.lang.String getDate    () { return this.date    ; }
+    public int              getPosition() { return this.position; }
+    public java.lang.String getWt      () { return this.wt      ; }
+    // endregion
+
+    public java.lang.String getPositionAsString()
+    { return java.lang.Integer.toString(this.getPosition()); }
+
+    public void set(final java.lang.String id, final java.lang.String box,
+    final java.lang.String envid, final java.lang.String person, final java.lang.String date,
+    final java.lang.String position, final java.lang.String wt)
     {
         this.setId(java.lang.Integer.parseInt(id));
         this.box      = box                                 ;
@@ -97,15 +109,7 @@ class InventoryRecord extends java.lang.Object
         this.wt       = wt                                  ;
     }
 
-    // region Log Package Methods
-    int sendDebugLogMsg(final java.lang.String tag)
+    public int sendDebugLogMsg(final java.lang.String tag)
     { return android.util.Log.d(tag, this.toString()); }
-
-    int sendErrorLogMsg(final java.lang.String tag)
-    {
-        return android.util.Log.e(tag, this.getBox() + " " +
-            this.getPositionAsString() + " " + this.getEnvId() + " " + this.getWt());
-    }
-    // endregion
     // endregion
 }

@@ -6,7 +6,7 @@ package org.wheatgenetics.inventory.model;
  *
  * org.wheatgenetics.inventory.model.InventoryRecord
  */
-class InventoryRecords extends java.lang.Object
+public class InventoryRecords extends java.lang.Object
 implements java.lang.Iterable<org.wheatgenetics.inventory.model.InventoryRecord>
 {
     private final java.util.LinkedList<org.wheatgenetics.inventory.model.InventoryRecord>
@@ -17,9 +17,6 @@ implements java.lang.Iterable<org.wheatgenetics.inventory.model.InventoryRecord>
     { return this.linkedList.iterator(); }
 
     // region Package Methods
-    boolean add(final org.wheatgenetics.inventory.model.InventoryRecord inventoryRecord)
-    { return this.linkedList.add(inventoryRecord); }
-
     java.io.File writeCSV(final java.io.File file)
     {
         if (this.linkedList.isEmpty())
@@ -113,8 +110,13 @@ implements java.lang.Iterable<org.wheatgenetics.inventory.model.InventoryRecord>
             return file;
         }
     }
+    // endregion
 
-    int sendDebugLogMsg(final java.lang.String tag)
+    // region Public Methods
+    public boolean add(final org.wheatgenetics.inventory.model.InventoryRecord inventoryRecord)
+    { return this.linkedList.add(inventoryRecord); }
+
+    public int sendDebugLogMsg(final java.lang.String tag)
     { return android.util.Log.d(tag, this.toString()); }
     // endregion
 }
