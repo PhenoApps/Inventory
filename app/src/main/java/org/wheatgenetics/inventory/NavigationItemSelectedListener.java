@@ -31,7 +31,7 @@ implements android.support.design.widget.NavigationView.OnNavigationItemSelected
     private final int                     aboutAlertDialogTitle;
     private final java.lang.String        versionName          ;
     private final org.wheatgenetics.inventory.NavigationItemSelectedListener.Handler
-        listenerHandler;
+        navigationHandler;
     private final org.wheatgenetics.inventory.ExportAlertDialog.Handler exportHandler         ;
     private final org.wheatgenetics.inventory.DeleteAlertDialog.Handler deleteHandler         ;
     private final android.view.View.OnClickListener                     versionOnClickListener;
@@ -43,7 +43,7 @@ implements android.support.design.widget.NavigationView.OnNavigationItemSelected
 
     NavigationItemSelectedListener(final android.content.Context context,
     final int aboutAlertDialogTitle, final java.lang.String versionName,
-    final org.wheatgenetics.inventory.NavigationItemSelectedListener.Handler listenerHandler       ,
+    final org.wheatgenetics.inventory.NavigationItemSelectedListener.Handler navigationHandler     ,
     final org.wheatgenetics.inventory.ExportAlertDialog.Handler              exportHandler         ,
     final org.wheatgenetics.inventory.DeleteAlertDialog.Handler              deleteHandler         ,
     final android.view.View.OnClickListener                                  versionOnClickListener)
@@ -53,7 +53,7 @@ implements android.support.design.widget.NavigationView.OnNavigationItemSelected
         this.context                = context               ;
         this.aboutAlertDialogTitle  = aboutAlertDialogTitle ;
         this.versionName            = versionName           ;
-        this.listenerHandler        = listenerHandler       ;
+        this.navigationHandler      = navigationHandler     ;
         this.exportHandler          = exportHandler         ;
         this.deleteHandler          = deleteHandler         ;
         this.versionOnClickListener = versionOnClickListener;
@@ -64,16 +64,16 @@ implements android.support.design.widget.NavigationView.OnNavigationItemSelected
     @android.support.annotation.NonNull final android.view.MenuItem item)
     {
         // Handle navigation view item clicks here.
-        assert null != item; assert null != this.listenerHandler;
+        assert null != item; assert null != this.navigationHandler;
         switch (item.getItemId())
         {
             // The following five ids that have names that start with "nav_" come from
             // menu/activity_main_drawer.xml.
             case org.wheatgenetics.inventory.R.id.nav_set_person :
-                this.listenerHandler.setPerson(); break;
+                this.navigationHandler.setPerson(); break;
 
             case org.wheatgenetics.inventory.R.id.nav_connect_scale :
-                this.listenerHandler.connectScale(); break;
+                this.navigationHandler.connectScale(); break;
 
             case org.wheatgenetics.inventory.R.id.nav_export :
                 if (null == this.exportAlertDialog)
@@ -107,7 +107,7 @@ implements android.support.design.widget.NavigationView.OnNavigationItemSelected
                 this.aboutAlertDialog.show(); break;
         }
 
-        this.listenerHandler.closeDrawer();
+        this.navigationHandler.closeDrawer();
         return true;
     }
 }

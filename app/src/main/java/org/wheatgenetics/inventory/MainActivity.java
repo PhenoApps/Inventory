@@ -26,7 +26,6 @@ package org.wheatgenetics.inventory;
  * org.wheatgenetics.androidlibrary.R
  * org.wheatgenetics.androidlibrary.Utils
  * org.wheatgenetics.changelog.ChangeLogAlertDialog
- * org.wheatgenetics.sharedpreferences.SharedPreferences
  * org.wheatgenetics.usb.Device.Exception
  * org.wheatgenetics.usb.ScaleExceptionAlertDialog
  * org.wheatgenetics.usb.ScaleExceptionAlertDialog.Handler
@@ -45,6 +44,7 @@ package org.wheatgenetics.inventory;
  * org.wheatgenetics.inventory.SamplesTable
  * org.wheatgenetics.inventory.SetPersonAlertDialog
  * org.wheatgenetics.inventory.SetPersonAlertDialog.PersonStorer
+ * org.wheatgenetics.sharedpreferences.SharedPreferences
  */
 public class MainActivity extends android.support.v7.app.AppCompatActivity
 {
@@ -135,7 +135,7 @@ public class MainActivity extends android.support.v7.app.AppCompatActivity
                     /* aboutAlertDialogTitle => */
                         org.wheatgenetics.inventory.R.string.aboutAlertDialogTitle,
                     /* versionName     => */ versionName,
-                    /* listenerHandler => */
+                    /* navigationHandler => */
                         new org.wheatgenetics.inventory.NavigationItemSelectedListener.Handler()
                         {
                             @java.lang.Override
