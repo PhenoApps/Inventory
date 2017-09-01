@@ -1,4 +1,4 @@
-package org.wheatgenetics.inventory;
+package org.wheatgenetics.inventory.navigation;
 
 /**
  * Uses:
@@ -11,16 +11,17 @@ package org.wheatgenetics.inventory;
  * org.wheatgenetics.about.AboutAlertDialog
  * org.wheatgenetics.about.OtherApps.Index
  *
- * org.wheatgenetics.inventory.DeleteAlertDialog
- * org.wheatgenetics.inventory.DeleteAlertDialog.Handler
- * org.wheatgenetics.inventory.ExportAlertDialog
- * org.wheatgenetics.inventory.ExportAlertDialog.Handler
  * org.wheatgenetics.inventory.R
+ *
+ * org.wheatgenetics.inventory.navigation.DeleteAlertDialog
+ * org.wheatgenetics.inventory.navigation.DeleteAlertDialog.Handler
+ * org.wheatgenetics.inventory.navigation.ExportAlertDialog
+ * org.wheatgenetics.inventory.navigation.ExportAlertDialog.Handler
  */
-class NavigationItemSelectedListener extends java.lang.Object
+public class NavigationItemSelectedListener extends java.lang.Object
 implements android.support.design.widget.NavigationView.OnNavigationItemSelectedListener
 {
-    interface Handler
+    public interface Handler
     {
         public abstract void setPerson  (); public abstract void connectScale();
         public abstract void closeDrawer();
@@ -30,23 +31,24 @@ implements android.support.design.widget.NavigationView.OnNavigationItemSelected
     private final android.content.Context context              ;
     private final int                     aboutAlertDialogTitle;
     private final java.lang.String        versionName          ;
-    private final org.wheatgenetics.inventory.NavigationItemSelectedListener.Handler
+    private final org.wheatgenetics.inventory.navigation.NavigationItemSelectedListener.Handler
         navigationHandler;
-    private final org.wheatgenetics.inventory.ExportAlertDialog.Handler exportHandler         ;
-    private final org.wheatgenetics.inventory.DeleteAlertDialog.Handler deleteHandler         ;
-    private final android.view.View.OnClickListener                     versionOnClickListener;
+    private final org.wheatgenetics.inventory.navigation.ExportAlertDialog.Handler exportHandler;
+    private final org.wheatgenetics.inventory.navigation.DeleteAlertDialog.Handler deleteHandler;
+    private final android.view.View.OnClickListener                       versionOnClickListener;
 
-    private org.wheatgenetics.inventory.ExportAlertDialog exportAlertDialog = null;
-    private org.wheatgenetics.inventory.DeleteAlertDialog deleteAlertDialog = null;
-    private org.wheatgenetics.about.AboutAlertDialog      aboutAlertDialog  = null;
+    private org.wheatgenetics.inventory.navigation.ExportAlertDialog exportAlertDialog = null;
+    private org.wheatgenetics.inventory.navigation.DeleteAlertDialog deleteAlertDialog = null;
+    private org.wheatgenetics.about.AboutAlertDialog                 aboutAlertDialog  = null;
     // endregion
 
-    NavigationItemSelectedListener(final android.content.Context context,
+    public NavigationItemSelectedListener(final android.content.Context context,
     final int aboutAlertDialogTitle, final java.lang.String versionName,
-    final org.wheatgenetics.inventory.NavigationItemSelectedListener.Handler navigationHandler     ,
-    final org.wheatgenetics.inventory.ExportAlertDialog.Handler              exportHandler         ,
-    final org.wheatgenetics.inventory.DeleteAlertDialog.Handler              deleteHandler         ,
-    final android.view.View.OnClickListener                                  versionOnClickListener)
+    final org.wheatgenetics.inventory.navigation.NavigationItemSelectedListener.Handler
+        navigationHandler,
+    final org.wheatgenetics.inventory.navigation.ExportAlertDialog.Handler exportHandler         ,
+    final org.wheatgenetics.inventory.navigation.DeleteAlertDialog.Handler deleteHandler         ,
+    final android.view.View.OnClickListener                                versionOnClickListener)
     {
         super();
 
@@ -76,14 +78,14 @@ implements android.support.design.widget.NavigationView.OnNavigationItemSelected
                 this.navigationHandler.connectScale(); break;
 
             case org.wheatgenetics.inventory.R.id.nav_export :
-                if (null == this.exportAlertDialog)
-                    this.exportAlertDialog = new org.wheatgenetics.inventory.ExportAlertDialog(
+                if (null == this.exportAlertDialog) this.exportAlertDialog =
+                    new org.wheatgenetics.inventory.navigation.ExportAlertDialog(
                         this.context, this.exportHandler);
                 this.exportAlertDialog.show(); break;
 
             case org.wheatgenetics.inventory.R.id.nav_delete :
-                if (null == this.deleteAlertDialog)
-                    this.deleteAlertDialog = new org.wheatgenetics.inventory.DeleteAlertDialog(
+                if (null == this.deleteAlertDialog) this.deleteAlertDialog =
+                    new org.wheatgenetics.inventory.navigation.DeleteAlertDialog(
                         this.context, this.deleteHandler);
                 this.deleteAlertDialog.show(); break;
 

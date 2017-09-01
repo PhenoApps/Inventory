@@ -1,4 +1,4 @@
-package org.wheatgenetics.inventory;
+package org.wheatgenetics.inventory.navigation;
 
 /**
  * Uses:
@@ -12,23 +12,22 @@ package org.wheatgenetics.inventory;
  *
  * org.wheatgenetics.inventory.R
  */
-class DeleteAlertDialog extends java.lang.Object
+public class DeleteAlertDialog extends java.lang.Object
 {
-    interface Handler { public abstract void delete(); }
+    public interface Handler { public abstract void delete(); }
 
     // region Fields
-    private final android.content.Context                               context;
-    private final org.wheatgenetics.inventory.DeleteAlertDialog.Handler handler;
+    private final android.content.Context                                          context;
+    private final org.wheatgenetics.inventory.navigation.DeleteAlertDialog.Handler handler;
 
     private android.app.AlertDialog         alertDialog = null;
     private android.app.AlertDialog.Builder builder     = null;
     // endregion
 
-    private void delete()
-    { assert null != this.handler; this.handler.delete(); }
+    private void delete() { assert null != this.handler; this.handler.delete(); }
 
     DeleteAlertDialog(final android.content.Context context,
-    final org.wheatgenetics.inventory.DeleteAlertDialog.Handler handler)
+    final org.wheatgenetics.inventory.navigation.DeleteAlertDialog.Handler handler)
     { super(); this.context = context; this.handler = handler; }
 
     void show()
@@ -47,7 +46,10 @@ class DeleteAlertDialog extends java.lang.Object
                             @java.lang.Override
                             public void onClick(final android.content.DialogInterface dialog,
                             final int which)
-                            { org.wheatgenetics.inventory.DeleteAlertDialog.this.delete(); }
+                            {
+                                org.wheatgenetics.inventory.navigation.
+                                    DeleteAlertDialog.this.delete();
+                            }
                         })
                     .setNegativeButton(
                         org.wheatgenetics.inventory.R.string.deleteAlertDialogNegative    ,

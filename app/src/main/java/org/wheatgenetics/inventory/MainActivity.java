@@ -33,18 +33,21 @@ package org.wheatgenetics.inventory;
  * org.wheatgenetics.usb.ScaleReader.Handler
  * org.wheatgenetics.zxing.BarcodeScanner
  *
- * org.wheatgenetics.inventory.DeleteAlertDialog.Handler
- * org.wheatgenetics.inventory.ExportAlertDialog.Handler
- * org.wheatgenetics.inventory.InventoryDir
+ * org.wheatgenetics.sharedpreferences.SharedPreferences
+ *
  * org.wheatgenetics.inventory.model.InventoryRecords
  * org.wheatgenetics.inventory.model.Person
- * org.wheatgenetics.inventory.NavigationItemSelectedListener
- * org.wheatgenetics.inventory.NavigationItemSelectedListener.Handler
+ *
+ * org.wheatgenetics.inventory.navigation.DeleteAlertDialog.Handler
+ * org.wheatgenetics.inventory.navigation.ExportAlertDialog.Handler
+ * org.wheatgenetics.inventory.navigation.NavigationItemSelectedListener
+ * org.wheatgenetics.inventory.navigation.NavigationItemSelectedListener.Handler
+ *
+ * org.wheatgenetics.inventory.InventoryDir
  * org.wheatgenetics.inventory.R
  * org.wheatgenetics.inventory.SamplesTable
  * org.wheatgenetics.inventory.SetPersonAlertDialog
  * org.wheatgenetics.inventory.SetPersonAlertDialog.PersonStorer
- * org.wheatgenetics.sharedpreferences.SharedPreferences
  */
 public class MainActivity extends android.support.v7.app.AppCompatActivity
 {
@@ -130,13 +133,13 @@ public class MainActivity extends android.support.v7.app.AppCompatActivity
                     org.wheatgenetics.inventory.R.id.nav_view);                 // From layout/ac-
             assert null != navigationView;                                      //  tivity_main.xml.
             navigationView.setNavigationItemSelectedListener(
-                new org.wheatgenetics.inventory.NavigationItemSelectedListener(
+                new org.wheatgenetics.inventory.navigation.NavigationItemSelectedListener(
                     /* context               => */ this,
                     /* aboutAlertDialogTitle => */
                         org.wheatgenetics.inventory.R.string.aboutAlertDialogTitle,
-                    /* versionName     => */ versionName,
-                    /* navigationHandler => */
-                        new org.wheatgenetics.inventory.NavigationItemSelectedListener.Handler()
+                    /* versionName       => */ versionName,
+                    /* navigationHandler => */ new org.wheatgenetics.inventory.
+                        navigation.NavigationItemSelectedListener.Handler()
                         {
                             @java.lang.Override
                             public void setPerson()
@@ -154,7 +157,7 @@ public class MainActivity extends android.support.v7.app.AppCompatActivity
                             { org.wheatgenetics.inventory.MainActivity.this.closeDrawer(); }
                         },
                     /* exportHandler => */
-                        new org.wheatgenetics.inventory.ExportAlertDialog.Handler()
+                        new org.wheatgenetics.inventory.navigation.ExportAlertDialog.Handler()
                         {
                             @java.lang.Override
                             public void exportCSV()
@@ -165,7 +168,7 @@ public class MainActivity extends android.support.v7.app.AppCompatActivity
                             { org.wheatgenetics.inventory.MainActivity.this.exportSQL(); }
                         },
                     /* deleteHandler => */
-                        new org.wheatgenetics.inventory.DeleteAlertDialog.Handler()
+                        new org.wheatgenetics.inventory.navigation.DeleteAlertDialog.Handler()
                         {
                             @java.lang.Override
                             public void delete()

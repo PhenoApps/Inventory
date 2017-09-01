@@ -1,4 +1,4 @@
-package org.wheatgenetics.inventory;
+package org.wheatgenetics.inventory.navigation;
 
 /**
  * Uses:
@@ -12,13 +12,13 @@ package org.wheatgenetics.inventory;
  *
  * org.wheatgenetics.inventory.R
  */
-class ExportAlertDialog extends java.lang.Object
+public class ExportAlertDialog extends java.lang.Object
 {
-    interface Handler { public abstract void exportCSV(); public abstract void exportSQL(); }
+    public interface Handler { public abstract void exportCSV(); public abstract void exportSQL(); }
 
     // region Fields
-    private final android.content.Context                               context;
-    private final org.wheatgenetics.inventory.ExportAlertDialog.Handler handler;
+    private final android.content.Context                                          context;
+    private final org.wheatgenetics.inventory.navigation.ExportAlertDialog.Handler handler;
 
     private android.app.AlertDialog         alertDialog = null;
     private android.app.AlertDialog.Builder builder     = null;
@@ -30,7 +30,7 @@ class ExportAlertDialog extends java.lang.Object
     // endregion
 
     ExportAlertDialog(final android.content.Context context,
-    final org.wheatgenetics.inventory.ExportAlertDialog.Handler handler)
+    final org.wheatgenetics.inventory.navigation.ExportAlertDialog.Handler handler)
     { super(); this.context = context; this.handler = handler; }
 
     void show()
@@ -48,7 +48,10 @@ class ExportAlertDialog extends java.lang.Object
                             @java.lang.Override
                             public void onClick(final android.content.DialogInterface dialog,
                             final int which)
-                            { org.wheatgenetics.inventory.ExportAlertDialog.this.exportCSV(); }
+                            {
+                                org.wheatgenetics.inventory.navigation.
+                                    ExportAlertDialog.this.exportCSV();
+                            }
                         })
                     .setNegativeButton(
                         org.wheatgenetics.inventory.R.string.exportAlertDialogNegative,
@@ -57,7 +60,10 @@ class ExportAlertDialog extends java.lang.Object
                             @java.lang.Override
                             public void onClick(final android.content.DialogInterface dialog,
                             final int which)
-                            { org.wheatgenetics.inventory.ExportAlertDialog.this.exportSQL(); }
+                            {
+                                org.wheatgenetics.inventory.navigation.
+                                    ExportAlertDialog.this.exportSQL();
+                            }
                         })
                     .setNeutralButton(org.wheatgenetics.inventory.R.string.exportAlertDialogNeutral,
                         org.wheatgenetics.androidlibrary.Utils.cancellingOnClickListener());
