@@ -54,8 +54,6 @@ public class MainActivity extends android.support.v7.app.AppCompatActivity
     // region Fields
     private android.support.v4.widget.DrawerLayout drawerLayout = null;
 
-    private android.widget.TextView textView = null;
-
     private org.wheatgenetics.sharedpreferences.SharedPreferences sharedPreferences               ;
     private org.wheatgenetics.changelog.ChangeLogAlertDialog      changeLogAlertDialog      = null;
     private org.wheatgenetics.zxing.BarcodeScanner                barcodeScanner            = null;
@@ -413,15 +411,6 @@ public class MainActivity extends android.support.v7.app.AppCompatActivity
         catch (final java.io.IOException e) { throw new java.lang.RuntimeException(e); }
     }
 
-    private void setTextViewText(final java.lang.String text)
-    {
-        if (null == this.textView)
-        {
-            this.textView = (android.widget.TextView)
-                this.findViewById(org.wheatgenetics.inventory.R.id.textView);
-            assert null != this.textView;
-        }
-        this.textView.setText(text);
-    }
+    private void setTextViewText(final java.lang.String text) {}              // TODO: Remove later.
     // endregion
 }
