@@ -5,7 +5,7 @@ package org.wheatgenetics.inventory;
  * must implement the
  * {@link org.wheatgenetics.inventory.DataEntryFragment.OnFragmentInteractionListener} interface to
  * handle interaction events.  Use the
- * {@link org.wheatgenetics.inventory.DataEntryFragment#newInstance} factory method to create an in
+ * {@link org.wheatgenetics.inventory.DataEntryFragment#newInstance} factory method to create an
  * instance of this fragment.
  *
  * Uses:
@@ -22,10 +22,9 @@ package org.wheatgenetics.inventory;
 public class DataEntryFragment extends android.support.v4.app.Fragment
 {
     /**
-     * This interface must be implemented by activities that contain this fragment to allow an in-
-     * teraction in this fragment to be communicated to the activity and potentially other fragments
-     * contained in that activity.
-     * <p>See the Android Training lesson <a
+     * This interface must be implemented by activities that contain this fragment to allow an
+     * interaction in this fragment to be communicated to the activity and potentially other
+     * fragments contained in that activity.  <p>See the Android Training lesson <a
      * href="http://developer.android.com/training/basics/fragments/communicating.html">Communicating
      * with Other Fragments</a> for more information.</p>
      */
@@ -68,11 +67,13 @@ public class DataEntryFragment extends android.support.v4.app.Fragment
     {
         super.onCreate(savedInstanceState);
 
-        final android.os.Bundle args = this.getArguments();
-        if (null != args)
+        final android.os.Bundle arguments = this.getArguments();
+        if (null != arguments)
         {
-            this.param1 = args.getString(org.wheatgenetics.inventory.DataEntryFragment.ARG_PARAM1);
-            this.param2 = args.getString(org.wheatgenetics.inventory.DataEntryFragment.ARG_PARAM2);
+            this.param1 = arguments.getString(
+                org.wheatgenetics.inventory.DataEntryFragment.ARG_PARAM1);
+            this.param2 = arguments.getString(
+                org.wheatgenetics.inventory.DataEntryFragment.ARG_PARAM2);
         }
     }
 
@@ -91,7 +92,7 @@ public class DataEntryFragment extends android.support.v4.app.Fragment
 
     // TODO: Rename method, update argument and hook method into UI event.
     public void onButtonPressed(final android.net.Uri uri)
-    { if (listener != null) listener.onFragmentInteraction(uri); }
+    { if (null != this.listener) this.listener.onFragmentInteraction(uri); }
 
     /**
      * Use this factory method to create a new instance of this fragment using the provided
@@ -108,10 +109,10 @@ public class DataEntryFragment extends android.support.v4.app.Fragment
         org.wheatgenetics.inventory.DataEntryFragment result =
             new org.wheatgenetics.inventory.DataEntryFragment();
         {
-            final android.os.Bundle args = new android.os.Bundle();
-            args.putString(org.wheatgenetics.inventory.DataEntryFragment.ARG_PARAM1, param1);
-            args.putString(org.wheatgenetics.inventory.DataEntryFragment.ARG_PARAM2, param2);
-            result.setArguments(args);
+            final android.os.Bundle arguments = new android.os.Bundle();
+            arguments.putString(org.wheatgenetics.inventory.DataEntryFragment.ARG_PARAM1, param1);
+            arguments.putString(org.wheatgenetics.inventory.DataEntryFragment.ARG_PARAM2, param2);
+            result.setArguments(arguments);
         }
         return result;
     }
