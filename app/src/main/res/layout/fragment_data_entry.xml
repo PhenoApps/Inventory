@@ -54,7 +54,7 @@
         android:gravity="center_horizontal"
         android:lines="1"
         android:inputType="number"
-        android:hint="@string/wtEditTextHint"
+        android:text="@string/wtEditTextText"
         android:selectAllOnFocus="true"
         android:textSize="20sp" />
 
