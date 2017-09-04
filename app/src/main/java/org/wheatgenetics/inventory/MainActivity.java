@@ -5,9 +5,11 @@ package org.wheatgenetics.inventory;
  * android.content.Intent
  * android.content.pm.PackageInfo
  * android.content.pm.PackageManager.NameNotFoundException
+ * android.net.Uri
  * android.os.Bundle
  * android.support.annotation.NonNull
  * android.support.design.widget.NavigationView
+ * android.support.v4.app.FragmentTransaction
  * android.support.v4.view.GravityCompat
  * android.support.v4.widget.DrawerLayout
  * android.support.v7.app.ActionBar
@@ -43,6 +45,8 @@ package org.wheatgenetics.inventory;
  * org.wheatgenetics.inventory.navigation.NavigationItemSelectedListener
  * org.wheatgenetics.inventory.navigation.NavigationItemSelectedListener.Handler
  *
+ * org.wheatgenetics.inventory.DataEntryFragment
+ * org.wheatgenetics.inventory.DataEntryFragment.Handler
  * org.wheatgenetics.inventory.InventoryDir
  * org.wheatgenetics.inventory.R
  * org.wheatgenetics.inventory.SamplesTable
@@ -50,6 +54,7 @@ package org.wheatgenetics.inventory;
  * org.wheatgenetics.inventory.SetPersonAlertDialog.PersonStorer
  */
 public class MainActivity extends android.support.v7.app.AppCompatActivity
+implements org.wheatgenetics.inventory.DataEntryFragment.Handler
 {
     // region Fields
     private android.support.v4.widget.DrawerLayout drawerLayout = null;
@@ -60,6 +65,7 @@ public class MainActivity extends android.support.v7.app.AppCompatActivity
     private org.wheatgenetics.usb.ScaleReader                     scaleReaderInstance       = null;
     private org.wheatgenetics.usb.ScaleExceptionAlertDialog       scaleExceptionAlertDialog = null;
 
+    private org.wheatgenetics.inventory.DataEntryFragment    dataEntryFragment          ;
     private org.wheatgenetics.inventory.SetPersonAlertDialog setPersonAlertDialog = null;
     private org.wheatgenetics.inventory.InventoryDir         inventoryDir               ;
     private org.wheatgenetics.inventory.SamplesTable         samplesTableInstance = null;
@@ -101,37 +107,38 @@ public class MainActivity extends android.support.v7.app.AppCompatActivity
         }
         // endregion
 
-        // region Set version, part 1.
-        // Before there was one region called "Set version.".  It consisted of the current part 1
-        // and part 2 regions concatenated together and located where part 2 is now.  Why did I
-        // turn one region into two?  So that versionName would be set earlier.  Why should
-        // versionName be set earlier?  So that its value could be passed to
-        // NavigationItemSelectedListener() in the "Configure navigation menu" region, below.
-        int              versionCode;
-        java.lang.String versionName;
-        try
         {
-            final android.content.pm.PackageInfo packageInfo =
-                this.getPackageManager().getPackageInfo(this.getPackageName(), /* flags => */ 0);
-            assert null != packageInfo;
-            versionCode = packageInfo.versionCode;
-            versionName = packageInfo.versionName;
-        }
-        catch (final android.content.pm.PackageManager.NameNotFoundException e)
-        {
-            versionCode = 0                                           ;
-            versionName = org.wheatgenetics.javalib.Utils.adjust(null);
-        }
-        // endregion
+            // region Set version, part 1.
+            // Before there was one region called "Set version.".  It consisted of the current part
+            // 1 and part 2 regions concatenated together and located where part 2 is now.  Why did
+            // I turn one region into two?  So that versionName would be set earlier.  Why should
+            // versionName be set earlier?  So that its value could be passed to
+            // NavigationItemSelectedListener() in the "Configure navigation menu" region, below.
+            int              versionCode;
+            java.lang.String versionName;
+            try
+            {
+                final android.content.pm.PackageInfo packageInfo = this.getPackageManager().
+                    getPackageInfo(this.getPackageName(), /* flags => */ 0);
+                assert null != packageInfo;
+                versionCode = packageInfo.versionCode;
+                versionName = packageInfo.versionName;
+            }
+            catch (final android.content.pm.PackageManager.NameNotFoundException e)
+            {
+                versionCode = 0                                           ;
+                versionName = org.wheatgenetics.javalib.Utils.adjust(null);
+            }
+            // endregion
 
-        // region Configure navigation menu.
-        {
-            final android.support.design.widget.NavigationView navigationView =
-                (android.support.design.widget.NavigationView) this.findViewById(
-                    org.wheatgenetics.inventory.R.id.nav_view);                 // From layout/ac-
-            assert null != navigationView;                                      //  tivity_main.xml.
-            navigationView.setNavigationItemSelectedListener(
-                new org.wheatgenetics.inventory.navigation.NavigationItemSelectedListener(
+            // region Configure navigation menu.
+            {
+                final android.support.design.widget.NavigationView navigationView =
+                    (android.support.design.widget.NavigationView) this.findViewById(
+                        org.wheatgenetics.inventory.R.id.nav_view);             // From layout/ac-
+                assert null != navigationView;                                  //  tivity_main.xml.
+                navigationView.setNavigationItemSelectedListener(
+                    new org.wheatgenetics.inventory.navigation.NavigationItemSelectedListener(
                     /* context               => */ this,
                     /* aboutAlertDialogTitle => */
                         org.wheatgenetics.inventory.R.string.aboutAlertDialogTitle,
@@ -169,10 +176,7 @@ public class MainActivity extends android.support.v7.app.AppCompatActivity
                         new org.wheatgenetics.inventory.navigation.DeleteAlertDialog.Handler()
                         {
                             @java.lang.Override
-                            public void delete()
-                            {
-                                // TODO
-                            }
+                            public void delete() { /* TODO */ }
                         },
                     /* versionOnClickListener => */ new android.view.View.OnClickListener()
                         {
@@ -180,31 +184,39 @@ public class MainActivity extends android.support.v7.app.AppCompatActivity
                             public void onClick(final android.view.View v)
                             { org.wheatgenetics.inventory.MainActivity.this.showChangeLog(); }
                         }));
+            }
+            // endregion
+
+            // region Set person.
+            this.sharedPreferences = new org.wheatgenetics.sharedpreferences.SharedPreferences(
+                this.getSharedPreferences("Settings", 0));
+            if (!this.sharedPreferences.personIsSet()) this.setPerson(/* fromMenu => */ false);
+            // endregion
+
+            // region Connect scale.
+            if (!this.sharedPreferences.getIgnoreScale()) this.connectScale();
+            // endregion
+
+            // region Set version, part 2.
+            if (!this.sharedPreferences.updateVersionIsSet(versionCode))
+            {
+                this.sharedPreferences.setUpdateVersion(versionCode);
+                this.showChangeLog();
+            }
+            // endregion
         }
-        // endregion
-
-        // region Set person.
-        this.sharedPreferences = new org.wheatgenetics.sharedpreferences.SharedPreferences(
-            this.getSharedPreferences("Settings", 0));
-        if (!this.sharedPreferences.personIsSet()) this.setPerson(/* fromMenu => */ false);
-        // endregion
-
-        // region Connect scale.
-        if (!this.sharedPreferences.getIgnoreScale()) this.connectScale();
-        // endregion
-
-        // region Set version, part 2.
-        if (!this.sharedPreferences.updateVersionIsSet(versionCode))
-        {
-            this.sharedPreferences.setUpdateVersion(versionCode);
-            this.showChangeLog();
-        }
-        // endregion
 
         // region Create inventoryDir.
         this.inventoryDir = new org.wheatgenetics.inventory.InventoryDir(this);
         this.inventoryDir.createIfMissing();
         // endregion
+
+        this.dataEntryFragment = org.wheatgenetics.inventory.DataEntryFragment.newInstance("87");
+        final android.support.v4.app.FragmentTransaction fragmentTransaction =
+            this.getSupportFragmentManager().beginTransaction();
+        assert null != fragmentTransaction; fragmentTransaction.add(
+            org.wheatgenetics.inventory.R.id.mainContent, this.dataEntryFragment);
+        fragmentTransaction.commit();
     }
 
     @java.lang.Override
@@ -252,6 +264,11 @@ public class MainActivity extends android.support.v7.app.AppCompatActivity
                 requestCode, resultCode, data),
             "null"));
     }
+
+    // region DataEntryFragment.Handler Overridden Method
+    @java.lang.Override
+    public void onFragmentInteraction(final android.net.Uri uri) { /* TODO */ }
+    // endregion
     // endregion
 
     // region Private Methods
