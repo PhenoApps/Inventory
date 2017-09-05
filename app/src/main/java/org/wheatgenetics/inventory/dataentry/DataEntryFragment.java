@@ -44,7 +44,7 @@ public class DataEntryFragment extends android.support.v4.app.Fragment
     private void setBox()
     {
         if (null == this.setBoxAlertDialog) this.setBoxAlertDialog =
-            new org.wheatgenetics.inventory.dataentry.SetBoxAlertDialog(this.getContext(),
+            new org.wheatgenetics.inventory.dataentry.SetBoxAlertDialog(this.getActivity(),
                 new org.wheatgenetics.inventory.dataentry.SetBoxAlertDialog.Handler()
                 {
                     @java.lang.Override
@@ -53,9 +53,6 @@ public class DataEntryFragment extends android.support.v4.app.Fragment
                         org.wheatgenetics.inventory.dataentry.
                             DataEntryFragment.this.setBoxValueTextViewText(box);
                     }
-
-                    @java.lang.Override
-                    public void cancel() { /* TODO */ }
                 });
         this.setBoxAlertDialog.show(this.box);
     }
