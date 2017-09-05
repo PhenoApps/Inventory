@@ -1,4 +1,4 @@
-package org.wheatgenetics.inventory;
+package org.wheatgenetics.inventory.dataentry;
 
 /**
  * Uses:
@@ -16,22 +16,22 @@ package org.wheatgenetics.inventory;
  * android.widget.TextView
  *
  * org.wheatgenetics.inventory.R
- * org.wheatgenetics.inventory.SetBoxAlertDialog
- * org.wheatgenetics.inventory.SetBoxAlertDialog.Handler
+ * org.wheatgenetics.inventory.dataentry.SetBoxAlertDialog
+ * org.wheatgenetics.inventory.dataentry.SetBoxAlertDialog.Handler
  */
 public class DataEntryFragment extends android.support.v4.app.Fragment
 {
-    interface Handler
+    public interface Handler
     { /* TODO: Update argument type and name. */ void onFragmentInteraction(android.net.Uri uri); }
 
     private static final java.lang.String BOX = "box";
 
     // region Fields
-    private org.wheatgenetics.inventory.DataEntryFragment.Handler handler         ;
-    private java.lang.String                                      box             ;
-    private android.widget.TextView                               boxValueTextView;
+    private org.wheatgenetics.inventory.dataentry.DataEntryFragment.Handler handler         ;
+    private java.lang.String                                                box             ;
+    private android.widget.TextView                                         boxValueTextView;
 
-    private org.wheatgenetics.inventory.SetBoxAlertDialog setBoxAlertDialog = null;
+    private org.wheatgenetics.inventory.dataentry.SetBoxAlertDialog setBoxAlertDialog = null;
     // endregion
 
     // region Private Methods
@@ -43,22 +43,19 @@ public class DataEntryFragment extends android.support.v4.app.Fragment
 
     private void setBox()
     {
-        if (null == this.setBoxAlertDialog)
-            this.setBoxAlertDialog = new org.wheatgenetics.inventory.SetBoxAlertDialog(
-                this.getContext(), new org.wheatgenetics.inventory.SetBoxAlertDialog.Handler()
+        if (null == this.setBoxAlertDialog) this.setBoxAlertDialog =
+            new org.wheatgenetics.inventory.dataentry.SetBoxAlertDialog(this.getContext(),
+                new org.wheatgenetics.inventory.dataentry.SetBoxAlertDialog.Handler()
                 {
                     @java.lang.Override
                     public void setBox(final java.lang.String box)
                     {
-                        org.wheatgenetics.inventory.DataEntryFragment.this.setBoxValueTextViewText(
-                            box);
+                        org.wheatgenetics.inventory.dataentry.
+                            DataEntryFragment.this.setBoxValueTextViewText(box);
                     }
 
                     @java.lang.Override
-                    public void cancel()
-                    {
-
-                    }
+                    public void cancel() { /* TODO */ }
                 });
         this.setBoxAlertDialog.show(this.box);
     }
@@ -72,8 +69,9 @@ public class DataEntryFragment extends android.support.v4.app.Fragment
     {
         super.onAttach(context);
 
-        if (context instanceof org.wheatgenetics.inventory.DataEntryFragment.Handler)
-            this.handler = (org.wheatgenetics.inventory.DataEntryFragment.Handler) context;
+        if (context instanceof org.wheatgenetics.inventory.dataentry.DataEntryFragment.Handler)
+            this.handler =
+                (org.wheatgenetics.inventory.dataentry.DataEntryFragment.Handler) context;
         else
         {
             assert null != context; throw new java.lang.RuntimeException(context.toString() +
@@ -87,8 +85,8 @@ public class DataEntryFragment extends android.support.v4.app.Fragment
         super.onCreate(savedInstanceState);
 
         final android.os.Bundle arguments = this.getArguments();
-        if (null != arguments)
-            this.box = arguments.getString(org.wheatgenetics.inventory.DataEntryFragment.BOX);
+        if (null != arguments) this.box =
+            arguments.getString(org.wheatgenetics.inventory.dataentry.DataEntryFragment.BOX);
     }
 
     @java.lang.Override
@@ -118,7 +116,7 @@ public class DataEntryFragment extends android.support.v4.app.Fragment
             {
                 @java.lang.Override
                 public void onClick(final android.view.View v)
-                { org.wheatgenetics.inventory.DataEntryFragment.this.setBox(); }
+                { org.wheatgenetics.inventory.dataentry.DataEntryFragment.this.setBox(); }
             });
     }
 
@@ -130,13 +128,14 @@ public class DataEntryFragment extends android.support.v4.app.Fragment
     public void onButtonPressed(final android.net.Uri uri)
     { if (null != this.handler) this.handler.onFragmentInteraction(uri); }
 
-    static org.wheatgenetics.inventory.DataEntryFragment newInstance(final java.lang.String box)
+    public static org.wheatgenetics.inventory.dataentry.DataEntryFragment newInstance(
+    final java.lang.String box)
     {
-        org.wheatgenetics.inventory.DataEntryFragment result =
-            new org.wheatgenetics.inventory.DataEntryFragment();
+        org.wheatgenetics.inventory.dataentry.DataEntryFragment result =
+            new org.wheatgenetics.inventory.dataentry.DataEntryFragment();
         {
             final android.os.Bundle arguments = new android.os.Bundle();
-            arguments.putString(org.wheatgenetics.inventory.DataEntryFragment.BOX, box);
+            arguments.putString(org.wheatgenetics.inventory.dataentry.DataEntryFragment.BOX, box);
             result.setArguments(arguments);
         }
         return result;

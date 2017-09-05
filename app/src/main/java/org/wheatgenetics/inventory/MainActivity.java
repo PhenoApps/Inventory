@@ -37,6 +37,9 @@ package org.wheatgenetics.inventory;
  *
  * org.wheatgenetics.sharedpreferences.SharedPreferences
  *
+ * org.wheatgenetics.inventory.dataentry.DataEntryFragment
+ * org.wheatgenetics.inventory.dataentry.DataEntryFragment.Handler
+ *
  * org.wheatgenetics.inventory.model.InventoryRecords
  * org.wheatgenetics.inventory.model.Person
  *
@@ -45,8 +48,6 @@ package org.wheatgenetics.inventory;
  * org.wheatgenetics.inventory.navigation.NavigationItemSelectedListener
  * org.wheatgenetics.inventory.navigation.NavigationItemSelectedListener.Handler
  *
- * org.wheatgenetics.inventory.DataEntryFragment
- * org.wheatgenetics.inventory.DataEntryFragment.Handler
  * org.wheatgenetics.inventory.InventoryDir
  * org.wheatgenetics.inventory.R
  * org.wheatgenetics.inventory.SamplesTable
@@ -54,7 +55,7 @@ package org.wheatgenetics.inventory;
  * org.wheatgenetics.inventory.SetPersonAlertDialog.PersonStorer
  */
 public class MainActivity extends android.support.v7.app.AppCompatActivity
-implements org.wheatgenetics.inventory.DataEntryFragment.Handler
+implements org.wheatgenetics.inventory.dataentry.DataEntryFragment.Handler
 {
     // region Fields
     private android.support.v4.widget.DrawerLayout drawerLayout = null;
@@ -65,7 +66,7 @@ implements org.wheatgenetics.inventory.DataEntryFragment.Handler
     private org.wheatgenetics.usb.ScaleReader                     scaleReaderInstance       = null;
     private org.wheatgenetics.usb.ScaleExceptionAlertDialog       scaleExceptionAlertDialog = null;
 
-    private org.wheatgenetics.inventory.DataEntryFragment    dataEntryFragment          ;
+    private org.wheatgenetics.inventory.dataentry.DataEntryFragment dataEntryFragment          ;
     private org.wheatgenetics.inventory.SetPersonAlertDialog setPersonAlertDialog = null;
     private org.wheatgenetics.inventory.InventoryDir         inventoryDir               ;
     private org.wheatgenetics.inventory.SamplesTable         samplesTableInstance = null;
@@ -211,7 +212,8 @@ implements org.wheatgenetics.inventory.DataEntryFragment.Handler
         this.inventoryDir.createIfMissing();
         // endregion
 
-        this.dataEntryFragment = org.wheatgenetics.inventory.DataEntryFragment.newInstance("");
+        this.dataEntryFragment =
+            org.wheatgenetics.inventory.dataentry.DataEntryFragment.newInstance("");
         final android.support.v4.app.FragmentTransaction fragmentTransaction =
             this.getSupportFragmentManager().beginTransaction();
         assert null != fragmentTransaction; fragmentTransaction.add(

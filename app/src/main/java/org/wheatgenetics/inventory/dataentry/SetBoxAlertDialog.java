@@ -1,4 +1,4 @@
-package org.wheatgenetics.inventory;
+package org.wheatgenetics.inventory.dataentry;
 
 /**
  * Uses:
@@ -20,8 +20,8 @@ class SetBoxAlertDialog extends java.lang.Object
     { public abstract void setBox(java.lang.String box); public abstract void cancel(); }
 
     // region Fields
-    private final android.content.Context                               context;
-    private final org.wheatgenetics.inventory.SetBoxAlertDialog.Handler handler;
+    private final android.content.Context                                         context;
+    private final org.wheatgenetics.inventory.dataentry.SetBoxAlertDialog.Handler handler;
 
     private android.app.AlertDialog         alertDialog = null;
     private android.app.AlertDialog.Builder builder     = null;
@@ -29,7 +29,7 @@ class SetBoxAlertDialog extends java.lang.Object
     // endregion
 
     SetBoxAlertDialog(final android.content.Context context,
-    final org.wheatgenetics.inventory.SetBoxAlertDialog.Handler handler)
+    final org.wheatgenetics.inventory.dataentry.SetBoxAlertDialog.Handler handler)
     { super(); this.context = context; this.handler = handler; }
 
     // region Private Methods
@@ -59,7 +59,10 @@ class SetBoxAlertDialog extends java.lang.Object
                             @java.lang.Override
                             public void onClick(final android.content.DialogInterface dialog,
                             final int which)
-                            { org.wheatgenetics.inventory.SetBoxAlertDialog.this.setBox(); }
+                            {
+                                org.wheatgenetics.inventory.dataentry.
+                                    SetBoxAlertDialog.this.setBox();
+                            }
                         })
                     .setNegativeButton(org.wheatgenetics.androidlibrary.R.string.cancelButtonText,
                         new android.content.DialogInterface.OnClickListener()
@@ -69,7 +72,8 @@ class SetBoxAlertDialog extends java.lang.Object
                             final int which)
                             {
                                 assert dialog != null; dialog.cancel();
-                                org.wheatgenetics.inventory.SetBoxAlertDialog.this.cancel();
+                                org.wheatgenetics.inventory.dataentry.
+                                    SetBoxAlertDialog.this.cancel();
                             }
                         });
             }
