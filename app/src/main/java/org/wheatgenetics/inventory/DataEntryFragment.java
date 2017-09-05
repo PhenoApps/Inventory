@@ -2,6 +2,7 @@ package org.wheatgenetics.inventory;
 
 /**
  * Uses:
+ * android.app.Activity
  * android.content.Context
  * android.net.Uri
  * android.os.Bundle
@@ -9,10 +10,14 @@ package org.wheatgenetics.inventory;
  * android.support.v4.app.Fragment
  * android.view.LayoutInflater
  * android.view.View
+ * android.view.View.OnClickListener
  * android.view.ViewGroup
+ * android.widget.Button
  * android.widget.TextView
  *
  * org.wheatgenetics.inventory.R
+ * org.wheatgenetics.inventory.SetBoxAlertDialog
+ * org.wheatgenetics.inventory.SetBoxAlertDialog.Handler
  */
 public class DataEntryFragment extends android.support.v4.app.Fragment
 {
@@ -25,6 +30,38 @@ public class DataEntryFragment extends android.support.v4.app.Fragment
     private org.wheatgenetics.inventory.DataEntryFragment.Handler handler         ;
     private java.lang.String                                      box             ;
     private android.widget.TextView                               boxValueTextView;
+
+    private org.wheatgenetics.inventory.SetBoxAlertDialog setBoxAlertDialog = null;
+    // endregion
+
+    // region Private Methods
+    private void setBoxValueTextViewText()
+    { assert null != this.boxValueTextView; this.boxValueTextView.setText(this.box); }
+
+    private void setBoxValueTextViewText(final java.lang.String box)
+    { this.box = box; this.setBoxValueTextViewText(); }
+
+    private void setBox()
+    {
+        if (null == this.setBoxAlertDialog)
+            this.setBoxAlertDialog = new org.wheatgenetics.inventory.SetBoxAlertDialog(
+                this.getContext(), new org.wheatgenetics.inventory.SetBoxAlertDialog.Handler()
+                {
+                    @java.lang.Override
+                    public void setBox(final java.lang.String box)
+                    {
+                        org.wheatgenetics.inventory.DataEntryFragment.this.setBoxValueTextViewText(
+                            box);
+                    }
+
+                    @java.lang.Override
+                    public void cancel()
+                    {
+
+                    }
+                });
+        this.setBoxAlertDialog.show(this.box);
+    }
     // endregion
 
     public DataEntryFragment() { /* Required empty public constructor. */ }
@@ -68,9 +105,21 @@ public class DataEntryFragment extends android.support.v4.app.Fragment
     @android.support.annotation.Nullable final android.os.Bundle savedInstanceState)
     {
         super.onActivityCreated(savedInstanceState);
+
+        final android.app.Activity activity = this.getActivity();
+        assert null != activity;
         this.boxValueTextView = (android.widget.TextView)
-            this.getActivity().findViewById(org.wheatgenetics.inventory.R.id.boxValueTextView);
-        assert null != this.boxValueTextView; this.boxValueTextView.setText(this.box);
+            activity.findViewById(org.wheatgenetics.inventory.R.id.boxValueTextView);
+        this.setBoxValueTextViewText();
+
+        final android.widget.Button button = (android.widget.Button)
+            activity.findViewById(org.wheatgenetics.inventory.R.id.setBoxButton);
+        button.setOnClickListener(new android.view.View.OnClickListener()
+            {
+                @java.lang.Override
+                public void onClick(final android.view.View v)
+                { org.wheatgenetics.inventory.DataEntryFragment.this.setBox(); }
+            });
     }
 
     @java.lang.Override
