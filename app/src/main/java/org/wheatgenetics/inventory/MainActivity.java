@@ -211,7 +211,7 @@ implements org.wheatgenetics.inventory.DataEntryFragment.Handler
         this.inventoryDir.createIfMissing();
         // endregion
 
-        this.dataEntryFragment = org.wheatgenetics.inventory.DataEntryFragment.newInstance("87");
+        this.dataEntryFragment = org.wheatgenetics.inventory.DataEntryFragment.newInstance("");
         final android.support.v4.app.FragmentTransaction fragmentTransaction =
             this.getSupportFragmentManager().beginTransaction();
         assert null != fragmentTransaction; fragmentTransaction.add(

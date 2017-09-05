@@ -11,10 +11,12 @@ package org.wheatgenetics.inventory;
  * android.content.Context
  * android.net.Uri
  * android.os.Bundle
+ * android.support.annotation.Nullable
  * android.support.v4.app.Fragment
  * android.view.LayoutInflater
  * android.view.View
  * android.view.ViewGroup
+ * android.widget.TextView
  *
  * org.wheatgenetics.inventory.R
  */
@@ -33,8 +35,9 @@ public class DataEntryFragment extends android.support.v4.app.Fragment
     private static final java.lang.String BOX = "box";
 
     // region Fields
-    private java.lang.String                                      box    ;
-    private org.wheatgenetics.inventory.DataEntryFragment.Handler handler;
+    private org.wheatgenetics.inventory.DataEntryFragment.Handler handler         ;
+    private java.lang.String                                      box             ;
+    private android.widget.TextView                               boxValueTextView;
     // endregion
 
     public DataEntryFragment() { /* Required empty public constructor. */ }
@@ -71,6 +74,17 @@ public class DataEntryFragment extends android.support.v4.app.Fragment
         // Inflate the layout for this fragment:
         assert null != inflater; return inflater.inflate(
             org.wheatgenetics.inventory.R.layout.fragment_data_entry, container, false);
+    }
+
+    @java.lang.Override
+    public void onActivityCreated(
+    @android.support.annotation.Nullable final android.os.Bundle savedInstanceState)
+    {
+        super.onActivityCreated(savedInstanceState);
+
+        this.boxValueTextView = (android.widget.TextView)
+            this.getActivity().findViewById(org.wheatgenetics.inventory.R.id.boxValueTextView);
+        assert null != this.boxValueTextView; this.boxValueTextView.setText(this.box);
     }
 
     @java.lang.Override
