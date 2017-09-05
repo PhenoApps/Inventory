@@ -1,12 +1,6 @@
 package org.wheatgenetics.inventory;
 
 /**
- * A simple {@link android.support.v4.app.Fragment} subclass.  Activities that contain this fragment
- * must implement the {@link org.wheatgenetics.inventory.DataEntryFragment.Handler} interface to
- * handle interaction events.  Use the
- * {@link org.wheatgenetics.inventory.DataEntryFragment#newInstance} factory method to create an
- * instance of this fragment.
- *
  * Uses:
  * android.content.Context
  * android.net.Uri
@@ -22,13 +16,6 @@ package org.wheatgenetics.inventory;
  */
 public class DataEntryFragment extends android.support.v4.app.Fragment
 {
-    /**
-     * This interface must be implemented by activities that contain this fragment to allow an
-     * interaction in this fragment to be communicated to the activity and potentially other
-     * fragments contained in that activity.  <p>See the Android Training lesson <a
-     * href="http://developer.android.com/training/basics/fragments/communicating.html">Communicating
-     * with Other Fragments</a> for more information.</p>
-     */
     interface Handler
     { /* TODO: Update argument type and name. */ void onFragmentInteraction(android.net.Uri uri); }
 
@@ -81,7 +68,6 @@ public class DataEntryFragment extends android.support.v4.app.Fragment
     @android.support.annotation.Nullable final android.os.Bundle savedInstanceState)
     {
         super.onActivityCreated(savedInstanceState);
-
         this.boxValueTextView = (android.widget.TextView)
             this.getActivity().findViewById(org.wheatgenetics.inventory.R.id.boxValueTextView);
         assert null != this.boxValueTextView; this.boxValueTextView.setText(this.box);
@@ -95,15 +81,7 @@ public class DataEntryFragment extends android.support.v4.app.Fragment
     public void onButtonPressed(final android.net.Uri uri)
     { if (null != this.handler) this.handler.onFragmentInteraction(uri); }
 
-    /**
-     * Use this factory method to create a new instance of this fragment using the provided
-     * parameters.
-     *
-     * @param box Box.
-     * @return A new instance of fragment DataEntryFragment.
-     */
-    public static org.wheatgenetics.inventory.DataEntryFragment newInstance(
-    final java.lang.String box)
+    static org.wheatgenetics.inventory.DataEntryFragment newInstance(final java.lang.String box)
     {
         org.wheatgenetics.inventory.DataEntryFragment result =
             new org.wheatgenetics.inventory.DataEntryFragment();
