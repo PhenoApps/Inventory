@@ -426,8 +426,7 @@ implements org.wheatgenetics.inventory.dataentry.DataEntryFragment.Handler
                 /* context                => */ this,
                 /* changeLogRawResourceId => */
                     org.wheatgenetics.inventory.R.raw.changelog_releases);
-        try                                 { this.changeLogAlertDialog.show()       ; }
-        catch (final java.io.IOException e) { throw new java.lang.RuntimeException(e); }
+        this.changeLogAlertDialog.show();
     }
 
     private void setTextViewText(final java.lang.String text) {}              // TODO: Remove later.

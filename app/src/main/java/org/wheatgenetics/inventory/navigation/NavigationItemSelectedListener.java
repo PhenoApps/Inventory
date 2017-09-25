@@ -2,7 +2,8 @@ package org.wheatgenetics.inventory.navigation;
 
 /**
  * Uses:
- * android.content.Context
+ * android.app.Activity
+ * _android.content.Context
  * android.support.annotation.NonNull
  * android.support.design.widget.NavigationView.OnNavigationItemSelectedListener
  * android.view.MenuItem
@@ -28,7 +29,7 @@ implements android.support.design.widget.NavigationView.OnNavigationItemSelected
     }
 
     // region Fields
-    private final android.content.Context context              ;
+    private final android.app.Activity    activity             ;
     private final int                     aboutAlertDialogTitle;
     private final java.lang.String        versionName          ;
     private final org.wheatgenetics.inventory.navigation.NavigationItemSelectedListener.Handler
@@ -42,7 +43,7 @@ implements android.support.design.widget.NavigationView.OnNavigationItemSelected
     private org.wheatgenetics.about.AboutAlertDialog                 aboutAlertDialog  = null;
     // endregion
 
-    public NavigationItemSelectedListener(final android.content.Context context,
+    public NavigationItemSelectedListener(final android.app.Activity activity,
     final int aboutAlertDialogTitle, final java.lang.String versionName,
     final org.wheatgenetics.inventory.navigation.NavigationItemSelectedListener.Handler
         navigationHandler,
@@ -52,7 +53,7 @@ implements android.support.design.widget.NavigationView.OnNavigationItemSelected
     {
         super();
 
-        this.context                = context               ;
+        this.activity               = activity              ;
         this.aboutAlertDialogTitle  = aboutAlertDialogTitle ;
         this.versionName            = versionName           ;
         this.navigationHandler      = navigationHandler     ;
@@ -80,21 +81,21 @@ implements android.support.design.widget.NavigationView.OnNavigationItemSelected
             case org.wheatgenetics.inventory.R.id.nav_export :
                 if (null == this.exportAlertDialog) this.exportAlertDialog =
                     new org.wheatgenetics.inventory.navigation.ExportAlertDialog(
-                        this.context, this.exportHandler);
+                        this.activity, this.exportHandler);
                 this.exportAlertDialog.show(); break;
 
             case org.wheatgenetics.inventory.R.id.nav_delete :
                 if (null == this.deleteAlertDialog) this.deleteAlertDialog =
                     new org.wheatgenetics.inventory.navigation.DeleteAlertDialog(
-                        this.context, this.deleteHandler);
+                        this.activity, this.deleteHandler);
                 this.deleteAlertDialog.show(); break;
 
             case org.wheatgenetics.inventory.R.id.nav_show_about :
                 if (null == this.aboutAlertDialog)
                 {
-                    assert null != this.context;
+                    assert null != this.activity;
                     this.aboutAlertDialog = new org.wheatgenetics.about.AboutAlertDialog(
-                        this.context, this.context.getString(this.aboutAlertDialogTitle),
+                        this.activity, this.activity.getString(this.aboutAlertDialogTitle),
                         this.versionName, new java.lang.String[] {
                             "\nInventory is a free and open source application that can be used t" +
                                 "o catalog individuals while also collecting and storing sample w" +
@@ -109,7 +110,6 @@ implements android.support.design.widget.NavigationView.OnNavigationItemSelected
                 this.aboutAlertDialog.show(); break;
         }
 
-        this.navigationHandler.closeDrawer();
-        return true;
+        this.navigationHandler.closeDrawer(); return true;
     }
 }
