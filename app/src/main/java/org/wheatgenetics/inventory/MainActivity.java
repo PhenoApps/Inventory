@@ -61,15 +61,15 @@ implements org.wheatgenetics.inventory.dataentry.DataEntryFragment.Handler
     private android.support.v4.widget.DrawerLayout drawerLayout = null;
 
     private org.wheatgenetics.sharedpreferences.SharedPreferences sharedPreferences               ;
-    private org.wheatgenetics.changelog.ChangeLogAlertDialog      changeLogAlertDialog      = null;
     private org.wheatgenetics.zxing.BarcodeScanner                barcodeScanner            = null;
     private org.wheatgenetics.usb.ScaleReader                     scaleReaderInstance       = null;
     private org.wheatgenetics.usb.ScaleExceptionAlertDialog       scaleExceptionAlertDialog = null;
+    private org.wheatgenetics.changelog.ChangeLogAlertDialog      changeLogAlertDialog      = null;
 
+    private org.wheatgenetics.inventory.InventoryDir                inventoryDir               ;
     private org.wheatgenetics.inventory.dataentry.DataEntryFragment dataEntryFragment          ;
-    private org.wheatgenetics.inventory.SetPersonAlertDialog setPersonAlertDialog = null;
-    private org.wheatgenetics.inventory.InventoryDir         inventoryDir               ;
-    private org.wheatgenetics.inventory.SamplesTable         samplesTableInstance = null;
+    private org.wheatgenetics.inventory.SetPersonAlertDialog        setPersonAlertDialog = null;
+    private org.wheatgenetics.inventory.SamplesTable                samplesTableInstance = null;
     // endregion
 
     // region Overridden Methods
@@ -114,22 +114,18 @@ implements org.wheatgenetics.inventory.dataentry.DataEntryFragment.Handler
             // 1 and part 2 regions concatenated together and located where part 2 is now.  Why did
             // I turn one region into two?  So that versionName would be set earlier.  Why should
             // versionName be set earlier?  So that its value could be passed to
-            // NavigationItemSelectedListener() in the "Configure navigation menu" region, below.
-            int              versionCode;
-            java.lang.String versionName;
+            // NavigationItemSelectedListener() in the "Configure navigation menu." region, below.
+            int versionCode; java.lang.String versionName;
             try
             {
-                final android.content.pm.PackageInfo packageInfo = this.getPackageManager().
-                    getPackageInfo(this.getPackageName(), /* flags => */ 0);
+                final android.content.pm.PackageInfo packageInfo =
+                    this.getPackageManager().getPackageInfo(
+                        this.getPackageName(), /* flags => */ 0);
                 assert null != packageInfo;
-                versionCode = packageInfo.versionCode;
-                versionName = packageInfo.versionName;
+                versionCode = packageInfo.versionCode; versionName = packageInfo.versionName;
             }
             catch (final android.content.pm.PackageManager.NameNotFoundException e)
-            {
-                versionCode = 0                                           ;
-                versionName = org.wheatgenetics.javalib.Utils.adjust(null);
-            }
+            { versionCode = 0; versionName = org.wheatgenetics.javalib.Utils.adjust(null); }
             // endregion
 
             // region Configure navigation menu.
@@ -140,51 +136,49 @@ implements org.wheatgenetics.inventory.dataentry.DataEntryFragment.Handler
                 assert null != navigationView;                                  //  tivity_main.xml.
                 navigationView.setNavigationItemSelectedListener(
                     new org.wheatgenetics.inventory.navigation.NavigationItemSelectedListener(
-                    /* context               => */ this,
-                    /* aboutAlertDialogTitle => */
-                        org.wheatgenetics.inventory.R.string.aboutAlertDialogTitle,
-                    /* versionName       => */ versionName,
-                    /* navigationHandler => */ new org.wheatgenetics.inventory.
-                        navigation.NavigationItemSelectedListener.Handler()
-                        {
-                            @java.lang.Override
-                            public void setPerson()
+                        /* activity          => */ this       ,
+                        /* versionName       => */ versionName,
+                        /* navigationHandler => */ new org.wheatgenetics.inventory.navigation
+                            .NavigationItemSelectedListener.Handler()
                             {
-                                org.wheatgenetics.inventory.MainActivity.this.setPerson(
-                                    /* fromMenu => */ true);
-                            }
+                                @java.lang.Override
+                                public void setPerson()
+                                {
+                                    org.wheatgenetics.inventory.MainActivity.this.setPerson(
+                                        /* fromMenu => */ true);
+                                }
 
-                            @java.lang.Override
-                            public void connectScale()
-                            { org.wheatgenetics.inventory.MainActivity.this.connectScale(); }
+                                @java.lang.Override
+                                public void connectScale()
+                                { org.wheatgenetics.inventory.MainActivity.this.connectScale(); }
 
-                            @java.lang.Override
-                            public void closeDrawer()
-                            { org.wheatgenetics.inventory.MainActivity.this.closeDrawer(); }
-                        },
-                    /* exportHandler => */
-                        new org.wheatgenetics.inventory.navigation.ExportAlertDialog.Handler()
-                        {
-                            @java.lang.Override
-                            public void exportCSV()
-                            { org.wheatgenetics.inventory.MainActivity.this.exportCSV(); }
+                                @java.lang.Override
+                                public void closeDrawer()
+                                { org.wheatgenetics.inventory.MainActivity.this.closeDrawer(); }
+                            },
+                        /* exportHandler => */
+                            new org.wheatgenetics.inventory.navigation.ExportAlertDialog.Handler()
+                            {
+                                @java.lang.Override
+                                public void exportCSV()
+                                { org.wheatgenetics.inventory.MainActivity.this.exportCSV(); }
 
-                            @java.lang.Override
-                            public void exportSQL()
-                            { org.wheatgenetics.inventory.MainActivity.this.exportSQL(); }
-                        },
-                    /* deleteHandler => */
-                        new org.wheatgenetics.inventory.navigation.DeleteAlertDialog.Handler()
-                        {
-                            @java.lang.Override
-                            public void delete() { /* TODO */ }
-                        },
-                    /* versionOnClickListener => */ new android.view.View.OnClickListener()
-                        {
-                            @java.lang.Override
-                            public void onClick(final android.view.View v)
-                            { org.wheatgenetics.inventory.MainActivity.this.showChangeLog(); }
-                        }));
+                                @java.lang.Override
+                                public void exportSQL()
+                                { org.wheatgenetics.inventory.MainActivity.this.exportSQL(); }
+                            },
+                        /* deleteHandler => */
+                            new org.wheatgenetics.inventory.navigation.DeleteAlertDialog.Handler()
+                            {
+                                @java.lang.Override
+                                public void delete() { /* TODO */ }
+                            },
+                        /* versionOnClickListener => */ new android.view.View.OnClickListener()
+                            {
+                                @java.lang.Override
+                                public void onClick(final android.view.View v)
+                                { org.wheatgenetics.inventory.MainActivity.this.showChangeLog(); }
+                            }));
             }
             // endregion
 
@@ -251,8 +245,7 @@ implements org.wheatgenetics.inventory.dataentry.DataEntryFragment.Handler
         {
             if (null == this.barcodeScanner)
                 this.barcodeScanner = new org.wheatgenetics.zxing.BarcodeScanner(this);
-            this.barcodeScanner.scan();
-            return true;
+            this.barcodeScanner.scan(); return true;
         }
         else return super.onOptionsItemSelected(item);
     }
@@ -316,8 +309,7 @@ implements org.wheatgenetics.inventory.dataentry.DataEntryFragment.Handler
                 new org.wheatgenetics.usb.ScaleReader.Handler()
                 {
                     @java.lang.Override
-                    public void publish(final java.lang.String s)
-                    { org.wheatgenetics.inventory.MainActivity.this.setTextViewText(s); }
+                    public void publish(final java.lang.String s) { /* TODO */ }
 
                     @java.lang.Override
                     public void reportException(final org.wheatgenetics.usb.Device.Exception e)
@@ -404,8 +396,7 @@ implements org.wheatgenetics.inventory.dataentry.DataEntryFragment.Handler
                     final org.wheatgenetics.inventory.SamplesTable samplesTable =
                         this.samplesTable();
                     assert null != samplesTable;
-                    boxList          = samplesTable.getBoxList();
-                    inventoryRecords = samplesTable.getAll    ();
+                    boxList = samplesTable.getBoxList(); inventoryRecords = samplesTable.getAll();
                 }
                 assert null != inventoryRecords; file = inventoryRecords.writeSQL(file, boxList);
             }
@@ -423,7 +414,7 @@ implements org.wheatgenetics.inventory.dataentry.DataEntryFragment.Handler
     {
         if (null == this.changeLogAlertDialog)
             this.changeLogAlertDialog = new org.wheatgenetics.changelog.ChangeLogAlertDialog(
-                /* context                => */ this,
+                /* activity               => */ this,
                 /* changeLogRawResourceId => */
                     org.wheatgenetics.inventory.R.raw.changelog_releases);
         this.changeLogAlertDialog.show();

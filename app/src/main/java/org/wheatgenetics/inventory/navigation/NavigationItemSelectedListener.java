@@ -3,7 +3,6 @@ package org.wheatgenetics.inventory.navigation;
 /**
  * Uses:
  * android.app.Activity
- * _android.content.Context
  * android.support.annotation.NonNull
  * android.support.design.widget.NavigationView.OnNavigationItemSelectedListener
  * android.view.MenuItem
@@ -29,9 +28,8 @@ implements android.support.design.widget.NavigationView.OnNavigationItemSelected
     }
 
     // region Fields
-    private final android.app.Activity    activity             ;
-    private final int                     aboutAlertDialogTitle;
-    private final java.lang.String        versionName          ;
+    private final android.app.Activity    activity   ;
+    private final java.lang.String        versionName;
     private final org.wheatgenetics.inventory.navigation.NavigationItemSelectedListener.Handler
         navigationHandler;
     private final org.wheatgenetics.inventory.navigation.ExportAlertDialog.Handler exportHandler;
@@ -44,7 +42,7 @@ implements android.support.design.widget.NavigationView.OnNavigationItemSelected
     // endregion
 
     public NavigationItemSelectedListener(final android.app.Activity activity,
-    final int aboutAlertDialogTitle, final java.lang.String versionName,
+    final java.lang.String versionName,
     final org.wheatgenetics.inventory.navigation.NavigationItemSelectedListener.Handler
         navigationHandler,
     final org.wheatgenetics.inventory.navigation.ExportAlertDialog.Handler exportHandler         ,
@@ -54,7 +52,6 @@ implements android.support.design.widget.NavigationView.OnNavigationItemSelected
         super();
 
         this.activity               = activity              ;
-        this.aboutAlertDialogTitle  = aboutAlertDialogTitle ;
         this.versionName            = versionName           ;
         this.navigationHandler      = navigationHandler     ;
         this.exportHandler          = exportHandler         ;
@@ -95,7 +92,9 @@ implements android.support.design.widget.NavigationView.OnNavigationItemSelected
                 {
                     assert null != this.activity;
                     this.aboutAlertDialog = new org.wheatgenetics.about.AboutAlertDialog(
-                        this.activity, this.activity.getString(this.aboutAlertDialogTitle),
+                        this.activity,
+                        this.activity.getString(
+                            org.wheatgenetics.inventory.R.string.aboutAlertDialogTitle),
                         this.versionName, new java.lang.String[] {
                             "\nInventory is a free and open source application that can be used t" +
                                 "o catalog individuals while also collecting and storing sample w" +
