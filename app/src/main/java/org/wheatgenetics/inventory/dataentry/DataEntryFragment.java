@@ -102,8 +102,7 @@ public class DataEntryFragment extends android.support.v4.app.Fragment
         super.onActivityCreated(savedInstanceState);
 
         final android.app.Activity activity = this.getActivity();
-        assert null != activity;
-        this.boxValueTextView = (android.widget.TextView)
+        assert null != activity; this.boxValueTextView = (android.widget.TextView)
             activity.findViewById(org.wheatgenetics.inventory.R.id.boxValueTextView);
         this.setBoxValueTextViewText();
 
