@@ -2,61 +2,42 @@ package org.wheatgenetics.inventory.navigation;
 
 /**
  * Uses:
- * android.app.AlertDialog
- * android.app.AlertDialog.Builder
- * android.content.Context
+ * android.app.Activity
  * android.content.DialogInterface
  * android.content.DialogInterface.OnClickListener
  *
+ * org.wheatgenetics.androidlibrary.AlertDialog
  * org.wheatgenetics.androidlibrary.Utils
  *
  * org.wheatgenetics.inventory.R
  */
-public class DeleteAlertDialog extends java.lang.Object
+public class DeleteAlertDialog extends org.wheatgenetics.androidlibrary.AlertDialog
 {
     public interface Handler { public abstract void delete(); }
 
-    // region Fields
-    private final android.content.Context                                          context;
     private final org.wheatgenetics.inventory.navigation.DeleteAlertDialog.Handler handler;
-
-    private android.app.AlertDialog         alertDialog = null;
-    private android.app.AlertDialog.Builder builder     = null;
-    // endregion
 
     private void delete() { assert null != this.handler; this.handler.delete(); }
 
-    DeleteAlertDialog(final android.content.Context context,
+    DeleteAlertDialog(final android.app.Activity activity,
     final org.wheatgenetics.inventory.navigation.DeleteAlertDialog.Handler handler)
-    { super(); this.context = context; this.handler = handler; }
+    { super(activity); this.handler = handler; }
 
-    void show()
+    @java.lang.Override
+    public void configure()
     {
-        if (null == this.alertDialog)
-        {
-            if (null == this.builder)
-                this.builder = new android.app.AlertDialog.Builder(this.context)
-                    .setTitle     (org.wheatgenetics.inventory.R.string.deleteAlertDialogTitle)
-                    .setCancelable(false                                                      )
-                    .setMessage   (org.wheatgenetics.inventory.R.string.deleteAlertDialogMsg  )
-                    .setPositiveButton(
-                        org.wheatgenetics.inventory.R.string.deleteAlertDialogPositive,
-                        new android.content.DialogInterface.OnClickListener()
-                        {
-                            @java.lang.Override
-                            public void onClick(final android.content.DialogInterface dialog,
-                            final int which)
-                            {
-                                org.wheatgenetics.inventory.navigation.
-                                    DeleteAlertDialog.this.delete();
-                            }
-                        })
-                    .setNegativeButton(
-                        org.wheatgenetics.inventory.R.string.deleteAlertDialogNegative    ,
-                        org.wheatgenetics.androidlibrary.Utils.cancellingOnClickListener());
-            this.alertDialog = this.builder.create();
-            assert null != this.alertDialog;
-        }
-        this.alertDialog.show();
+        this.setTitle(org.wheatgenetics.inventory.R.string.deleteAlertDialogTitle)
+            .setCancelableToFalse()
+            .setMessage(org.wheatgenetics.inventory.R.string.deleteAlertDialogMsg)
+            .setPositiveButton(org.wheatgenetics.inventory.R.string.deleteAlertDialogPositive,
+                new android.content.DialogInterface.OnClickListener()
+                {
+                    @java.lang.Override
+                    public void onClick(final android.content.DialogInterface dialog,
+                    final int which)
+                    { org.wheatgenetics.inventory.navigation.DeleteAlertDialog.this.delete(); }
+                })
+            .setNegativeButton(org.wheatgenetics.inventory.R.string.deleteAlertDialogNegative,
+                org.wheatgenetics.androidlibrary.Utils.cancellingOnClickListener());
     }
 }
