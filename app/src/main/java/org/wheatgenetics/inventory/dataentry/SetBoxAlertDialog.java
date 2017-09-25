@@ -50,17 +50,14 @@ class SetBoxAlertDialog extends org.wheatgenetics.androidlibrary.AlertDialog
 
     SetBoxAlertDialog(final android.app.Activity activity,
     final org.wheatgenetics.inventory.dataentry.SetBoxAlertDialog.Handler handler)
-    {
-        super(activity); this.handler = handler;
-
-        (this.editText = new android.widget.EditText(this.activity())).setSingleLine();
-        this.setView(this.editText);
-    }
+    { super(activity); this.handler = handler; }
 
     @java.lang.Override
     public void configure()
     {
+        (this.editText = new android.widget.EditText(this.activity())).setSingleLine();
         this.setTitle(org.wheatgenetics.inventory.R.string.setBoxAlertDialogTitle)
+            .setView(this.editText)
             .setOKPositiveButton(new android.content.DialogInterface.OnClickListener()
                 {
                     @java.lang.Override

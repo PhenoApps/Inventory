@@ -2,9 +2,7 @@ package org.wheatgenetics.inventory;
 
 /**
  * Uses:
- * android.app.AlertDialog
- * android.app.AlertDialog.Builder
- * android.content.Context
+ * android.app.Activity
  * android.content.DialogInterface
  * android.content.DialogInterface.OnClickListener
  * android.support.annotation.NonNull
@@ -13,12 +11,12 @@ package org.wheatgenetics.inventory;
  * android.widget.EditText
  * android.widget.LinearLayout
  *
- * org.wheatgenetics.androidlibrary.R
+ * org.wheatgenetics.androidlibrary.AlertDialog
  *
  * org.wheatgenetics.inventory.model.Person
  * org.wheatgenetics.inventory.R
  */
-class SetPersonAlertDialog extends java.lang.Object
+class SetPersonAlertDialog extends org.wheatgenetics.androidlibrary.AlertDialog
 {
     interface PersonStorer
     {
@@ -27,12 +25,8 @@ class SetPersonAlertDialog extends java.lang.Object
     }
 
     // region Fields
-    private final android.content.Context                                       context     ;
     private final org.wheatgenetics.inventory.SetPersonAlertDialog.PersonStorer personStorer;
-
-    private android.app.AlertDialog         alertDialog       = null                         ;
-    private android.app.AlertDialog.Builder builder           = null                         ;
-    private android.widget.EditText         firstNameEditText = null, lastNameEditText = null;
+    private       android.widget.EditText  firstNameEditText = null, lastNameEditText = null;
     // endregion
 
     // region Private Methods
@@ -48,49 +42,44 @@ class SetPersonAlertDialog extends java.lang.Object
     { assert null != this.personStorer; this.personStorer.storePerson(this.makePerson()); }
     // endregion
 
-    SetPersonAlertDialog(@android.support.annotation.NonNull final android.content.Context context,
-    @android.support.annotation.NonNull
+    SetPersonAlertDialog(final android.app.Activity activity,
     final org.wheatgenetics.inventory.SetPersonAlertDialog.PersonStorer personStorer)
-    { super(); this.context = context; this.personStorer = personStorer; }
+    { super(activity); this.personStorer = personStorer; }
+
+    // region Overridden Methods
+    @java.lang.Override
+    public void configure()
+    {
+        this.setTitle(org.wheatgenetics.inventory.R.string.setPersonAlertDialogTitle)
+            .setCancelableToFalse();
+        {
+            final android.view.View setPersonView =
+                android.view.LayoutInflater.from(this.activity()).inflate(
+                    org.wheatgenetics.inventory.R.layout.set_person_alert_dialog,
+                    new android.widget.LinearLayout(this.activity()), false);
+
+            assert null != setPersonView;
+            this.firstNameEditText = (android.widget.EditText) setPersonView.findViewById(
+                org.wheatgenetics.inventory.R.id.setPersonFirstNameEditText);
+            this.lastNameEditText = (android.widget.EditText) setPersonView.findViewById(
+                org.wheatgenetics.inventory.R.id.setPersonLastNameEditText);
+
+            this.setView(setPersonView);
+        }
+        this.setOKPositiveButton(new android.content.DialogInterface.OnClickListener()
+            {
+                @java.lang.Override
+                public void onClick(final android.content.DialogInterface dialog, final int which)
+                { org.wheatgenetics.inventory.SetPersonAlertDialog.this.storePerson(); }
+            });
+    }
+
+    @java.lang.Override
+    public void show() { this.show(null); }
+    // endregion
 
     void show(final org.wheatgenetics.inventory.model.Person person)
     {
-        if (null == this.alertDialog)
-        {
-            if (null == this.builder)
-            {
-                this.builder = new android.app.AlertDialog.Builder(this.context)
-                    .setCancelable(false).setTitle(
-                        org.wheatgenetics.inventory.R.string.setPersonAlertDialogTitle);
-                {
-                    final android.view.View setPersonView =
-                        android.view.LayoutInflater.from(this.context).inflate(
-                            org.wheatgenetics.inventory.R.layout.set_person_alert_dialog,
-                            new android.widget.LinearLayout(this.context),
-                            false);
-
-                    assert null != setPersonView;
-                    this.firstNameEditText = (android.widget.EditText) setPersonView.findViewById(
-                        org.wheatgenetics.inventory.R.id.setPersonFirstNameEditText);
-                    this.lastNameEditText = (android.widget.EditText) setPersonView.findViewById(
-                        org.wheatgenetics.inventory.R.id.setPersonLastNameEditText);
-
-                    this.builder.setView(setPersonView);
-                }
-                this.builder.setPositiveButton(
-                    org.wheatgenetics.androidlibrary.R.string.okButtonText,
-                    new android.content.DialogInterface.OnClickListener()
-                    {
-                        @java.lang.Override
-                        public void onClick(final android.content.DialogInterface dialog,
-                        final int which)
-                        { org.wheatgenetics.inventory.SetPersonAlertDialog.this.storePerson(); }
-                    });
-            }
-            this.alertDialog = this.builder.create();
-            assert null != this.alertDialog;
-        }
-
         assert null != this.firstNameEditText; assert null != this.lastNameEditText;
         {
             java.lang.String firstName, lastName;
@@ -108,8 +97,6 @@ class SetPersonAlertDialog extends java.lang.Object
             this.lastNameEditText.setText (lastName );
         }
 
-        this.alertDialog.show();
+        super.show();
     }
-
-    void show() { this.show(null); }
 }
