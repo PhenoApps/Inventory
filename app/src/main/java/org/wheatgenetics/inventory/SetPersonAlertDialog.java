@@ -26,7 +26,7 @@ class SetPersonAlertDialog extends org.wheatgenetics.androidlibrary.AlertDialog
 
     // region Fields
     private final org.wheatgenetics.inventory.SetPersonAlertDialog.PersonStorer personStorer;
-    private       android.widget.EditText  firstNameEditText = null, lastNameEditText = null;
+    private       android.widget.EditText                firstNameEditText, lastNameEditText;
     // endregion
 
     // region Private Methods
