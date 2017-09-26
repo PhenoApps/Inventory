@@ -8,14 +8,20 @@ package org.wheatgenetics.inventory.dataentry;
  * android.os.Bundle
  * android.support.annotation.Nullable
  * android.support.v4.app.Fragment
+ * android.util.Log
  * android.view.LayoutInflater
  * android.view.View
+ * android.view.KeyEvent
  * android.view.View.OnClickListener
+ * android.view.View.OnKeyListener
  * android.view.ViewGroup
  * android.widget.Button
+ * android.widget.EditText
  * android.widget.TextView
  *
+ * org.wheatgenetics.inventory.BuildConfig
  * org.wheatgenetics.inventory.R
+ *
  * org.wheatgenetics.inventory.dataentry.SetBoxAlertDialog
  * org.wheatgenetics.inventory.dataentry.SetBoxAlertDialog.Handler
  */
@@ -27,14 +33,16 @@ public class DataEntryFragment extends android.support.v4.app.Fragment
     private static final java.lang.String BOX = "box";
 
     // region Fields
-    private org.wheatgenetics.inventory.dataentry.DataEntryFragment.Handler handler         ;
-    private java.lang.String                                                box             ;
-    private android.widget.TextView                                         boxValueTextView;
+    private org.wheatgenetics.inventory.dataentry.DataEntryFragment.Handler handler;
+    private java.lang.String        box                      ;
+    private android.widget.TextView boxValueTextView         ;
+    private android.widget.EditText envidEditText, wtEditText;
 
     private org.wheatgenetics.inventory.dataentry.SetBoxAlertDialog setBoxAlertDialog = null;
     // endregion
 
     // region Private Methods
+    // region Box Private Methods
     private void setBoxValueTextViewText()
     { assert null != this.boxValueTextView; this.boxValueTextView.setText(this.box); }
 
@@ -55,6 +63,37 @@ public class DataEntryFragment extends android.support.v4.app.Fragment
                     }
                 });
         this.setBoxAlertDialog.show(this.box);
+    }
+    // endregion
+
+    @java.lang.SuppressWarnings("SimplifiableConditionalExpression")
+    private boolean handleKey(final int keyCode, final android.view.KeyEvent event)
+    {
+        if (org.wheatgenetics.inventory.BuildConfig.DEBUG)
+        {
+            final java.lang.StringBuffer msg = new java.lang.StringBuffer("keyCode == ");
+            switch (keyCode)
+            {
+                case android.view.KeyEvent.KEYCODE_ENTER: msg.append("KEYCODE_ENTER"); break;
+
+                case android.view.KeyEvent.KEYCODE_NUMPAD_ENTER:
+                    msg.append("KEYCODE_NUMPAD_ENTER"); break;
+
+                default: msg.append(keyCode); break;
+            }
+            msg.append(", event == ");
+            {
+                assert null != event; final int action = event.getAction();
+                switch (action)
+                {
+                    case android.view.KeyEvent.ACTION_DOWN: msg.append("ACTION_DOWN"); break;
+                    case android.view.KeyEvent.ACTION_UP  : msg.append("ACTION_UP"  ); break;
+                    default                               : msg.append(action       ); break;
+                }
+            }
+            android.util.Log.d("DataEntryFragment", msg.toString());
+        }
+        return false;
     }
     // endregion
 
@@ -106,13 +145,43 @@ public class DataEntryFragment extends android.support.v4.app.Fragment
             activity.findViewById(org.wheatgenetics.inventory.R.id.boxValueTextView);
         this.setBoxValueTextViewText();
 
-        final android.widget.Button button = (android.widget.Button)
-            activity.findViewById(org.wheatgenetics.inventory.R.id.setBoxButton);
-        button.setOnClickListener(new android.view.View.OnClickListener()
+        {
+            final android.widget.Button button = (android.widget.Button)
+                activity.findViewById(org.wheatgenetics.inventory.R.id.setBoxButton);
+            assert null != button; button.setOnClickListener(new android.view.View.OnClickListener()
+                {
+                    @java.lang.Override
+                    public void onClick(final android.view.View v)
+                    { org.wheatgenetics.inventory.dataentry.DataEntryFragment.this.setBox(); }
+                });
+        }
+
+        this.envidEditText = (android.widget.EditText)
+            activity.findViewById(org.wheatgenetics.inventory.R.id.envidEditText);
+        assert null != this.envidEditText;
+        this.envidEditText.setOnKeyListener(new android.view.View.OnKeyListener()
             {
                 @java.lang.Override
-                public void onClick(final android.view.View v)
-                { org.wheatgenetics.inventory.dataentry.DataEntryFragment.this.setBox(); }
+                public boolean onKey(final android.view.View v, final int keyCode,
+                final android.view.KeyEvent event)
+                {
+                    return org.wheatgenetics.inventory.dataentry.DataEntryFragment.this.handleKey(
+                        keyCode, event);
+                }
+            });
+
+        this.wtEditText = (android.widget.EditText)
+            activity.findViewById(org.wheatgenetics.inventory.R.id.wtEditText);
+        assert null != this.wtEditText;
+        this.wtEditText.setOnKeyListener(new android.view.View.OnKeyListener()
+            {
+                @java.lang.Override
+                public boolean onKey(final android.view.View v, final int keyCode,
+                final android.view.KeyEvent event)
+                {
+                    return org.wheatgenetics.inventory.dataentry.DataEntryFragment.this.handleKey(
+                        keyCode, event);
+                }
             });
     }
 
