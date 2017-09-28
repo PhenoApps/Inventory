@@ -31,14 +31,15 @@ package org.wheatgenetics.inventory;
  *
  * org.wheatgenetics.sharedpreferences.SharedPreferences
  *
- * org.wheatgenetics.inventory.R
- *
  * org.wheatgenetics.inventory.model.Person
  *
  * org.wheatgenetics.inventory.navigation.DeleteAlertDialog.Handler
  * org.wheatgenetics.inventory.navigation.ExportAlertDialog.Handler
  * org.wheatgenetics.inventory.navigation.NavigationItemSelectedListener
  *
+ * org.wheatgenetics.inventory.InventoryDir
+ * org.wheatgenetics.inventory.R
+ * org.wheatgenetics.inventory.SamplesTable
  * org.wheatgenetics.inventory.SetPersonAlertDialog
  * org.wheatgenetics.inventory.SetPersonAlertDialog.PersonStorer
  */
@@ -52,6 +53,8 @@ public class MainActivity extends android.support.v7.app.AppCompatActivity
     private org.wheatgenetics.usb.ScaleExceptionAlertDialog       scaleExceptionAlertDialog = null;
 
     private org.wheatgenetics.inventory.SetPersonAlertDialog        setPersonAlertDialog = null;
+    private org.wheatgenetics.inventory.InventoryDir                inventoryDir               ;
+    private org.wheatgenetics.inventory.SamplesTable                samplesTableInstance = null;
     // endregion
 
     // region Overridden Methods
@@ -143,7 +146,7 @@ public class MainActivity extends android.support.v7.app.AppCompatActivity
                             {
                                 @java.lang.Override
                                 public void exportCSV()
-                                { /* org.wheatgenetics.inventory.MainActivity.this.exportCSV(); */ }
+                                { org.wheatgenetics.inventory.MainActivity.this.exportCSV(); }
 
                                 @java.lang.Override
                                 public void exportSQL()
@@ -204,6 +207,8 @@ public class MainActivity extends android.support.v7.app.AppCompatActivity
     private void showToast(final java.lang.CharSequence text)
     { org.wheatgenetics.androidlibrary.Utils.showShortToast(this, text); }
 
+    private void showToast(final int text) { this.showToast(this.getString(text)); }
+
     private void storePerson(@android.support.annotation.NonNull
     final org.wheatgenetics.inventory.model.Person person)
     {
@@ -248,6 +253,13 @@ public class MainActivity extends android.support.v7.app.AppCompatActivity
                 });
         return this.scaleReaderInstance;
     }
+
+    private org.wheatgenetics.inventory.SamplesTable samplesTable()
+    {
+        if (null == this.samplesTableInstance)
+            this.samplesTableInstance = new org.wheatgenetics.inventory.SamplesTable(this);
+        return this.samplesTableInstance;
+    }
     // endregion
 
     private void displayPerson()
@@ -284,6 +296,27 @@ public class MainActivity extends android.support.v7.app.AppCompatActivity
     {
         assert null != this.drawerLayout;
         this.drawerLayout.closeDrawer(android.support.v4.view.GravityCompat.START);
+    }
+
+    private void exportCSV()
+    {
+        assert null != this.inventoryDir;
+        java.io.File file = this.inventoryDir.createNewFile("csv");
+        if (null != file)
+        {
+            {
+                final org.wheatgenetics.inventory.model.InventoryRecords inventoryRecords =
+                    this.samplesTable().getAll();
+                assert null != inventoryRecords; file = inventoryRecords.writeCSV(file);
+            }
+            if (null != file)
+            {
+                this.showToast(org.wheatgenetics.inventory.R.string.exportSuccess);
+                org.wheatgenetics.androidlibrary.Utils.shareFile(
+                    this, this.inventoryDir.parse(file));
+                // TODO: this.deleteAll();
+            }
+        }
     }
     // endregion
 }
