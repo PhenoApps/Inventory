@@ -5,6 +5,7 @@ package org.wheatgenetics.inventory;
  * android.content.pm.PackageInfo
  * android.content.pm.PackageManager.NameNotFoundException
  * android.os.Bundle
+ * android.support.annotation.NonNull
  * android.support.design.widget.NavigationView
  * android.support.v4.view.GravityCompat
  * android.support.v4.widget.DrawerLayout
@@ -16,19 +17,33 @@ package org.wheatgenetics.inventory;
  * android.view.MenuItem
  * android.view.View
  * android.view.View.OnClickListener
+ * android.widget.TextView
  *
  * org.wheatgenetics.javalib.Utils
+ *
+ * org.wheatgenetics.androidlibrary.Utils
+ *
+ * org.wheatgenetics.sharedpreferences.SharedPreferences
+ *
+ * org.wheatgenetics.inventory.R
+ *
+ * org.wheatgenetics.inventory.model.Person
  *
  * org.wheatgenetics.inventory.navigation.DeleteAlertDialog.Handler
  * org.wheatgenetics.inventory.navigation.ExportAlertDialog.Handler
  * org.wheatgenetics.inventory.navigation.NavigationItemSelectedListener
  *
- * org.wheatgenetics.inventory.R
+ * org.wheatgenetics.inventory.SetPersonAlertDialog
+ * org.wheatgenetics.inventory.SetPersonAlertDialog.PersonStorer
  */
 public class MainActivity extends android.support.v7.app.AppCompatActivity
 {
     // region Fields
     private android.support.v4.widget.DrawerLayout drawerLayout = null;
+
+    private org.wheatgenetics.sharedpreferences.SharedPreferences sharedPreferences               ;
+
+    private org.wheatgenetics.inventory.SetPersonAlertDialog        setPersonAlertDialog = null;
     // endregion
 
     // region Overridden Methods
@@ -60,7 +75,7 @@ public class MainActivity extends android.support.v7.app.AppCompatActivity
                 {
                     @java.lang.Override
                     public void onDrawerOpened(final android.view.View drawerView)
-                    { /* TODO: org.wheatgenetics.inventory.MainActivity.this.displayPerson(); */ }
+                    { org.wheatgenetics.inventory.MainActivity.this.displayPerson(); }
                 };
             assert null != this.drawerLayout; this.drawerLayout.setDrawerListener(toggle);
             toggle.syncState();
@@ -103,8 +118,8 @@ public class MainActivity extends android.support.v7.app.AppCompatActivity
                                 @java.lang.Override
                                 public void setPerson()
                                 {
-                                    // org.wheatgenetics.inventory.MainActivity.this.setPerson(
-                                    //     /* fromMenu => */ true);
+                                    org.wheatgenetics.inventory.MainActivity.this.setPerson(
+                                        /* fromMenu => */ true);
                                 }
 
                                 @java.lang.Override
@@ -176,9 +191,52 @@ public class MainActivity extends android.support.v7.app.AppCompatActivity
     }
     // endregion
 
+    // region Private Methods
+    // region Private Private Methods
+    private void showToast(final java.lang.CharSequence text)
+    { org.wheatgenetics.androidlibrary.Utils.showShortToast(this, text); }
+
+    private void storePerson(@android.support.annotation.NonNull
+    final org.wheatgenetics.inventory.model.Person person)
+    {
+        assert null != this.sharedPreferences; this.sharedPreferences.setPerson(person);
+        this.showToast(
+            this.getString(org.wheatgenetics.inventory.R.string.setPersonMsg) + person.toString());
+    }
+    // endregion
+
+    private void displayPerson()
+    {
+        final android.widget.TextView personTextView = (android.widget.TextView)
+            this.findViewById(org.wheatgenetics.inventory.R.id.personTextView);
+        assert null != personTextView; assert null != this.sharedPreferences;
+        personTextView.setText(this.sharedPreferences.getPerson().toString());
+    }
+
+    private void setPerson(final boolean fromMenu)
+    {
+        if (null == this.setPersonAlertDialog)
+            this.setPersonAlertDialog = new org.wheatgenetics.inventory.SetPersonAlertDialog(this,
+                new org.wheatgenetics.inventory.SetPersonAlertDialog.PersonStorer()
+                {
+                    @java.lang.Override
+                    public void storePerson(@android.support.annotation.NonNull
+                    final org.wheatgenetics.inventory.model.Person person)
+                    { org.wheatgenetics.inventory.MainActivity.this.storePerson(person); }
+                });
+
+        if (fromMenu)
+        {
+            assert null != this.sharedPreferences;
+            this.setPersonAlertDialog.show(this.sharedPreferences.getPerson());
+        }
+        else this.setPersonAlertDialog.show();
+    }
+
     private void closeDrawer()
     {
         assert null != this.drawerLayout;
         this.drawerLayout.closeDrawer(android.support.v4.view.GravityCompat.START);
     }
+    // endregion
 }
