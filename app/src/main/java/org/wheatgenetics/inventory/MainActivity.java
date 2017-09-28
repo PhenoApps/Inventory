@@ -21,6 +21,7 @@ package org.wheatgenetics.inventory;
  *
  * org.wheatgenetics.javalib.Utils
  *
+ * org.wheatgenetics.androidlibrary.R
  * org.wheatgenetics.androidlibrary.Utils
  *
  * org.wheatgenetics.changelog.ChangeLogAlertDialog
@@ -30,6 +31,8 @@ package org.wheatgenetics.inventory;
  * org.wheatgenetics.usb.ScaleExceptionAlertDialog.Handler
  * org.wheatgenetics.usb.ScaleReader
  * org.wheatgenetics.usb.ScaleReader.Handler
+ *
+ * org.wheatgenetics.zxing.BarcodeScanner
  *
  * org.wheatgenetics.sharedpreferences.SharedPreferences
  *
@@ -55,6 +58,7 @@ public class MainActivity extends android.support.v7.app.AppCompatActivity
     private org.wheatgenetics.usb.ScaleReader                     scaleReaderInstance       = null;
     private org.wheatgenetics.usb.ScaleExceptionAlertDialog       scaleExceptionAlertDialog = null;
     private org.wheatgenetics.changelog.ChangeLogAlertDialog      changeLogAlertDialog      = null;
+    private org.wheatgenetics.zxing.BarcodeScanner                barcodeScanner            = null;
 
     private org.wheatgenetics.inventory.SetPersonAlertDialog        setPersonAlertDialog = null;
     private org.wheatgenetics.inventory.InventoryDir                inventoryDir               ;
@@ -170,7 +174,30 @@ public class MainActivity extends android.support.v7.app.AppCompatActivity
                             }));
             }
             // endregion
+
+            // region Set person.
+            this.sharedPreferences = new org.wheatgenetics.sharedpreferences.SharedPreferences(
+                this.getSharedPreferences("Settings", 0));
+            if (!this.sharedPreferences.personIsSet()) this.setPerson(/* fromMenu => */ false);
+            // endregion
+
+            // region Connect scale.
+            if (!this.sharedPreferences.getIgnoreScale()) this.connectScale();
+            // endregion
+
+            // region Set version, part 2.
+            if (!this.sharedPreferences.updateVersionIsSet(versionCode))
+            {
+                this.sharedPreferences.setUpdateVersion(versionCode);
+                this.showChangeLog();
+            }
+            // endregion
         }
+
+        // region Create inventoryDir.
+        this.inventoryDir = new org.wheatgenetics.inventory.InventoryDir(this);
+        this.inventoryDir.createIfMissing();
+        // endregion
     }
 
     @java.lang.Override
@@ -186,8 +213,8 @@ public class MainActivity extends android.support.v7.app.AppCompatActivity
     @java.lang.Override
     public boolean onCreateOptionsMenu(final android.view.Menu menu)
     {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        this.getMenuInflater().inflate(org.wheatgenetics.inventory.R.menu.main, menu);
+        this.getMenuInflater().inflate(
+            org.wheatgenetics.androidlibrary.R.menu.camera_options_menu, menu);
         return true;
     }
 
@@ -199,10 +226,23 @@ public class MainActivity extends android.support.v7.app.AppCompatActivity
         assert null != item; final int itemId = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (org.wheatgenetics.inventory.R.id.action_settings == itemId)
-            return true;
-        else
-            return super.onOptionsItemSelected(item);
+        if (org.wheatgenetics.androidlibrary.R.id.cameraOptionsMenuItem == itemId)
+        {
+            if (null == this.barcodeScanner)
+                this.barcodeScanner = new org.wheatgenetics.zxing.BarcodeScanner(this);
+            this.barcodeScanner.scan(); return true;
+        }
+        else return super.onOptionsItemSelected(item);
+    }
+
+    @java.lang.Override
+    protected void onActivityResult(final int requestCode,
+    final int resultCode, final android.content.Intent data)
+    {
+        this.showToast(org.wheatgenetics.javalib.Utils.replaceIfNull(                        // TODO
+            org.wheatgenetics.zxing.BarcodeScanner.parseActivityResult(
+                requestCode, resultCode, data),
+            "null"));
     }
     // endregion
 
