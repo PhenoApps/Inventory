@@ -42,6 +42,7 @@ package org.wheatgenetics.inventory;
  * org.wheatgenetics.inventory.navigation.DeleteAlertDialog.Handler
  * org.wheatgenetics.inventory.navigation.ExportAlertDialog.Handler
  * org.wheatgenetics.inventory.navigation.NavigationItemSelectedListener
+ * org.wheatgenetics.inventory.navigation.NavigationItemSelectedListener.Handler
  *
  * org.wheatgenetics.inventory.InventoryDir
  * org.wheatgenetics.inventory.R
