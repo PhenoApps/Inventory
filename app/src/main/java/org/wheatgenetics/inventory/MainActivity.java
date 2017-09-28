@@ -1,10 +1,9 @@
 package org.wheatgenetics.inventory;
 
-import android.support.v4.view.GravityCompat;
-import android.support.v4.widget.DrawerLayout;
-
 /**
  * Uses:
+ * android.content.pm.PackageInfo
+ * android.content.pm.PackageManager.NameNotFoundException
  * android.os.Bundle
  * android.support.design.widget.NavigationView
  * android.support.v4.view.GravityCompat
@@ -13,14 +12,20 @@ import android.support.v4.widget.DrawerLayout;
  * android.support.v7.app.ActionBarDrawerToggle
  * android.support.v7.app.AppCompatActivity
  * android.support.v7.widget.Toolbar
- * android.view.View
  * android.view.Menu
  * android.view.MenuItem
+ * android.view.View
+ * android.view.View.OnClickListener
+ *
+ * org.wheatgenetics.javalib.Utils
+ *
+ * org.wheatgenetics.inventory.navigation.DeleteAlertDialog.Handler
+ * org.wheatgenetics.inventory.navigation.ExportAlertDialog.Handler
+ * org.wheatgenetics.inventory.navigation.NavigationItemSelectedListener
  *
  * org.wheatgenetics.inventory.R
  */
 public class MainActivity extends android.support.v7.app.AppCompatActivity
-implements android.support.design.widget.NavigationView.OnNavigationItemSelectedListener
 {
     // region Fields
     private android.support.v4.widget.DrawerLayout drawerLayout = null;
@@ -63,13 +68,76 @@ implements android.support.design.widget.NavigationView.OnNavigationItemSelected
         // endregion
 
         {
+            // region Set version, part 1.
+            // Before there was one region called "Set version.".  It consisted of the current part
+            // 1 and part 2 regions concatenated together and located where part 2 is now.  Why did
+            // I turn one region into two?  So that versionName would be set earlier.  Why should
+            // versionName be set earlier?  So that its value could be passed to
+            // NavigationItemSelectedListener() in the "Configure navigation menu." region, below.
+            int versionCode; java.lang.String versionName;
+            try
+            {
+                final android.content.pm.PackageInfo packageInfo =
+                    this.getPackageManager().getPackageInfo(
+                        this.getPackageName(), /* flags => */ 0);
+                assert null != packageInfo;
+                versionCode = packageInfo.versionCode; versionName = packageInfo.versionName;
+            }
+            catch (final android.content.pm.PackageManager.NameNotFoundException e)
+            { versionCode = 0; versionName = org.wheatgenetics.javalib.Utils.adjust(null); }
+            // endregion
+
             // region Configure navigation menu.
             {
                 final android.support.design.widget.NavigationView navigationView =
                     (android.support.design.widget.NavigationView) this.findViewById(
                         org.wheatgenetics.inventory.R.id.nav_view);             // From layout/ac-
                 assert null != navigationView;                                  //  tivity_main.xml.
-                navigationView.setNavigationItemSelectedListener(this);
+                navigationView.setNavigationItemSelectedListener(
+                    new org.wheatgenetics.inventory.navigation.NavigationItemSelectedListener(
+                        /* activity          => */ this       ,
+                        /* versionName       => */ versionName,
+                        /* navigationHandler => */ new org.wheatgenetics.inventory.navigation
+                            .NavigationItemSelectedListener.Handler()
+                            {
+                                @java.lang.Override
+                                public void setPerson()
+                                {
+                                    // org.wheatgenetics.inventory.MainActivity.this.setPerson(
+                                    //     /* fromMenu => */ true);
+                                }
+
+                                @java.lang.Override
+                                public void connectScale()
+                                { /* org.wheatgenetics.inventory.MainActivity.this.connectScale(); */ }
+
+                                @java.lang.Override
+                                public void closeDrawer()
+                                { org.wheatgenetics.inventory.MainActivity.this.closeDrawer(); }
+                            },
+                        /* exportHandler => */
+                            new org.wheatgenetics.inventory.navigation.ExportAlertDialog.Handler()
+                            {
+                                @java.lang.Override
+                                public void exportCSV()
+                                { /* org.wheatgenetics.inventory.MainActivity.this.exportCSV(); */ }
+
+                                @java.lang.Override
+                                public void exportSQL()
+                                { /* org.wheatgenetics.inventory.MainActivity.this.exportSQL(); */ }
+                            },
+                        /* deleteHandler => */
+                            new org.wheatgenetics.inventory.navigation.DeleteAlertDialog.Handler()
+                            {
+                                @java.lang.Override
+                                public void delete() { /* TODO */ }
+                            },
+                        /* versionOnClickListener => */ new android.view.View.OnClickListener()
+                            {
+                                @java.lang.Override
+                                public void onClick(final android.view.View v)
+                                { /* org.wheatgenetics.inventory.MainActivity.this.showChangeLog(); */ }
+                            }));
             }
             // endregion
         }
@@ -105,38 +173,6 @@ implements android.support.design.widget.NavigationView.OnNavigationItemSelected
             return true;
         else
             return super.onOptionsItemSelected(item);
-    }
-
-    @java.lang.SuppressWarnings("StatementWithEmptyBody")
-    @java.lang.Override
-    public boolean onNavigationItemSelected(final android.view.MenuItem item)
-    {
-        // Handle navigation view item clicks here.
-        int id = item.getItemId();
-
-        if (id == R.id.nav_camera)
-        {
-            // Handle the camera action
-        } else if (id == R.id.nav_gallery)
-        {
-
-        } else if (id == R.id.nav_slideshow)
-        {
-
-        } else if (id == R.id.nav_manage)
-        {
-
-        } else if (id == R.id.nav_share)
-        {
-
-        } else if (id == R.id.nav_send)
-        {
-
-        }
-
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        drawer.closeDrawer(GravityCompat.START);
-        return true;
     }
     // endregion
 
