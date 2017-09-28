@@ -1,4 +1,4 @@
-package org.wheatgenetics.inventory;
+package org.wheatgenetics.inventory.dataentry;
 
 /**
  * Uses:
@@ -32,9 +32,9 @@ public class DataEntryFragment extends android.support.v4.app.Fragment
     {
         super.onAttach(context);
 
-        if (context instanceof org.wheatgenetics.inventory.DataEntryFragment.OnFragmentInteractionListener)
+        if (context instanceof org.wheatgenetics.inventory.dataentry.DataEntryFragment.OnFragmentInteractionListener)
             this.mListener =
-                (org.wheatgenetics.inventory.DataEntryFragment.OnFragmentInteractionListener) context;
+                (org.wheatgenetics.inventory.dataentry.DataEntryFragment.OnFragmentInteractionListener) context;
         else
         {
             assert null != context; throw new java.lang.RuntimeException(context.toString() +
@@ -49,7 +49,7 @@ public class DataEntryFragment extends android.support.v4.app.Fragment
 
         final android.os.Bundle arguments = this.getArguments();
         if (null != arguments) this.mParam1 =
-            arguments.getString(org.wheatgenetics.inventory.DataEntryFragment.ARG_PARAM1);
+            arguments.getString(org.wheatgenetics.inventory.dataentry.DataEntryFragment.ARG_PARAM1);
     }
 
     @java.lang.Override
@@ -69,14 +69,14 @@ public class DataEntryFragment extends android.support.v4.app.Fragment
     public void onButtonPressed(final android.net.Uri uri)
     { if (null != this.mListener) this.mListener.onFragmentInteraction(uri); }
 
-    public static org.wheatgenetics.inventory.DataEntryFragment newInstance(
+    public static org.wheatgenetics.inventory.dataentry.DataEntryFragment newInstance(
     final java.lang.String param1)
     {
-        final org.wheatgenetics.inventory.DataEntryFragment result =
-            new org.wheatgenetics.inventory.DataEntryFragment();
+        final org.wheatgenetics.inventory.dataentry.DataEntryFragment result =
+            new org.wheatgenetics.inventory.dataentry.DataEntryFragment();
         {
             final android.os.Bundle arguments = new android.os.Bundle();
-            arguments.putString(org.wheatgenetics.inventory.DataEntryFragment.ARG_PARAM1, param1);
+            arguments.putString(org.wheatgenetics.inventory.dataentry.DataEntryFragment.ARG_PARAM1, param1);
             result.setArguments(arguments);
         }
         return result;
