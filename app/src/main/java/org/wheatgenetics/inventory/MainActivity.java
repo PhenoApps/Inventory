@@ -164,7 +164,11 @@ public class MainActivity extends android.support.v7.app.AppCompatActivity
                             new org.wheatgenetics.inventory.navigation.DeleteAlertDialog.Handler()
                             {
                                 @java.lang.Override
-                                public void delete() { /* TODO */ }
+                                public void delete()
+                                {
+                                    org.wheatgenetics.inventory.
+                                        MainActivity.this.clearBoxAndDeleteData();
+                                }
                             },
                         /* versionOnClickListener => */ new android.view.View.OnClickListener()
                             {
@@ -304,6 +308,13 @@ public class MainActivity extends android.support.v7.app.AppCompatActivity
             this.samplesTableInstance = new org.wheatgenetics.inventory.SamplesTable(this);
         return this.samplesTableInstance;
     }
+
+    private void deleteData()
+    {
+        this.samplesTable().deleteAll();
+        // this.tableLayout.removeAllViews();                      // TODO
+        // org.wheatgenetics.inventory.MainActivity.position = 1;  // TODO
+    }
     // endregion
 
     private void displayPerson()
@@ -358,7 +369,7 @@ public class MainActivity extends android.support.v7.app.AppCompatActivity
                 this.showToast(org.wheatgenetics.inventory.R.string.exportSuccess);
                 org.wheatgenetics.androidlibrary.Utils.shareFile(
                     this, this.inventoryDir.parse(file));
-                // TODO: this.deleteAll();
+                this.deleteData();
             }
         }
     }
@@ -385,9 +396,15 @@ public class MainActivity extends android.support.v7.app.AppCompatActivity
                 this.showToast(org.wheatgenetics.inventory.R.string.exportSuccess);
                 org.wheatgenetics.androidlibrary.Utils.shareFile(
                     this, this.inventoryDir.parse(file));
-                // TODO: this.deleteAll();
+                this.deleteData();
             }
         }
+    }
+
+    private void clearBoxAndDeleteData()
+    {
+        /* TODO: Clear box. */ this.deleteData();
+        this.showToast(org.wheatgenetics.inventory.R.string.data_deleted);
     }
 
     private void showChangeLog()

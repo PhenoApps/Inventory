@@ -20,4 +20,6 @@
     <string name="deleteAlertDialogNegative">No</string>
 
     <string name="aboutAlertDialogTitle">About Inventory</string>
+
+    <string name="data_deleted">Data deleted</string>
 </resources>
