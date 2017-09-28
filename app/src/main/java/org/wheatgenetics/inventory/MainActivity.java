@@ -4,9 +4,11 @@ package org.wheatgenetics.inventory;
  * Uses:
  * android.content.pm.PackageInfo
  * android.content.pm.PackageManager.NameNotFoundException
+ * android.net.Uri
  * android.os.Bundle
  * android.support.annotation.NonNull
  * android.support.design.widget.NavigationView
+ * android.support.v4.app.FragmentTransaction
  * android.support.v4.view.GravityCompat
  * android.support.v4.widget.DrawerLayout
  * android.support.v7.app.ActionBar
@@ -36,6 +38,9 @@ package org.wheatgenetics.inventory;
  *
  * org.wheatgenetics.sharedpreferences.SharedPreferences
  *
+ * org.wheatgenetics.inventory.dataentry.DataEntryFragment
+ * org.wheatgenetics.inventory.dataentry.DataEntryFragment.Handler
+ *
  * org.wheatgenetics.inventory.model.InventoryRecords
  * org.wheatgenetics.inventory.model.Person
  *
@@ -51,6 +56,7 @@ package org.wheatgenetics.inventory;
  * org.wheatgenetics.inventory.SetPersonAlertDialog.PersonStorer
  */
 public class MainActivity extends android.support.v7.app.AppCompatActivity
+implements org.wheatgenetics.inventory.dataentry.DataEntryFragment.Handler
 {
     // region Fields
     private android.support.v4.widget.DrawerLayout drawerLayout = null;
@@ -64,6 +70,7 @@ public class MainActivity extends android.support.v7.app.AppCompatActivity
     private org.wheatgenetics.inventory.SetPersonAlertDialog        setPersonAlertDialog = null;
     private org.wheatgenetics.inventory.InventoryDir                inventoryDir               ;
     private org.wheatgenetics.inventory.SamplesTable                samplesTableInstance = null;
+    private org.wheatgenetics.inventory.dataentry.DataEntryFragment dataEntryFragment          ;
     // endregion
 
     // region Overridden Methods
@@ -203,6 +210,16 @@ public class MainActivity extends android.support.v7.app.AppCompatActivity
         this.inventoryDir = new org.wheatgenetics.inventory.InventoryDir(this);
         this.inventoryDir.createIfMissing();
         // endregion
+
+        // region Create dataEntryFragment.
+        this.dataEntryFragment =
+            org.wheatgenetics.inventory.dataentry.DataEntryFragment.newInstance("");
+        final android.support.v4.app.FragmentTransaction fragmentTransaction =
+            this.getSupportFragmentManager().beginTransaction();
+        assert null != fragmentTransaction; fragmentTransaction.add(
+            org.wheatgenetics.inventory.R.id.mainContent, this.dataEntryFragment);   // From layout/
+        fragmentTransaction.commit();                                                //  content_-
+        // endregion                                                                 //  main.xml.
     }
 
     @java.lang.Override
@@ -249,6 +266,11 @@ public class MainActivity extends android.support.v7.app.AppCompatActivity
                 requestCode, resultCode, data),
             "null"));
     }
+
+    // region DataEntryFragment.Handler Overridden Method
+    @java.lang.Override
+    public void onFragmentInteraction(final android.net.Uri uri) { /* TODO */ }
+    // endregion
     // endregion
 
     // region Private Methods
