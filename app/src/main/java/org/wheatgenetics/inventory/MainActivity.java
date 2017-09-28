@@ -31,6 +31,7 @@ package org.wheatgenetics.inventory;
  *
  * org.wheatgenetics.sharedpreferences.SharedPreferences
  *
+ * org.wheatgenetics.inventory.model.InventoryRecords
  * org.wheatgenetics.inventory.model.Person
  *
  * org.wheatgenetics.inventory.navigation.DeleteAlertDialog.Handler
@@ -150,7 +151,7 @@ public class MainActivity extends android.support.v7.app.AppCompatActivity
 
                                 @java.lang.Override
                                 public void exportSQL()
-                                { /* org.wheatgenetics.inventory.MainActivity.this.exportSQL(); */ }
+                                { org.wheatgenetics.inventory.MainActivity.this.exportSQL(); }
                             },
                         /* deleteHandler => */
                             new org.wheatgenetics.inventory.navigation.DeleteAlertDialog.Handler()
@@ -308,6 +309,33 @@ public class MainActivity extends android.support.v7.app.AppCompatActivity
                 final org.wheatgenetics.inventory.model.InventoryRecords inventoryRecords =
                     this.samplesTable().getAll();
                 assert null != inventoryRecords; file = inventoryRecords.writeCSV(file);
+            }
+            if (null != file)
+            {
+                this.showToast(org.wheatgenetics.inventory.R.string.exportSuccess);
+                org.wheatgenetics.androidlibrary.Utils.shareFile(
+                    this, this.inventoryDir.parse(file));
+                // TODO: this.deleteAll();
+            }
+        }
+    }
+
+    private void exportSQL()
+    {
+        assert null != this.inventoryDir;
+        java.io.File file = this.inventoryDir.createNewFile("sql");
+        if (null != file)
+        {
+            {
+                java.lang.String                                   boxList         ;
+                org.wheatgenetics.inventory.model.InventoryRecords inventoryRecords;
+                {
+                    final org.wheatgenetics.inventory.SamplesTable samplesTable =
+                        this.samplesTable();
+                    assert null != samplesTable;
+                    boxList = samplesTable.getBoxList(); inventoryRecords = samplesTable.getAll();
+                }
+                assert null != inventoryRecords; file = inventoryRecords.writeSQL(file, boxList);
             }
             if (null != file)
             {
