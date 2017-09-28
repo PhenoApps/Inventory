@@ -6,6 +6,9 @@
 
     <string name="action_settings">Settings</string>
 
+    <string name="setPersonAlertDialogTitle">Set Person</string>
+    <string name="setPersonMsg">Person set as: </string>
+
     <string name="exportAlertDialogTitle">Export data</string>
     <string name="exportAlertDialogMsg">How would you like to export the data?</string>
     <string name="exportAlertDialogPositive">Flat file (CSV)</string>
