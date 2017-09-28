@@ -21,10 +21,14 @@
 
     <string name="aboutAlertDialogTitle">About Inventory</string>
 
-    <string name="data_deleted">Data deleted</string>
-
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <!-- fragment_data_entry.xml: -->
+    <string name="boxLabelTextViewText">Box:</string>
+    <string name="setBoxButtonText">Set Box</string>
+    <string name="envidTextViewText">Input:</string>
+    <string name="wtTextViewText">Weight:</string>
+    <string name="wtEditTextText">null</string>
 
     <string name="setBoxAlertDialogTitle">Set Box</string>
+
+    <string name="data_deleted">Data deleted</string>
 </resources>
