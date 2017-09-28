@@ -23,6 +23,8 @@ package org.wheatgenetics.inventory;
  *
  * org.wheatgenetics.androidlibrary.Utils
  *
+ * org.wheatgenetics.changelog.ChangeLogAlertDialog
+ *
  * org.wheatgenetics.usb.Device.Exception
  * org.wheatgenetics.usb.ScaleExceptionAlertDialog
  * org.wheatgenetics.usb.ScaleExceptionAlertDialog.Handler
@@ -52,6 +54,7 @@ public class MainActivity extends android.support.v7.app.AppCompatActivity
     private org.wheatgenetics.sharedpreferences.SharedPreferences sharedPreferences               ;
     private org.wheatgenetics.usb.ScaleReader                     scaleReaderInstance       = null;
     private org.wheatgenetics.usb.ScaleExceptionAlertDialog       scaleExceptionAlertDialog = null;
+    private org.wheatgenetics.changelog.ChangeLogAlertDialog      changeLogAlertDialog      = null;
 
     private org.wheatgenetics.inventory.SetPersonAlertDialog        setPersonAlertDialog = null;
     private org.wheatgenetics.inventory.InventoryDir                inventoryDir               ;
@@ -163,7 +166,7 @@ public class MainActivity extends android.support.v7.app.AppCompatActivity
                             {
                                 @java.lang.Override
                                 public void onClick(final android.view.View v)
-                                { /* org.wheatgenetics.inventory.MainActivity.this.showChangeLog(); */ }
+                                { org.wheatgenetics.inventory.MainActivity.this.showChangeLog(); }
                             }));
             }
             // endregion
@@ -345,6 +348,16 @@ public class MainActivity extends android.support.v7.app.AppCompatActivity
                 // TODO: this.deleteAll();
             }
         }
+    }
+
+    private void showChangeLog()
+    {
+        if (null == this.changeLogAlertDialog)
+            this.changeLogAlertDialog = new org.wheatgenetics.changelog.ChangeLogAlertDialog(
+                /* activity               => */ this,
+                /* changeLogRawResourceId => */
+                    org.wheatgenetics.inventory.R.raw.changelog_releases);
+        this.changeLogAlertDialog.show();
     }
     // endregion
 }
