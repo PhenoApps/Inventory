@@ -23,6 +23,12 @@ package org.wheatgenetics.inventory;
  *
  * org.wheatgenetics.androidlibrary.Utils
  *
+ * org.wheatgenetics.usb.Device.Exception
+ * org.wheatgenetics.usb.ScaleExceptionAlertDialog
+ * org.wheatgenetics.usb.ScaleExceptionAlertDialog.Handler
+ * org.wheatgenetics.usb.ScaleReader
+ * org.wheatgenetics.usb.ScaleReader.Handler
+ *
  * org.wheatgenetics.sharedpreferences.SharedPreferences
  *
  * org.wheatgenetics.inventory.R
@@ -42,6 +48,8 @@ public class MainActivity extends android.support.v7.app.AppCompatActivity
     private android.support.v4.widget.DrawerLayout drawerLayout = null;
 
     private org.wheatgenetics.sharedpreferences.SharedPreferences sharedPreferences               ;
+    private org.wheatgenetics.usb.ScaleReader                     scaleReaderInstance       = null;
+    private org.wheatgenetics.usb.ScaleExceptionAlertDialog       scaleExceptionAlertDialog = null;
 
     private org.wheatgenetics.inventory.SetPersonAlertDialog        setPersonAlertDialog = null;
     // endregion
@@ -124,7 +132,7 @@ public class MainActivity extends android.support.v7.app.AppCompatActivity
 
                                 @java.lang.Override
                                 public void connectScale()
-                                { /* org.wheatgenetics.inventory.MainActivity.this.connectScale(); */ }
+                                { org.wheatgenetics.inventory.MainActivity.this.connectScale(); }
 
                                 @java.lang.Override
                                 public void closeDrawer()
@@ -203,6 +211,43 @@ public class MainActivity extends android.support.v7.app.AppCompatActivity
         this.showToast(
             this.getString(org.wheatgenetics.inventory.R.string.setPersonMsg) + person.toString());
     }
+
+    private void ignoreScale()
+    { assert null != this.sharedPreferences; this.sharedPreferences.setIgnoreScaleToTrue(); }
+
+    private void reportException(final org.wheatgenetics.usb.Device.Exception e)
+    {
+        this.scaleReader().cancel();
+        if (null == this.scaleExceptionAlertDialog) this.scaleExceptionAlertDialog =
+            new org.wheatgenetics.usb.ScaleExceptionAlertDialog(this,
+                new org.wheatgenetics.usb.ScaleExceptionAlertDialog.Handler()
+                {
+                    @java.lang.Override
+                    public void tryAgain()
+                    { org.wheatgenetics.inventory.MainActivity.this.connectScale(); }
+
+                    @java.lang.Override
+                    public void ignore()
+                    { org.wheatgenetics.inventory.MainActivity.this.ignoreScale(); }
+                });
+        this.scaleExceptionAlertDialog.show(e);
+    }
+
+    private org.wheatgenetics.usb.ScaleReader scaleReader()
+    {
+        if (null == this.scaleReaderInstance)
+            this.scaleReaderInstance = new org.wheatgenetics.usb.ScaleReader(this,
+                new org.wheatgenetics.usb.ScaleReader.Handler()
+                {
+                    @java.lang.Override
+                    public void publish(final java.lang.String s) { /* TODO */ }
+
+                    @java.lang.Override
+                    public void reportException(final org.wheatgenetics.usb.Device.Exception e)
+                    { org.wheatgenetics.inventory.MainActivity.this.reportException(e); }
+                });
+        return this.scaleReaderInstance;
+    }
     // endregion
 
     private void displayPerson()
@@ -232,6 +277,8 @@ public class MainActivity extends android.support.v7.app.AppCompatActivity
         }
         else this.setPersonAlertDialog.show();
     }
+
+    private void connectScale() { this.scaleReader().execute(); }
 
     private void closeDrawer()
     {
