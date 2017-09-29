@@ -287,6 +287,9 @@ implements org.wheatgenetics.inventory.dataentry.DataEntryFragment.Handler
     // endregion
     // endregion
 
+    public void handleSetBoxButtonClick(final android.view.View v)
+    { assert null != this.dataEntryFragment; dataEntryFragment.handleSetBoxButtonClick(); }
+
     // region Private Methods
     // region Private Private Methods
     private void showToast(final java.lang.CharSequence text)

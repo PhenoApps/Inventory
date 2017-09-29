@@ -11,10 +11,8 @@ package org.wheatgenetics.inventory.dataentry;
  * android.view.KeyEvent
  * android.view.LayoutInflater
  * android.view.View
- * android.view.View.OnClickListener
  * android.view.ViewGroup
  * android.view.inputmethod.EditorInfo
- * android.widget.Button
  * android.widget.EditText
  * android.widget.TextView
  * android.widget.TextView.OnEditorActionListener
@@ -26,7 +24,6 @@ package org.wheatgenetics.inventory.dataentry;
  * org.wheatgenetics.inventory.dataentry.SetBoxAlertDialog.Handler
  */
 public class DataEntryFragment extends android.support.v4.app.Fragment implements
-android.view.View.OnClickListener                              ,    // for setBoxButton
 org.wheatgenetics.inventory.dataentry.SetBoxAlertDialog.Handler,    // for SetBoxAlertDialog
 android.widget.TextView.OnEditorActionListener                      // for envidEditText, wtEditText
 {
@@ -111,12 +108,6 @@ android.widget.TextView.OnEditorActionListener                      // for envid
             activity.findViewById(org.wheatgenetics.inventory.R.id.boxValueTextView);
         this.setBoxValueTextViewText();
 
-        {
-            final android.widget.Button button = (android.widget.Button)
-                activity.findViewById(org.wheatgenetics.inventory.R.id.setBoxButton);
-            assert null != button; button.setOnClickListener(this);
-        }
-
         this.envidEditText = (android.widget.EditText)
             activity.findViewById(org.wheatgenetics.inventory.R.id.envidEditText);
         assert null != this.envidEditText; this.envidEditText.setOnEditorActionListener(this);
@@ -129,20 +120,9 @@ android.widget.TextView.OnEditorActionListener                      // for envid
     @java.lang.Override
     public void onDetach()
     {
-        super.onDetach();
         org.wheatgenetics.inventory.dataentry.DataEntryFragment.sendDebugLogMsg("onDetach()");
-        this.handler = null;
+        this.handler = null; super.onDetach();
     }
-
-    // region android.view.View.OnClickListener Overridden Method
-    @java.lang.Override
-    public void onClick(final android.view.View v)
-    {
-        if (null == this.setBoxAlertDialog) this.setBoxAlertDialog =
-            new org.wheatgenetics.inventory.dataentry.SetBoxAlertDialog( this.getActivity(), this);
-        this.setBoxAlertDialog.show(this.box);
-    }
-    // endregion
 
     // region org.wheatgenetics.inventory.dataentry.SetBoxAlertDialog.Handler Overridden Method
     @java.lang.Override
@@ -179,6 +159,13 @@ android.widget.TextView.OnEditorActionListener                      // for envid
     }
     // endregion
     // endregion
+
+    public void handleSetBoxButtonClick()
+    {
+        if (null == this.setBoxAlertDialog) this.setBoxAlertDialog =
+            new org.wheatgenetics.inventory.dataentry.SetBoxAlertDialog(this.getActivity(), this);
+        this.setBoxAlertDialog.show(this.box);
+    }
 
     public static org.wheatgenetics.inventory.dataentry.DataEntryFragment newInstance(
     final java.lang.String box)
