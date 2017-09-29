@@ -8,20 +8,26 @@ package org.wheatgenetics.inventory.dataentry;
  * android.os.Bundle
  * android.support.annotation.Nullable
  * android.support.v4.app.Fragment
+ * android.util.Log
+ * android.view.KeyEvent
  * android.view.LayoutInflater
  * android.view.View
  * android.view.View.OnClickListener
  * android.view.ViewGroup
+ * android.view.inputmethod.EditorInfo
  * android.widget.Button
  * android.widget.EditText
  * android.widget.TextView
+ * android.widget.TextView.OnEditorActionListener
  *
+ * org.wheatgenetics.inventory.BuildConfig
  * org.wheatgenetics.inventory.R
  *
  * org.wheatgenetics.inventory.dataentry.SetBoxAlertDialog
  * org.wheatgenetics.inventory.dataentry.SetBoxAlertDialog.Handler
  */
 public class DataEntryFragment extends android.support.v4.app.Fragment
+implements android.widget.TextView.OnEditorActionListener
 {
     public interface Handler
     { /* TODO: Update argument type and name. */ void onFragmentInteraction(android.net.Uri uri); }
@@ -38,7 +44,6 @@ public class DataEntryFragment extends android.support.v4.app.Fragment
     // endregion
 
     // region Private Methods
-    // region Box Private Methods
     private void setBoxValueTextViewText()
     { assert null != this.boxValueTextView; this.boxValueTextView.setText(this.box); }
 
@@ -49,7 +54,7 @@ public class DataEntryFragment extends android.support.v4.app.Fragment
     {
         if (null == this.setBoxAlertDialog) this.setBoxAlertDialog =
             new org.wheatgenetics.inventory.dataentry.SetBoxAlertDialog(this.getActivity(),
-                new org.wheatgenetics.inventory.dataentry.SetBoxAlertDialog.Handler()
+                new org.wheatgenetics.inventory.dataentry.SetBoxAlertDialog.Handler()  // TODO: implement
                 {
                     @java.lang.Override
                     public void setBox(final java.lang.String box)
@@ -60,9 +65,6 @@ public class DataEntryFragment extends android.support.v4.app.Fragment
                 });
         this.setBoxAlertDialog.show(this.box);
     }
-    // endregion
-
-    // TODO
     // endregion
 
     public DataEntryFragment() { /* Required empty public constructor. */ }
@@ -116,7 +118,7 @@ public class DataEntryFragment extends android.support.v4.app.Fragment
         {
             final android.widget.Button button = (android.widget.Button)
                 activity.findViewById(org.wheatgenetics.inventory.R.id.setBoxButton);
-            assert null != button; button.setOnClickListener(new android.view.View.OnClickListener()
+            assert null != button; button.setOnClickListener(new android.view.View.OnClickListener() // TODO: implement
                 {
                     @java.lang.Override
                     public void onClick(final android.view.View v)
@@ -126,15 +128,41 @@ public class DataEntryFragment extends android.support.v4.app.Fragment
 
         this.envidEditText = (android.widget.EditText)
             activity.findViewById(org.wheatgenetics.inventory.R.id.envidEditText);
-        assert null != this.envidEditText;
+        assert null != this.envidEditText; this.envidEditText.setOnEditorActionListener(this);
 
         this.wtEditText = (android.widget.EditText)
             activity.findViewById(org.wheatgenetics.inventory.R.id.wtEditText);
-        assert null != this.wtEditText;
+        assert null != this.wtEditText; this.wtEditText.setOnEditorActionListener(this);
     }
 
     @java.lang.Override
     public void onDetach() { super.onDetach(); this.handler = null; }
+
+    // region android.widget.TextView.OnEditorActionListener Overridden Method
+    @java.lang.Override
+    public boolean onEditorAction(final android.widget.TextView v, final int actionId,
+    final android.view.KeyEvent event)
+    {
+        if (org.wheatgenetics.inventory.BuildConfig.DEBUG)
+        {
+            final java.lang.StringBuffer msg = new java.lang.StringBuffer("actionId == ");
+            switch (actionId)
+            {
+                case android.view.inputmethod.EditorInfo.IME_ACTION_NEXT:
+                    msg.append("IME_ACTION_NEXT"); break;
+
+                case android.view.inputmethod.EditorInfo.IME_ACTION_DONE:
+                    msg.append("IME_ACTION_DONE"); break;
+
+                case android.view.inputmethod.EditorInfo.IME_NULL: msg.append("IME_NULL"); break;
+                default                                          : msg.append(actionId  ); break;
+            }
+            msg.append(", event == "); if (null != event) msg.append("not "); msg.append("null");
+            android.util.Log.d("DataEntryFragment", msg.toString());
+        }
+        return false;
+    }
+    // endregion
     // endregion
 
     // TODO: Rename method, update argument and hook method into UI event.
