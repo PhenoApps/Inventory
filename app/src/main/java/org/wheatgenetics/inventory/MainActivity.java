@@ -443,7 +443,8 @@ implements org.wheatgenetics.inventory.dataentry.DataEntryFragment.Handler
 
     private void clearBoxAndDeleteData()
     {
-        /* TODO: Clear box. */ this.deleteData();
+        assert null != this.dataEntryFragment; this.dataEntryFragment.clearBox();
+        this.deleteData();
         this.showToast(org.wheatgenetics.inventory.R.string.data_deleted);
     }
 

@@ -160,12 +160,15 @@ android.widget.TextView.OnEditorActionListener                      // for envid
     // endregion
     // endregion
 
+    // region Public Methods
     public void handleSetBoxButtonClick()
     {
         if (null == this.setBoxAlertDialog) this.setBoxAlertDialog =
             new org.wheatgenetics.inventory.dataentry.SetBoxAlertDialog(this.getActivity(), this);
         this.setBoxAlertDialog.show(this.box);
     }
+
+    public void clearBox() { this.setBox(""); }
 
     public static org.wheatgenetics.inventory.dataentry.DataEntryFragment newInstance(
     final java.lang.String box)
@@ -181,4 +184,5 @@ android.widget.TextView.OnEditorActionListener                      // for envid
         }
         return result;
     }
+    // endregion
 }
