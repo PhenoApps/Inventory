@@ -27,12 +27,15 @@ package org.wheatgenetics.inventory.dataentry;
  * org.wheatgenetics.inventory.dataentry.SetBoxAlertDialog.Handler
  */
 public class DataEntryFragment extends android.support.v4.app.Fragment implements
-android.view.View.OnClickListener,                                  // for setBoxButton
-org.wheatgenetics.inventory.dataentry.SetBoxAlertDialog.Handler,
+android.view.View.OnClickListener                              ,    // for setBoxButton
+org.wheatgenetics.inventory.dataentry.SetBoxAlertDialog.Handler,    // for SetBoxAlertDialog
 android.widget.TextView.OnEditorActionListener                      // for envidEditText, wtEditText
 {
     public interface Handler
-    { /* TODO: Update argument type and name. */ void onFragmentInteraction(android.net.Uri uri); }
+    {
+        // TODO: Update argument type and name.
+        public abstract void onFragmentInteraction(android.net.Uri uri);
+    }
 
     private static final java.lang.String BOX = "box";
 
@@ -45,20 +48,8 @@ android.widget.TextView.OnEditorActionListener                      // for envid
     private org.wheatgenetics.inventory.dataentry.SetBoxAlertDialog setBoxAlertDialog = null;
     // endregion
 
-    // region Private Methods
     private void setBoxValueTextViewText()
     { assert null != this.boxValueTextView; this.boxValueTextView.setText(this.box); }
-
-    private void setBoxValueTextViewText(final java.lang.String box)
-    { this.box = box; this.setBoxValueTextViewText(); }
-
-    private void setBox()
-    {
-        if (null == this.setBoxAlertDialog) this.setBoxAlertDialog =
-            new org.wheatgenetics.inventory.dataentry.SetBoxAlertDialog(this.getActivity(), this);
-        this.setBoxAlertDialog.show(this.box);
-    }
-    // endregion
 
     public DataEntryFragment() { /* Required empty public constructor. */ }
 
@@ -128,12 +119,18 @@ android.widget.TextView.OnEditorActionListener                      // for envid
 
     // region android.view.View.OnClickListener Overridden Method
     @java.lang.Override
-    public void onClick(final android.view.View v) { this.setBox(); }
+    public void onClick(final android.view.View v)
+    {
+        if (null == this.setBoxAlertDialog) this.setBoxAlertDialog =
+            new org.wheatgenetics.inventory.dataentry.SetBoxAlertDialog( this.getActivity(), this);
+        this.setBoxAlertDialog.show(this.box);
+    }
     // endregion
 
     // region org.wheatgenetics.inventory.dataentry.SetBoxAlertDialog.Handler Overridden Method
     @java.lang.Override
-    public void setBox(final java.lang.String box) { this.setBoxValueTextViewText(box);}
+    public void setBox(final java.lang.String box)
+    { this.box = box; this.setBoxValueTextViewText(); }
     // endregion
 
     // region android.widget.TextView.OnEditorActionListener Overridden Method
