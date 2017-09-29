@@ -26,14 +26,15 @@ package org.wheatgenetics.inventory.dataentry;
  * org.wheatgenetics.inventory.dataentry.SetBoxAlertDialog
  * org.wheatgenetics.inventory.dataentry.SetBoxAlertDialog.Handler
  */
-public class DataEntryFragment extends android.support.v4.app.Fragment
-implements org.wheatgenetics.inventory.dataentry.SetBoxAlertDialog.Handler,
-android.widget.TextView.OnEditorActionListener
+public class DataEntryFragment extends android.support.v4.app.Fragment implements
+android.view.View.OnClickListener,                                  // for setBoxButton
+org.wheatgenetics.inventory.dataentry.SetBoxAlertDialog.Handler,
+android.widget.TextView.OnEditorActionListener                      // for envidEditText, wtEditText
 {
     public interface Handler
     { /* TODO: Update argument type and name. */ void onFragmentInteraction(android.net.Uri uri); }
 
-    private static final java.lang.String BOX = "param1";
+    private static final java.lang.String BOX = "box";
 
     // region Fields
     private org.wheatgenetics.inventory.dataentry.DataEntryFragment.Handler handler;
@@ -110,12 +111,7 @@ android.widget.TextView.OnEditorActionListener
         {
             final android.widget.Button button = (android.widget.Button)
                 activity.findViewById(org.wheatgenetics.inventory.R.id.setBoxButton);
-            assert null != button; button.setOnClickListener(new android.view.View.OnClickListener() // TODO: implement
-                {
-                    @java.lang.Override
-                    public void onClick(final android.view.View v)
-                    { org.wheatgenetics.inventory.dataentry.DataEntryFragment.this.setBox(); }
-                });
+            assert null != button; button.setOnClickListener(this);
         }
 
         this.envidEditText = (android.widget.EditText)
@@ -129,6 +125,11 @@ android.widget.TextView.OnEditorActionListener
 
     @java.lang.Override
     public void onDetach() { super.onDetach(); this.handler = null; }
+
+    // region android.view.View.OnClickListener Overridden Method
+    @java.lang.Override
+    public void onClick(final android.view.View v) { this.setBox(); }
+    // endregion
 
     // region org.wheatgenetics.inventory.dataentry.SetBoxAlertDialog.Handler Overridden Method
     @java.lang.Override
