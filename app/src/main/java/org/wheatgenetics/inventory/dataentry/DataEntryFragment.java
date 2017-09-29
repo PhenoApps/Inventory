@@ -27,7 +27,8 @@ package org.wheatgenetics.inventory.dataentry;
  * org.wheatgenetics.inventory.dataentry.SetBoxAlertDialog.Handler
  */
 public class DataEntryFragment extends android.support.v4.app.Fragment
-implements android.widget.TextView.OnEditorActionListener
+implements org.wheatgenetics.inventory.dataentry.SetBoxAlertDialog.Handler,
+android.widget.TextView.OnEditorActionListener
 {
     public interface Handler
     { /* TODO: Update argument type and name. */ void onFragmentInteraction(android.net.Uri uri); }
@@ -53,16 +54,7 @@ implements android.widget.TextView.OnEditorActionListener
     private void setBox()
     {
         if (null == this.setBoxAlertDialog) this.setBoxAlertDialog =
-            new org.wheatgenetics.inventory.dataentry.SetBoxAlertDialog(this.getActivity(),
-                new org.wheatgenetics.inventory.dataentry.SetBoxAlertDialog.Handler()  // TODO: implement
-                {
-                    @java.lang.Override
-                    public void setBox(final java.lang.String box)
-                    {
-                        org.wheatgenetics.inventory.dataentry.
-                            DataEntryFragment.this.setBoxValueTextViewText(box);
-                    }
-                });
+            new org.wheatgenetics.inventory.dataentry.SetBoxAlertDialog(this.getActivity(), this);
         this.setBoxAlertDialog.show(this.box);
     }
     // endregion
@@ -137,6 +129,11 @@ implements android.widget.TextView.OnEditorActionListener
 
     @java.lang.Override
     public void onDetach() { super.onDetach(); this.handler = null; }
+
+    // region org.wheatgenetics.inventory.dataentry.SetBoxAlertDialog.Handler Overridden Method
+    @java.lang.Override
+    public void setBox(final java.lang.String box) { this.setBoxValueTextViewText(box);}
+    // endregion
 
     // region android.widget.TextView.OnEditorActionListener Overridden Method
     @java.lang.Override
