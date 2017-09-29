@@ -281,9 +281,13 @@ implements org.wheatgenetics.inventory.dataentry.DataEntryFragment.Handler
         super.onSaveInstanceState(outState);
     }
 
-    // region DataEntryFragment.Handler Overridden Method
+    // region DataEntryFragment.Handler Overridden Methods
     @java.lang.Override
     public void setBox(final java.lang.String box) { this.box = box; }
+
+    @java.lang.Override
+    public void addRecord(final java.lang.String envid, final java.lang.String wt)
+    { this.showToast(java.lang.String.format("envid == %s, wt == %s", envid, wt)); }         // TODO
     // endregion
     // endregion
 

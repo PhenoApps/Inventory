@@ -17,6 +17,8 @@ package org.wheatgenetics.inventory.dataentry;
  * android.widget.TextView
  * android.widget.TextView.OnEditorActionListener
  *
+ * org.wheatgenetics.androidlibrary.Utils
+ *
  * org.wheatgenetics.inventory.BuildConfig
  * org.wheatgenetics.inventory.R
  *
@@ -27,7 +29,11 @@ public class DataEntryFragment extends android.support.v4.app.Fragment implement
 org.wheatgenetics.inventory.dataentry.SetBoxAlertDialog.Handler,    // for SetBoxAlertDialog
 android.widget.TextView.OnEditorActionListener                      // for envidEditText, wtEditText
 {
-    public interface Handler { public abstract void setBox(java.lang.String box); }
+    public interface Handler
+    {
+        public abstract void setBox   (java.lang.String box                       );
+        public abstract void addRecord(java.lang.String envid, java.lang.String wt);
+    }
 
     private static final java.lang.String BOX = "box";
 
@@ -49,6 +55,12 @@ android.widget.TextView.OnEditorActionListener                      // for envid
 
     private void setBoxValueTextViewText()
     { assert null != this.boxValueTextView; this.boxValueTextView.setText(this.box); }
+
+    private void focusEnvIdEditText()
+    {
+        assert null != this.envidEditText;
+        this.envidEditText.requestFocus(); this.envidEditText.selectAll();
+    }
     // endregion
 
     public DataEntryFragment() { /* Required empty public constructor. */ }
@@ -111,6 +123,7 @@ android.widget.TextView.OnEditorActionListener                      // for envid
         this.envidEditText = (android.widget.EditText)
             activity.findViewById(org.wheatgenetics.inventory.R.id.envidEditText);
         assert null != this.envidEditText; this.envidEditText.setOnEditorActionListener(this);
+        this.focusEnvIdEditText();
 
         this.wtEditText = (android.widget.EditText)
             activity.findViewById(org.wheatgenetics.inventory.R.id.wtEditText);
@@ -155,7 +168,27 @@ android.widget.TextView.OnEditorActionListener                      // for envid
             msg.append(", event == "); if (null != event) msg.append("not "); msg.append("null");
             org.wheatgenetics.inventory.dataentry.DataEntryFragment.sendDebugLogMsg(msg.toString());
         }
-        return false;
+
+        switch (actionId)
+        {
+            case android.view.inputmethod.EditorInfo.IME_ACTION_DONE:
+            case android.view.inputmethod.EditorInfo.IME_NULL       :
+                final java.lang.String envid =
+                    org.wheatgenetics.androidlibrary.Utils.getText(this.envidEditText);
+                if (null == envid || envid.length() <= 0)
+                    { this.focusEnvIdEditText(); return true; }
+                else
+                {
+                    assert null != this.handler; this.handler.addRecord(envid,
+                        org.wheatgenetics.androidlibrary.Utils.getText(this.wtEditText));
+
+                    if (android.view.inputmethod.EditorInfo.IME_NULL != actionId)
+                        this.focusEnvIdEditText();
+                    return true;
+                }
+
+            default: return false;
+        }
     }
     // endregion
     // endregion
