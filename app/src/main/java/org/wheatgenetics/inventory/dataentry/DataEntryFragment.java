@@ -48,8 +48,16 @@ android.widget.TextView.OnEditorActionListener                      // for envid
     private org.wheatgenetics.inventory.dataentry.SetBoxAlertDialog setBoxAlertDialog = null;
     // endregion
 
+    // region Private Methods
+    private static int sendDebugLogMsg(final java.lang.String msg)
+    {
+        return org.wheatgenetics.inventory.BuildConfig.DEBUG ?
+            android.util.Log.d("DataEntryFragment", msg) : 0;
+    }
+
     private void setBoxValueTextViewText()
     { assert null != this.boxValueTextView; this.boxValueTextView.setText(this.box); }
+    // endregion
 
     public DataEntryFragment() { /* Required empty public constructor. */ }
 
@@ -58,6 +66,8 @@ android.widget.TextView.OnEditorActionListener                      // for envid
     public void onAttach(final android.content.Context context)
     {
         super.onAttach(context);
+
+        org.wheatgenetics.inventory.dataentry.DataEntryFragment.sendDebugLogMsg("onAttach()");
 
         if (context instanceof org.wheatgenetics.inventory.dataentry.DataEntryFragment.Handler)
             this.handler =
@@ -74,6 +84,8 @@ android.widget.TextView.OnEditorActionListener                      // for envid
     {
         super.onCreate(savedInstanceState);
 
+        org.wheatgenetics.inventory.dataentry.DataEntryFragment.sendDebugLogMsg("onCreate()");
+
         final android.os.Bundle arguments = this.getArguments();
         if (null != arguments) this.box =
             arguments.getString(org.wheatgenetics.inventory.dataentry.DataEntryFragment.BOX);
@@ -83,6 +95,8 @@ android.widget.TextView.OnEditorActionListener                      // for envid
     public android.view.View onCreateView(final android.view.LayoutInflater inflater,
     final android.view.ViewGroup container, final android.os.Bundle savedInstanceState)
     {
+        org.wheatgenetics.inventory.dataentry.DataEntryFragment.sendDebugLogMsg("onCreateView()");
+
         // Inflate the layout for this fragment:
         assert null != inflater; return inflater.inflate(
             org.wheatgenetics.inventory.R.layout.fragment_data_entry, container, false);
@@ -93,6 +107,9 @@ android.widget.TextView.OnEditorActionListener                      // for envid
     @android.support.annotation.Nullable final android.os.Bundle savedInstanceState)
     {
         super.onActivityCreated(savedInstanceState);
+
+        org.wheatgenetics.inventory.dataentry.DataEntryFragment.sendDebugLogMsg(
+            "onActivityCreated()");
 
         final android.app.Activity activity = this.getActivity();
         assert null != activity; this.boxValueTextView = (android.widget.TextView)
@@ -115,7 +132,12 @@ android.widget.TextView.OnEditorActionListener                      // for envid
     }
 
     @java.lang.Override
-    public void onDetach() { super.onDetach(); this.handler = null; }
+    public void onDetach()
+    {
+        super.onDetach();
+        org.wheatgenetics.inventory.dataentry.DataEntryFragment.sendDebugLogMsg("onDetach()");
+        this.handler = null;
+    }
 
     // region android.view.View.OnClickListener Overridden Method
     @java.lang.Override
@@ -153,20 +175,18 @@ android.widget.TextView.OnEditorActionListener                      // for envid
                 default                                          : msg.append(actionId  ); break;
             }
             msg.append(", event == "); if (null != event) msg.append("not "); msg.append("null");
-            android.util.Log.d("DataEntryFragment", msg.toString());
+            org.wheatgenetics.inventory.dataentry.DataEntryFragment.sendDebugLogMsg(msg.toString());
         }
         return false;
     }
     // endregion
     // endregion
 
-    // TODO: Rename method, update argument and hook method into UI event.
-    public void onButtonPressed(final android.net.Uri uri)
-    { if (null != this.handler) this.handler.onFragmentInteraction(uri); }
-
     public static org.wheatgenetics.inventory.dataentry.DataEntryFragment newInstance(
     final java.lang.String box)
     {
+        org.wheatgenetics.inventory.dataentry.DataEntryFragment.sendDebugLogMsg("newInstance()");
+
         final org.wheatgenetics.inventory.dataentry.DataEntryFragment result =
             new org.wheatgenetics.inventory.dataentry.DataEntryFragment();
         {
