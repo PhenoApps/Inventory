@@ -4,7 +4,6 @@ package org.wheatgenetics.inventory.dataentry;
  * Uses:
  * android.app.Activity
  * android.content.Context
- * android.net.Uri
  * android.os.Bundle
  * android.support.annotation.Nullable
  * android.support.v4.app.Fragment
@@ -31,11 +30,7 @@ android.view.View.OnClickListener                              ,    // for setBo
 org.wheatgenetics.inventory.dataentry.SetBoxAlertDialog.Handler,    // for SetBoxAlertDialog
 android.widget.TextView.OnEditorActionListener                      // for envidEditText, wtEditText
 {
-    public interface Handler
-    {
-        // TODO: Update argument type and name.
-        public abstract void onFragmentInteraction(android.net.Uri uri);
-    }
+    public interface Handler { public abstract void setBox(java.lang.String box); }
 
     private static final java.lang.String BOX = "box";
 
@@ -152,7 +147,10 @@ android.widget.TextView.OnEditorActionListener                      // for envid
     // region org.wheatgenetics.inventory.dataentry.SetBoxAlertDialog.Handler Overridden Method
     @java.lang.Override
     public void setBox(final java.lang.String box)
-    { this.box = box; this.setBoxValueTextViewText(); }
+    {
+        this.box = box; this.setBoxValueTextViewText();
+        assert null != this.handler; this.handler.setBox(box);
+    }
     // endregion
 
     // region android.widget.TextView.OnEditorActionListener Overridden Method

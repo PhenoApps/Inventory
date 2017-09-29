@@ -4,7 +4,6 @@ package org.wheatgenetics.inventory;
  * Uses:
  * android.content.pm.PackageInfo
  * android.content.pm.PackageManager.NameNotFoundException
- * android.net.Uri
  * android.os.Bundle
  * android.support.annotation.NonNull
  * android.support.design.widget.NavigationView
@@ -58,7 +57,10 @@ package org.wheatgenetics.inventory;
 public class MainActivity extends android.support.v7.app.AppCompatActivity
 implements org.wheatgenetics.inventory.dataentry.DataEntryFragment.Handler
 {
+    private static final java.lang.String BOX = "box";
+
     // region Fields
+    private java.lang.String                       box                ;
     private android.support.v4.widget.DrawerLayout drawerLayout = null;
 
     private org.wheatgenetics.sharedpreferences.SharedPreferences sharedPreferences               ;
@@ -79,6 +81,9 @@ implements org.wheatgenetics.inventory.dataentry.DataEntryFragment.Handler
     {
         super.onCreate(savedInstanceState);
         this.setContentView(org.wheatgenetics.inventory.R.layout.activity_main);
+
+        if (null != savedInstanceState)
+            this.box = savedInstanceState.getString(org.wheatgenetics.inventory.MainActivity.BOX);
 
         this.drawerLayout = (android.support.v4.widget.DrawerLayout) this.findViewById(
             org.wheatgenetics.inventory.R.id.drawer_layout);       // From layout/activity_main.xml.
@@ -213,7 +218,7 @@ implements org.wheatgenetics.inventory.dataentry.DataEntryFragment.Handler
 
         // region Create dataEntryFragment.
         this.dataEntryFragment =
-            org.wheatgenetics.inventory.dataentry.DataEntryFragment.newInstance("");
+            org.wheatgenetics.inventory.dataentry.DataEntryFragment.newInstance(this.box);
         final android.support.v4.app.FragmentTransaction fragmentTransaction =
             this.getSupportFragmentManager().beginTransaction();
         assert null != fragmentTransaction; fragmentTransaction.add(
@@ -267,9 +272,18 @@ implements org.wheatgenetics.inventory.dataentry.DataEntryFragment.Handler
             "null"));
     }
 
+    @java.lang.Override
+    protected void onSaveInstanceState(final android.os.Bundle outState)
+    {
+        assert null != outState;
+        outState.putString(org.wheatgenetics.inventory.MainActivity.BOX, this.box);
+
+        super.onSaveInstanceState(outState);
+    }
+
     // region DataEntryFragment.Handler Overridden Method
     @java.lang.Override
-    public void onFragmentInteraction(final android.net.Uri uri) { /* TODO */ }
+    public void setBox(final java.lang.String box) { this.box = box; }
     // endregion
     // endregion
 
