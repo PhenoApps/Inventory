@@ -15,6 +15,7 @@ package org.wheatgenetics.inventory;
  * android.support.v7.app.AppCompatActivity
  * android.support.v7.widget.Toolbar
  * android.view.Menu
+ * android.view.MenuInflater
  * android.view.MenuItem
  * android.view.View
  * android.view.View.OnClickListener
@@ -241,7 +242,7 @@ implements org.wheatgenetics.inventory.dataentry.DataEntryFragment.Handler
     @java.lang.Override
     public boolean onCreateOptionsMenu(final android.view.Menu menu)
     {
-        this.getMenuInflater().inflate(
+        new android.view.MenuInflater(this).inflate(
             org.wheatgenetics.androidlibrary.R.menu.camera_options_menu, menu);
         return true;
     }
