@@ -39,6 +39,7 @@ android.widget.TextView.OnEditorActionListener                      // for envid
 
     // region Fields
     private org.wheatgenetics.inventory.dataentry.DataEntryFragment.Handler handler;
+
     private java.lang.String        box                      ;
     private android.widget.TextView boxValueTextView         ;
     private android.widget.EditText envidEditText, wtEditText;
@@ -47,19 +48,23 @@ android.widget.TextView.OnEditorActionListener                      // for envid
     // endregion
 
     // region Private Methods
+    private static int sendDebugLogMsg(final java.lang.String tag, final java.lang.String msg)
+    { return org.wheatgenetics.inventory.BuildConfig.DEBUG ? android.util.Log.d(tag, msg) : 0; }
+
     private static int sendDebugLogMsg(final java.lang.String msg)
     {
-        return org.wheatgenetics.inventory.BuildConfig.DEBUG ?
-            android.util.Log.d("DataEntryFragment", msg) : 0;
+        return org.wheatgenetics.inventory.dataentry.DataEntryFragment.sendDebugLogMsg(
+            "DataEntryFragmentLifecycle", msg);
     }
 
     private void setBoxValueTextViewText()
     { assert null != this.boxValueTextView; this.boxValueTextView.setText(this.box); }
 
-    private void focusEnvIdEditText()
+    private boolean focusEnvIdEditText()
     {
         assert null != this.envidEditText;
         this.envidEditText.requestFocus(); this.envidEditText.selectAll();
+        return true;
     }
     // endregion
 
@@ -166,26 +171,25 @@ android.widget.TextView.OnEditorActionListener                      // for envid
                 default                                          : msg.append(actionId  ); break;
             }
             msg.append(", event == "); if (null != event) msg.append("not "); msg.append("null");
-            org.wheatgenetics.inventory.dataentry.DataEntryFragment.sendDebugLogMsg(msg.toString());
+            org.wheatgenetics.inventory.dataentry.DataEntryFragment.sendDebugLogMsg(
+                "DataEntryFragmentActions", msg.toString());
         }
 
         switch (actionId)
         {
+            case android.view.inputmethod.EditorInfo.IME_NULL:
+                assert null != event;
+                if (event.getAction() == android.view.KeyEvent.ACTION_DOWN) return true;
+
             case android.view.inputmethod.EditorInfo.IME_ACTION_DONE:
-            case android.view.inputmethod.EditorInfo.IME_NULL       :
                 final java.lang.String envid =
                     org.wheatgenetics.androidlibrary.Utils.getText(this.envidEditText);
-                if (null == envid || envid.length() <= 0)
-                    { this.focusEnvIdEditText(); return true; }
-                else
+                if (null != envid) if (envid.length() > 0)
                 {
                     assert null != this.handler; this.handler.addRecord(envid,
                         org.wheatgenetics.androidlibrary.Utils.getText(this.wtEditText));
-
-                    if (android.view.inputmethod.EditorInfo.IME_NULL != actionId)
-                        this.focusEnvIdEditText();
-                    return true;
                 }
+                return this.focusEnvIdEditText();
 
             default: return false;
         }

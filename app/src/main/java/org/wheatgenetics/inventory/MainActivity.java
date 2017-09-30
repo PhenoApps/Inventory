@@ -60,7 +60,6 @@ implements org.wheatgenetics.inventory.dataentry.DataEntryFragment.Handler
     private static final java.lang.String BOX = "box";
 
     // region Fields
-    private java.lang.String                       box                ;
     private android.support.v4.widget.DrawerLayout drawerLayout = null;
 
     private org.wheatgenetics.sharedpreferences.SharedPreferences sharedPreferences               ;
@@ -73,6 +72,8 @@ implements org.wheatgenetics.inventory.dataentry.DataEntryFragment.Handler
     private org.wheatgenetics.inventory.InventoryDir                inventoryDir               ;
     private org.wheatgenetics.inventory.SamplesTable                samplesTableInstance = null;
     private org.wheatgenetics.inventory.dataentry.DataEntryFragment dataEntryFragment          ;
+
+    private java.lang.String box;
     // endregion
 
     // region Overridden Methods
@@ -81,9 +82,6 @@ implements org.wheatgenetics.inventory.dataentry.DataEntryFragment.Handler
     {
         super.onCreate(savedInstanceState);
         this.setContentView(org.wheatgenetics.inventory.R.layout.activity_main);
-
-        if (null != savedInstanceState)
-            this.box = savedInstanceState.getString(org.wheatgenetics.inventory.MainActivity.BOX);
 
         this.drawerLayout = (android.support.v4.widget.DrawerLayout) this.findViewById(
             org.wheatgenetics.inventory.R.id.drawer_layout);       // From layout/activity_main.xml.
@@ -217,6 +215,9 @@ implements org.wheatgenetics.inventory.dataentry.DataEntryFragment.Handler
         // endregion
 
         // region Create dataEntryFragment.
+        this.box = null == savedInstanceState ? null :
+            savedInstanceState.getString(org.wheatgenetics.inventory.MainActivity.BOX);
+
         this.dataEntryFragment =
             org.wheatgenetics.inventory.dataentry.DataEntryFragment.newInstance(this.box);
         final android.support.v4.app.FragmentTransaction fragmentTransaction =

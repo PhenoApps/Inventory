@@ -26,7 +26,6 @@
     <string name="setBoxButtonText">Set Box</string>
     <string name="envidTextViewText">Input:</string>
     <string name="wtTextViewText">Weight:</string>
-    <string name="wtEditTextText">null</string>
 
     <string name="setBoxAlertDialogTitle">Set Box</string>
 
