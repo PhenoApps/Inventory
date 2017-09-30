@@ -268,10 +268,11 @@ implements org.wheatgenetics.inventory.dataentry.DataEntryFragment.Handler
     protected void onActivityResult(final int requestCode,
     final int resultCode, final android.content.Intent data)
     {
-        this.showToast(org.wheatgenetics.javalib.Utils.replaceIfNull(                        // TODO
-            org.wheatgenetics.zxing.BarcodeScanner.parseActivityResult(
-                requestCode, resultCode, data),
-            "null"));
+        assert null != this.dataEntryFragment; this.dataEntryFragment.setEnvId(
+            org.wheatgenetics.javalib.Utils.replaceIfNull(
+                org.wheatgenetics.zxing.BarcodeScanner.parseActivityResult(
+                    requestCode, resultCode, data),
+                "null"));
     }
 
     @java.lang.Override

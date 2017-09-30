@@ -207,6 +207,9 @@ android.widget.TextView.OnEditorActionListener                      // for envid
 
     public void clearBox() { this.setBox(""); }
 
+    public void setEnvId(final java.lang.String envId)
+    { assert null != this.envidEditText; this.envidEditText.setText(envId); }
+
     public static org.wheatgenetics.inventory.dataentry.DataEntryFragment newInstance(
     final java.lang.String box)
     {
