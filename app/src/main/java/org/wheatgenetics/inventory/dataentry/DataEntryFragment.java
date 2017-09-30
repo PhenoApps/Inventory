@@ -210,6 +210,9 @@ android.widget.TextView.OnEditorActionListener                      // for envid
     public void setEnvId(final java.lang.String envId)
     { assert null != this.envidEditText; this.envidEditText.setText(envId); }
 
+    public void setWt(final java.lang.String wt)
+    { assert null != this.wtEditText; this.wtEditText.setText(wt); }
+
     public static org.wheatgenetics.inventory.dataentry.DataEntryFragment newInstance(
     final java.lang.String box)
     {

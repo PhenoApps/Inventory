@@ -312,6 +312,9 @@ implements org.wheatgenetics.inventory.dataentry.DataEntryFragment.Handler
             this.getString(org.wheatgenetics.inventory.R.string.setPersonMsg) + person.toString());
     }
 
+    private void publish(final java.lang.String wt)
+    { assert null != this.dataEntryFragment; this.dataEntryFragment.setWt(wt); }
+
     private void ignoreScale()
     { assert null != this.sharedPreferences; this.sharedPreferences.setIgnoreScaleToTrue(); }
 
@@ -340,7 +343,8 @@ implements org.wheatgenetics.inventory.dataentry.DataEntryFragment.Handler
                 new org.wheatgenetics.usb.ScaleReader.Handler()
                 {
                     @java.lang.Override
-                    public void publish(final java.lang.String s) { /* TODO */ }
+                    public void publish(final java.lang.String s)
+                    { org.wheatgenetics.inventory.MainActivity.this.publish(s); }
 
                     @java.lang.Override
                     public void reportException(final org.wheatgenetics.usb.Device.Exception e)
