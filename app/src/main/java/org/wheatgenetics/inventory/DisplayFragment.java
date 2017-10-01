@@ -2,18 +2,24 @@ package org.wheatgenetics.inventory;
 
 /**
  * Uses:
+ * android.app.Activity
  * android.content.Context
  * android.os.Bundle
+ * android.support.annotation.Nullable
  * android.support.v4.app.Fragment
  * android.view.LayoutInflater
  * android.view.View
  * android.view.ViewGroup
  *
+ * org.wheatgenetics.inventory.model.InventoryRecord
+ * org.wheatgenetics.inventory.model.InventoryRecords
+ *
  * org.wheatgenetics.inventory.R
  */
 public class DisplayFragment extends android.support.v4.app.Fragment
 {
-    public interface Handler { public abstract void onFragmentInteraction(java.lang.String s); }
+    public interface Handler
+    { public abstract org.wheatgenetics.inventory.model.InventoryRecords inventoryRecords(); }
 
     private static final java.lang.String ARG_PARAM1 = "param1";
 
@@ -57,12 +63,24 @@ public class DisplayFragment extends android.support.v4.app.Fragment
     }
 
     @java.lang.Override
+    public void onActivityCreated(
+    @android.support.annotation.Nullable final android.os.Bundle savedInstanceState)
+    {
+        super.onActivityCreated(savedInstanceState);
+
+        assert null != this.handler; for (final org.wheatgenetics.inventory.model.InventoryRecord
+        inventoryRecord: this.handler.inventoryRecords())
+        {
+            assert null != inventoryRecord;
+            //
+        }
+        
+        final android.app.Activity activity = this.getActivity();
+    }
+
+    @java.lang.Override
     public void onDetach() { this.handler = null; super.onDetach(); }
     // endregion
-
-    // region Public Methods
-    public void onButtonPressed(final java.lang.String s)
-    { if (this.handler != null) this.handler.onFragmentInteraction(s); }
 
     public static DisplayFragment newInstance(final java.lang.String param1)
     {
@@ -75,5 +93,4 @@ public class DisplayFragment extends android.support.v4.app.Fragment
         }
         return result;
     }
-    // endregion
 }
