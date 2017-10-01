@@ -1,4 +1,4 @@
-package org.wheatgenetics.inventory;
+package org.wheatgenetics.inventory.display;
 
 /**
  * Uses:
@@ -23,8 +23,8 @@ public class DisplayFragment extends android.support.v4.app.Fragment
 
     private static final java.lang.String ARG_PARAM1 = "param1";
 
-    private org.wheatgenetics.inventory.DisplayFragment.Handler handler;
-    private java.lang.String                                    param1 ;
+    private org.wheatgenetics.inventory.display.DisplayFragment.Handler handler;
+    private java.lang.String                                            param1 ;
 
     public DisplayFragment() { /* Required empty public constructor. */ }
 
@@ -34,8 +34,8 @@ public class DisplayFragment extends android.support.v4.app.Fragment
     {
         super.onAttach(context);
 
-        if (context instanceof org.wheatgenetics.inventory.DisplayFragment.Handler)
-            this.handler = (org.wheatgenetics.inventory.DisplayFragment.Handler) context;
+        if (context instanceof org.wheatgenetics.inventory.display.DisplayFragment.Handler)
+            this.handler = (org.wheatgenetics.inventory.display.DisplayFragment.Handler) context;
         else
         {
             assert null != context; throw new java.lang.RuntimeException(context.toString() +
@@ -50,7 +50,7 @@ public class DisplayFragment extends android.support.v4.app.Fragment
 
         final android.os.Bundle arguments = this.getArguments();
         if (null != arguments) this.param1 =
-            arguments.getString(org.wheatgenetics.inventory.DisplayFragment.ARG_PARAM1);
+            arguments.getString(org.wheatgenetics.inventory.display.DisplayFragment.ARG_PARAM1);
     }
 
     @java.lang.Override
@@ -84,11 +84,12 @@ public class DisplayFragment extends android.support.v4.app.Fragment
 
     public static DisplayFragment newInstance(final java.lang.String param1)
     {
-        final org.wheatgenetics.inventory.DisplayFragment result =
-            new org.wheatgenetics.inventory.DisplayFragment();
+        final org.wheatgenetics.inventory.display.DisplayFragment result =
+            new org.wheatgenetics.inventory.display.DisplayFragment();
         {
             final android.os.Bundle arguments = new android.os.Bundle();
-            arguments.putString(org.wheatgenetics.inventory.DisplayFragment.ARG_PARAM1, param1);
+            arguments.putString(
+                org.wheatgenetics.inventory.display.DisplayFragment.ARG_PARAM1, param1);
             result.setArguments(arguments);
         }
         return result;
