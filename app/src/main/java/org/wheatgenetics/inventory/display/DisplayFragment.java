@@ -29,12 +29,8 @@ public class DisplayFragment extends android.support.v4.app.Fragment
             org.wheatgenetics.inventory.model.InventoryRecord inventoryRecord);
     }
 
-    private static final java.lang.String ARG_PARAM1 = "param1";
-
     // region Fields
-    private org.wheatgenetics.inventory.display.DisplayFragment.Handler handler;
-    private java.lang.String                                            param1 ;
-
+    private org.wheatgenetics.inventory.display.DisplayFragment.Handler      handler;
     private android.view.View.OnLongClickListener onLongClickListenerInstance = null;
     // endregion
 
@@ -80,16 +76,6 @@ public class DisplayFragment extends android.support.v4.app.Fragment
     }
 
     @java.lang.Override
-    public void onCreate(final android.os.Bundle savedInstanceState)
-    {
-        super.onCreate(savedInstanceState);
-
-        final android.os.Bundle arguments = this.getArguments();
-        if (null != arguments) this.param1 =
-            arguments.getString(org.wheatgenetics.inventory.display.DisplayFragment.ARG_PARAM1);
-    }
-
-    @java.lang.Override
     public android.view.View onCreateView(final android.view.LayoutInflater inflater,
     final android.view.ViewGroup container, final android.os.Bundle savedInstanceState)
     {
@@ -104,32 +90,39 @@ public class DisplayFragment extends android.support.v4.app.Fragment
     {
         super.onActivityCreated(savedInstanceState);
 
-        final android.app.Activity activity = this.getActivity();
-
-        assert null != activity;
-        final android.widget.TableLayout tableLayout = (android.widget.TableLayout)
-            activity.findViewById(org.wheatgenetics.inventory.R.id.displayTableLayout);
-
-        assert null != this.handler; assert null != tableLayout;
-        for (final org.wheatgenetics.inventory.model.InventoryRecord
-        inventoryRecord: this.handler.inventoryRecords())
+        assert null != this.handler;
+        final org.wheatgenetics.inventory.model.InventoryRecords inventoryRecords =
+            this.handler.inventoryRecords();
+        if (null != inventoryRecords)
         {
-            final org.wheatgenetics.inventory.display.TableRow tableRow =
-                new org.wheatgenetics.inventory.display.TableRow(activity);
+            final android.app.Activity activity = this.getActivity();
 
-            assert null != inventoryRecord;
-            tableRow.addView(new org.wheatgenetics.inventory.display.DisplayTextView(
-                activity, inventoryRecord.getPositionAsString()));
-            tableRow.addView(new org.wheatgenetics.inventory.display.DisplayTextView(
-                activity, inventoryRecord.getBox()));
-            tableRow.addView(new org.wheatgenetics.inventory.display.EnvIdDisplayTextView(
-                activity, inventoryRecord.getEnvId(), inventoryRecord, this.onLongClickListener()));
-            tableRow.addView(new org.wheatgenetics.inventory.display.DisplayTextView(
-                activity, inventoryRecord.getWt()));
+            assert null != activity;
+            final android.widget.TableLayout tableLayout = (android.widget.TableLayout)
+                activity.findViewById(org.wheatgenetics.inventory.R.id.displayTableLayout);
 
-            tableLayout.addView(tableRow, new android.view.ViewGroup.LayoutParams(
-                android.widget.TableLayout.LayoutParams.MATCH_PARENT,
-                android.widget.TableLayout.LayoutParams.MATCH_PARENT));
+            assert null != tableLayout;
+            for (final org.wheatgenetics.inventory.model.InventoryRecord inventoryRecord:
+            inventoryRecords)
+            {
+                final org.wheatgenetics.inventory.display.TableRow tableRow =
+                    new org.wheatgenetics.inventory.display.TableRow(activity);
+
+                assert null != inventoryRecord;
+                tableRow.addView(new org.wheatgenetics.inventory.display.DisplayTextView(
+                    activity, inventoryRecord.getPositionAsString()));
+                tableRow.addView(new org.wheatgenetics.inventory.display.DisplayTextView(
+                    activity, inventoryRecord.getBox()));
+                tableRow.addView(new org.wheatgenetics.inventory.display.EnvIdDisplayTextView(
+                    activity, inventoryRecord.getEnvId(), inventoryRecord,
+                    this.onLongClickListener()));
+                tableRow.addView(new org.wheatgenetics.inventory.display.DisplayTextView(
+                    activity, inventoryRecord.getWt()));
+
+                tableLayout.addView(tableRow, new android.view.ViewGroup.LayoutParams(
+                    android.widget.TableLayout.LayoutParams.MATCH_PARENT,
+                    android.widget.TableLayout.LayoutParams.MATCH_PARENT));
+            }
         }
     }
 
@@ -137,16 +130,6 @@ public class DisplayFragment extends android.support.v4.app.Fragment
     public void onDetach() { this.handler = null; super.onDetach(); }
     // endregion
 
-    public static DisplayFragment newInstance(final java.lang.String param1)
-    {
-        final org.wheatgenetics.inventory.display.DisplayFragment result =
-            new org.wheatgenetics.inventory.display.DisplayFragment();
-        {
-            final android.os.Bundle arguments = new android.os.Bundle();
-            arguments.putString(
-                org.wheatgenetics.inventory.display.DisplayFragment.ARG_PARAM1, param1);
-            result.setArguments(arguments);
-        }
-        return result;
-    }
+    public static DisplayFragment newInstance()
+    { return new org.wheatgenetics.inventory.display.DisplayFragment(); }
 }

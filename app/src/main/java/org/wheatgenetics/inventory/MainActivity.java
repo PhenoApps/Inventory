@@ -41,6 +41,10 @@ package org.wheatgenetics.inventory;
  * org.wheatgenetics.inventory.dataentry.DataEntryFragment
  * org.wheatgenetics.inventory.dataentry.DataEntryFragment.Handler
  *
+ * org.wheatgenetics.inventory.display.DisplayFragment
+ * org.wheatgenetics.inventory.display.DisplayFragment.Handler
+ *
+ * org.wheatgenetics.inventory.model.InventoryRecord
  * org.wheatgenetics.inventory.model.InventoryRecords
  * org.wheatgenetics.inventory.model.Person
  *
@@ -55,8 +59,9 @@ package org.wheatgenetics.inventory;
  * org.wheatgenetics.inventory.SetPersonAlertDialog
  * org.wheatgenetics.inventory.SetPersonAlertDialog.PersonStorer
  */
-public class MainActivity extends android.support.v7.app.AppCompatActivity
-implements org.wheatgenetics.inventory.dataentry.DataEntryFragment.Handler
+public class MainActivity extends android.support.v7.app.AppCompatActivity implements
+org.wheatgenetics.inventory.dataentry.DataEntryFragment.Handler,
+org.wheatgenetics.inventory.display.DisplayFragment.Handler
 {
     private static final java.lang.String BOX = "box";
 
@@ -73,6 +78,7 @@ implements org.wheatgenetics.inventory.dataentry.DataEntryFragment.Handler
     private org.wheatgenetics.inventory.InventoryDir                inventoryDir               ;
     private org.wheatgenetics.inventory.SamplesTable                samplesTableInstance = null;
     private org.wheatgenetics.inventory.dataentry.DataEntryFragment dataEntryFragment          ;
+    private org.wheatgenetics.inventory.display.DisplayFragment     displayFragment            ;
 
     private java.lang.String box;
     // endregion
@@ -215,18 +221,37 @@ implements org.wheatgenetics.inventory.dataentry.DataEntryFragment.Handler
         this.inventoryDir.createIfMissing();
         // endregion
 
+        // region Create fragments.
+        final android.support.v4.app.FragmentManager supportFragmentManager =
+            this.getSupportFragmentManager();
+        assert null != supportFragmentManager;
+
         // region Create dataEntryFragment.
         this.box = null == savedInstanceState ? null :
             savedInstanceState.getString(org.wheatgenetics.inventory.MainActivity.BOX);
 
         this.dataEntryFragment =
             org.wheatgenetics.inventory.dataentry.DataEntryFragment.newInstance(this.box);
-        final android.support.v4.app.FragmentTransaction fragmentTransaction =
-            this.getSupportFragmentManager().beginTransaction();
-        assert null != fragmentTransaction; fragmentTransaction.add(
-            org.wheatgenetics.inventory.R.id.mainContent, this.dataEntryFragment);   // From layout/
-        fragmentTransaction.commit();                                                //  content_-
-        // endregion                                                                 //  main.xml.
+        {
+            final android.support.v4.app.FragmentTransaction fragmentTransaction =
+                supportFragmentManager.beginTransaction();
+            assert null != fragmentTransaction; fragmentTransaction.add(
+                org.wheatgenetics.inventory.R.id.mainContent, this.dataEntryFragment);  // From lay-
+            fragmentTransaction.commit();                                               //  out/con-
+        }                                                                               //  tent_
+        // endregion                                                                    //  main.-
+                                                                                        //  xml.
+        // region Create displayFragment.
+        this.displayFragment = org.wheatgenetics.inventory.display.DisplayFragment.newInstance();
+        {
+            final android.support.v4.app.FragmentTransaction fragmentTransaction =
+                supportFragmentManager.beginTransaction();
+            assert null != fragmentTransaction; fragmentTransaction.add(
+            org.wheatgenetics.inventory.R.id.mainContent, this.displayFragment);
+            fragmentTransaction.commit();
+        }
+        // endregion
+        // endregion
     }
 
     @java.lang.Override
@@ -291,6 +316,19 @@ implements org.wheatgenetics.inventory.dataentry.DataEntryFragment.Handler
     @java.lang.Override
     public void addRecord(final java.lang.String envid, final java.lang.String wt)
     { this.showToast(java.lang.String.format("envid == %s, wt == %s", envid, wt)); }         // TODO
+    // endregion
+
+    // region org.wheatgenetics.inventory.display.DisplayFragment.Handler Overridden Methods
+    @java.lang.Override
+    public org.wheatgenetics.inventory.model.InventoryRecords inventoryRecords()
+    { return this.samplesTable().getAll(); }
+
+    @java.lang.Override
+    public boolean deleteRecord(
+    final org.wheatgenetics.inventory.model.InventoryRecord inventoryRecord)
+    {
+        return false;
+    }
     // endregion
     // endregion
 
