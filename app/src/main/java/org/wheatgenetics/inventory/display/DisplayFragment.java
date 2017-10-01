@@ -15,12 +15,16 @@ package org.wheatgenetics.inventory.display;
  * android.widget.TableLayout
  * android.widget.TableLayout.LayoutParams
  *
+ * org.wheatgenetics.inventory.R
+ *
  * org.wheatgenetics.inventory.model.InventoryRecord
  * org.wheatgenetics.inventory.model.InventoryRecords
  *
- * org.wheatgenetics.inventory.R
+ * org.wheatgenetics.inventory.display.DeleteRecordAlertDialog
+ * org.wheatgenetics.inventory.display.DeleteRecordAlertDialog.Handler
  */
 public class DisplayFragment extends android.support.v4.app.Fragment
+implements org.wheatgenetics.inventory.display.DeleteRecordAlertDialog.Handler
 {
     public interface Handler
     {
@@ -30,14 +34,25 @@ public class DisplayFragment extends android.support.v4.app.Fragment
     }
 
     // region Fields
-    private org.wheatgenetics.inventory.display.DisplayFragment.Handler      handler;
-    private android.view.View.OnLongClickListener onLongClickListenerInstance = null;
+    private org.wheatgenetics.inventory.display.DisplayFragment.Handler                  handler;
+    private android.view.View.OnLongClickListener             onLongClickListenerInstance = null;
+    private org.wheatgenetics.inventory.model.InventoryRecord                    inventoryRecord;
+    private org.wheatgenetics.inventory.display.DeleteRecordAlertDialog
+        deleteRecordAlertDialog = null;
     // endregion
 
     // region Private Methods
-    private boolean deleteRecord(
-    final org.wheatgenetics.inventory.model.InventoryRecord inventoryRecord)
-    { assert null != this.handler; return this.handler.deleteRecord(inventoryRecord); }
+    private void deleteRecord(final java.lang.Object tag)
+    {
+        if (null != tag) if (tag instanceof org.wheatgenetics.inventory.model.InventoryRecord)
+        {
+            if (null == this.deleteRecordAlertDialog) this.deleteRecordAlertDialog =
+                new org.wheatgenetics.inventory.display.DeleteRecordAlertDialog(
+                    this.getActivity(), this);
+            this.inventoryRecord = (org.wheatgenetics.inventory.model.InventoryRecord) tag;
+            this.deleteRecordAlertDialog.show(this.inventoryRecord.getEnvId());
+        }
+    }
 
     private android.view.View.OnLongClickListener onLongClickListener()
     {
@@ -47,11 +62,10 @@ public class DisplayFragment extends android.support.v4.app.Fragment
                 @java.lang.Override
                 public boolean onLongClick(final android.view.View v)
                 {
-                    assert null != v; final java.lang.Object tag = v.getTag();
-                    return org.wheatgenetics.inventory.display.DisplayFragment.this.deleteRecord(
-                        tag instanceof org.wheatgenetics.inventory.model.InventoryRecord ?
-                            (org.wheatgenetics.inventory.model.InventoryRecord) tag      :
-                            null                                                          );
+                    assert null != v;
+                    org.wheatgenetics.inventory.display.DisplayFragment.this.deleteRecord(
+                        v.getTag());
+                    return true;
                 }
             };
         return this.onLongClickListenerInstance;
@@ -128,6 +142,12 @@ public class DisplayFragment extends android.support.v4.app.Fragment
 
     @java.lang.Override
     public void onDetach() { this.handler = null; super.onDetach(); }
+
+    // region org.wheatgenetics.inventory.display.DeleteRecordAlertDialog.HandlerOverridden Method
+    @java.lang.Override
+    public void deleteRecord()
+    { assert null != this.handler; this.handler.deleteRecord(inventoryRecord); }
+    // endregion
     // endregion
 
     public static DisplayFragment newInstance()
