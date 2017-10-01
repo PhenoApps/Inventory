@@ -1,120 +1,86 @@
 package org.wheatgenetics.inventory;
 
-import android.content.Context;
-import android.net.Uri;
-import android.os.Bundle;
-import android.support.v4.app.Fragment;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-
 /**
- * A simple {@link Fragment} subclass.
- * Activities that contain this fragment must implement the
- * {@link DisplayFragment.OnFragmentInteractionListener} interface
- * to handle interaction events.
- * Use the {@link DisplayFragment#newInstance} factory method to
- * create an instance of this fragment.
+ * Uses:
+ * android.content.Context
+ * android.os.Bundle
+ * android.support.v4.app.Fragment
+ * android.view.LayoutInflater
+ * android.view.View
+ * android.view.ViewGroup
+ *
+ * org.wheatgenetics.inventory.R
  */
-public class DisplayFragment extends Fragment
+public class DisplayFragment extends android.support.v4.app.Fragment
 {
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
+    public interface Handler { public abstract void onFragmentInteraction(java.lang.String s); }
 
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
+    private static final java.lang.String ARG_PARAM1 = "param1", ARG_PARAM2 = "param2";
 
-    private OnFragmentInteractionListener mListener;
+    private org.wheatgenetics.inventory.DisplayFragment.Handler handler       ;
+    private java.lang.String                                    param1, param2;
 
-    public DisplayFragment()
-    {
-        // Required empty public constructor
-    }
+    public DisplayFragment() { /* Required empty public constructor. */ }
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment DisplayFragment.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static DisplayFragment newInstance(String param1, String param2)
-    {
-        DisplayFragment fragment = new DisplayFragment();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
-        return fragment;
-    }
-
-    @Override
-    public void onCreate(Bundle savedInstanceState)
-    {
-        super.onCreate(savedInstanceState);
-        if (getArguments() != null)
-        {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
-    }
-
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-        Bundle savedInstanceState)
-    {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_display, container, false);
-    }
-
-    // TODO: Rename method, update argument and hook method into UI event
-    public void onButtonPressed(Uri uri)
-    {
-        if (mListener != null)
-        {
-            mListener.onFragmentInteraction(uri);
-        }
-    }
-
-    @Override
-    public void onAttach(Context context)
+    // region Overridden Methods
+    @java.lang.Override
+    public void onAttach(final android.content.Context context)
     {
         super.onAttach(context);
-        if (context instanceof OnFragmentInteractionListener)
+
+        if (context instanceof org.wheatgenetics.inventory.DisplayFragment.Handler)
+            this.handler = (org.wheatgenetics.inventory.DisplayFragment.Handler) context;
+        else
         {
-            mListener = (OnFragmentInteractionListener) context;
-        } else
-        {
-            throw new RuntimeException(context.toString()
-                + " must implement OnFragmentInteractionListener");
+            assert null != context; throw new java.lang.RuntimeException(context.toString() +
+                " must implement Handler");
         }
     }
 
-    @Override
-    public void onDetach()
+    @java.lang.Override
+    public void onCreate(final android.os.Bundle savedInstanceState)
     {
-        super.onDetach();
-        mListener = null;
+        super.onCreate(savedInstanceState);
+
+        final android.os.Bundle arguments = this.getArguments();
+        if (null != arguments)
+        {
+            this.param1 = arguments.getString(
+                org.wheatgenetics.inventory.DisplayFragment.ARG_PARAM1);
+            this.param2 = arguments.getString(
+                org.wheatgenetics.inventory.DisplayFragment.ARG_PARAM2);
+        }
     }
 
-    /**
-     * This interface must be implemented by activities that contain this
-     * fragment to allow an interaction in this fragment to be communicated
-     * to the activity and potentially other fragments contained in that
-     * activity.
-     * <p>
-     * See the Android Training lesson <a href=
-     * "http://developer.android.com/training/basics/fragments/communicating.html"
-     * >Communicating with Other Fragments</a> for more information.
-     */
-    public interface OnFragmentInteractionListener
+    @java.lang.Override
+    public android.view.View onCreateView(final android.view.LayoutInflater inflater,
+    final android.view.ViewGroup container, final android.os.Bundle savedInstanceState)
     {
-        // TODO: Update argument type and name
-        void onFragmentInteraction(Uri uri);
+        // Inflate the layout for this fragment:
+        assert null != inflater; return inflater.inflate(
+            org.wheatgenetics.inventory.R.layout.fragment_display, container, false);
     }
+
+    @java.lang.Override
+    public void onDetach() { this.handler = null; super.onDetach(); }
+    // endregion
+
+    // region Public Methods
+    public void onButtonPressed(final java.lang.String s)
+    { if (this.handler != null) this.handler.onFragmentInteraction(s); }
+
+    public static DisplayFragment newInstance(final java.lang.String param1,
+    final java.lang.String param2)
+    {
+        final org.wheatgenetics.inventory.DisplayFragment result =
+            new org.wheatgenetics.inventory.DisplayFragment();
+        {
+            final android.os.Bundle arguments = new android.os.Bundle();
+            arguments.putString(org.wheatgenetics.inventory.DisplayFragment.ARG_PARAM1, param1);
+            arguments.putString(org.wheatgenetics.inventory.DisplayFragment.ARG_PARAM2, param2);
+            result.setArguments(arguments);
+        }
+        return result;
+    }
+    // endregion
 }
