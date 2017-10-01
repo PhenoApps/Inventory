@@ -15,10 +15,10 @@ public class DisplayFragment extends android.support.v4.app.Fragment
 {
     public interface Handler { public abstract void onFragmentInteraction(java.lang.String s); }
 
-    private static final java.lang.String ARG_PARAM1 = "param1", ARG_PARAM2 = "param2";
+    private static final java.lang.String ARG_PARAM1 = "param1";
 
-    private org.wheatgenetics.inventory.DisplayFragment.Handler handler       ;
-    private java.lang.String                                    param1, param2;
+    private org.wheatgenetics.inventory.DisplayFragment.Handler handler;
+    private java.lang.String                                    param1 ;
 
     public DisplayFragment() { /* Required empty public constructor. */ }
 
@@ -43,13 +43,8 @@ public class DisplayFragment extends android.support.v4.app.Fragment
         super.onCreate(savedInstanceState);
 
         final android.os.Bundle arguments = this.getArguments();
-        if (null != arguments)
-        {
-            this.param1 = arguments.getString(
-                org.wheatgenetics.inventory.DisplayFragment.ARG_PARAM1);
-            this.param2 = arguments.getString(
-                org.wheatgenetics.inventory.DisplayFragment.ARG_PARAM2);
-        }
+        if (null != arguments) this.param1 =
+            arguments.getString(org.wheatgenetics.inventory.DisplayFragment.ARG_PARAM1);
     }
 
     @java.lang.Override
@@ -69,15 +64,13 @@ public class DisplayFragment extends android.support.v4.app.Fragment
     public void onButtonPressed(final java.lang.String s)
     { if (this.handler != null) this.handler.onFragmentInteraction(s); }
 
-    public static DisplayFragment newInstance(final java.lang.String param1,
-    final java.lang.String param2)
+    public static DisplayFragment newInstance(final java.lang.String param1)
     {
         final org.wheatgenetics.inventory.DisplayFragment result =
             new org.wheatgenetics.inventory.DisplayFragment();
         {
             final android.os.Bundle arguments = new android.os.Bundle();
             arguments.putString(org.wheatgenetics.inventory.DisplayFragment.ARG_PARAM1, param1);
-            arguments.putString(org.wheatgenetics.inventory.DisplayFragment.ARG_PARAM2, param2);
             result.setArguments(arguments);
         }
         return result;
