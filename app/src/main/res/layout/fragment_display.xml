@@ -10,6 +10,7 @@
         android:layout_marginBottom="25dp">
 
         <TableLayout
+            android:id="@+id/displayTableLayout"
             android:layout_width="fill_parent"
             android:layout_height="fill_parent" />
 

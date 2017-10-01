@@ -9,7 +9,11 @@ package org.wheatgenetics.inventory.display;
  * android.support.v4.app.Fragment
  * android.view.LayoutInflater
  * android.view.View
+ * android.view.View.OnLongClickListener
  * android.view.ViewGroup
+ * android.view.ViewGroup.LayoutParams
+ * android.widget.TableLayout
+ * android.widget.TableLayout.LayoutParams
  *
  * org.wheatgenetics.inventory.model.InventoryRecord
  * org.wheatgenetics.inventory.model.InventoryRecords
@@ -19,12 +23,44 @@ package org.wheatgenetics.inventory.display;
 public class DisplayFragment extends android.support.v4.app.Fragment
 {
     public interface Handler
-    { public abstract org.wheatgenetics.inventory.model.InventoryRecords inventoryRecords(); }
+    {
+        public abstract org.wheatgenetics.inventory.model.InventoryRecords inventoryRecords();
+        public abstract boolean deleteRecord(
+            org.wheatgenetics.inventory.model.InventoryRecord inventoryRecord);
+    }
 
     private static final java.lang.String ARG_PARAM1 = "param1";
 
+    // region Fields
     private org.wheatgenetics.inventory.display.DisplayFragment.Handler handler;
     private java.lang.String                                            param1 ;
+
+    private android.view.View.OnLongClickListener onLongClickListenerInstance = null;
+    // endregion
+
+    // region Private Methods
+    private boolean deleteRecord(
+    final org.wheatgenetics.inventory.model.InventoryRecord inventoryRecord)
+    { assert null != this.handler; return this.handler.deleteRecord(inventoryRecord); }
+
+    private android.view.View.OnLongClickListener onLongClickListener()
+    {
+        if (null == this.onLongClickListenerInstance) this.onLongClickListenerInstance =
+            new android.view.View.OnLongClickListener()
+            {
+                @java.lang.Override
+                public boolean onLongClick(final android.view.View v)
+                {
+                    assert null != v; final java.lang.Object tag = v.getTag();
+                    return org.wheatgenetics.inventory.display.DisplayFragment.this.deleteRecord(
+                        tag instanceof org.wheatgenetics.inventory.model.InventoryRecord ?
+                            (org.wheatgenetics.inventory.model.InventoryRecord) tag      :
+                            null                                                          );
+                }
+            };
+        return this.onLongClickListenerInstance;
+    }
+    // endregion
 
     public DisplayFragment() { /* Required empty public constructor. */ }
 
@@ -68,14 +104,33 @@ public class DisplayFragment extends android.support.v4.app.Fragment
     {
         super.onActivityCreated(savedInstanceState);
 
-        assert null != this.handler; for (final org.wheatgenetics.inventory.model.InventoryRecord
+        final android.app.Activity activity = this.getActivity();
+
+        assert null != activity;
+        final android.widget.TableLayout tableLayout = (android.widget.TableLayout)
+            activity.findViewById(org.wheatgenetics.inventory.R.id.displayTableLayout);
+
+        assert null != this.handler; assert null != tableLayout;
+        for (final org.wheatgenetics.inventory.model.InventoryRecord
         inventoryRecord: this.handler.inventoryRecords())
         {
+            final org.wheatgenetics.inventory.display.TableRow tableRow =
+                new org.wheatgenetics.inventory.display.TableRow(activity);
+
             assert null != inventoryRecord;
-            //
+            tableRow.addView(new org.wheatgenetics.inventory.display.DisplayTextView(
+                activity, inventoryRecord.getPositionAsString()));
+            tableRow.addView(new org.wheatgenetics.inventory.display.DisplayTextView(
+                activity, inventoryRecord.getBox()));
+            tableRow.addView(new org.wheatgenetics.inventory.display.EnvIdDisplayTextView(
+                activity, inventoryRecord.getEnvId(), inventoryRecord, this.onLongClickListener()));
+            tableRow.addView(new org.wheatgenetics.inventory.display.DisplayTextView(
+                activity, inventoryRecord.getWt()));
+
+            tableLayout.addView(tableRow, new android.view.ViewGroup.LayoutParams(
+                android.widget.TableLayout.LayoutParams.MATCH_PARENT,
+                android.widget.TableLayout.LayoutParams.MATCH_PARENT));
         }
-        
-        final android.app.Activity activity = this.getActivity();
     }
 
     @java.lang.Override
