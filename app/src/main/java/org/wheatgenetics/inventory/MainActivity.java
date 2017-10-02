@@ -243,7 +243,7 @@ org.wheatgenetics.inventory.display.DisplayFragment.Handler
 
         // region Create displayFragment.
         this.displayFragment = org.wheatgenetics.inventory.display.DisplayFragment.newInstance(
-            /* addTableRows => */ null == savedInstanceState);
+            /* shouldAddTableRows => */ null == savedInstanceState);
         {
             final android.support.v4.app.FragmentTransaction fragmentTransaction =
                 supportFragmentManager.beginTransaction();
@@ -326,7 +326,6 @@ org.wheatgenetics.inventory.display.DisplayFragment.Handler
                 /* wt       => */ wt                                    );
         this.samplesTable().add(inventoryRecord);
         this.displayFragment.addTableRow(inventoryRecord);
-        // TODO: this.goToBottom();
     }
     // endregion
 
@@ -337,7 +336,12 @@ org.wheatgenetics.inventory.display.DisplayFragment.Handler
 
     @java.lang.Override
     public boolean deleteRecord(
-    final org.wheatgenetics.inventory.model.InventoryRecord inventoryRecord) { return false; }  // TODO
+    final org.wheatgenetics.inventory.model.InventoryRecord inventoryRecord)
+    {
+        final boolean result = this.samplesTable().delete(inventoryRecord);
+         if (result) { assert null != this.displayFragment; this.displayFragment.refresh(); }
+        return result;
+    }
     // endregion
     // endregion
 
@@ -410,8 +414,7 @@ org.wheatgenetics.inventory.display.DisplayFragment.Handler
     private void deleteAll()
     {
         this.samplesTable().deleteAll();
-        // this.tableLayout.removeAllViews();                      // TODO
-        // org.wheatgenetics.inventory.MainActivity.position = 1;  // TODO
+        assert null != this.displayFragment; this.displayFragment.refresh();
     }
     // endregion
 
