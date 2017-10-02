@@ -137,17 +137,19 @@ implements org.wheatgenetics.inventory.display.DeleteRecordAlertDialog.Handler
     {
         super.onActivityCreated(savedInstanceState);
 
-        this.position = 0;
         if (this.addTableRows)
         {
             assert null != this.handler;
             final org.wheatgenetics.inventory.model.InventoryRecords inventoryRecords =
                 this.handler.inventoryRecords();
-            if (null != inventoryRecords)
+            if (null == inventoryRecords)
+                this.position = 0;
+            else
                 for (final org.wheatgenetics.inventory.model.InventoryRecord inventoryRecord:
                 inventoryRecords)
                     this.addTableRow(inventoryRecord);
         }
+        else this.position = this.tableLayout().getChildCount();
     }
 
     @java.lang.Override
