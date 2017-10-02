@@ -179,23 +179,22 @@ implements org.wheatgenetics.inventory.display.DeleteRecordAlertDialog.Handler
             if (null == inventoryRecords)
                 this.position = 0;
             else
-            {
-                this.shouldGoToBottom = false;
-                try
+                if (inventoryRecords.isEmpty())
+                    this.position = 0;
+                else
                 {
-                    for (final org.wheatgenetics.inventory.model.InventoryRecord inventoryRecord:
-                    inventoryRecords)
-                        this.addTableRow(inventoryRecord);
+                    this.shouldGoToBottom = false;
+                    try
+                    {
+                        for (final org.wheatgenetics.inventory.model.InventoryRecord
+                        inventoryRecord: inventoryRecords)
+                            this.addTableRow(inventoryRecord);
+                    }
+                    finally { this.shouldGoToBottom = true; }
+                    this.goToBottom();
                 }
-                finally { this.shouldGoToBottom = true; }
-                this.goToBottom();
-            }
         }
-        else
-        {
-            this.position = this.tableLayout().getChildCount();
-            this.goToBottom();
-        }
+        else { this.position = this.tableLayout().getChildCount(); this.goToBottom(); }
     }
 
     @java.lang.Override

@@ -17,12 +17,14 @@ implements java.lang.Iterable<org.wheatgenetics.inventory.model.InventoryRecord>
     { return this.linkedList.iterator(); }
 
     // region Public Methods
+    public boolean isEmpty() { return null == this.linkedList ? true : this.linkedList.isEmpty(); }
+
     public boolean add(final org.wheatgenetics.inventory.model.InventoryRecord inventoryRecord)
     { return this.linkedList.add(inventoryRecord); }
 
     public java.io.File writeCSV(final java.io.File file)
     {
-        if (this.linkedList.isEmpty())
+        if (this.isEmpty())
             return null;
         else
         {
@@ -60,7 +62,7 @@ implements java.lang.Iterable<org.wheatgenetics.inventory.model.InventoryRecord>
 
     public java.io.File writeSQL(final java.io.File file, final java.lang.String boxList)
     {
-        if (this.linkedList.isEmpty())
+        if (this.isEmpty())
             return null;
         else
         {
