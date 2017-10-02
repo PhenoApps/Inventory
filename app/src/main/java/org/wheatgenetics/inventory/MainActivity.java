@@ -236,19 +236,18 @@ org.wheatgenetics.inventory.display.DisplayFragment.Handler
             final android.support.v4.app.FragmentTransaction fragmentTransaction =
                 supportFragmentManager.beginTransaction();
             assert null != fragmentTransaction; fragmentTransaction.add(
-                org.wheatgenetics.inventory.R.id.mainContent, this.dataEntryFragment);  // From lay-
-            fragmentTransaction.commit();                                               //  out/con-
-        }                                                                               //  tent_
-        // endregion                                                                    //  main.-
-                                                                                        //  xml.
+                org.wheatgenetics.inventory.R.id.mainContent,                  // From layout/-
+                this.dataEntryFragment                      ).commit();        //  content_main.xml.
+        }
+        // endregion
+
         // region Create displayFragment.
         this.displayFragment = org.wheatgenetics.inventory.display.DisplayFragment.newInstance();
         {
             final android.support.v4.app.FragmentTransaction fragmentTransaction =
                 supportFragmentManager.beginTransaction();
             assert null != fragmentTransaction; fragmentTransaction.add(
-            org.wheatgenetics.inventory.R.id.mainContent, this.displayFragment);
-            fragmentTransaction.commit();
+                org.wheatgenetics.inventory.R.id.mainContent, this.displayFragment).commit();
         }
         // endregion
         // endregion
@@ -315,7 +314,19 @@ org.wheatgenetics.inventory.display.DisplayFragment.Handler
 
     @java.lang.Override
     public void addRecord(final java.lang.String envid, final java.lang.String wt)
-    { this.showToast(java.lang.String.format("envid == %s, wt == %s", envid, wt)); }         // TODO
+    {
+        assert this.sharedPreferences != null; assert null != this.displayFragment;
+        final org.wheatgenetics.inventory.model.InventoryRecord inventoryRecord =
+            new org.wheatgenetics.inventory.model.InventoryRecord(
+                /* box      => */ this.box                              ,
+                /* envid    => */ envid                                 ,
+                /* person   => */ this.sharedPreferences.getSafeName()  ,
+                /* position => */ this.displayFragment.getPosition() + 1,
+                /* wt       => */ wt                                    );
+        this.samplesTable().add(inventoryRecord);
+        this.displayFragment.addTableRow(inventoryRecord);
+        // TODO: this.goToBottom();
+    }
     // endregion
 
     // region org.wheatgenetics.inventory.display.DisplayFragment.Handler Overridden Methods
@@ -325,10 +336,7 @@ org.wheatgenetics.inventory.display.DisplayFragment.Handler
 
     @java.lang.Override
     public boolean deleteRecord(
-    final org.wheatgenetics.inventory.model.InventoryRecord inventoryRecord)
-    {
-        return false;
-    }
+    final org.wheatgenetics.inventory.model.InventoryRecord inventoryRecord) { return false; }  // TODO
     // endregion
     // endregion
 

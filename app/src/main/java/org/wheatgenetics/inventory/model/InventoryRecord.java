@@ -23,13 +23,8 @@ public class InventoryRecord extends java.lang.Object
     final java.lang.String envid, final java.lang.String person, final java.lang.String date,
     final java.lang.String position, final java.lang.String wt)
     { this(); this.set(id, box, envid, person, date, position, wt); }
-    // endregion
 
-    // region Package Constructors
-    InventoryRecord(final java.lang.String box, final java.lang.String envid, final int position)
-    { this(); this.box = box; this.envid = envid; this.position = position; }
-
-    InventoryRecord(final java.lang.String box, final java.lang.String envid,
+    public InventoryRecord(final java.lang.String box, final java.lang.String envid,
     final java.lang.String person, final int position, final java.lang.String wt)
     {
         this(box, envid, position);
@@ -38,6 +33,11 @@ public class InventoryRecord extends java.lang.Object
         this.date   = org.wheatgenetics.javalib.Utils.getDateTime();
         this.wt     = wt                                           ;
     }
+    // endregion
+
+    // region Package Constructor
+    InventoryRecord(final java.lang.String box, final java.lang.String envid, final int position)
+    { this(); this.box = box; this.envid = envid; this.position = position; }
     // endregion
     // endregion
 

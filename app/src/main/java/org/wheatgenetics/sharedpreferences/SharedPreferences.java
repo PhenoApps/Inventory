@@ -107,7 +107,7 @@ extends org.wheatgenetics.sharedpreferences.UpdateVersionSharedPreferences
      * A "safe" name is a full name (first name and last name) where the first name and last name
      * are separated with an underscore ("_") instead of a space (" ").
      */
-    // public java.lang.String getSafeName() { return this.getFirstName() + "_" + this.getLastName(); }
+    public java.lang.String getSafeName() { return this.getFirstName() + "_" + this.getLastName(); }
     // endregion
 
     // region IgnoreScale Public Methods
