@@ -33,8 +33,11 @@ implements org.wheatgenetics.inventory.display.DeleteRecordAlertDialog.Handler
             org.wheatgenetics.inventory.model.InventoryRecord inventoryRecord);
     }
 
+    private static final java.lang.String ADD_TABLE_ROWS = "addTableRows";
+
     // region Fields
     private org.wheatgenetics.inventory.display.DisplayFragment.Handler                  handler;
+    private boolean                                                                 addTableRows;
     private android.widget.TableLayout                                tableLayoutInstance = null;
     private android.view.View.OnLongClickListener             onLongClickListenerInstance = null;
     private org.wheatgenetics.inventory.model.InventoryRecord                    inventoryRecord;
@@ -110,6 +113,16 @@ implements org.wheatgenetics.inventory.display.DeleteRecordAlertDialog.Handler
     }
 
     @java.lang.Override
+    public void onCreate(final android.os.Bundle savedInstanceState)
+    {
+        super.onCreate(savedInstanceState);
+
+        final android.os.Bundle arguments = this.getArguments();
+        if (null != arguments) this.addTableRows = arguments.getBoolean(
+            org.wheatgenetics.inventory.display.DisplayFragment.ADD_TABLE_ROWS);
+    }
+
+    @java.lang.Override
     public android.view.View onCreateView(final android.view.LayoutInflater inflater,
     final android.view.ViewGroup container, final android.os.Bundle savedInstanceState)
     {
@@ -124,15 +137,17 @@ implements org.wheatgenetics.inventory.display.DeleteRecordAlertDialog.Handler
     {
         super.onActivityCreated(savedInstanceState);
 
-        assert null != this.handler;
-        final org.wheatgenetics.inventory.model.InventoryRecords inventoryRecords =
-            this.handler.inventoryRecords();
-        if (null == inventoryRecords)
-            this.position = 0;
-        else
-            for (final org.wheatgenetics.inventory.model.InventoryRecord inventoryRecord:
-            inventoryRecords)
-                this.addTableRow(inventoryRecord);
+        this.position = 0;
+        if (this.addTableRows)
+        {
+            assert null != this.handler;
+            final org.wheatgenetics.inventory.model.InventoryRecords inventoryRecords =
+                this.handler.inventoryRecords();
+            if (null != inventoryRecords)
+                for (final org.wheatgenetics.inventory.model.InventoryRecord inventoryRecord:
+                inventoryRecords)
+                    this.addTableRow(inventoryRecord);
+        }
     }
 
     @java.lang.Override
@@ -175,7 +190,17 @@ implements org.wheatgenetics.inventory.display.DeleteRecordAlertDialog.Handler
         }
     }
 
-    public static DisplayFragment newInstance()
-    { return new org.wheatgenetics.inventory.display.DisplayFragment(); }
+    public static DisplayFragment newInstance(final boolean addTableRows)
+    {
+        final org.wheatgenetics.inventory.display.DisplayFragment result =
+            new org.wheatgenetics.inventory.display.DisplayFragment();
+        {
+            final android.os.Bundle arguments = new android.os.Bundle();
+            arguments.putBoolean(
+                org.wheatgenetics.inventory.display.DisplayFragment.ADD_TABLE_ROWS, addTableRows);
+            result.setArguments(arguments);
+        }
+        return result;
+    }
     // endregion
 }

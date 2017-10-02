@@ -185,7 +185,7 @@ org.wheatgenetics.inventory.display.DisplayFragment.Handler
                                 public void delete()
                                 {
                                     org.wheatgenetics.inventory.
-                                        MainActivity.this.clearBoxAndDeleteData();
+                                        MainActivity.this.clearBoxAndDeleteAll();
                                 }
                             },
                         /* versionOnClickListener => */ new android.view.View.OnClickListener()
@@ -242,7 +242,8 @@ org.wheatgenetics.inventory.display.DisplayFragment.Handler
         // endregion
 
         // region Create displayFragment.
-        this.displayFragment = org.wheatgenetics.inventory.display.DisplayFragment.newInstance();
+        this.displayFragment = org.wheatgenetics.inventory.display.DisplayFragment.newInstance(
+            /* addTableRows => */ null == savedInstanceState);
         {
             final android.support.v4.app.FragmentTransaction fragmentTransaction =
                 supportFragmentManager.beginTransaction();
@@ -406,7 +407,7 @@ org.wheatgenetics.inventory.display.DisplayFragment.Handler
         return this.samplesTableInstance;
     }
 
-    private void deleteData()
+    private void deleteAll()
     {
         this.samplesTable().deleteAll();
         // this.tableLayout.removeAllViews();                      // TODO
@@ -466,7 +467,7 @@ org.wheatgenetics.inventory.display.DisplayFragment.Handler
                 this.showToast(org.wheatgenetics.inventory.R.string.exportSuccess);
                 org.wheatgenetics.androidlibrary.Utils.shareFile(
                     this, this.inventoryDir.parse(file));
-                this.deleteData();
+                this.deleteAll();
             }
         }
     }
@@ -493,15 +494,15 @@ org.wheatgenetics.inventory.display.DisplayFragment.Handler
                 this.showToast(org.wheatgenetics.inventory.R.string.exportSuccess);
                 org.wheatgenetics.androidlibrary.Utils.shareFile(
                     this, this.inventoryDir.parse(file));
-                this.deleteData();
+                this.deleteAll();
             }
         }
     }
 
-    private void clearBoxAndDeleteData()
+    private void clearBoxAndDeleteAll()
     {
         assert null != this.dataEntryFragment; this.dataEntryFragment.clearBox();
-        this.deleteData();
+        this.deleteAll();
         this.showToast(org.wheatgenetics.inventory.R.string.data_deleted);
     }
 
