@@ -8,6 +8,7 @@
              tools:context="org.wheatgenetics.inventory.display.DisplayFragment">
 
     <ScrollView
+        android:id="@+id/displayScrollView"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="25dp">
