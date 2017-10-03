@@ -221,37 +221,24 @@ org.wheatgenetics.inventory.display.DisplayFragment.Handler
         this.inventoryDir.createIfMissing();
         // endregion
 
-        // region Create fragments.
-        final android.support.v4.app.FragmentManager supportFragmentManager =
-            this.getSupportFragmentManager();
-        assert null != supportFragmentManager;
-
-        // region Create dataEntryFragment.
-        this.box = null == savedInstanceState ? null :
-            savedInstanceState.getString(org.wheatgenetics.inventory.MainActivity.BOX);
-
-        this.dataEntryFragment =
-            org.wheatgenetics.inventory.dataentry.DataEntryFragment.newInstance(this.box);
+        // region Create and add fragments.
         {
-            final android.support.v4.app.FragmentTransaction fragmentTransaction =
-                supportFragmentManager.beginTransaction();
-            assert null != fragmentTransaction; fragmentTransaction.add(
-                org.wheatgenetics.inventory.R.id.mainContent,                  // From layout/-
-                this.dataEntryFragment                      ).commit();        //  content_main.xml.
+            final boolean reinitialized = null != savedInstanceState;
+            this.box = reinitialized ?
+                savedInstanceState.getString(org.wheatgenetics.inventory.MainActivity.BOX) : null;
+            this.dataEntryFragment =
+                org.wheatgenetics.inventory.dataentry.DataEntryFragment.newInstance(this.box);
+            this.displayFragment = org.wheatgenetics.inventory.display.DisplayFragment.newInstance(
+                /* shouldAddTableRows => */ !reinitialized);
         }
-        // endregion
 
-        // region Create displayFragment.
-        this.displayFragment = org.wheatgenetics.inventory.display.DisplayFragment.newInstance(
-            /* shouldAddTableRows => */ null == savedInstanceState);
-        {
-            final android.support.v4.app.FragmentTransaction fragmentTransaction =
-                supportFragmentManager.beginTransaction();
-            assert null != fragmentTransaction; fragmentTransaction.add(
-                org.wheatgenetics.inventory.R.id.mainContent, this.displayFragment).commit();
-        }
-        // endregion
-        // endregion
+        final android.support.v4.app.FragmentTransaction fragmentTransaction =
+            this.getSupportFragmentManager().beginTransaction();
+        assert null != fragmentTransaction; fragmentTransaction.add(
+                org.wheatgenetics.inventory.R.id.mainContent, this.dataEntryFragment) // From lay-
+            .add(org.wheatgenetics.inventory.R.id.mainContent, this.displayFragment)  //  out/con-
+            .commit();                                                                //  tent_main-
+        // endregion                                                                  //  .xml.
     }
 
     @java.lang.Override
