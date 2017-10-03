@@ -43,9 +43,10 @@ implements org.wheatgenetics.inventory.display.DeleteRecordAlertDialog.Handler
         deleteRecordAlertDialog = null;
     private android.view.View.OnLongClickListener onLongClickListenerInstance = null;
 
-    private android.widget.TableLayout tableLayoutInstance  = null;
-    private java.lang.Runnable         scrollActionInstance = null;
-    private android.widget.ScrollView  scrollViewInstance   = null;
+    private android.widget.ScrollView           scrollViewInstance   = null;
+    private java.lang.Runnable                  scrollActionInstance = null;
+    private android.view.ViewGroup.LayoutParams layoutParamsInstance = null;
+    private android.widget.TableLayout          tableLayoutInstance  = null;
 
     /**
      * Position of last inventoryRecord added.  If == 0 then no inventoryRecord has been added yet.
@@ -84,6 +85,15 @@ implements org.wheatgenetics.inventory.display.DeleteRecordAlertDialog.Handler
     {
         this.scrollView().postDelayed(this.scrollAction(),
             /* delayMillis => */ shortDelay ? 500 : 1500);
+    }
+
+    private android.view.ViewGroup.LayoutParams layoutParams()
+    {
+        if (null == this.layoutParamsInstance)
+            this.layoutParamsInstance = new android.view.ViewGroup.LayoutParams(
+                android.widget.TableLayout.LayoutParams.MATCH_PARENT,
+                android.widget.TableLayout.LayoutParams.MATCH_PARENT);
+        return this.layoutParamsInstance;
     }
 
     private android.widget.TableLayout tableLayout()
@@ -215,9 +225,7 @@ implements org.wheatgenetics.inventory.display.DeleteRecordAlertDialog.Handler
                 tableRow.addView(new org.wheatgenetics.inventory.display.DisplayTextView(
                     activity, inventoryRecord.getWt()));
 
-                this.tableLayout().addView(tableRow, new android.view.ViewGroup.LayoutParams(//TODO: Make 1 and reuse.
-                    android.widget.TableLayout.LayoutParams.MATCH_PARENT,
-                    android.widget.TableLayout.LayoutParams.MATCH_PARENT));
+                this.tableLayout().addView(tableRow, this.layoutParams());
             }
             this.position = inventoryRecord.getPosition();
             if (this.shouldGoToBottom) this.goToBottom(/* shortDelay => */ true);
