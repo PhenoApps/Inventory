@@ -10,4 +10,20 @@
     tools:showIn="@layout/app_bar_main"
     android:id="@+id/mainContent">
 
+    <fragment
+        android:id="@+id/dataEntryFragment"
+        android:name="org.wheatgenetics.inventory.dataentry.DataEntryFragment"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:layout="@layout/fragment_data_entry"/>
+
+    <fragment
+        android:id="@+id/displayFragment"
+        android:name="org.wheatgenetics.inventory.display.DisplayFragment"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/dataEntryFragment"
+        tools:layout="@layout/fragment_display"/>
+
 </android.support.constraint.ConstraintLayout>

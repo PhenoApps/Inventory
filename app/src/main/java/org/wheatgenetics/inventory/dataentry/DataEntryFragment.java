@@ -31,16 +31,15 @@ android.widget.TextView.OnEditorActionListener                      // for envid
 {
     public interface Handler
     {
-        public abstract void setBox   (java.lang.String box                       );
+        public abstract void             setBox(java.lang.String box);
+        public abstract java.lang.String getBox()                    ;
+
         public abstract void addRecord(java.lang.String envid, java.lang.String wt);
     }
-
-    private static final java.lang.String BOX = "box";
 
     // region Fields
     private org.wheatgenetics.inventory.dataentry.DataEntryFragment.Handler handler;
 
-    private java.lang.String        box                      ;
     private android.widget.TextView boxValueTextView         ;
     private android.widget.EditText envidEditText, wtEditText;
 
@@ -56,9 +55,6 @@ android.widget.TextView.OnEditorActionListener                      // for envid
         return org.wheatgenetics.inventory.dataentry.DataEntryFragment.sendDebugLogMsg(
             "DataEntryFragmentLifecycle", msg);
     }
-
-    private void setBoxValueTextViewText()
-    { assert null != this.boxValueTextView; this.boxValueTextView.setText(this.box); }
 
     private boolean focusEnvIdEditText()
     {
@@ -89,18 +85,6 @@ android.widget.TextView.OnEditorActionListener                      // for envid
     }
 
     @java.lang.Override
-    public void onCreate(final android.os.Bundle savedInstanceState)
-    {
-        super.onCreate(savedInstanceState);
-
-        org.wheatgenetics.inventory.dataentry.DataEntryFragment.sendDebugLogMsg("onCreate()");
-
-        final android.os.Bundle arguments = this.getArguments();
-        if (null != arguments) this.box =
-            arguments.getString(org.wheatgenetics.inventory.dataentry.DataEntryFragment.BOX);
-    }
-
-    @java.lang.Override
     public android.view.View onCreateView(final android.view.LayoutInflater inflater,
     final android.view.ViewGroup container, final android.os.Bundle savedInstanceState)
     {
@@ -123,7 +107,8 @@ android.widget.TextView.OnEditorActionListener                      // for envid
         final android.app.Activity activity = this.getActivity();
         assert null != activity; this.boxValueTextView = (android.widget.TextView)
             activity.findViewById(org.wheatgenetics.inventory.R.id.boxValueTextView);
-        this.setBoxValueTextViewText();
+        assert null != this.handler; assert null != this.boxValueTextView;
+        this.boxValueTextView.setText(this.handler.getBox());
 
         this.envidEditText = (android.widget.EditText)
             activity.findViewById(org.wheatgenetics.inventory.R.id.envidEditText);
@@ -146,7 +131,7 @@ android.widget.TextView.OnEditorActionListener                      // for envid
     @java.lang.Override
     public void setBox(final java.lang.String box)
     {
-        this.box = box; this.setBoxValueTextViewText();
+        assert null != this.boxValueTextView; this.boxValueTextView.setText(box);
         assert null != this.handler; this.handler.setBox(box);
     }
     // endregion
@@ -198,11 +183,11 @@ android.widget.TextView.OnEditorActionListener                      // for envid
     // endregion
 
     // region Public Methods
-    public void handleSetBoxButtonClick()
+    public void handleSetBoxButtonClick(final java.lang.String box)
     {
         if (null == this.setBoxAlertDialog) this.setBoxAlertDialog =
             new org.wheatgenetics.inventory.dataentry.SetBoxAlertDialog(this.getActivity(), this);
-        this.setBoxAlertDialog.show(this.box);
+        this.setBoxAlertDialog.show(box);
     }
 
     public void clearBox() { this.setBox(""); }
@@ -212,20 +197,5 @@ android.widget.TextView.OnEditorActionListener                      // for envid
 
     public void setWt(final java.lang.String wt)
     { assert null != this.wtEditText; this.wtEditText.setText(wt); }
-
-    public static org.wheatgenetics.inventory.dataentry.DataEntryFragment newInstance(
-    final java.lang.String box)
-    {
-        org.wheatgenetics.inventory.dataentry.DataEntryFragment.sendDebugLogMsg("newInstance()");
-
-        final org.wheatgenetics.inventory.dataentry.DataEntryFragment result =
-            new org.wheatgenetics.inventory.dataentry.DataEntryFragment();
-        {
-            final android.os.Bundle arguments = new android.os.Bundle();
-            arguments.putString(org.wheatgenetics.inventory.dataentry.DataEntryFragment.BOX, box);
-            result.setArguments(arguments);
-        }
-        return result;
-    }
     // endregion
 }

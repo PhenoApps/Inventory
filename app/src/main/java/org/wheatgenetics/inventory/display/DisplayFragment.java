@@ -34,11 +34,9 @@ implements org.wheatgenetics.inventory.display.DeleteRecordAlertDialog.Handler
             org.wheatgenetics.inventory.model.InventoryRecord inventoryRecord);
     }
 
-    private static final java.lang.String SHOULD_ADD_TABLE_ROWS = "shouldAddTableRows";
-
     // region Fields
-    private org.wheatgenetics.inventory.display.DisplayFragment.Handler handler;
-    private boolean                 shouldAddTableRows, shouldGoToBottom = true;
+    private org.wheatgenetics.inventory.display.DisplayFragment.Handler handler                ;
+    private boolean                                                     shouldGoToBottom = true;
 
     private org.wheatgenetics.inventory.model.InventoryRecord inventoryRecord;
     private org.wheatgenetics.inventory.display.DeleteRecordAlertDialog
@@ -171,16 +169,6 @@ implements org.wheatgenetics.inventory.display.DeleteRecordAlertDialog.Handler
         }
     }
 
-    @java.lang.Override @java.lang.SuppressWarnings("SimplifiableConditionalExpression")
-    public void onCreate(final android.os.Bundle savedInstanceState)
-    {
-        super.onCreate(savedInstanceState);
-
-        final android.os.Bundle arguments = this.getArguments();
-        this.shouldAddTableRows = null == arguments ? false : arguments.getBoolean(
-            org.wheatgenetics.inventory.display.DisplayFragment.SHOULD_ADD_TABLE_ROWS);
-    }
-
     @java.lang.Override
     public android.view.View onCreateView(final android.view.LayoutInflater inflater,
     final android.view.ViewGroup container, final android.os.Bundle savedInstanceState)
@@ -193,17 +181,7 @@ implements org.wheatgenetics.inventory.display.DeleteRecordAlertDialog.Handler
     @java.lang.Override
     public void onActivityCreated(
     @android.support.annotation.Nullable final android.os.Bundle savedInstanceState)
-    {
-        super.onActivityCreated(savedInstanceState);
-
-        if (this.shouldAddTableRows)
-            this.addTableRows(/* shortDelay => */ false);
-        else
-        {
-            this.position = this.tableLayout().getChildCount();
-            this.goToBottom(/* shortDelay => */ true);
-        }
-    }
+    { super.onActivityCreated(savedInstanceState); this.addTableRows(/* shortDelay => */ false); }
 
     @java.lang.Override
     public void onDetach() { this.handler = null; super.onDetach(); }
@@ -237,7 +215,7 @@ implements org.wheatgenetics.inventory.display.DeleteRecordAlertDialog.Handler
                 tableRow.addView(new org.wheatgenetics.inventory.display.DisplayTextView(
                     activity, inventoryRecord.getWt()));
 
-                this.tableLayout().addView(tableRow, new android.view.ViewGroup.LayoutParams(
+                this.tableLayout().addView(tableRow, new android.view.ViewGroup.LayoutParams(//TODO: Make 1 and reuse.
                     android.widget.TableLayout.LayoutParams.MATCH_PARENT,
                     android.widget.TableLayout.LayoutParams.MATCH_PARENT));
             }
@@ -248,19 +226,5 @@ implements org.wheatgenetics.inventory.display.DeleteRecordAlertDialog.Handler
 
     public void refresh()
     { this.tableLayout().removeAllViews(); this.addTableRows(/* shortDelay => */ true); }
-
-    public static DisplayFragment newInstance(final boolean shouldAddTableRows)
-    {
-        final org.wheatgenetics.inventory.display.DisplayFragment result =
-            new org.wheatgenetics.inventory.display.DisplayFragment();
-        {
-            final android.os.Bundle arguments = new android.os.Bundle();
-            arguments.putBoolean(
-                org.wheatgenetics.inventory.display.DisplayFragment.SHOULD_ADD_TABLE_ROWS,
-                shouldAddTableRows                                                       );
-            result.setArguments(arguments);
-        }
-        return result;
-    }
     // endregion
 }
