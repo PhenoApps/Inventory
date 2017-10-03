@@ -82,8 +82,11 @@ implements org.wheatgenetics.inventory.display.DeleteRecordAlertDialog.Handler
         return this.scrollActionInstance;
     }
 
-    private void goToBottom()
-    { this.scrollView().postDelayed(this.scrollAction(), /* delayMillis => */ 500); }
+    private void goToBottom(final boolean shortDelay)
+    {
+        this.scrollView().postDelayed(this.scrollAction(),
+            /* delayMillis => */ shortDelay ? 500 : 1500);
+    }
 
     private android.widget.TableLayout tableLayout()
     {
@@ -126,7 +129,7 @@ implements org.wheatgenetics.inventory.display.DeleteRecordAlertDialog.Handler
         return this.onLongClickListenerInstance;
     }
 
-    private void addTableRows()
+    private void addTableRows(final boolean shortDelay)
     {
         assert null != this.handler;
         final org.wheatgenetics.inventory.model.InventoryRecords inventoryRecords =
@@ -146,7 +149,7 @@ implements org.wheatgenetics.inventory.display.DeleteRecordAlertDialog.Handler
                         this.addTableRow(inventoryRecord);
                 }
                 finally { this.shouldGoToBottom = true; }
-                this.goToBottom();
+                this.goToBottom(shortDelay);
             }
     }
     // endregion
@@ -194,9 +197,12 @@ implements org.wheatgenetics.inventory.display.DeleteRecordAlertDialog.Handler
         super.onActivityCreated(savedInstanceState);
 
         if (this.shouldAddTableRows)
-            this.addTableRows();
+            this.addTableRows(/* shortDelay => */ false);
         else
-            { this.position = this.tableLayout().getChildCount(); this.goToBottom(); }
+        {
+            this.position = this.tableLayout().getChildCount();
+            this.goToBottom(/* shortDelay => */ true);
+        }
     }
 
     @java.lang.Override
@@ -236,11 +242,12 @@ implements org.wheatgenetics.inventory.display.DeleteRecordAlertDialog.Handler
                     android.widget.TableLayout.LayoutParams.MATCH_PARENT));
             }
             this.position = inventoryRecord.getPosition();
-            if (this.shouldGoToBottom) this.goToBottom();
+            if (this.shouldGoToBottom) this.goToBottom(/* shortDelay => */ true);
         }
     }
 
-    public void refresh() { this.tableLayout().removeAllViews(); this.addTableRows(); }
+    public void refresh()
+    { this.tableLayout().removeAllViews(); this.addTableRows(/* shortDelay => */ true); }
 
     public static DisplayFragment newInstance(final boolean shouldAddTableRows)
     {
