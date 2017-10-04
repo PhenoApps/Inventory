@@ -24,10 +24,16 @@
     <!-- fragment_data_entry.xml: -->
     <string name="boxLabelTextViewText">Box:</string>
     <string name="setBoxButtonText">Set Box</string>
-    <string name="envidTextViewText">Input:</string>
-    <string name="wtTextViewText">Weight:</string>
+    <string name="dataEntryEnvidTextViewText">Input:</string>
+    <string name="dataEntryWtTextViewText">Weight:</string>
 
     <string name="setBoxAlertDialogTitle">Set Box</string>
+
+    <!-- fragment_display.xml: -->
+    <string name="positionTextViewText">Num</string>
+    <string name="boxTextViewText">Box</string>
+    <string name="displayEnvidTextViewText">Sample</string>
+    <string name="displayWtTextViewText">Wt</string>
 
     <string name="deleteRecordAlertDialogTitle">Delete Entry</string>
     <string name="deleteRecordAlertDialogPositive">Yes</string>

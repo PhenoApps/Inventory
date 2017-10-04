@@ -236,7 +236,6 @@ org.wheatgenetics.inventory.display.DisplayFragment.Handler
             this.displayFragment = (org.wheatgenetics.inventory.display.DisplayFragment)
                 fragmentManager.findFragmentById(org.wheatgenetics.inventory.R.id.displayFragment);
         }
-
         // endregion
     }
 
