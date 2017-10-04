@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.widget.RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+
+    android:id="@+id/mainContent"
+    android:layout_height="match_parent"
+    android:layout_width="match_parent"
+
+    app:layout_behavior="@string/appbar_scrolling_view_behavior"
+
+    tools:context="org.wheatgenetics.inventory.MainActivity"
+    tools:showIn="@layout/app_bar_main">
+
+
+
+    <fragment
+        android:id="@+id/dataEntryFragment"
+        android:name="org.wheatgenetics.inventory.dataentry.DataEntryFragment"
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="15dp"
+
+        tools:layout="@layout/fragment_data_entry" />
+
+
+
+    <fragment
+        android:id="@+id/displayFragment"
+        android:name="org.wheatgenetics.inventory.display.DisplayFragment"
+        android:layout_height="match_parent"
+        android:layout_width="match_parent"
+        android:layout_below="@id/dataEntryFragment"
+        android:layout_marginTop="20dp"
+
+        tools:layout="@layout/fragment_display" />
+
+
+
+</android.widget.RelativeLayout>

@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.widget.GridLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+
+    android:layout_height="wrap_content"
+    android:layout_width="wrap_content"
+    android:columnCount="3"
+
+    tools:context="org.wheatgenetics.inventory.dataentry.DataEntryFragment">
+
+
+
+    <android.widget.TextView
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
+        android:layout_gravity="end"
+        android:text="@string/boxLabelTextViewText"
+        android:textSize="20sp" />
+
+    <android.widget.TextView
+        android:id="@+id/boxValueTextView"
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:text=""
+        android:textSize="20sp"
+        android:gravity="center" />
+
+    <android.widget.Button
+        android:layout_height="40dp"
+        android:layout_width="wrap_content"
+        android:text="@string/setBoxButtonText"
+        android:textAllCaps="false"
+        android:onClick="handleSetBoxButtonClick" />
+
+
+    <android.widget.TextView
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
+        android:layout_gravity="end"
+        android:text="@string/dataEntryEnvidTextViewText"
+        android:textSize="20sp" />
+
+    <android.widget.EditText
+        android:id="@+id/envidEditText"
+        android:layout_height="wrap_content"
+        android:layout_width="200dp"
+        android:gravity="center_horizontal"
+        android:lines="1"
+        android:inputType="text"
+        android:focusableInTouchMode="true"
+        android:selectAllOnFocus="true" />
+
+
+    <android.widget.TextView
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
+        android:layout_gravity="end"
+        android:text="@string/dataEntryWtTextViewText"
+        android:textSize="20sp"
+        android:layout_column="0" />
+
+    <android.widget.EditText
+        android:id="@+id/wtEditText"
+        android:layout_height="wrap_content"
+        android:layout_width="200dp"
+        android:textSize="20sp"
+        android:gravity="center_horizontal"
+        android:lines="1"
+        android:inputType="number"
+        android:focusableInTouchMode="true"
+        android:selectAllOnFocus="true" />
+
+
+
+</android.widget.GridLayout>
