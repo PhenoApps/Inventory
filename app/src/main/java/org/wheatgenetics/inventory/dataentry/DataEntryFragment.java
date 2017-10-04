@@ -143,7 +143,7 @@ android.widget.TextView.OnEditorActionListener                      // for envid
     {
         if (org.wheatgenetics.inventory.BuildConfig.DEBUG)
         {
-            final java.lang.StringBuffer msg = new java.lang.StringBuffer("actionId == ");
+            final java.lang.StringBuilder msg = new java.lang.StringBuilder("actionId == ");
             switch (actionId)
             {
                 case android.view.inputmethod.EditorInfo.IME_ACTION_NEXT:

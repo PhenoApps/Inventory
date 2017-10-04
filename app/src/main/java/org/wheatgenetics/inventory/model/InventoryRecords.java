@@ -17,7 +17,7 @@ implements java.lang.Iterable<org.wheatgenetics.inventory.model.InventoryRecord>
     { return this.linkedList.iterator(); }
 
     // region Public Methods
-    public boolean isEmpty() { return null == this.linkedList ? true : this.linkedList.isEmpty(); }
+    public boolean isEmpty() { return this.linkedList.isEmpty(); }
 
     public boolean add(final org.wheatgenetics.inventory.model.InventoryRecord inventoryRecord)
     { return this.linkedList.add(inventoryRecord); }
@@ -78,20 +78,21 @@ implements java.lang.Iterable<org.wheatgenetics.inventory.model.InventoryRecord>
                     try
                     {
                         outputStreamWriter.append(                     // throws java.io.IOException
-                                "DELETE FROM seedinv WHERE seedinv.box_id in " + boxList + ";\n")
+                                "DELETE FROM seedinv WHERE seedinv.box_id in ")
+                                    .append(boxList).append(";\n")     // throws java.io.IOException
                             .append(                                   // throws java.io.IOException
                                 "INSERT INTO seedinv(`box_id`,`seed_id`,`inventory_date`," +
                                 "`inventory_person`,`weight_gram`)\r\nVALUES");
                         {
-                            java.lang.StringBuffer body = new java.lang.StringBuffer();
+                            java.lang.StringBuilder body = new java.lang.StringBuilder();
                             {
                                 final int  first = 0, last = this.linkedList.size() - 1;
                                       char terminator = ','                            ;
                                 for (int i = first; i <= last; i++)
                                 {
                                     if (last == i) terminator = ';';
-                                    body.append(
-                                        this.linkedList.get(i).getSQL() + terminator + "\r\n");
+                                    body.append(this.linkedList.get(i).getSQL())
+                                        .append(terminator).append("\r\n");
                                 }
                             }
                             outputStreamWriter.append(body.toString());      // throws

@@ -16,29 +16,34 @@ public class InventoryRecord extends java.lang.Object
     // endregion
 
     // region Constructors
-    // region Public Constructors
-    public InventoryRecord() { super(); }
-
     public InventoryRecord(final java.lang.String id, final java.lang.String box,
     final java.lang.String envid, final java.lang.String person, final java.lang.String date,
     final java.lang.String position, final java.lang.String wt)
-    { this(); this.set(id, box, envid, person, date, position, wt); }
+    {
+        super();
+
+        this.setId(java.lang.Integer.parseInt(id));
+
+        this.box = box; this.envid = envid; this.person = person; this.date = date;
+        this.position = java.lang.Integer.parseInt(position); this.wt = wt;
+    }
 
     public InventoryRecord(final java.lang.String box, final java.lang.String envid,
-    final java.lang.String person, final int position, final java.lang.String wt)
+    final java.lang.String person, final int position, java.lang.String wt)
     {
-        this(box, envid, position);
+        super();
 
-        this.person = person                                       ;
-        this.date   = org.wheatgenetics.javalib.Utils.getDateTime();
-        this.wt     = wt                                           ;
+        this.box = box; this.envid = envid; this.person = person;
+        this.date = org.wheatgenetics.javalib.Utils.getDateTime(); this.position = position;
+
+        if (null == wt)
+            this.wt = "null";
+        else
+        {
+            wt = wt.trim();
+            this.wt = wt.length() > 0 ? wt : "null";
+        }
     }
-    // endregion
-
-    // region Package Constructor
-    InventoryRecord(final java.lang.String box, final java.lang.String envid, final int position)
-    { this(); this.box = box; this.envid = envid; this.position = position; }
-    // endregion
     // endregion
 
     @java.lang.Override
@@ -50,9 +55,6 @@ public class InventoryRecord extends java.lang.Object
 
     // region Package Methods
     void setId(final int id) { this.id = id; }
-
-    java.lang.String getTag()
-    { return this.getBox() + "," + this.getEnvId() + "," + this.getPositionAsString(); }
 
     java.lang.String getCSV()
     {
@@ -76,12 +78,6 @@ public class InventoryRecord extends java.lang.Object
             fields[2] + "," +  // person
             fields[5] + ")" ;  // wt
     }
-
-    int sendErrorLogMsg(final java.lang.String tag)
-    {
-        return android.util.Log.e(tag, this.getBox() + " " +
-            this.getPositionAsString() + " " + this.getEnvId() + " " + this.getWt());
-    }
     // endregion
 
     // region Public Methods
@@ -97,16 +93,6 @@ public class InventoryRecord extends java.lang.Object
 
     public java.lang.String getPositionAsString()
     { return java.lang.Integer.toString(this.getPosition()); }
-
-    public void set(final java.lang.String id, final java.lang.String box,
-    final java.lang.String envid, final java.lang.String person, final java.lang.String date,
-    final java.lang.String position, final java.lang.String wt)
-    {
-        this.setId(java.lang.Integer.parseInt(id));
-
-        this.box = box; this.envid = envid; this.person = person; this.date = date;
-        this.position = java.lang.Integer.parseInt(position); this.wt = wt;
-    }
 
     public int sendDebugLogMsg(final java.lang.String tag)
     { return android.util.Log.d(tag, this.toString()); }
