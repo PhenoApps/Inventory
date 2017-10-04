@@ -50,7 +50,8 @@
         android:lines="1"
         android:inputType="text"
         android:focusableInTouchMode="true"
-        android:selectAllOnFocus="true" />
+        android:selectAllOnFocus="true"
+        android:imeOptions="actionDone" />
 
 
     <android.widget.TextView
