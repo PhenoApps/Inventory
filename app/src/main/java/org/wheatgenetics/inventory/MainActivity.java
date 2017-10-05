@@ -218,7 +218,8 @@ org.wheatgenetics.inventory.display.DisplayFragment.Handler
 
         // region Create inventoryDir.
         this.inventoryDir = new org.wheatgenetics.inventory.InventoryDir(this);
-        this.inventoryDir.createIfMissing();
+        try { this.inventoryDir.createIfMissing();  /* throws java.io.IOException */ }
+        catch (final java.io.IOException e) { this.showToast(e.getMessage()); }
         // endregion
 
         // region Configure fragments.
@@ -444,50 +445,60 @@ org.wheatgenetics.inventory.display.DisplayFragment.Handler
 
     private void exportCSV()
     {
-        assert null != this.inventoryDir;
-        java.io.File file = this.inventoryDir.createNewFile("csv");
-        if (null != file)
+        try
         {
+            assert null != this.inventoryDir;
+            java.io.File file = this.inventoryDir.createNewFile("csv");          // throws java.io.-
+            if (null != file)                                                    //  IOException
             {
-                final org.wheatgenetics.inventory.model.InventoryRecords inventoryRecords =
-                    this.samplesTable().getAll();
-                assert null != inventoryRecords; file = inventoryRecords.writeCSV(file);
-            }
-            if (null != file)
-            {
-                this.showToast(org.wheatgenetics.inventory.R.string.exportSuccess);
-                org.wheatgenetics.androidlibrary.Utils.shareFile(
-                    this, this.inventoryDir.parse(file));
-                this.deleteAll();
+                {
+                    final org.wheatgenetics.inventory.model.InventoryRecords inventoryRecords =
+                        this.samplesTable().getAll();
+                    assert null != inventoryRecords; file = inventoryRecords.writeCSV(file);
+                }
+                if (null != file)
+                {
+                    this.showToast(org.wheatgenetics.inventory.R.string.exportSuccess);
+                    org.wheatgenetics.androidlibrary.Utils.shareFile(
+                        this, this.inventoryDir.parse(file));
+                    this.deleteAll();
+                }
             }
         }
+        catch (final java.io.IOException e) { this.showToast(e.getMessage()); }
     }
 
     private void exportSQL()
     {
-        assert null != this.inventoryDir;
-        java.io.File file = this.inventoryDir.createNewFile("sql");
-        if (null != file)
+        try
         {
+            assert null != this.inventoryDir;
+            java.io.File file = this.inventoryDir.createNewFile("sql");          // throws java.io.-
+            if (null != file)                                                    //  IOException
             {
-                java.lang.String                                   boxList         ;
-                org.wheatgenetics.inventory.model.InventoryRecords inventoryRecords;
                 {
-                    final org.wheatgenetics.inventory.SamplesTable samplesTable =
-                        this.samplesTable();
-                    assert null != samplesTable;
-                    boxList = samplesTable.getBoxList(); inventoryRecords = samplesTable.getAll();
+                    java.lang.String                                   boxList         ;
+                    org.wheatgenetics.inventory.model.InventoryRecords inventoryRecords;
+                    {
+                        final org.wheatgenetics.inventory.SamplesTable samplesTable =
+                            this.samplesTable();
+                        assert null != samplesTable;
+                        boxList          = samplesTable.getBoxList();
+                        inventoryRecords = samplesTable.getAll()    ;
+                    }
+                    assert null != inventoryRecords;
+                    file = inventoryRecords.writeSQL(file, boxList);
                 }
-                assert null != inventoryRecords; file = inventoryRecords.writeSQL(file, boxList);
-            }
-            if (null != file)
-            {
-                this.showToast(org.wheatgenetics.inventory.R.string.exportSuccess);
-                org.wheatgenetics.androidlibrary.Utils.shareFile(
-                    this, this.inventoryDir.parse(file));
-                this.deleteAll();
+                if (null != file)
+                {
+                    this.showToast(org.wheatgenetics.inventory.R.string.exportSuccess);
+                    org.wheatgenetics.androidlibrary.Utils.shareFile(
+                        this, this.inventoryDir.parse(file));
+                    this.deleteAll();
+                }
             }
         }
+        catch (final java.io.IOException e) { this.showToast(e.getMessage()); }
     }
 
     private void clearBoxAndDeleteAll()
