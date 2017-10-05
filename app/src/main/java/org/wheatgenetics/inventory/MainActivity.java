@@ -48,8 +48,6 @@ package org.wheatgenetics.inventory;
  * org.wheatgenetics.inventory.model.InventoryRecords
  * org.wheatgenetics.inventory.model.Person
  *
- * org.wheatgenetics.inventory.navigation.DeleteAlertDialog.Handler
- * org.wheatgenetics.inventory.navigation.ExportAlertDialog.Handler
  * org.wheatgenetics.inventory.navigation.NavigationItemSelectedListener
  * org.wheatgenetics.inventory.navigation.NavigationItemSelectedListener.Handler
  *
@@ -147,9 +145,9 @@ org.wheatgenetics.inventory.display.DisplayFragment.Handler
                 assert null != navigationView;                                  //  tivity_main.xml.
                 navigationView.setNavigationItemSelectedListener(
                     new org.wheatgenetics.inventory.navigation.NavigationItemSelectedListener(
-                        /* activity          => */ this       ,
-                        /* versionName       => */ versionName,
-                        /* navigationHandler => */ new org.wheatgenetics.inventory.navigation
+                        /* activity    => */ this       ,
+                        /* versionName => */ versionName,
+                        /* handler     => */ new org.wheatgenetics.inventory.navigation
                             .NavigationItemSelectedListener.Handler()
                             {
                                 @java.lang.Override
@@ -164,29 +162,23 @@ org.wheatgenetics.inventory.display.DisplayFragment.Handler
                                 { org.wheatgenetics.inventory.MainActivity.this.connectScale(); }
 
                                 @java.lang.Override
-                                public void closeDrawer()
-                                { org.wheatgenetics.inventory.MainActivity.this.closeDrawer(); }
-                            },
-                        /* exportHandler => */
-                            new org.wheatgenetics.inventory.navigation.ExportAlertDialog.Handler()
-                            {
-                                @java.lang.Override
                                 public void exportCSV()
                                 { org.wheatgenetics.inventory.MainActivity.this.exportCSV(); }
 
                                 @java.lang.Override
                                 public void exportSQL()
                                 { org.wheatgenetics.inventory.MainActivity.this.exportSQL(); }
-                            },
-                        /* deleteHandler => */
-                            new org.wheatgenetics.inventory.navigation.DeleteAlertDialog.Handler()
-                            {
+
                                 @java.lang.Override
                                 public void delete()
                                 {
                                     org.wheatgenetics.inventory.
-                                        MainActivity.this.clearBoxAndDeleteAll();
+                                    MainActivity.this.clearBoxAndDeleteAll();
                                 }
+
+                                @java.lang.Override
+                                public void closeDrawer()
+                                { org.wheatgenetics.inventory.MainActivity.this.closeDrawer(); }
                             },
                         /* versionOnClickListener => */ new android.view.View.OnClickListener()
                             {

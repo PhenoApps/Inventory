@@ -18,23 +18,24 @@ package org.wheatgenetics.inventory.navigation;
  * org.wheatgenetics.inventory.navigation.ExportAlertDialog
  * org.wheatgenetics.inventory.navigation.ExportAlertDialog.Handler
  */
-public class NavigationItemSelectedListener extends java.lang.Object
-implements android.support.design.widget.NavigationView.OnNavigationItemSelectedListener
+public class NavigationItemSelectedListener extends java.lang.Object implements
+android.support.design.widget.NavigationView.OnNavigationItemSelectedListener,
+org.wheatgenetics.inventory.navigation.ExportAlertDialog.Handler             ,
+org.wheatgenetics.inventory.navigation.DeleteAlertDialog.Handler
 {
     public interface Handler
     {
         public abstract void setPerson  (); public abstract void connectScale();
-        public abstract void closeDrawer();
+        public abstract void exportCSV  (); public abstract void exportSQL   ();
+        public abstract void delete     (); public abstract void closeDrawer ();
     }
 
     // region Fields
-    private final android.app.Activity    activity   ;
-    private final java.lang.String        versionName;
+    private final android.app.Activity activity   ;
+    private final java.lang.String     versionName;
     private final org.wheatgenetics.inventory.navigation.NavigationItemSelectedListener.Handler
-        navigationHandler;
-    private final org.wheatgenetics.inventory.navigation.ExportAlertDialog.Handler exportHandler;
-    private final org.wheatgenetics.inventory.navigation.DeleteAlertDialog.Handler deleteHandler;
-    private final android.view.View.OnClickListener                       versionOnClickListener;
+        handler;
+    private final android.view.View.OnClickListener versionOnClickListener;
 
     private org.wheatgenetics.inventory.navigation.ExportAlertDialog exportAlertDialog = null;
     private org.wheatgenetics.inventory.navigation.DeleteAlertDialog deleteAlertDialog = null;
@@ -43,48 +44,42 @@ implements android.support.design.widget.NavigationView.OnNavigationItemSelected
 
     public NavigationItemSelectedListener(final android.app.Activity activity,
     final java.lang.String versionName,
-    final org.wheatgenetics.inventory.navigation.NavigationItemSelectedListener.Handler
-        navigationHandler,
-    final org.wheatgenetics.inventory.navigation.ExportAlertDialog.Handler exportHandler         ,
-    final org.wheatgenetics.inventory.navigation.DeleteAlertDialog.Handler deleteHandler         ,
-    final android.view.View.OnClickListener                                versionOnClickListener)
+    final org.wheatgenetics.inventory.navigation.NavigationItemSelectedListener.Handler handler,
+    final android.view.View.OnClickListener versionOnClickListener)
     {
         super();
 
-        this.activity               = activity              ;
-        this.versionName            = versionName           ;
-        this.navigationHandler      = navigationHandler     ;
-        this.exportHandler          = exportHandler         ;
-        this.deleteHandler          = deleteHandler         ;
-        this.versionOnClickListener = versionOnClickListener;
+        this.activity = activity; this.versionName            = versionName           ;
+        this.handler  = handler ; this.versionOnClickListener = versionOnClickListener;
     }
 
+    // region Overridden Methods
+    // region android.support.design.widget.NavigationView.OnNavigationItemSelectedListener Overridden Method
     @java.lang.Override
     public boolean onNavigationItemSelected(
     @android.support.annotation.NonNull final android.view.MenuItem item)
     {
         // Handle navigation view item clicks here.
-        assert null != item; assert null != this.navigationHandler;
+        assert null != item; assert null != this.handler;
         switch (item.getItemId())
         {
             // The following five ids that have names that start with "nav_" come from
             // menu/activity_main_drawer.xml.
-            case org.wheatgenetics.inventory.R.id.nav_set_person :
-                this.navigationHandler.setPerson(); break;
+            case org.wheatgenetics.inventory.R.id.nav_set_person : this.handler.setPerson(); break;
 
             case org.wheatgenetics.inventory.R.id.nav_connect_scale :
-                this.navigationHandler.connectScale(); break;
+                this.handler.connectScale(); break;
 
             case org.wheatgenetics.inventory.R.id.nav_export :
                 if (null == this.exportAlertDialog) this.exportAlertDialog =
                     new org.wheatgenetics.inventory.navigation.ExportAlertDialog(
-                        this.activity, this.exportHandler);
+                        this.activity, this);
                 this.exportAlertDialog.show(); break;
 
             case org.wheatgenetics.inventory.R.id.nav_delete :
                 if (null == this.deleteAlertDialog) this.deleteAlertDialog =
                     new org.wheatgenetics.inventory.navigation.DeleteAlertDialog(
-                        this.activity, this.deleteHandler);
+                        this.activity, this);
                 this.deleteAlertDialog.show(); break;
 
             case org.wheatgenetics.inventory.R.id.nav_show_about :
@@ -109,6 +104,21 @@ implements android.support.design.widget.NavigationView.OnNavigationItemSelected
                 this.aboutAlertDialog.show(); break;
         }
 
-        this.navigationHandler.closeDrawer(); return true;
+        this.handler.closeDrawer(); return true;
     }
+    // endregion
+
+    // region org.wheatgenetics.inventory.navigation.ExportAlertDialog.Handler Overridden Methods
+    @java.lang.Override
+    public void exportCSV() { assert null != this.handler; this.handler.exportCSV(); }
+
+    @java.lang.Override
+    public void exportSQL() { assert null != this.handler; this.handler.exportSQL(); }
+    // endregion
+
+    // region org.wheatgenetics.inventory.navigation.DeleteAlertDialog.Handler Overridden Method
+    @java.lang.Override
+    public void delete() { assert null != this.handler; this.handler.delete(); }
+    // endregion
+    // endregion
 }

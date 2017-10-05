@@ -14,6 +14,7 @@ package org.wheatgenetics.inventory;
  * org.wheatgenetics.androidlibrary.AlertDialog
  *
  * org.wheatgenetics.inventory.model.Person
+ *
  * org.wheatgenetics.inventory.R
  */
 class SetPersonAlertDialog extends org.wheatgenetics.androidlibrary.AlertDialog

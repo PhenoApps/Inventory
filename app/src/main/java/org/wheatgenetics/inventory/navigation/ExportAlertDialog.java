@@ -13,9 +13,9 @@ package org.wheatgenetics.inventory.navigation;
  *
  * org.wheatgenetics.inventory.R
  */
-public class ExportAlertDialog extends org.wheatgenetics.androidlibrary.AlertDialog
+class ExportAlertDialog extends org.wheatgenetics.androidlibrary.AlertDialog
 {
-    public interface Handler { public abstract void exportCSV(); public abstract void exportSQL(); }
+    interface Handler { public abstract void exportCSV(); public abstract void exportSQL(); }
 
     private final org.wheatgenetics.inventory.navigation.ExportAlertDialog.Handler handler;
 

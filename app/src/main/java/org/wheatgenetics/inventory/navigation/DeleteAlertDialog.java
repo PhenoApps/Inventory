@@ -11,9 +11,9 @@ package org.wheatgenetics.inventory.navigation;
  *
  * org.wheatgenetics.inventory.R
  */
-public class DeleteAlertDialog extends org.wheatgenetics.androidlibrary.AlertDialog
+class DeleteAlertDialog extends org.wheatgenetics.androidlibrary.AlertDialog
 {
-    public interface Handler { public abstract void delete(); }
+    interface Handler { public abstract void delete(); }
 
     private final org.wheatgenetics.inventory.navigation.DeleteAlertDialog.Handler handler;
 
