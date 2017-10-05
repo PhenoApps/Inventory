@@ -219,7 +219,13 @@ org.wheatgenetics.inventory.display.DisplayFragment.Handler
         // region Create inventoryDir.
         this.inventoryDir = new org.wheatgenetics.inventory.InventoryDir(this);
         try { this.inventoryDir.createIfMissing();  /* throws java.io.IOException */ }
-        catch (final java.io.IOException e) { this.showToast(e.getMessage()); }
+        catch (final java.io.IOException e)
+        {
+            // Do nothing.  The reason I do nothing is because when an exception is thrown it does
+            // not mean there is a problem.  For example, an exception is thrown when the directory
+            // already exists.  If I try to create a directory and I fail because the directory al-
+            // ready exists then I don't have a problem.
+        }
         // endregion
 
         // region Configure fragments.
