@@ -9,23 +9,21 @@ package org.wheatgenetics.inventory.model;
 public class InventoryRecord extends java.lang.Object
 {
     // region Fields
-    private int              id                                                  ;
-    private java.lang.String box = null, envid = null, person = null, date = null;
-    private int              position                                            ;
-    private java.lang.String wt = null                                           ;
+    private       java.lang.String box = null, envid = null, person = null, date = null;
+    private final int              position                                            ;
+    private       java.lang.String wt = null                                           ;
     // endregion
 
     // region Constructors
-    public InventoryRecord(final java.lang.String id, final java.lang.String box,
-    final java.lang.String envid, final java.lang.String person, final java.lang.String date,
-    final java.lang.String position, final java.lang.String wt)
+    public InventoryRecord(final java.lang.String box, final java.lang.String envid,
+    final java.lang.String person, final java.lang.String date, final java.lang.String position,
+    final java.lang.String wt)
     {
         super();
 
-        this.setId(java.lang.Integer.parseInt(id));
-
-        this.box = box; this.envid = envid; this.person = person; this.date = date;
-        this.position = java.lang.Integer.parseInt(position); this.wt = wt;
+        this.box      = box; this.envid = envid; this.person = person; this.date = date;
+        this.position = java.lang.Integer.parseInt(position);
+        this.wt       = wt;
     }
 
     public InventoryRecord(final java.lang.String box, final java.lang.String envid,
@@ -33,8 +31,9 @@ public class InventoryRecord extends java.lang.Object
     {
         super();
 
-        this.box = box; this.envid = envid; this.person = person;
-        this.date = org.wheatgenetics.javalib.Utils.getDateTime(); this.position = position;
+        this.box      = box; this.envid = envid; this.person = person;
+        this.date     = org.wheatgenetics.javalib.Utils.getDateTime();
+        this.position = position;
 
         if (null == wt)
             this.wt = "null";
@@ -54,8 +53,6 @@ public class InventoryRecord extends java.lang.Object
     }
 
     // region Package Methods
-    void setId(final int id) { this.id = id; }
-
     java.lang.String getCSV()
     {
         return this.getBox() + ","  + this.getEnvId() + "," + this.getDate() +
@@ -82,7 +79,6 @@ public class InventoryRecord extends java.lang.Object
 
     // region Public Methods
     // region Getter Public Methods
-    public int              getId      () { return this.id      ; }
     public java.lang.String getBox     () { return this.box     ; }
     public java.lang.String getEnvId   () { return this.envid   ; }
     public java.lang.String getPerson  () { return this.person  ; }

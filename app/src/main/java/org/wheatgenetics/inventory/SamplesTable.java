@@ -145,7 +145,6 @@ class SamplesTable extends java.lang.Object
             {
                 while (cursor.moveToNext())
                     inventoryRecords.add(new org.wheatgenetics.inventory.model.InventoryRecord(
-                        /* id       => */ cursor.getString(0),
                         /* box      => */ cursor.getString(1),
                         /* envid    => */ cursor.getString(2),
                         /* person   => */ cursor.getString(3),

@@ -13,6 +13,7 @@
         android:inputType="textFilter"
         android:maxLength="100"
         android:paddingStart="5sp"
+        android:paddingLeft="5sp"
         android:maxLines="1"
         android:textSize="20sp" />
 
@@ -24,6 +25,7 @@
         android:inputType="textFilter"
         android:maxLength="100"
         android:paddingStart="5sp"
+        android:paddingLeft="5sp"
         android:maxLines="1"
         android:textSize="20sp" />
 

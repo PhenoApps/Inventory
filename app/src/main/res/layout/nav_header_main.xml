@@ -23,8 +23,8 @@
         android:id="@+id/personTextView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingLeft="15dp"
-        android:textSize="16dp"
+        android:paddingStart="15dp"
+        android:textSize="16sp"
         android:textStyle="bold"
         android:textAppearance="@style/TextAppearance.AppCompat.Body1"/>
 
