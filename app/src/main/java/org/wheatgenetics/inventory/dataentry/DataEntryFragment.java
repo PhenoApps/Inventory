@@ -173,6 +173,7 @@ android.widget.TextView.OnEditorActionListener                      // for envid
                 {
                     assert null != this.handler; this.handler.addRecord(envid,
                         org.wheatgenetics.androidlibrary.Utils.getText(this.wtEditText));
+                    assert null != this.envidEditText; this.envidEditText.setText("");
                 }
                 return this.focusEnvIdEditText();
 
