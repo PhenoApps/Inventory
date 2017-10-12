@@ -456,9 +456,9 @@ org.wheatgenetics.inventory.display.DisplayFragment.Handler
                 }
                 if (null != file)
                 {
-                    this.showToast(org.wheatgenetics.inventory.R.string.exportSuccess);
                     org.wheatgenetics.androidlibrary.Utils.shareFile(
                         this, this.inventoryDir.parse(file));
+                    this.showToast(org.wheatgenetics.inventory.R.string.exportSuccess);
                     this.deleteAll();
                 }
             }
@@ -489,9 +489,9 @@ org.wheatgenetics.inventory.display.DisplayFragment.Handler
                 }
                 if (null != file)
                 {
-                    this.showToast(org.wheatgenetics.inventory.R.string.exportSuccess);
                     org.wheatgenetics.androidlibrary.Utils.shareFile(
                         this, this.inventoryDir.parse(file));
+                    this.showToast(org.wheatgenetics.inventory.R.string.exportSuccess);
                     this.deleteAll();
                 }
             }
