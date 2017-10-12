@@ -359,6 +359,7 @@ org.wheatgenetics.inventory.display.DisplayFragment.Handler
     private void reportException(final org.wheatgenetics.usb.Device.Exception e)
     {
         this.scaleReader().cancel();
+        assert null != this.dataEntryFragment; this.dataEntryFragment.clearWt();
         if (null == this.scaleExceptionAlertDialog) this.scaleExceptionAlertDialog =
             new org.wheatgenetics.usb.ScaleExceptionAlertDialog(this,
                 new org.wheatgenetics.usb.ScaleExceptionAlertDialog.Handler()

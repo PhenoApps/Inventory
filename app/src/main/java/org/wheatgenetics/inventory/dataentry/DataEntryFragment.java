@@ -198,5 +198,7 @@ android.widget.TextView.OnEditorActionListener                      // for envid
 
     public void setWt(final java.lang.String wt)
     { assert null != this.wtEditText; this.wtEditText.setText(wt); }
+
+    public void clearWt() { this.setWt(""); }
     // endregion
 }
