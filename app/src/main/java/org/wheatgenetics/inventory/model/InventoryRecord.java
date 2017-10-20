@@ -6,6 +6,7 @@ package org.wheatgenetics.inventory.model;
  *
  * org.wheatgenetics.javalib.Utils
  */
+@java.lang.SuppressWarnings("ClassExplicitlyExtendsObject")
 public class InventoryRecord extends java.lang.Object
 {
     // region Fields

@@ -6,6 +6,7 @@ package org.wheatgenetics.inventory.model;
  *
  * org.wheatgenetics.inventory.model.InventoryRecord
  */
+@java.lang.SuppressWarnings("ClassExplicitlyExtendsObject")
 public class InventoryRecords extends java.lang.Object
 implements java.lang.Iterable<org.wheatgenetics.inventory.model.InventoryRecord>
 {

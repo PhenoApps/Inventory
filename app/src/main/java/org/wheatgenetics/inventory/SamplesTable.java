@@ -13,6 +13,7 @@ package org.wheatgenetics.inventory;
  * org.wheatgenetics.inventory.model.InventoryRecord
  * org.wheatgenetics.inventory.model.InventoryRecords
  */
+@java.lang.SuppressWarnings("ClassExplicitlyExtendsObject")
 class SamplesTable extends java.lang.Object
 {
     private static class SQLiteOpenHelper extends android.database.sqlite.SQLiteOpenHelper

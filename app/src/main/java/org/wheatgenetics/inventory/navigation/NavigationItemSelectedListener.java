@@ -18,6 +18,7 @@ package org.wheatgenetics.inventory.navigation;
  * org.wheatgenetics.inventory.navigation.ExportAlertDialog
  * org.wheatgenetics.inventory.navigation.ExportAlertDialog.Handler
  */
+@java.lang.SuppressWarnings("ClassExplicitlyExtendsObject")
 public class NavigationItemSelectedListener extends java.lang.Object implements
 android.support.design.widget.NavigationView.OnNavigationItemSelectedListener,
 org.wheatgenetics.inventory.navigation.ExportAlertDialog.Handler             ,

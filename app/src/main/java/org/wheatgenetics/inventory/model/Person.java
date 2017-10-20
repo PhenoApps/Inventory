@@ -4,6 +4,7 @@ package org.wheatgenetics.inventory.model;
  * Uses:
  * org.wheatgenetics.javalib.Utils
  */
+@java.lang.SuppressWarnings("ClassExplicitlyExtendsObject")
 public class Person extends java.lang.Object
 {
     public final java.lang.String firstName, lastName;

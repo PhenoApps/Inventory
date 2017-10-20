@@ -2,11 +2,13 @@ package org.wheatgenetics.inventory.display;
 
 /**
  * Uses:
+ * android.annotation.SuppressLint
  * android.content.Context
  * android.view.View.OnLongClickListener
  *
  * org.wheatgenetics.inventory.display.DisplayTextView
  */
+@android.annotation.SuppressLint("ViewConstructor")
 class EnvIdDisplayTextView extends org.wheatgenetics.inventory.display.DisplayTextView
 {
     EnvIdDisplayTextView(final android.content.Context context, final java.lang.CharSequence text,
