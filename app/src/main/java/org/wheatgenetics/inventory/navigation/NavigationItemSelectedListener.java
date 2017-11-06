@@ -24,6 +24,7 @@ android.support.design.widget.NavigationView.OnNavigationItemSelectedListener,
 org.wheatgenetics.inventory.navigation.ExportAlertDialog.Handler             ,
 org.wheatgenetics.inventory.navigation.DeleteAlertDialog.Handler
 {
+    @java.lang.SuppressWarnings("UnnecessaryInterfaceModifier")
     public interface Handler
     {
         public abstract void setPerson  (); public abstract void connectScale();

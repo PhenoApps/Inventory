@@ -16,6 +16,7 @@ package org.wheatgenetics.inventory.dataentry;
  */
 class SetBoxAlertDialog extends org.wheatgenetics.androidlibrary.AlertDialog
 {
+    @java.lang.SuppressWarnings("UnnecessaryInterfaceModifier")
     interface Handler { public abstract void setBox(java.lang.String box); }
 
     // region Fields

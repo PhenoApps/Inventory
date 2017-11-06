@@ -15,6 +15,7 @@ package org.wheatgenetics.inventory.navigation;
  */
 class ExportAlertDialog extends org.wheatgenetics.androidlibrary.AlertDialog
 {
+    @java.lang.SuppressWarnings("UnnecessaryInterfaceModifier")
     interface Handler { public abstract void exportCSV(); public abstract void exportSQL(); }
 
     private final org.wheatgenetics.inventory.navigation.ExportAlertDialog.Handler handler;
