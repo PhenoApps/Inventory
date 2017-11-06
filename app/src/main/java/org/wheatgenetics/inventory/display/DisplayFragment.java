@@ -27,9 +27,11 @@ package org.wheatgenetics.inventory.display;
 public class DisplayFragment extends android.support.v4.app.Fragment
 implements org.wheatgenetics.inventory.display.DeleteRecordAlertDialog.Handler
 {
+    @java.lang.SuppressWarnings("UnnecessaryInterfaceModifier")
     public interface Handler
     {
-        public abstract org.wheatgenetics.inventory.model.InventoryRecords inventoryRecords();
+        public abstract void                                               focusEnvIdEditText();
+        public abstract org.wheatgenetics.inventory.model.InventoryRecords inventoryRecords  ();
         public abstract boolean deleteRecord(
             org.wheatgenetics.inventory.model.InventoryRecord inventoryRecord);
     }
@@ -68,7 +70,10 @@ implements org.wheatgenetics.inventory.display.DeleteRecordAlertDialog.Handler
     }
 
     private void scrollDown()
-    { this.scrollView().fullScroll(android.widget.ScrollView.FOCUS_DOWN); }
+    {
+        this.scrollView().fullScroll(android.widget.ScrollView.FOCUS_DOWN);
+        assert null != this.handler; this.handler.focusEnvIdEditText();
+    }
 
     private java.lang.Runnable scrollAction()
     {

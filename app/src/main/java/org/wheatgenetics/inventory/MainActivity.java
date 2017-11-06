@@ -318,6 +318,10 @@ org.wheatgenetics.inventory.display.DisplayFragment.Handler
 
     // region org.wheatgenetics.inventory.display.DisplayFragment.Handler Overridden Methods
     @java.lang.Override
+    public void focusEnvIdEditText()
+    { assert null != this.dataEntryFragment; this.dataEntryFragment.focusEnvIdEditText(); }
+
+    @java.lang.Override
     public org.wheatgenetics.inventory.model.InventoryRecords inventoryRecords()
     { return this.samplesTable().getAll(); }
 
@@ -326,7 +330,7 @@ org.wheatgenetics.inventory.display.DisplayFragment.Handler
     final org.wheatgenetics.inventory.model.InventoryRecord inventoryRecord)
     {
         final boolean result = this.samplesTable().delete(inventoryRecord);
-         if (result) { assert null != this.displayFragment; this.displayFragment.refresh(); }
+        if (result) { assert null != this.displayFragment; this.displayFragment.refresh(); }
         return result;
     }
     // endregion
