@@ -23,6 +23,8 @@ package org.wheatgenetics.inventory;
  *
  * org.wheatgenetics.javalib.Utils
  *
+ * org.wheatgenetics.androidlibrary.GetExportFileNameAlertDialog
+ * org.wheatgenetics.androidlibrary.GetExportFileNameAlertDialog.Handler
  * org.wheatgenetics.androidlibrary.R
  * org.wheatgenetics.androidlibrary.Utils
  *
@@ -59,7 +61,8 @@ package org.wheatgenetics.inventory;
  */
 public class MainActivity extends android.support.v7.app.AppCompatActivity implements
 org.wheatgenetics.inventory.dataentry.DataEntryFragment.Handler,
-org.wheatgenetics.inventory.display.DisplayFragment.Handler
+org.wheatgenetics.inventory.display.DisplayFragment.Handler,
+org.wheatgenetics.androidlibrary.GetExportFileNameAlertDialog.Handler
 {
     private static final java.lang.String BOX = "box";
 
@@ -71,6 +74,8 @@ org.wheatgenetics.inventory.display.DisplayFragment.Handler
     private org.wheatgenetics.usb.ScaleExceptionAlertDialog       scaleExceptionAlertDialog = null;
     private org.wheatgenetics.changelog.ChangeLogAlertDialog      changeLogAlertDialog      = null;
     private org.wheatgenetics.zxing.BarcodeScanner                barcodeScanner            = null;
+    private org.wheatgenetics.androidlibrary.GetExportFileNameAlertDialog
+        getExportFileNameAlertDialog = null;
 
     private org.wheatgenetics.inventory.SetPersonAlertDialog        setPersonAlertDialog = null;
     private org.wheatgenetics.inventory.InventoryDir                inventoryDir               ;
@@ -78,7 +83,7 @@ org.wheatgenetics.inventory.display.DisplayFragment.Handler
     private org.wheatgenetics.inventory.dataentry.DataEntryFragment dataEntryFragment          ;
     private org.wheatgenetics.inventory.display.DisplayFragment     displayFragment            ;
 
-    private java.lang.String box;
+    private java.lang.String box, exportFileName;
     // endregion
 
     // region Overridden Methods
@@ -334,6 +339,12 @@ org.wheatgenetics.inventory.display.DisplayFragment.Handler
         return result;
     }
     // endregion
+
+    // region org.wheatgenetics.androidlibrary.GetExportFileNameAlertDialog.Handler Overridden Method
+
+    @java.lang.Override
+    public void handleGetFileNameDone(final java.lang.String s) { this.exportFileName = s; }
+    // endregion
     // endregion
 
     public void handleSetBoxButtonClick(final android.view.View v)
@@ -396,6 +407,14 @@ org.wheatgenetics.inventory.display.DisplayFragment.Handler
         return this.scaleReaderInstance;
     }
 
+    private void getExportFileName()
+    {
+        if (null == this.getExportFileNameAlertDialog) this.getExportFileNameAlertDialog =
+            new org.wheatgenetics.androidlibrary.GetExportFileNameAlertDialog(this, this);
+        this.getExportFileNameAlertDialog.show(
+            "inventory_" + org.wheatgenetics.javalib.Utils.getDateTime());
+    }
+
     private org.wheatgenetics.inventory.SamplesTable samplesTable()
     {
         if (null == this.samplesTableInstance)
@@ -448,11 +467,13 @@ org.wheatgenetics.inventory.display.DisplayFragment.Handler
 
     private void exportCSV()
     {
+        this.getExportFileName();
         try
         {
             assert null != this.inventoryDir;
-            java.io.File file = this.inventoryDir.createNewFile("csv");          // throws java.io.-
-            if (null != file)                                                    //  IOException
+            java.io.File file = this.inventoryDir.createNewFile(       // throws java.io.IOException
+                this.exportFileName + ".csv");
+            if (null != file)
             {
                 {
                     final org.wheatgenetics.inventory.model.InventoryRecords inventoryRecords =
@@ -473,11 +494,13 @@ org.wheatgenetics.inventory.display.DisplayFragment.Handler
 
     private void exportSQL()
     {
+        this.getExportFileName();
         try
         {
             assert null != this.inventoryDir;
-            java.io.File file = this.inventoryDir.createNewFile("sql");          // throws java.io.-
-            if (null != file)                                                    //  IOException
+            java.io.File file = this.inventoryDir.createNewFile(       // throws java.io.IOException
+                this.exportFileName + ".sql");
+            if (null != file)
             {
                 {
                     java.lang.String                                   boxList         ;
