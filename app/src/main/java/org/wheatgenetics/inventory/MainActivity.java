@@ -64,6 +64,8 @@ org.wheatgenetics.inventory.dataentry.DataEntryFragment.Handler,
 org.wheatgenetics.inventory.display.DisplayFragment.Handler,
 org.wheatgenetics.androidlibrary.GetExportFileNameAlertDialog.Handler
 {
+    private static enum ExportKind { CSV, SQL }
+
     private static final java.lang.String BOX = "box";
 
     // region Fields
@@ -83,7 +85,8 @@ org.wheatgenetics.androidlibrary.GetExportFileNameAlertDialog.Handler
     private org.wheatgenetics.inventory.dataentry.DataEntryFragment dataEntryFragment          ;
     private org.wheatgenetics.inventory.display.DisplayFragment     displayFragment            ;
 
-    private java.lang.String box, exportFileName;
+    private java.lang.String                                    box       ;
+    private org.wheatgenetics.inventory.MainActivity.ExportKind exportKind;
     // endregion
 
     // region Overridden Methods
@@ -168,11 +171,17 @@ org.wheatgenetics.androidlibrary.GetExportFileNameAlertDialog.Handler
 
                                 @java.lang.Override
                                 public void exportCSV()
-                                { org.wheatgenetics.inventory.MainActivity.this.exportCSV(); }
+                                {
+                                    org.wheatgenetics.inventory.MainActivity.this.getExportFileName(
+                                        org.wheatgenetics.inventory.MainActivity.ExportKind.CSV);
+                                }
 
                                 @java.lang.Override
                                 public void exportSQL()
-                                { org.wheatgenetics.inventory.MainActivity.this.exportSQL(); }
+                                {
+                                    org.wheatgenetics.inventory.MainActivity.this.getExportFileName(
+                                        org.wheatgenetics.inventory.MainActivity.ExportKind.SQL);
+                                }
 
                                 @java.lang.Override
                                 public void delete()
@@ -341,9 +350,14 @@ org.wheatgenetics.androidlibrary.GetExportFileNameAlertDialog.Handler
     // endregion
 
     // region org.wheatgenetics.androidlibrary.GetExportFileNameAlertDialog.Handler Overridden Method
-
     @java.lang.Override
-    public void handleGetFileNameDone(final java.lang.String s) { this.exportFileName = s; }
+    public void handleGetFileNameDone(final java.lang.String fileName)
+    {
+        if (org.wheatgenetics.inventory.MainActivity.ExportKind.CSV == this.exportKind)
+            this.exportCSV(fileName);
+        else
+            this.exportSQL(fileName);
+    }
     // endregion
     // endregion
 
@@ -407,10 +421,12 @@ org.wheatgenetics.androidlibrary.GetExportFileNameAlertDialog.Handler
         return this.scaleReaderInstance;
     }
 
-    private void getExportFileName()
+    private void getExportFileName(
+    final org.wheatgenetics.inventory.MainActivity.ExportKind exportKind)
     {
         if (null == this.getExportFileNameAlertDialog) this.getExportFileNameAlertDialog =
             new org.wheatgenetics.androidlibrary.GetExportFileNameAlertDialog(this, this);
+        this.exportKind = exportKind;
         this.getExportFileNameAlertDialog.show(
             "inventory_" + org.wheatgenetics.javalib.Utils.getDateTime());
     }
@@ -465,14 +481,13 @@ org.wheatgenetics.androidlibrary.GetExportFileNameAlertDialog.Handler
         this.drawerLayout.closeDrawer(android.support.v4.view.GravityCompat.START);
     }
 
-    private void exportCSV()
+    private void exportCSV(final java.lang.String exportFileName)
     {
-        this.getExportFileName();
         try
         {
             assert null != this.inventoryDir;
             java.io.File file = this.inventoryDir.createNewFile(       // throws java.io.IOException
-                this.exportFileName + ".csv");
+                exportFileName + ".csv");
             if (null != file)
             {
                 {
@@ -492,14 +507,13 @@ org.wheatgenetics.androidlibrary.GetExportFileNameAlertDialog.Handler
         catch (final java.io.IOException e) { this.showToast(e.getMessage()); }
     }
 
-    private void exportSQL()
+    private void exportSQL(final java.lang.String exportFileName)
     {
-        this.getExportFileName();
         try
         {
             assert null != this.inventoryDir;
             java.io.File file = this.inventoryDir.createNewFile(       // throws java.io.IOException
-                this.exportFileName + ".sql");
+                exportFileName + ".sql");
             if (null != file)
             {
                 {
