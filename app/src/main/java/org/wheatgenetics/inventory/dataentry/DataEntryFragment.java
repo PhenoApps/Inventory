@@ -137,6 +137,7 @@ android.widget.TextView.OnEditorActionListener                      // for envid
     public boolean onEditorAction(final android.widget.TextView v, final int actionId,
     final android.view.KeyEvent event)
     {
+        final java.lang.String tag = "DataEntryFragmentActions";
         if (org.wheatgenetics.inventory.BuildConfig.DEBUG)
         {
             final java.lang.StringBuilder msg = new java.lang.StringBuilder("actionId == ");
@@ -151,9 +152,27 @@ android.widget.TextView.OnEditorActionListener                      // for envid
                 case android.view.inputmethod.EditorInfo.IME_NULL: msg.append("IME_NULL"); break;
                 default                                          : msg.append(actionId  ); break;
             }
+
             msg.append(", event == "); if (null != event) msg.append("not "); msg.append("null");
+
+            if (android.view.inputmethod.EditorInfo.IME_NULL == actionId && null != event)
+            {
+                final int action = event.getAction();
+                switch (action)
+                {
+                    case android.view.KeyEvent.ACTION_DOWN: case android.view.KeyEvent.ACTION_UP:
+                        msg.append(", event.getAction() == ACTION_");
+                        switch (action)
+                        {
+                            case android.view.KeyEvent.ACTION_DOWN: msg.append("DOWN"); break;
+                            case android.view.KeyEvent.ACTION_UP  : msg.append("UP"  ); break;
+                        }
+                        break;
+                }
+            }
+
             org.wheatgenetics.inventory.dataentry.DataEntryFragment.sendDebugLogMsg(
-                "DataEntryFragmentActions", msg.toString());
+                tag, msg.toString());
         }
 
         switch (actionId)
@@ -167,6 +186,9 @@ android.widget.TextView.OnEditorActionListener                      // for envid
                     org.wheatgenetics.androidlibrary.Utils.getText(this.envidEditText);
                 if (null != envid) if (envid.length() > 0)
                 {
+                    if (org.wheatgenetics.inventory.BuildConfig.DEBUG)
+                        org.wheatgenetics.inventory.dataentry.DataEntryFragment.sendDebugLogMsg(
+                            tag, envid);
                     assert null != this.handler; this.handler.addRecord(envid,
                         org.wheatgenetics.androidlibrary.Utils.getText(this.wtEditText));
                     assert null != this.envidEditText; this.envidEditText.setText("");
