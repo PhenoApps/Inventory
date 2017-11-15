@@ -15,8 +15,9 @@ package org.wheatgenetics.inventory.dataentry;
  * android.view.inputmethod.EditorInfo
  * android.widget.EditText
  * android.widget.TextView
- * android.widget.TextView.OnEditorActionListener
  *
+ * org.wheatgenetics.androidlibrary.DebouncingEditorActionListener
+ * org.wheatgenetics.androidlibrary.DebouncingEditorActionListener.Receiver
  * org.wheatgenetics.androidlibrary.Utils
  *
  * org.wheatgenetics.inventory.BuildConfig
@@ -25,9 +26,8 @@ package org.wheatgenetics.inventory.dataentry;
  * org.wheatgenetics.inventory.dataentry.SetBoxAlertDialog
  * org.wheatgenetics.inventory.dataentry.SetBoxAlertDialog.Handler
  */
-public class DataEntryFragment extends android.support.v4.app.Fragment implements
-org.wheatgenetics.inventory.dataentry.SetBoxAlertDialog.Handler,    // for SetBoxAlertDialog
-android.widget.TextView.OnEditorActionListener                      // for envidEditText, wtEditText
+public class DataEntryFragment extends android.support.v4.app.Fragment
+implements org.wheatgenetics.inventory.dataentry.SetBoxAlertDialog.Handler
 {
     @java.lang.SuppressWarnings("UnnecessaryInterfaceModifier")
     public interface Handler
@@ -41,20 +41,32 @@ android.widget.TextView.OnEditorActionListener                      // for envid
     // region Fields
     private org.wheatgenetics.inventory.dataentry.DataEntryFragment.Handler handler;
 
-    private android.widget.TextView boxValueTextView         ;
+    private android.widget.TextView boxValueTextView;
     private android.widget.EditText envidEditText, wtEditText;
 
     private org.wheatgenetics.inventory.dataentry.SetBoxAlertDialog setBoxAlertDialog = null;
     // endregion
 
     // region Private Methods
-    private static int sendDebugLogMsg(final java.lang.String tag, final java.lang.String msg)
-    { return org.wheatgenetics.inventory.BuildConfig.DEBUG ? android.util.Log.d(tag, msg) : 0; }
-
     private static int sendDebugLogMsg(final java.lang.String msg)
     {
-        return org.wheatgenetics.inventory.dataentry.DataEntryFragment.sendDebugLogMsg(
-            "DataEntryFragmentLifecycle", msg);
+        return org.wheatgenetics.inventory.BuildConfig.DEBUG ?
+            android.util.Log.d("DataEntryFragment", msg) : 0;
+    }
+
+    private void addRecord(final java.lang.String envid, final java.lang.String wt)
+    { assert null != this.handler; this.handler.addRecord(envid, wt); }
+
+    private void addEnvid(final java.lang.String envid)
+    {
+        this.addRecord(envid, org.wheatgenetics.androidlibrary.Utils.getText(this.wtEditText));
+        assert null != this.wtEditText; this.wtEditText.setText("");
+    }
+
+    private void addWt(final java.lang.String wt)
+    {
+        this.addRecord(org.wheatgenetics.androidlibrary.Utils.getText(this.envidEditText), wt);
+        assert null != this.envidEditText; this.envidEditText.setText("");
     }
     // endregion
 
@@ -107,13 +119,41 @@ android.widget.TextView.OnEditorActionListener                      // for envid
 
             this.envidEditText = (android.widget.EditText)
                 activity.findViewById(org.wheatgenetics.inventory.R.id.envidEditText);
-            assert null != this.envidEditText; this.envidEditText.setOnEditorActionListener(this);
+            assert null != this.envidEditText; this.envidEditText.setOnEditorActionListener(
+                new org.wheatgenetics.androidlibrary.DebouncingEditorActionListener(
+                    /* editText => */ this.envidEditText,
+                    /* receiver => */ new
+                        org.wheatgenetics.androidlibrary.DebouncingEditorActionListener.Receiver()
+                        {
+                            @java.lang.Override
+                            public void receiveText(final java.lang.String text)
+                            {
+                                org.wheatgenetics.inventory.dataentry
+                                    .DataEntryFragment.this.addEnvid(text);
+                            }
+                        },
+                    /* debug       => */ org.wheatgenetics.inventory.BuildConfig.DEBUG,
+                    /* delayMillis => */ 1000                                         ));
             this.focusEnvIdEditText();
 
             this.wtEditText = (android.widget.EditText)
                 activity.findViewById(org.wheatgenetics.inventory.R.id.wtEditText);
         }
-        assert null != this.wtEditText; this.wtEditText.setOnEditorActionListener(this);
+        assert null != this.wtEditText; this.wtEditText.setOnEditorActionListener(
+            new org.wheatgenetics.androidlibrary.DebouncingEditorActionListener(
+                /* editText => */ this.wtEditText,
+                /* receiver => */ new
+                    org.wheatgenetics.androidlibrary.DebouncingEditorActionListener.Receiver()
+                    {
+                        @java.lang.Override
+                        public void receiveText(final java.lang.String text)
+                        {
+                            org.wheatgenetics.inventory.dataentry
+                                .DataEntryFragment.this.addWt(text);
+                        }
+                    },
+                /* debug       => */ org.wheatgenetics.inventory.BuildConfig.DEBUG,
+                /* delayMillis => */ 1000                                         ));
     }
 
     @java.lang.Override
@@ -129,74 +169,6 @@ android.widget.TextView.OnEditorActionListener                      // for envid
     {
         assert null != this.boxValueTextView; this.boxValueTextView.setText(box);
         assert null != this.handler; this.handler.setBox(box);
-    }
-    // endregion
-
-    // region android.widget.TextView.OnEditorActionListener Overridden Method
-    @java.lang.Override
-    public boolean onEditorAction(final android.widget.TextView v, final int actionId,
-    final android.view.KeyEvent event)
-    {
-        final java.lang.String tag = "DataEntryFragmentActions";
-        if (org.wheatgenetics.inventory.BuildConfig.DEBUG)
-        {
-            final java.lang.StringBuilder msg = new java.lang.StringBuilder("actionId == ");
-            switch (actionId)
-            {
-                case android.view.inputmethod.EditorInfo.IME_ACTION_NEXT:
-                    msg.append("IME_ACTION_NEXT"); break;
-
-                case android.view.inputmethod.EditorInfo.IME_ACTION_DONE:
-                    msg.append("IME_ACTION_DONE"); break;
-
-                case android.view.inputmethod.EditorInfo.IME_NULL: msg.append("IME_NULL"); break;
-                default                                          : msg.append(actionId  ); break;
-            }
-
-            msg.append(", event == "); if (null != event) msg.append("not "); msg.append("null");
-
-            if (android.view.inputmethod.EditorInfo.IME_NULL == actionId && null != event)
-            {
-                final int action = event.getAction();
-                switch (action)
-                {
-                    case android.view.KeyEvent.ACTION_DOWN: case android.view.KeyEvent.ACTION_UP:
-                        msg.append(", event.getAction() == ACTION_");
-                        switch (action)
-                        {
-                            case android.view.KeyEvent.ACTION_DOWN: msg.append("DOWN"); break;
-                            case android.view.KeyEvent.ACTION_UP  : msg.append("UP"  ); break;
-                        }
-                        break;
-                }
-            }
-
-            org.wheatgenetics.inventory.dataentry.DataEntryFragment.sendDebugLogMsg(
-                tag, msg.toString());
-        }
-
-        switch (actionId)
-        {
-            case android.view.inputmethod.EditorInfo.IME_NULL:
-                assert null != event;
-                if (event.getAction() == android.view.KeyEvent.ACTION_DOWN) return true;
-
-            case android.view.inputmethod.EditorInfo.IME_ACTION_DONE:
-                final java.lang.String envid =
-                    org.wheatgenetics.androidlibrary.Utils.getText(this.envidEditText);
-                if (null != envid) if (envid.length() > 0)
-                {
-                    if (org.wheatgenetics.inventory.BuildConfig.DEBUG)
-                        org.wheatgenetics.inventory.dataentry.DataEntryFragment.sendDebugLogMsg(
-                            tag, envid);
-                    assert null != this.handler; this.handler.addRecord(envid,
-                        org.wheatgenetics.androidlibrary.Utils.getText(this.wtEditText));
-                    assert null != this.envidEditText; this.envidEditText.setText("");
-                }
-                return true;
-
-            default: return false;
-        }
     }
     // endregion
     // endregion
