@@ -87,17 +87,6 @@ implements android.support.design.widget.NavigationView.OnNavigationItemSelected
     @java.lang.SuppressWarnings({"StatementWithEmptyBody"}) @java.lang.Override
     public boolean onNavigationItemSelected(
     @android.support.annotation.NonNull final android.view.MenuItem item)
-    {
-        {
-            final int id = item.getItemId();
-                 if (id == org.wheatgenetics.inventory.R.id.nav_camera   ) {}
-            else if (id == org.wheatgenetics.inventory.R.id.nav_gallery  ) {}
-            else if (id == org.wheatgenetics.inventory.R.id.nav_slideshow) {}
-            else if (id == org.wheatgenetics.inventory.R.id.nav_manage   ) {}
-            else if (id == org.wheatgenetics.inventory.R.id.nav_share    ) {}
-            else if (id == org.wheatgenetics.inventory.R.id.nav_send     ) {}
-        }
-        this.closeDrawer(); return true;
-    }
+    { this.closeDrawer(); return true; }
     // endregion
 }
