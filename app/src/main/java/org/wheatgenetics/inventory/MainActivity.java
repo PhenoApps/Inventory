@@ -41,12 +41,13 @@ implements android.support.design.widget.NavigationView.OnNavigationItemSelected
                 this.findViewById(org.wheatgenetics.inventory.R.id.toolbar);
             this.setSupportActionBar(toolbar);
 
-            final android.support.v7.app.ActionBarDrawerToggle toggle =
+            final android.support.v7.app.ActionBarDrawerToggle actionBarDrawerToggle =
                 new android.support.v7.app.ActionBarDrawerToggle(this, this.drawerLayout, toolbar,
                     org.wheatgenetics.inventory.R.string.navigation_drawer_open ,
                     org.wheatgenetics.inventory.R.string.navigation_drawer_close);
-            assert null != this.drawerLayout; this.drawerLayout.setDrawerListener(toggle);
-            toggle.syncState();
+            assert null != this.drawerLayout;
+            this.drawerLayout.setDrawerListener(actionBarDrawerToggle);
+            actionBarDrawerToggle.syncState();
         }
 
         final android.support.design.widget.NavigationView navigationView =
