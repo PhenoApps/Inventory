@@ -12,13 +12,13 @@
     <string name="setPersonMsg">Person set as: </string>
 
 
-    <!-- fragment_data_entry.xml: -->
+    <!-- fragment_data_entry.xml -->
     <string name="boxLabelTextViewText">Box:</string>
     <string name="setBoxButtonText">Set Box</string>
     <string name="dataEntryEnvidTextViewText">Input:</string>
     <string name="dataEntryWtTextViewText">Weight:</string>
 
-    <!-- SetBoxAlertDialog: -->
+    <!-- SetBoxAlertDialog -->
     <string name="setBoxAlertDialogTitle">Set Box</string>
 
 
@@ -27,9 +27,17 @@
     <string name="deleteRecordAlertDialogPositive">Yes</string>
     <string name="deleteRecordAlertDialogNegative">No</string>
 
-    <!-- fragment_display.xml: -->
+    <!-- fragment_display.xml -->
     <string name="positionTextViewText">Num</string>
     <string name="boxTextViewText">Box</string>
     <string name="displayEnvidTextViewText">Sample</string>
     <string name="displayWtTextViewText">Wt</string>
+
+
+    <!-- ExportAlertDialog -->
+    <string name="exportAlertDialogTitle">Export data</string>
+    <string name="exportAlertDialogMsg">How would you like to export the data?</string>
+    <string name="exportAlertDialogPositive">Flat file (CSV)</string>
+    <string name="exportAlertDialogNegative">Query file (SQL)</string>
+    <string name="exportAlertDialogNeutral">Cancel</string>
 </resources>
