@@ -1,8 +1,13 @@
-<resources>
-    <string name="app_name">Inventory</string>
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <string name="app_name" tools:override="true">Inventory</string>
 
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
 
     <string name="action_settings">Settings</string>
+
+
+    <!-- SetPersonAlertDialog -->
+    <string name="setPersonAlertDialogTitle">Set Person</string>
+    <string name="setPersonMsg">Person set as: </string>
 </resources>
