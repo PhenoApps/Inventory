@@ -71,24 +71,10 @@ org.wheatgenetics.inventory.display.DisplayFragment.Handler
     }
 
     @java.lang.Override public boolean onCreateOptionsMenu(final android.view.Menu menu)
-    {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        this.getMenuInflater().inflate(org.wheatgenetics.inventory.R.menu.main, menu);
-        return true;
-    }
+    { return true; }
 
     @java.lang.Override public boolean onOptionsItemSelected(final android.view.MenuItem item)
-    {
-        // Handle action bar item clicks here.  The action bar will automatically handle clicks on
-        // the Home/Up button, so long as you specify a parent activity in AndroidManifest.xml.
-        assert null != item; final int id = item.getItemId();
-
-        // noinspection SimplifiableIfStatement
-        if (id == org.wheatgenetics.inventory.R.id.action_settings)
-            return true;
-        else
-            return super.onOptionsItemSelected(item);
-    }
+    { return super.onOptionsItemSelected(item); }
 
     @java.lang.SuppressWarnings({"StatementWithEmptyBody"}) @java.lang.Override
     public boolean onNavigationItemSelected(
