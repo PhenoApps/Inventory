@@ -14,10 +14,16 @@ package org.wheatgenetics.inventory;
  * android.view.Menu
  * android.view.MenuItem
  *
+ * org.wheatgenetics.inventory.dataentry.DataEntryFragment.Handler
+ *
+ * org.wheatgenetics.inventory.display.DisplayFragment.Handler
+ *
  * org.wheatgenetics.inventory.R
  */
-public class MainActivity extends android.support.v7.app.AppCompatActivity
-implements android.support.design.widget.NavigationView.OnNavigationItemSelectedListener
+public class MainActivity extends android.support.v7.app.AppCompatActivity implements
+android.support.design.widget.NavigationView.OnNavigationItemSelectedListener,
+org.wheatgenetics.inventory.dataentry.DataEntryFragment.Handler,
+org.wheatgenetics.inventory.display.DisplayFragment.Handler
 {
     private android.support.v4.widget.DrawerLayout drawerLayout = null;
 
@@ -88,5 +94,42 @@ implements android.support.design.widget.NavigationView.OnNavigationItemSelected
     public boolean onNavigationItemSelected(
     @android.support.annotation.NonNull final android.view.MenuItem item)
     { this.closeDrawer(); return true; }
+
+    // region org.wheatgenetics.inventory.dataentry.DataEntryFragment.Handler Overridden Methods
+    @java.lang.Override public void setBox(final java.lang.String box) { /*this.box = box;*/ }
+    @java.lang.Override public java.lang.String getBox() { return null/*this.box*/; }
+
+    @java.lang.Override public void addRecord(
+    final java.lang.String envid, final java.lang.String wt)
+    {
+//        assert this.sharedPreferences != null; assert null != this.displayFragment;
+//        final org.wheatgenetics.inventory.model.InventoryRecord inventoryRecord =
+//            new org.wheatgenetics.inventory.model.InventoryRecord(
+//                /* box      => */ this.box                              ,
+//                /* envid    => */ envid                                 ,
+//                /* person   => */ this.sharedPreferences.getSafeName()  ,
+//                /* position => */ this.displayFragment.getPosition() + 1,
+//                /* wt       => */ wt                                    );
+//        this.samplesTable().add(inventoryRecord);
+//        this.displayFragment.addTableRow(inventoryRecord);
+    }
+    // endregion
+
+    // region org.wheatgenetics.inventory.display.DisplayFragment.Handler Overridden Methods
+    @java.lang.Override public void focusEnvIdEditText()
+    { /*assert null != this.dataEntryFragment; this.dataEntryFragment.focusEnvIdEditText();*/ }
+
+    @java.lang.Override
+    public org.wheatgenetics.inventory.model.InventoryRecords inventoryRecords()
+    { return null/*this.samplesTable().getAll()*/; }
+
+    @java.lang.Override public boolean deleteRecord(
+    final org.wheatgenetics.inventory.model.InventoryRecord inventoryRecord)
+    {
+        /*final boolean result = this.samplesTable().delete(inventoryRecord);
+        if (result) { assert null != this.displayFragment; this.displayFragment.refresh(); }*/
+        return false/*result*/;
+    }
+    // endregion
     // endregion
 }
