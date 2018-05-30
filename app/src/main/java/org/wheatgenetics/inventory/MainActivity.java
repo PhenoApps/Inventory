@@ -532,4 +532,7 @@ org.wheatgenetics.androidlibrary.GetExportFileNameAlertDialog.Handler
     }
     // endregion
     // endregion
+
+    public void handleSetBoxButtonClick(final android.view.View v)
+    { assert null != this.dataEntryFragment; dataEntryFragment.handleSetBoxButtonClick(this.box); }
 }
