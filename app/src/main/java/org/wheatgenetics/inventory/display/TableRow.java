@@ -4,6 +4,7 @@ package org.wheatgenetics.inventory.display;
  * Uses:
  * android.content.Context
  * android.widget.TableLayout.LayoutParams
+ * android.widget.TableRow
  */
 class TableRow extends android.widget.TableRow
 {

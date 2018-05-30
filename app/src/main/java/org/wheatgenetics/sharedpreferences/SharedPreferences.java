@@ -20,10 +20,7 @@ extends org.wheatgenetics.sharedpreferences.UpdateVersionSharedPreferences
     private static int sendDebugLogMsg(
     @android.support.annotation.NonNull final java.lang.String tag,
     @android.support.annotation.NonNull final java.lang.String msg)
-    {
-        assert null != msg;
-        return android.util.Log.d("SharedPreferences." + tag, msg.equals("") ? "empty" : msg);
-    }
+    { return android.util.Log.d("SharedPreferences." + tag, msg.equals("") ? "empty" : msg); }
 
     // region First Name Private Methods
     private java.lang.String getFirstName()
@@ -70,16 +67,16 @@ extends org.wheatgenetics.sharedpreferences.UpdateVersionSharedPreferences
     // endregion
     // endregion
 
-    @java.lang.Override
-    protected void validateStringKey(@android.support.annotation.NonNull final java.lang.String key)
-    {
-        if (!key.equals(org.wheatgenetics.sharedpreferences.SharedPreferences.FIRST_NAME)
-            &&  !key.equals(org.wheatgenetics.sharedpreferences.SharedPreferences.LAST_NAME ))
-            super.validateStringKey(key);
-    }
-
     public SharedPreferences(@android.support.annotation.NonNull
     final android.content.SharedPreferences sharedPreferences) { super(sharedPreferences); }
+
+    @java.lang.Override protected void validateStringKey(
+    @android.support.annotation.NonNull final java.lang.String key)
+    {
+        if (!key.equals(org.wheatgenetics.sharedpreferences.SharedPreferences.FIRST_NAME)
+        &&  !key.equals(org.wheatgenetics.sharedpreferences.SharedPreferences.LAST_NAME ))
+            super.validateStringKey(key);
+    }
 
     // region Public Methods
     // region Person Public Methods
@@ -93,7 +90,7 @@ extends org.wheatgenetics.sharedpreferences.UpdateVersionSharedPreferences
 
     public void setPerson(final org.wheatgenetics.inventory.model.Person person)
     {
-        java.lang.String firstName, lastName;
+        final java.lang.String firstName, lastName;
         if (null == person)
             { firstName = null; lastName = null; }
         else

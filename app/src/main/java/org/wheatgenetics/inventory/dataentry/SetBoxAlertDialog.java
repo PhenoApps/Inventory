@@ -16,7 +16,7 @@ package org.wheatgenetics.inventory.dataentry;
  */
 class SetBoxAlertDialog extends org.wheatgenetics.androidlibrary.AlertDialog
 {
-    @java.lang.SuppressWarnings("UnnecessaryInterfaceModifier")
+    @java.lang.SuppressWarnings({"UnnecessaryInterfaceModifier"})
     interface Handler { public abstract void setBox(java.lang.String box); }
 
     // region Fields
@@ -43,7 +43,7 @@ class SetBoxAlertDialog extends org.wheatgenetics.androidlibrary.AlertDialog
 
     private void setBox()
     {
-        assert null != this.editText; assert null != this.handler;
+        assert null != this.handler;
         this.handler.setBox(org.wheatgenetics.androidlibrary.Utils.getText(this.editText));
         this.hideSoftInputFromWindow();
     }
@@ -53,24 +53,21 @@ class SetBoxAlertDialog extends org.wheatgenetics.androidlibrary.AlertDialog
     final org.wheatgenetics.inventory.dataentry.SetBoxAlertDialog.Handler handler)
     { super(activity); this.handler = handler; }
 
-    @java.lang.Override
-    public void configure()
+    @java.lang.Override public void configure()
     {
         (this.editText = new android.widget.EditText(this.activity())).setSingleLine();
         this.setTitle(org.wheatgenetics.inventory.R.string.setBoxAlertDialogTitle)
             .setView(this.editText)
             .setOKPositiveButton(new android.content.DialogInterface.OnClickListener()
                 {
-                    @java.lang.Override
-                    public void onClick(final android.content.DialogInterface dialog,
-                    final int which)
+                    @java.lang.Override public void onClick(
+                    final android.content.DialogInterface dialog, final int which)
                     { org.wheatgenetics.inventory.dataentry.SetBoxAlertDialog.this.setBox(); }
                 })
             .setCancelNegativeButton(new android.content.DialogInterface.OnClickListener()
                 {
-                    @java.lang.Override
-                    public void onClick(final android.content.DialogInterface dialog,
-                    final int which)
+                    @java.lang.Override public void onClick(
+                    final android.content.DialogInterface dialog, final int which)
                     {
                         org.wheatgenetics.inventory.dataentry.
                             SetBoxAlertDialog.this.hideSoftInputFromWindow();

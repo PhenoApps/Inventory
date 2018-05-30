@@ -6,10 +6,11 @@ package org.wheatgenetics.inventory.model;
  *
  * org.wheatgenetics.inventory.model.InventoryRecord
  */
-@java.lang.SuppressWarnings("ClassExplicitlyExtendsObject")
+@java.lang.SuppressWarnings({"ClassExplicitlyExtendsObject"})
 public class InventoryRecords extends java.lang.Object
 implements java.lang.Iterable<org.wheatgenetics.inventory.model.InventoryRecord>
 {
+    @SuppressWarnings({"Convert2Diamond"})
     private final java.util.LinkedList<org.wheatgenetics.inventory.model.InventoryRecord>
         linkedList = new java.util.LinkedList<org.wheatgenetics.inventory.model.InventoryRecord>();
 
@@ -30,7 +31,7 @@ implements java.lang.Iterable<org.wheatgenetics.inventory.model.InventoryRecord>
         else
         {
             {
-                java.io.FileOutputStream fileOutputStream;
+                final java.io.FileOutputStream fileOutputStream;
                 try { fileOutputStream = new java.io.FileOutputStream(file); }   // throws java.io.-
                 catch (final java.io.FileNotFoundException e) { return null; }   //  FileNotFoundEx-
                                                                                  //  ception
@@ -68,14 +69,13 @@ implements java.lang.Iterable<org.wheatgenetics.inventory.model.InventoryRecord>
         else
         {
             {
-                java.io.FileOutputStream fileOutputStream;
+                final java.io.FileOutputStream fileOutputStream;
                 try { fileOutputStream = new java.io.FileOutputStream(file); }   // throws java.io.-
                 catch (final java.io.FileNotFoundException e) { return null; }   //  FileNotFoundEx-
                                                                                  //  ception
                 {
                     final java.io.OutputStreamWriter outputStreamWriter =
                         new java.io.OutputStreamWriter(fileOutputStream);
-
                     try
                     {
                         outputStreamWriter.append(                     // throws java.io.IOException
@@ -85,7 +85,7 @@ implements java.lang.Iterable<org.wheatgenetics.inventory.model.InventoryRecord>
                                 "INSERT INTO seedinv(`box_id`,`seed_id`,`inventory_date`," +
                                 "`inventory_person`,`weight_gram`)\r\nVALUES");
                         {
-                            java.lang.StringBuilder body = new java.lang.StringBuilder();
+                            final java.lang.StringBuilder body = new java.lang.StringBuilder();
                             {
                                 final int  first = 0, last = this.linkedList.size() - 1;
                                       char terminator = ','                            ;

@@ -2,6 +2,7 @@ package org.wheatgenetics.inventory.display;
 
 /**
  * Uses:
+ * android.annotation.SuppressLint
  * android.content.Context
  * android.graphics.Color
  * android.support.v7.widget.AppCompatTextView
@@ -9,7 +10,7 @@ package org.wheatgenetics.inventory.display;
  * android.view.ViewGroup.LayoutParams
  * android.widget.TableRow.LayoutParams
  */
-@android.annotation.SuppressLint("ViewConstructor")
+@android.annotation.SuppressLint({"ViewConstructor"})
 class DisplayTextView extends android.support.v7.widget.AppCompatTextView
 {
     DisplayTextView(final android.content.Context context, final java.lang.CharSequence text,

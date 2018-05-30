@@ -13,7 +13,7 @@ package org.wheatgenetics.inventory.navigation;
  */
 class DeleteAlertDialog extends org.wheatgenetics.androidlibrary.AlertDialog
 {
-    @java.lang.SuppressWarnings("UnnecessaryInterfaceModifier")
+    @java.lang.SuppressWarnings({"UnnecessaryInterfaceModifier"})
     interface Handler { public abstract void delete(); }
 
     private final org.wheatgenetics.inventory.navigation.DeleteAlertDialog.Handler handler;
@@ -24,8 +24,7 @@ class DeleteAlertDialog extends org.wheatgenetics.androidlibrary.AlertDialog
     final org.wheatgenetics.inventory.navigation.DeleteAlertDialog.Handler handler)
     { super(activity); this.handler = handler; }
 
-    @java.lang.Override
-    public void configure()
+    @java.lang.Override public void configure()
     {
         this.setTitle(org.wheatgenetics.inventory.R.string.deleteAlertDialogTitle)
             .setCancelableToFalse()
@@ -33,9 +32,8 @@ class DeleteAlertDialog extends org.wheatgenetics.androidlibrary.AlertDialog
             .setPositiveButton(org.wheatgenetics.inventory.R.string.deleteAlertDialogPositive,
                 new android.content.DialogInterface.OnClickListener()
                 {
-                    @java.lang.Override
-                    public void onClick(final android.content.DialogInterface dialog,
-                    final int which)
+                    @java.lang.Override public void onClick(
+                    final android.content.DialogInterface dialog, final int which)
                     { org.wheatgenetics.inventory.navigation.DeleteAlertDialog.this.delete(); }
                 })
             .setNegativeButton(org.wheatgenetics.inventory.R.string.deleteAlertDialogNegative,

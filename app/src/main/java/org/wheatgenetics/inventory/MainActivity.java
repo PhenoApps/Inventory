@@ -31,6 +31,8 @@ package org.wheatgenetics.inventory;
  *
  * org.wheatgenetics.changelog.ChangeLogAlertDialog
  *
+ * org.wheatgenetics.sharedpreferences.SharedPreferences
+ *
  * org.wheatgenetics.usb.Device.Exception
  * org.wheatgenetics.usb.ScaleExceptionAlertDialog
  * org.wheatgenetics.usb.ScaleExceptionAlertDialog.Handler
@@ -38,8 +40,6 @@ package org.wheatgenetics.inventory;
  * org.wheatgenetics.usb.ScaleReader.Handler
  *
  * org.wheatgenetics.zxing.BarcodeScanner
- *
- * org.wheatgenetics.sharedpreferences.SharedPreferences
  *
  * org.wheatgenetics.inventory.dataentry.DataEntryFragment
  * org.wheatgenetics.inventory.dataentry.DataEntryFragment.Handler
@@ -52,6 +52,7 @@ package org.wheatgenetics.inventory;
  * org.wheatgenetics.inventory.model.Person
  *
  * org.wheatgenetics.inventory.navigation.NavigationItemSelectedListener
+ * org.wheatgenetics.inventory.navigation.NavigationItemSelectedListener.Handler
  *
  * org.wheatgenetics.inventory.InventoryDir
  * org.wheatgenetics.inventory.R
@@ -64,7 +65,7 @@ org.wheatgenetics.inventory.dataentry.DataEntryFragment.Handler      ,
 org.wheatgenetics.inventory.display.DisplayFragment.Handler          ,
 org.wheatgenetics.androidlibrary.GetExportFileNameAlertDialog.Handler
 {
-    @java.lang.SuppressWarnings("UnnecessaryEnumModifier")
+    @java.lang.SuppressWarnings({"UnnecessaryEnumModifier"})
     private static enum ExportKind { CSV, SQL }
 
     private static final java.lang.String BOX = "box";

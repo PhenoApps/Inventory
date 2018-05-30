@@ -19,11 +19,11 @@ package org.wheatgenetics.inventory;
  */
 class SetPersonAlertDialog extends org.wheatgenetics.androidlibrary.AlertDialog
 {
-    @java.lang.SuppressWarnings("UnnecessaryInterfaceModifier")
+    @java.lang.SuppressWarnings({"UnnecessaryInterfaceModifier"})
     interface PersonStorer
     {
         public abstract void storePerson(@android.support.annotation.NonNull
-            final org.wheatgenetics.inventory.model.Person person);
+        final org.wheatgenetics.inventory.model.Person person);
     }
 
     // region Fields
@@ -49,8 +49,7 @@ class SetPersonAlertDialog extends org.wheatgenetics.androidlibrary.AlertDialog
     { super(activity); this.personStorer = personStorer; }
 
     // region Overridden Methods
-    @java.lang.Override
-    public void configure()
+    @java.lang.Override public void configure()
     {
         this.setTitle(org.wheatgenetics.inventory.R.string.setPersonAlertDialogTitle)
             .setCancelableToFalse();
@@ -61,9 +60,9 @@ class SetPersonAlertDialog extends org.wheatgenetics.androidlibrary.AlertDialog
                     new android.widget.LinearLayout(this.activity()), false);
 
             assert null != setPersonView;
-            this.firstNameEditText = (android.widget.EditText) setPersonView.findViewById(
+            this.firstNameEditText = setPersonView.findViewById(
                 org.wheatgenetics.inventory.R.id.setPersonFirstNameEditText);
-            this.lastNameEditText = (android.widget.EditText) setPersonView.findViewById(
+            this.lastNameEditText = setPersonView.findViewById(
                 org.wheatgenetics.inventory.R.id.setPersonLastNameEditText);
 
             this.setView(setPersonView);
@@ -76,27 +75,19 @@ class SetPersonAlertDialog extends org.wheatgenetics.androidlibrary.AlertDialog
             });
     }
 
-    @java.lang.Override
-    public void show() { this.show(null); }
+    @java.lang.Override public void show() { this.show(null); }
     // endregion
 
     void show(final org.wheatgenetics.inventory.model.Person person)
     {
         assert null != this.firstNameEditText; assert null != this.lastNameEditText;
         {
-            java.lang.String firstName, lastName;
+            final java.lang.String firstName, lastName;
             if (null == person)
-            {
-                firstName = null;
-                lastName  = null;
-            }
+                { firstName = null; lastName = null; }
             else
-            {
-                firstName = person.firstName;
-                lastName  = person.lastName ;
-            }
-            this.firstNameEditText.setText(firstName);
-            this.lastNameEditText.setText (lastName );
+                { firstName = person.firstName; lastName = person.lastName; }
+            this.firstNameEditText.setText(firstName); this.lastNameEditText.setText(lastName);
         }
 
         super.show();

@@ -3,8 +3,6 @@ package org.wheatgenetics.inventory.navigation;
 /**
  * Uses:
  * android.app.Activity
- * android.app.AlertDialog
- * android.app.AlertDialog.Builder
  * android.content.DialogInterface
  * android.content.DialogInterface.OnClickListener
  *
@@ -15,7 +13,7 @@ package org.wheatgenetics.inventory.navigation;
  */
 class ExportAlertDialog extends org.wheatgenetics.androidlibrary.AlertDialog
 {
-    @java.lang.SuppressWarnings("UnnecessaryInterfaceModifier")
+    @java.lang.SuppressWarnings({"UnnecessaryInterfaceModifier"})
     interface Handler { public abstract void exportCSV(); public abstract void exportSQL(); }
 
     private final org.wheatgenetics.inventory.navigation.ExportAlertDialog.Handler handler;
@@ -29,25 +27,22 @@ class ExportAlertDialog extends org.wheatgenetics.androidlibrary.AlertDialog
     final org.wheatgenetics.inventory.navigation.ExportAlertDialog.Handler handler)
     { super(activity); this.handler = handler; }
 
-    @java.lang.Override
-    public void configure()
+    @java.lang.Override public void configure()
     {
         this.setTitle         (org.wheatgenetics.inventory.R.string.exportAlertDialogTitle)
             .setMessage       (org.wheatgenetics.inventory.R.string.exportAlertDialogMsg  )
             .setPositiveButton(org.wheatgenetics.inventory.R.string.exportAlertDialogPositive,
                 new android.content.DialogInterface.OnClickListener()
                 {
-                    @java.lang.Override
-                    public void onClick(final android.content.DialogInterface dialog,
-                    final int which)
+                    @java.lang.Override public void onClick(
+                    final android.content.DialogInterface dialog, final int which)
                     { org.wheatgenetics.inventory.navigation.ExportAlertDialog.this.exportCSV(); }
                 })
             .setNegativeButton(org.wheatgenetics.inventory.R.string.exportAlertDialogNegative,
                 new android.content.DialogInterface.OnClickListener()
                 {
-                    @java.lang.Override
-                    public void onClick(final android.content.DialogInterface dialog,
-                    final int which)
+                    @java.lang.Override public void onClick(
+                    final android.content.DialogInterface dialog, final int which)
                     { org.wheatgenetics.inventory.navigation.ExportAlertDialog.this.exportSQL(); }
                 })
             .setNeutralButton(org.wheatgenetics.inventory.R.string.exportAlertDialogNeutral,

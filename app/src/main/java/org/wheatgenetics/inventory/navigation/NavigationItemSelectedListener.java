@@ -18,18 +18,18 @@ package org.wheatgenetics.inventory.navigation;
  * org.wheatgenetics.inventory.navigation.ExportAlertDialog
  * org.wheatgenetics.inventory.navigation.ExportAlertDialog.Handler
  */
-@java.lang.SuppressWarnings("ClassExplicitlyExtendsObject")
+@java.lang.SuppressWarnings({"ClassExplicitlyExtendsObject"})
 public class NavigationItemSelectedListener extends java.lang.Object implements
 android.support.design.widget.NavigationView.OnNavigationItemSelectedListener,
 org.wheatgenetics.inventory.navigation.ExportAlertDialog.Handler             ,
 org.wheatgenetics.inventory.navigation.DeleteAlertDialog.Handler
 {
-    @java.lang.SuppressWarnings("UnnecessaryInterfaceModifier")
+    @java.lang.SuppressWarnings({"UnnecessaryInterfaceModifier"})
     public interface Handler
     {
-        public abstract void setPerson  (); public abstract void connectScale();
-        public abstract void exportCSV  (); public abstract void exportSQL   ();
-        public abstract void delete     (); public abstract void closeDrawer ();
+        public abstract void setPerson(); public abstract void connectScale();
+        public abstract void exportCSV(); public abstract void exportSQL   ();
+        public abstract void delete   (); public abstract void closeDrawer ();
     }
 
     // region Fields
@@ -57,12 +57,11 @@ org.wheatgenetics.inventory.navigation.DeleteAlertDialog.Handler
 
     // region Overridden Methods
     // region android.support.design.widget.NavigationView.OnNavigationItemSelectedListener Overridden Method
-    @java.lang.Override
-    public boolean onNavigationItemSelected(
+    @java.lang.Override public boolean onNavigationItemSelected(
     @android.support.annotation.NonNull final android.view.MenuItem item)
     {
         // Handle navigation view item clicks here.
-        assert null != item; assert null != this.handler;
+        assert null != this.handler;
         switch (item.getItemId())
         {
             // The following five ids that have names that start with "nav_" come from
@@ -92,14 +91,14 @@ org.wheatgenetics.inventory.navigation.DeleteAlertDialog.Handler
                         this.activity,
                         this.activity.getString(
                             org.wheatgenetics.inventory.R.string.aboutAlertDialogTitle),
-                        this.versionName, new java.lang.String[] {
+                        this.versionName, new java.lang.String[]{
                             "\nInventory is a free and open source application that can be used t" +
                                 "o catalog individuals while also collecting and storing sample w" +
                                 "eight data. The app was designed to work with Elane USB Plus 5kg" +
                                 " Scales (http://www.elane.net).\n",
                             "Inventory uses code from the following open source projects:",
                             "theUltimateScale ( https://github.com/" +
-                                "theUltimateLabs/theUtimateScale )" },
+                                "theUltimateLabs/theUtimateScale )"},
                         org.wheatgenetics.about.OtherApps.Index.INVENTORY,
                         this.versionOnClickListener                      );
                 }
@@ -111,16 +110,15 @@ org.wheatgenetics.inventory.navigation.DeleteAlertDialog.Handler
     // endregion
 
     // region org.wheatgenetics.inventory.navigation.ExportAlertDialog.Handler Overridden Methods
-    @java.lang.Override
-    public void exportCSV() { assert null != this.handler; this.handler.exportCSV(); }
+    @java.lang.Override public void exportCSV()
+    { assert null != this.handler; this.handler.exportCSV(); }
 
-    @java.lang.Override
-    public void exportSQL() { assert null != this.handler; this.handler.exportSQL(); }
+    @java.lang.Override public void exportSQL()
+    { assert null != this.handler; this.handler.exportSQL(); }
     // endregion
 
     // region org.wheatgenetics.inventory.navigation.DeleteAlertDialog.Handler Overridden Method
-    @java.lang.Override
-    public void delete() { assert null != this.handler; this.handler.delete(); }
+    @java.lang.Override public void delete() { assert null != this.handler; this.handler.delete(); }
     // endregion
     // endregion
 }

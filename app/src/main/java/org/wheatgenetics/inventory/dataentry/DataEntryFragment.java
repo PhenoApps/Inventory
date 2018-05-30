@@ -5,14 +5,13 @@ package org.wheatgenetics.inventory.dataentry;
  * android.app.Activity
  * android.content.Context
  * android.os.Bundle
+ * android.support.annotation.NonNull
  * android.support.annotation.Nullable
  * android.support.v4.app.Fragment
  * android.util.Log
- * android.view.KeyEvent
  * android.view.LayoutInflater
  * android.view.View
  * android.view.ViewGroup
- * android.view.inputmethod.EditorInfo
  * android.widget.EditText
  * android.widget.TextView
  *
@@ -29,7 +28,7 @@ package org.wheatgenetics.inventory.dataentry;
 public class DataEntryFragment extends android.support.v4.app.Fragment
 implements org.wheatgenetics.inventory.dataentry.SetBoxAlertDialog.Handler
 {
-    @java.lang.SuppressWarnings("UnnecessaryInterfaceModifier")
+    @java.lang.SuppressWarnings({"UnnecessaryInterfaceModifier"})
     public interface Handler
     {
         public abstract void             setBox(java.lang.String box);
@@ -41,7 +40,7 @@ implements org.wheatgenetics.inventory.dataentry.SetBoxAlertDialog.Handler
     // region Fields
     private org.wheatgenetics.inventory.dataentry.DataEntryFragment.Handler handler;
 
-    private android.widget.TextView boxValueTextView;
+    private android.widget.TextView boxValueTextView         ;
     private android.widget.EditText envidEditText, wtEditText;
 
     private org.wheatgenetics.inventory.dataentry.SetBoxAlertDialog setBoxAlertDialog = null;
@@ -73,8 +72,7 @@ implements org.wheatgenetics.inventory.dataentry.SetBoxAlertDialog.Handler
     public DataEntryFragment() { /* Required empty public constructor. */ }
 
     // region Overridden Methods
-    @java.lang.Override
-    public void onAttach(final android.content.Context context)
+    @java.lang.Override public void onAttach(final android.content.Context context)
     {
         super.onAttach(context);
 
@@ -90,19 +88,18 @@ implements org.wheatgenetics.inventory.dataentry.SetBoxAlertDialog.Handler
         }
     }
 
-    @java.lang.Override
-    public android.view.View onCreateView(final android.view.LayoutInflater inflater,
+    @java.lang.Override public android.view.View onCreateView(
+    @android.support.annotation.NonNull final android.view.LayoutInflater inflater,
     final android.view.ViewGroup container, final android.os.Bundle savedInstanceState)
     {
         org.wheatgenetics.inventory.dataentry.DataEntryFragment.sendDebugLogMsg("onCreateView()");
 
         // Inflate the layout for this fragment:
-        assert null != inflater; return inflater.inflate(
-            org.wheatgenetics.inventory.R.layout.fragment_data_entry, container, false);
+        return inflater.inflate(org.wheatgenetics.inventory.R.layout.fragment_data_entry,
+            container, false);
     }
 
-    @java.lang.Override
-    public void onActivityCreated(
+    @java.lang.Override public void onActivityCreated(
     @android.support.annotation.Nullable final android.os.Bundle savedInstanceState)
     {
         super.onActivityCreated(savedInstanceState);
@@ -112,21 +109,20 @@ implements org.wheatgenetics.inventory.dataentry.SetBoxAlertDialog.Handler
 
         {
             final android.app.Activity activity = this.getActivity();
-            assert null != activity; this.boxValueTextView = (android.widget.TextView)
-                activity.findViewById(org.wheatgenetics.inventory.R.id.boxValueTextView);
+            assert null != activity; this.boxValueTextView = activity.findViewById(
+                org.wheatgenetics.inventory.R.id.boxValueTextView);
             assert null != this.handler; assert null != this.boxValueTextView;
             this.boxValueTextView.setText(this.handler.getBox());
 
-            this.envidEditText = (android.widget.EditText)
-                activity.findViewById(org.wheatgenetics.inventory.R.id.envidEditText);
+            this.envidEditText = activity.findViewById(
+                org.wheatgenetics.inventory.R.id.envidEditText);
             assert null != this.envidEditText; this.envidEditText.setOnEditorActionListener(
                 new org.wheatgenetics.androidlibrary.DebouncingEditorActionListener(
                     /* editText => */ this.envidEditText,
                     /* receiver => */ new
                         org.wheatgenetics.androidlibrary.DebouncingEditorActionListener.Receiver()
                         {
-                            @java.lang.Override
-                            public void receiveText(final java.lang.String text)
+                            @java.lang.Override public void receiveText(final java.lang.String text)
                             {
                                 org.wheatgenetics.inventory.dataentry
                                     .DataEntryFragment.this.addEnvid(text);
@@ -136,8 +132,7 @@ implements org.wheatgenetics.inventory.dataentry.SetBoxAlertDialog.Handler
                     /* delayMillis => */ 1000                                         ));
             this.focusEnvIdEditText();
 
-            this.wtEditText = (android.widget.EditText)
-                activity.findViewById(org.wheatgenetics.inventory.R.id.wtEditText);
+            this.wtEditText = activity.findViewById(org.wheatgenetics.inventory.R.id.wtEditText);
         }
         assert null != this.wtEditText; this.wtEditText.setOnEditorActionListener(
             new org.wheatgenetics.androidlibrary.DebouncingEditorActionListener(
@@ -145,8 +140,7 @@ implements org.wheatgenetics.inventory.dataentry.SetBoxAlertDialog.Handler
                 /* receiver => */ new
                     org.wheatgenetics.androidlibrary.DebouncingEditorActionListener.Receiver()
                     {
-                        @java.lang.Override
-                        public void receiveText(final java.lang.String text)
+                        @java.lang.Override public void receiveText(final java.lang.String text)
                         {
                             org.wheatgenetics.inventory.dataentry
                                 .DataEntryFragment.this.addWt(text);
@@ -156,19 +150,17 @@ implements org.wheatgenetics.inventory.dataentry.SetBoxAlertDialog.Handler
                 /* delayMillis => */ 1000                                         ));
     }
 
-    @java.lang.Override
-    public void onDetach()
+    @java.lang.Override public void onDetach()
     {
         org.wheatgenetics.inventory.dataentry.DataEntryFragment.sendDebugLogMsg("onDetach()");
         this.handler = null; super.onDetach();
     }
 
     // region org.wheatgenetics.inventory.dataentry.SetBoxAlertDialog.Handler Overridden Method
-    @java.lang.Override
-    public void setBox(final java.lang.String box)
+    @java.lang.Override public void setBox(final java.lang.String box)
     {
         assert null != this.boxValueTextView; this.boxValueTextView.setText(box);
-        assert null != this.handler; this.handler.setBox(box);
+        assert null != this.handler         ; this.handler.setBox          (box);
     }
     // endregion
     // endregion

@@ -7,12 +7,13 @@ package org.wheatgenetics.inventory.display;
  * android.content.DialogInterface.OnClickListener
  *
  * org.wheatgenetics.androidlibrary.AlertDialog
+ * org.wheatgenetics.androidlibrary.Utils
  *
  * org.wheatgenetics.inventory.R
  */
 class DeleteRecordAlertDialog extends org.wheatgenetics.androidlibrary.AlertDialog
 {
-    @java.lang.SuppressWarnings("UnnecessaryInterfaceModifier")
+    @java.lang.SuppressWarnings({"UnnecessaryInterfaceModifier"})
     interface Handler { public abstract void deleteRecord(); }
 
     private final org.wheatgenetics.inventory.display.DeleteRecordAlertDialog.Handler handler;
@@ -23,17 +24,15 @@ class DeleteRecordAlertDialog extends org.wheatgenetics.androidlibrary.AlertDial
     final org.wheatgenetics.inventory.display.DeleteRecordAlertDialog.Handler handler)
     { super(activity); this.handler = handler; }
 
-    @java.lang.Override
-    public void configure()
+    @java.lang.Override public void configure()
     {
         this.setTitle(org.wheatgenetics.inventory.R.string.deleteRecordAlertDialogTitle)
             .setCancelableToTrue()
             .setPositiveButton(org.wheatgenetics.inventory.R.string.deleteRecordAlertDialogPositive,
                 new android.content.DialogInterface.OnClickListener()
                 {
-                    @java.lang.Override
-                    public void onClick(final android.content.DialogInterface dialog,
-                    final int which)
+                    @java.lang.Override public void onClick(
+                    final android.content.DialogInterface dialog, final int which)
                     {
                         org.wheatgenetics.inventory.display.
                             DeleteRecordAlertDialog.this.deleteRecord();

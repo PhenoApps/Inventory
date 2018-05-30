@@ -6,7 +6,7 @@ package org.wheatgenetics.inventory.model;
  *
  * org.wheatgenetics.javalib.Utils
  */
-@java.lang.SuppressWarnings("ClassExplicitlyExtendsObject")
+@java.lang.SuppressWarnings({"ClassExplicitlyExtendsObject"})
 public class InventoryRecord extends java.lang.Object
 {
     // region Fields
@@ -15,39 +15,43 @@ public class InventoryRecord extends java.lang.Object
     private       java.lang.String wt = null                                           ;
     // endregion
 
+    private static java.lang.String trim(java.lang.String string)
+    {
+        final java.lang.String nullString = "null";
+        if (null == string)
+            return nullString;
+        else
+        {
+            string = string.trim();
+            return string.length() > 0 ? string : nullString;
+        }
+    }
+
     // region Constructors
-    public InventoryRecord(final java.lang.String box, final java.lang.String envid,
-    final java.lang.String person, final java.lang.String date, final java.lang.String position,
+    private InventoryRecord(final java.lang.String box, final java.lang.String envid,
+    final java.lang.String person, final java.lang.String date, final int position,
     final java.lang.String wt)
     {
         super();
 
-        this.box      = box; this.envid = envid; this.person = person; this.date = date;
-        this.position = java.lang.Integer.parseInt(position);
-        this.wt       = wt;
+        this.box  = box ; this.envid    = envid   ; this.person = person;
+        this.date = date; this.position = position; this.wt     = wt    ;
     }
 
     public InventoryRecord(final java.lang.String box, final java.lang.String envid,
-    final java.lang.String person, final int position, java.lang.String wt)
+    final java.lang.String person, final java.lang.String date, final java.lang.String position,
+    final java.lang.String wt)
+    { this(box, envid, person, date, java.lang.Integer.parseInt(position), wt); }
+
+    public InventoryRecord(final java.lang.String box, final java.lang.String envid,
+    final java.lang.String person, final int position, final java.lang.String wt)
     {
-        super();
-
-        this.box      = box; this.envid = envid; this.person = person;
-        this.date     = org.wheatgenetics.javalib.Utils.getDateTime();
-        this.position = position;
-
-        if (null == wt)
-            this.wt = "null";
-        else
-        {
-            wt = wt.trim();
-            this.wt = wt.length() > 0 ? wt : "null";
-        }
+        this(box, envid, person, org.wheatgenetics.javalib.Utils.getDateTime(), position,
+            org.wheatgenetics.inventory.model.InventoryRecord.trim(wt));
     }
     // endregion
 
-    @java.lang.Override
-    public java.lang.String toString()
+    @java.lang.Override public java.lang.String toString()
     {
         return this.getBox() + "," + this.getEnvId() + "," + this.getPerson() +
             "," + this.getDate() + "," + this.getPosition() + "," + this.getWt();

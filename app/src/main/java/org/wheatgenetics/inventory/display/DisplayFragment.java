@@ -5,6 +5,7 @@ package org.wheatgenetics.inventory.display;
  * android.app.Activity
  * android.content.Context
  * android.os.Bundle
+ * android.support.annotation.NonNull
  * android.support.annotation.Nullable
  * android.support.v4.app.Fragment
  * android.view.LayoutInflater
@@ -23,11 +24,14 @@ package org.wheatgenetics.inventory.display;
  *
  * org.wheatgenetics.inventory.display.DeleteRecordAlertDialog
  * org.wheatgenetics.inventory.display.DeleteRecordAlertDialog.Handler
+ * org.wheatgenetics.inventory.display.DisplayTextView
+ * org.wheatgenetics.inventory.display.EnvIdDisplayTextView
+ * org.wheatgenetics.inventory.display.TableRow
  */
 public class DisplayFragment extends android.support.v4.app.Fragment
 implements org.wheatgenetics.inventory.display.DeleteRecordAlertDialog.Handler
 {
-    @java.lang.SuppressWarnings("UnnecessaryInterfaceModifier")
+    @java.lang.SuppressWarnings({"UnnecessaryInterfaceModifier"})
     public interface Handler
     {
         public abstract void                                               focusEnvIdEditText();
@@ -62,8 +66,12 @@ implements org.wheatgenetics.inventory.display.DeleteRecordAlertDialog.Handler
     {
         if (null == this.scrollViewInstance)
         {
-            this.scrollViewInstance = (android.widget.ScrollView)
-                this.getActivity().findViewById(org.wheatgenetics.inventory.R.id.displayScrollView);
+            final android.app.Activity activity = this.getActivity();
+
+            assert null != activity;
+            this.scrollViewInstance = activity.findViewById(
+                org.wheatgenetics.inventory.R.id.displayScrollView);
+
             assert null != this.scrollViewInstance;
         }
         return this.scrollViewInstance;
@@ -79,8 +87,7 @@ implements org.wheatgenetics.inventory.display.DeleteRecordAlertDialog.Handler
     {
         if (null == this.scrollActionInstance) this.scrollActionInstance = new java.lang.Runnable()
             {
-                @java.lang.Override
-                public void run()
+                @java.lang.Override public void run()
                 { org.wheatgenetics.inventory.display.DisplayFragment.this.scrollDown(); }
             };
         return this.scrollActionInstance;
@@ -92,6 +99,21 @@ implements org.wheatgenetics.inventory.display.DeleteRecordAlertDialog.Handler
             /* delayMillis => */ shortDelay ? 500 : 1500);
     }
 
+    private android.widget.TableLayout tableLayout()
+    {
+        if (null == this.tableLayoutInstance)
+        {
+            final android.app.Activity activity = this.getActivity();
+
+            assert null != activity;
+            this.tableLayoutInstance = activity.findViewById(
+                org.wheatgenetics.inventory.R.id.displayTableLayout);
+
+            assert null != this.tableLayoutInstance;
+        }
+        return this.tableLayoutInstance;
+    }
+
     private android.view.ViewGroup.LayoutParams layoutParams()
     {
         if (null == this.layoutParamsInstance)
@@ -99,18 +121,6 @@ implements org.wheatgenetics.inventory.display.DeleteRecordAlertDialog.Handler
                 android.widget.TableLayout.LayoutParams.MATCH_PARENT,
                 android.widget.TableLayout.LayoutParams.MATCH_PARENT);
         return this.layoutParamsInstance;
-    }
-
-    private android.widget.TableLayout tableLayout()
-    {
-        if (null == this.tableLayoutInstance)
-        {
-            this.tableLayoutInstance =
-                (android.widget.TableLayout) this.getActivity().findViewById(
-                    org.wheatgenetics.inventory.R.id.displayTableLayout);
-            assert null != this.tableLayoutInstance;
-        }
-        return this.tableLayoutInstance;
     }
 
     private void deleteRecord(final java.lang.Object tag)
@@ -130,8 +140,7 @@ implements org.wheatgenetics.inventory.display.DeleteRecordAlertDialog.Handler
         if (null == this.onLongClickListenerInstance) this.onLongClickListenerInstance =
             new android.view.View.OnLongClickListener()
             {
-                @java.lang.Override
-                public boolean onLongClick(final android.view.View v)
+                @java.lang.Override public boolean onLongClick(final android.view.View v)
                 {
                     assert null != v;
                     org.wheatgenetics.inventory.display.DisplayFragment.this.deleteRecord(
@@ -170,8 +179,7 @@ implements org.wheatgenetics.inventory.display.DeleteRecordAlertDialog.Handler
     public DisplayFragment() { /* Required empty public constructor. */ }
 
     // region Overridden Methods
-    @java.lang.Override
-    public void onAttach(final android.content.Context context)
+    @java.lang.Override public void onAttach(final android.content.Context context)
     {
         super.onAttach(context);
 
@@ -184,27 +192,24 @@ implements org.wheatgenetics.inventory.display.DeleteRecordAlertDialog.Handler
         }
     }
 
-    @java.lang.Override
-    public android.view.View onCreateView(final android.view.LayoutInflater inflater,
+    @java.lang.Override public android.view.View onCreateView(
+    @android.support.annotation.NonNull final android.view.LayoutInflater inflater,
     final android.view.ViewGroup container, final android.os.Bundle savedInstanceState)
     {
         // Inflate the layout for this fragment:
-        assert null != inflater; return inflater.inflate(
-            org.wheatgenetics.inventory.R.layout.fragment_display, container, false);
+        return inflater.inflate(org.wheatgenetics.inventory.R.layout.fragment_display,
+            container, false);
     }
 
-    @java.lang.Override
-    public void onActivityCreated(
+    @java.lang.Override public void onActivityCreated(
     @android.support.annotation.Nullable final android.os.Bundle savedInstanceState)
     { super.onActivityCreated(savedInstanceState); this.addTableRows(/* shortDelay => */ false); }
 
-    @java.lang.Override
-    public void onDetach() { this.handler = null; super.onDetach(); }
+    @java.lang.Override public void onDetach() { this.handler = null; super.onDetach(); }
 
     // region org.wheatgenetics.inventory.display.DeleteRecordAlertDialog.HandlerOverridden Method
-    @java.lang.Override
-    public void deleteRecord()
-    { assert null != this.handler; this.handler.deleteRecord(inventoryRecord); }
+    @java.lang.Override public void deleteRecord()
+    { assert null != this.handler; this.handler.deleteRecord(this.inventoryRecord); }
     // endregion
     // endregion
 
@@ -216,20 +221,23 @@ implements org.wheatgenetics.inventory.display.DeleteRecordAlertDialog.Handler
         if (null != inventoryRecord)
         {
             {
-                final android.app.Activity                         activity = this.getActivity();
-                final org.wheatgenetics.inventory.display.TableRow tableRow =
-                    new org.wheatgenetics.inventory.display.TableRow(activity);
+                final org.wheatgenetics.inventory.display.TableRow tableRow;
+                {
+                    final android.app.Activity activity = this.getActivity();
 
-                tableRow.addView(new org.wheatgenetics.inventory.display.DisplayTextView(
-                    activity, inventoryRecord.getPositionAsString()));
-                tableRow.addView(new org.wheatgenetics.inventory.display.DisplayTextView(
-                    activity, inventoryRecord.getBox()));
-                tableRow.addView(new org.wheatgenetics.inventory.display.EnvIdDisplayTextView(
-                    activity, inventoryRecord.getEnvId(), inventoryRecord,
-                    this.onLongClickListener()));
-                tableRow.addView(new org.wheatgenetics.inventory.display.DisplayTextView(
-                    activity, inventoryRecord.getWt()));
+                    assert null != activity;
+                    tableRow = new org.wheatgenetics.inventory.display.TableRow(activity);
 
+                    tableRow.addView(new org.wheatgenetics.inventory.display.DisplayTextView(
+                        activity, inventoryRecord.getPositionAsString()));
+                    tableRow.addView(new org.wheatgenetics.inventory.display.DisplayTextView(
+                        activity, inventoryRecord.getBox()));
+                    tableRow.addView(new org.wheatgenetics.inventory.display.EnvIdDisplayTextView(
+                        activity, inventoryRecord.getEnvId(), inventoryRecord,
+                        this.onLongClickListener()));
+                    tableRow.addView(new org.wheatgenetics.inventory.display.DisplayTextView(
+                        activity, inventoryRecord.getWt()));
+                }
                 this.tableLayout().addView(tableRow, this.layoutParams());
             }
             this.position = inventoryRecord.getPosition();
