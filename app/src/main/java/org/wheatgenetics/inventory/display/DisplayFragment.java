@@ -5,6 +5,7 @@ package org.wheatgenetics.inventory.display;
  * android.app.Activity
  * android.content.Context
  * android.os.Bundle
+ * android.support.annotation.IntRange
  * android.support.annotation.NonNull
  * android.support.annotation.Nullable
  * android.support.v4.app.Fragment
@@ -58,7 +59,7 @@ implements org.wheatgenetics.inventory.display.DeleteRecordAlertDialog.Handler
      * Position of last inventoryRecord added.  If == 0 then no inventoryRecord has been added yet.
      * This field should never be negative.
      */
-    private int position;
+    @android.support.annotation.IntRange(from = 0) private int position;
     // endregion
 
     // region Private Methods
