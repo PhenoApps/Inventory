@@ -36,4 +36,12 @@
     <string name="boxTextViewText">Box</string>
     <string name="displayEnvidTextViewText">Sample</string>
     <string name="displayWtTextViewText">Wt</string>
+
+
+    <!-- ExportAlertDialog -->
+    <string name="exportAlertDialogTitle">Export data</string>
+    <string name="exportAlertDialogMsg">How would you like to export the data?</string>
+    <string name="exportAlertDialogPositive">Flat file (CSV)</string>
+    <string name="exportAlertDialogNegative">Query file (SQL)</string>
+    <string name="exportAlertDialogNeutral">Cancel</string>
 </resources>
