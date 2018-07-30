@@ -52,4 +52,9 @@
 
     <!-- NavigationItemSelectedListener -->
     <string name="aboutAlertDialogTitle">About Inventory</string>
+
+
+    <!-- MainActivity -->
+    <string name="data_deleted">Data deleted</string>
+    <string name="exportSuccess">File exported successfully.</string>
 </resources>
