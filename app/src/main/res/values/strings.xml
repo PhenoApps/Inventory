@@ -30,4 +30,10 @@
     <string name="deleteRecordAlertDialogTitle">Delete Entry</string>
     <string name="deleteRecordAlertDialogPositive">Yes</string>
     <string name="deleteRecordAlertDialogNegative">No</string>
+
+    <!-- fragment_display.xml -->
+    <string name="positionTextViewText">Num</string>
+    <string name="boxTextViewText">Box</string>
+    <string name="displayEnvidTextViewText">Sample</string>
+    <string name="displayWtTextViewText">Wt</string>
 </resources>

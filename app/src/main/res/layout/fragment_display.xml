@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.widget.TableLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+
+    android:layout_height="match_parent"
+    android:layout_width="wrap_content"
+
+    tools:context="org.wheatgenetics.inventory.display.DisplayFragment">
+
+
+
+    <android.widget.TableRow
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent">
+
+        <android.widget.TextView
+            android:layout_height="wrap_content"
+            android:layout_width="0dp"
+            android:layout_weight="0.16"
+            android:gravity="center"
+            android:text="@string/positionTextViewText"
+            android:textSize="20sp"
+            android:textStyle="bold" />
+
+        <android.widget.TextView
+            android:layout_height="wrap_content"
+            android:layout_width="0dp"
+            android:layout_weight="0.16"
+            android:gravity="center"
+            android:text="@string/boxTextViewText"
+            android:textSize="20sp"
+            android:textStyle="bold" />
+
+        <android.widget.TextView
+            android:layout_height="wrap_content"
+            android:layout_width="0dp"
+            android:layout_weight="0.5"
+            android:gravity="center"
+            android:text="@string/displayEnvidTextViewText"
+            android:textSize="20sp"
+            android:textStyle="bold" />
+
+        <android.widget.TextView
+            android:layout_height="wrap_content"
+            android:layout_width="0dp"
+            android:layout_weight="0.16"
+            android:gravity="center"
+            android:text="@string/displayWtTextViewText"
+            android:textSize="20sp"
+            android:textStyle="bold" />
+
+    </android.widget.TableRow>
+
+
+
+    <android.widget.ScrollView
+        android:id="@+id/displayScrollView"
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:layout_marginBottom="25dp">
+
+        <android.widget.TableLayout
+            android:id="@+id/displayTableLayout"
+            android:layout_height="match_parent"
+            android:layout_width="match_parent" />
+
+    </android.widget.ScrollView>
+
+
+
+</android.widget.TableLayout>
