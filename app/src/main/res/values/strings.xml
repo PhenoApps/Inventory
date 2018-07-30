@@ -14,4 +14,14 @@
     <!-- SetPersonAlertDialog -->
     <string name="setPersonAlertDialogTitle">Set Person</string>
     <string name="setPersonMsg">Person set as: </string>
+
+
+    <!-- fragment_data_entry.xml -->
+    <string name="boxLabelTextViewText">Box:</string>
+    <string name="setBoxButtonText">Set Box</string>
+    <string name="dataEntryEnvidTextViewText">Input:</string>
+    <string name="dataEntryWtTextViewText">Weight:</string>
+
+    <!-- SetBoxAlertDialog -->
+    <string name="setBoxAlertDialogTitle">Set Box</string>
 </resources>
