@@ -4,7 +4,9 @@ package org.wheatgenetics.inventory;
  * Uses:
  * android.content.Intent
  * android.content.pm.PackageInfo
+ * android.content.pm.PackageManager
  * android.content.pm.PackageManager.NameNotFoundException
+ * android.Manifest.permission
  * android.os.Bundle
  * android.support.annotation.NonNull
  * android.support.design.widget.NavigationView
@@ -22,6 +24,8 @@ package org.wheatgenetics.inventory;
  * android.view.View.OnClickListener
  * android.widget.TextView
  *
+ * org.wheatgenetics.javalib.Dir.PermissionException
+ * org.wheatgenetics.javalib.Dir.PermissionRequestedException
  * org.wheatgenetics.javalib.Utils
  *
  * org.wheatgenetics.androidlibrary.GetExportFileNameAlertDialog
@@ -85,13 +89,13 @@ org.wheatgenetics.androidlibrary.GetExportFileNameAlertDialog.Handler
     private org.wheatgenetics.zxing.BarcodeScanner           barcodeScanner       = null;
 
     private org.wheatgenetics.inventory.SetPersonAlertDialog        setPersonAlertDialog = null;
+    private org.wheatgenetics.inventory.InventoryDir                inventoryDir         = null;
     private org.wheatgenetics.inventory.SamplesTable                samplesTableInstance = null;
-    private org.wheatgenetics.inventory.InventoryDir                inventoryDir               ;
     private org.wheatgenetics.inventory.dataentry.DataEntryFragment dataEntryFragment          ;
     private org.wheatgenetics.inventory.display.DisplayFragment     displayFragment            ;
 
-    private org.wheatgenetics.inventory.MainActivity.ExportKind exportKind;
-    private java.lang.String                                    box       ;
+    private org.wheatgenetics.inventory.MainActivity.ExportKind exportKind         ;
+    private java.lang.String                                    box, exportFileName;
     // endregion
 
     // region Private Methods
@@ -148,6 +152,16 @@ org.wheatgenetics.androidlibrary.GetExportFileNameAlertDialog.Handler
         return this.scaleReaderInstance;
     }
 
+    private void createInventoryDirIfMissing()
+    throws java.io.IOException, org.wheatgenetics.javalib.Dir.PermissionException
+    {
+        if (null == this.inventoryDir)
+            this.inventoryDir = new org.wheatgenetics.inventory.InventoryDir(
+                /* activity    => */this,
+                /* requestCode => */ org.wheatgenetics.inventory.MainActivity.REQUEST_CODE);
+        this.inventoryDir.createIfMissing();             // throws java.io.IOException, org.wheatge-
+    }                                                    //  netics.javalib.Dir.PermissionException
+
     private org.wheatgenetics.inventory.SamplesTable samplesTable()
     {
         if (null == this.samplesTableInstance)
@@ -159,6 +173,78 @@ org.wheatgenetics.androidlibrary.GetExportFileNameAlertDialog.Handler
     {
         this.samplesTable().deleteAll();
         assert null != this.displayFragment; this.displayFragment.refresh();
+    }
+
+    private void exportCSV()
+    {
+        try
+        {
+            this.createInventoryDirIfMissing();          // throws java.io.IOException, org.wheatge-
+                                                         //  netics.javalib.Dir.PermissionException
+            assert null != this.inventoryDir;
+            java.io.File file = this.inventoryDir.createNewFile(      // throws java.io.IOException,
+                this.exportFileName + ".csv");               //  org.wheatgenetics.javalib-
+            if (null != file)                                         //  .Dir.PermissionException
+            {
+                {
+                    final org.wheatgenetics.inventory.model.InventoryRecords inventoryRecords =
+                        this.samplesTable().getAll();
+                    assert null != inventoryRecords; file = inventoryRecords.writeCSV(file);
+                }
+                if (null != file)
+                {
+                    org.wheatgenetics.androidlibrary.Utils.shareFile(
+                        this, this.inventoryDir.parse(file));
+                    this.showToast(org.wheatgenetics.inventory.R.string.exportSuccess);
+                    this.deleteAll();
+                }
+            }
+        }
+        catch (final java.io.IOException | org.wheatgenetics.javalib.Dir.PermissionException e)
+        {
+            if (!(e instanceof org.wheatgenetics.javalib.Dir.PermissionRequestedException))
+                this.showToast(e.getMessage());
+        }
+    }
+
+    private void exportSQL()
+    {
+        try
+        {
+            this.createInventoryDirIfMissing();          // throws java.io.IOException, org.wheatge-
+                                                         //  netics.javalib.Dir.PermissionException
+            assert null != this.inventoryDir;
+            java.io.File file = this.inventoryDir.createNewFile(      // throws java.io.IOException,
+                this.exportFileName + ".sql");               //  org.wheatgenetics.javalib-
+            if (null != file)                                         //  .Dir.PermissionException
+            {
+                {
+                    final java.lang.String                                   boxList         ;
+                    final org.wheatgenetics.inventory.model.InventoryRecords inventoryRecords;
+                    {
+                        final org.wheatgenetics.inventory.SamplesTable samplesTable =
+                            this.samplesTable();
+                        assert null != samplesTable;
+                        boxList          = samplesTable.getBoxList();
+                        inventoryRecords = samplesTable.getAll()    ;
+                    }
+                    assert null != inventoryRecords;
+                    file = inventoryRecords.writeSQL(file, boxList);
+                }
+                if (null != file)
+                {
+                    org.wheatgenetics.androidlibrary.Utils.shareFile(
+                        this, this.inventoryDir.parse(file));
+                    this.showToast(org.wheatgenetics.inventory.R.string.exportSuccess);
+                    this.deleteAll();
+                }
+            }
+        }
+        catch (final java.io.IOException | org.wheatgenetics.javalib.Dir.PermissionException e)
+        {
+            if (!(e instanceof org.wheatgenetics.javalib.Dir.PermissionRequestedException))
+                this.showToast(e.getMessage());
+        }
     }
     // endregion
 
@@ -224,64 +310,12 @@ org.wheatgenetics.androidlibrary.GetExportFileNameAlertDialog.Handler
         this.changeLogAlertDialog.show();
     }
 
-    private void exportCSV(final java.lang.String exportFileName)
+    private void export()
     {
-        try
-        {
-            assert null != this.inventoryDir;
-            java.io.File file = this.inventoryDir.createNewFile(       // throws java.io.IOException
-                exportFileName + ".csv");
-            if (null != file)
-            {
-                {
-                    final org.wheatgenetics.inventory.model.InventoryRecords inventoryRecords =
-                        this.samplesTable().getAll();
-                    assert null != inventoryRecords; file = inventoryRecords.writeCSV(file);
-                }
-                if (null != file)
-                {
-                    org.wheatgenetics.androidlibrary.Utils.shareFile(
-                        this, this.inventoryDir.parse(file));
-                    this.showToast(org.wheatgenetics.inventory.R.string.exportSuccess);
-                    this.deleteAll();
-                }
-            }
-        }
-        catch (final java.io.IOException e) { this.showToast(e.getMessage()); }
-    }
-
-    private void exportSQL(final java.lang.String exportFileName)
-    {
-        try
-        {
-            assert null != this.inventoryDir;
-            java.io.File file = this.inventoryDir.createNewFile(       // throws java.io.IOException
-                exportFileName + ".sql");
-            if (null != file)
-            {
-                {
-                    final java.lang.String                                   boxList         ;
-                    final org.wheatgenetics.inventory.model.InventoryRecords inventoryRecords;
-                    {
-                        final org.wheatgenetics.inventory.SamplesTable samplesTable =
-                            this.samplesTable();
-                        assert null != samplesTable;
-                        boxList          = samplesTable.getBoxList();
-                        inventoryRecords = samplesTable.getAll()    ;
-                    }
-                    assert null != inventoryRecords;
-                    file = inventoryRecords.writeSQL(file, boxList);
-                }
-                if (null != file)
-                {
-                    org.wheatgenetics.androidlibrary.Utils.shareFile(
-                        this, this.inventoryDir.parse(file));
-                    this.showToast(org.wheatgenetics.inventory.R.string.exportSuccess);
-                    this.deleteAll();
-                }
-            }
-        }
-        catch (final java.io.IOException e) { this.showToast(e.getMessage()); }
+        if (org.wheatgenetics.inventory.MainActivity.ExportKind.CSV == this.exportKind)
+            this.exportCSV();
+        else
+            this.exportSQL();
     }
     // endregion
 
@@ -408,20 +442,6 @@ org.wheatgenetics.androidlibrary.GetExportFileNameAlertDialog.Handler
             // endregion
         }
 
-        // region Create inventoryDir.
-        this.inventoryDir = new org.wheatgenetics.inventory.InventoryDir(
-            /* activity    => */this,
-            /* requestCode => */ org.wheatgenetics.inventory.MainActivity.REQUEST_CODE);
-        try { this.inventoryDir.createIfMissing() /* throws java.io.IOException */; }
-        catch (final java.io.IOException e)
-        {
-            // Do nothing.  The reason I do nothing is because when an exception is thrown it does
-            // not mean there is a problem.  For example, an exception is thrown when the directory
-            // already exists.  If I try to create a directory and I fail because the directory al-
-            // ready exists then I don't have a problem.
-        }
-        // endregion
-
         // region Configure fragments.
         {
             this.box = null == savedInstanceState ? "" :
@@ -481,6 +501,24 @@ org.wheatgenetics.androidlibrary.GetExportFileNameAlertDialog.Handler
             "null"));
     }
 
+    @java.lang.Override public void onRequestPermissionsResult(
+                                        final int              requestCode   ,
+    @android.support.annotation.NonNull final java.lang.String permissions [],
+    @android.support.annotation.NonNull final int              grantResults[])
+    {
+        if (org.wheatgenetics.inventory.MainActivity.REQUEST_CODE == requestCode)
+        {
+            boolean permissionFound = false;
+            for (final java.lang.String permission: permissions)
+                if (android.Manifest.permission.WRITE_EXTERNAL_STORAGE.equals(permission))
+                    { permissionFound = true; break; }
+
+            if (permissionFound) for (final int grantResult: grantResults)
+                if (android.content.pm.PackageManager.PERMISSION_GRANTED == grantResult)
+                    { this.export(); break; }
+        }
+    }
+
     @java.lang.Override protected void onSaveInstanceState(final android.os.Bundle outState)
     {
         assert null != outState;
@@ -527,12 +565,7 @@ org.wheatgenetics.androidlibrary.GetExportFileNameAlertDialog.Handler
 
     // region org.wheatgenetics.androidlibrary.GetExportFileNameAlertDialog.Handler Overridden Method
     @java.lang.Override public void handleGetFileNameDone(final java.lang.String fileName)
-    {
-        if (org.wheatgenetics.inventory.MainActivity.ExportKind.CSV == this.exportKind)
-            this.exportCSV(fileName);
-        else
-            this.exportSQL(fileName);
-    }
+    { this.exportFileName = fileName; this.export(); }
     // endregion
     // endregion
 
