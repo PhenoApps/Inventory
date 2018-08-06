@@ -569,6 +569,7 @@ org.wheatgenetics.androidlibrary.GetExportFileNameAlertDialog.Handler
     // endregion
     // endregion
 
-    public void handleSetBoxButtonClick(final android.view.View v)
+    public void handleSetBoxButtonClick(
+    @java.lang.SuppressWarnings("unused") final android.view.View v)
     { assert null != this.dataEntryFragment; dataEntryFragment.handleSetBoxButtonClick(this.box); }
 }

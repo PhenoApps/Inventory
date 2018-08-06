@@ -2,6 +2,7 @@ package org.wheatgenetics.inventory.model;
 
 /**
  * Uses:
+ * android.support.annotation.NonNull
  * android.util.Log
  *
  * org.wheatgenetics.inventory.model.InventoryRecord
@@ -14,7 +15,7 @@ implements java.lang.Iterable<org.wheatgenetics.inventory.model.InventoryRecord>
     private final java.util.LinkedList<org.wheatgenetics.inventory.model.InventoryRecord>
         linkedList = new java.util.LinkedList<org.wheatgenetics.inventory.model.InventoryRecord>();
 
-    @java.lang.Override
+    @android.support.annotation.NonNull @java.lang.Override
     public java.util.Iterator<org.wheatgenetics.inventory.model.InventoryRecord> iterator()
     { return this.linkedList.iterator(); }
 

@@ -10,6 +10,7 @@
     android:orientation="horizontal"
 
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
+    tools:ignore="PrivateResource"
 
     tools:context="org.wheatgenetics.inventory.MainActivity"
     tools:showIn="@layout/app_bar_main">
