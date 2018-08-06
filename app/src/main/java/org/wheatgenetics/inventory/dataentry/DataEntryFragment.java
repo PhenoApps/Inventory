@@ -47,10 +47,10 @@ implements org.wheatgenetics.inventory.dataentry.SetBoxAlertDialog.Handler
     // endregion
 
     // region Private Methods
-    private static int sendDebugLogMsg(final java.lang.String msg)
+    private static void sendDebugLogMsg(final java.lang.String msg)
     {
-        return org.wheatgenetics.inventory.BuildConfig.DEBUG ?
-            android.util.Log.d("DataEntryFragment", msg) : 0;
+        if (org.wheatgenetics.inventory.BuildConfig.DEBUG)
+            android.util.Log.d("DataEntryFragment", msg);
     }
 
     private void addRecord(final java.lang.String envid, final java.lang.String wt)
@@ -59,13 +59,13 @@ implements org.wheatgenetics.inventory.dataentry.SetBoxAlertDialog.Handler
     private void addEnvid(final java.lang.String envid)
     {
         this.addRecord(envid, org.wheatgenetics.androidlibrary.Utils.getText(this.wtEditText));
-        assert null != this.wtEditText; this.wtEditText.setText("");
+        this.clearWt();
     }
 
     private void addWt(final java.lang.String wt)
     {
         this.addRecord(org.wheatgenetics.androidlibrary.Utils.getText(this.envidEditText), wt);
-        assert null != this.envidEditText; this.envidEditText.setText("");
+        this.setEnvId("");
     }
     // endregion
 
@@ -114,8 +114,8 @@ implements org.wheatgenetics.inventory.dataentry.SetBoxAlertDialog.Handler
             assert null != this.handler; assert null != this.boxValueTextView;
             this.boxValueTextView.setText(this.handler.getBox());
 
-            this.envidEditText = activity.findViewById(
-                org.wheatgenetics.inventory.R.id.envidEditText);
+            this.envidEditText =
+                activity.findViewById(org.wheatgenetics.inventory.R.id.envidEditText);
             assert null != this.envidEditText; this.envidEditText.setOnEditorActionListener(
                 new org.wheatgenetics.androidlibrary.DebouncingEditorActionListener(
                     /* editText => */ this.envidEditText,

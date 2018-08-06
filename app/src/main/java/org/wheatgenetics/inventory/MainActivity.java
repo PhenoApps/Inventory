@@ -256,7 +256,7 @@ org.wheatgenetics.androidlibrary.GetExportFileNameAlertDialog.Handler
         personTextView.setText(this.sharedPreferences.getPerson().toString());
     }
 
-    private void setPerson(final boolean fromMenu)
+    private void setPerson(final boolean fromNavigationView)
     {
         if (null == this.setPersonAlertDialog) this.setPersonAlertDialog =
             new org.wheatgenetics.inventory.SetPersonAlertDialog(this,
@@ -267,7 +267,7 @@ org.wheatgenetics.androidlibrary.GetExportFileNameAlertDialog.Handler
                     { org.wheatgenetics.inventory.MainActivity.this.storePerson(person); }
                 });
 
-        if (fromMenu)
+        if (fromNavigationView)
         {
             assert null != this.sharedPreferences;
             this.setPersonAlertDialog.show(this.sharedPreferences.getPerson());
@@ -367,23 +367,25 @@ org.wheatgenetics.androidlibrary.GetExportFileNameAlertDialog.Handler
             try
             {
                 final android.content.pm.PackageInfo packageInfo =
-                    this.getPackageManager().getPackageInfo(
-                        this.getPackageName(), /* flags => */0);
+                    this.getPackageManager().getPackageInfo(this.getPackageName(), /* i => */0);
                 assert null != packageInfo;
                 versionCode = packageInfo.versionCode; versionName = packageInfo.versionName;
             }
             catch (final android.content.pm.PackageManager.NameNotFoundException e)
-            { versionCode = 0; versionName = org.wheatgenetics.javalib.Utils.adjust(null); }
+            {
+                versionCode = 0;
+                versionName = org.wheatgenetics.javalib.Utils.adjust(null);
+            }
             // endregion
 
-            // region Configure navigation menu.
+            // region Configure navigation view.
             {
                 final android.support.design.widget.NavigationView navigationView =
                     this.findViewById(org.wheatgenetics.inventory.R.id.nav_view);   // From layout/-
                 assert null != navigationView;                                      //  activity_-
                 navigationView.setNavigationItemSelectedListener(                   //  main.xml.
                     new org.wheatgenetics.inventory.navigation.NavigationItemSelectedListener(
-                        /* activity    => */ this       ,
+                        /* activity    => */this,
                         /* versionName => */ versionName,
                         /* handler     => */ new org.wheatgenetics.inventory.navigation
                             .NavigationItemSelectedListener.Handler()
@@ -391,7 +393,7 @@ org.wheatgenetics.androidlibrary.GetExportFileNameAlertDialog.Handler
                                 @java.lang.Override public void setPerson()
                                 {
                                     org.wheatgenetics.inventory.MainActivity.this.setPerson(
-                                        /* fromMenu => */ true);
+                                        /* fromNavigationView => */ true);
                                 }
 
                                 @java.lang.Override public void connectScale()
@@ -429,7 +431,8 @@ org.wheatgenetics.androidlibrary.GetExportFileNameAlertDialog.Handler
             // region Set person.
             this.sharedPreferences = new org.wheatgenetics.sharedpreferences.SharedPreferences(
                 this.getSharedPreferences("Settings", /* mode => */0));
-            if (!this.sharedPreferences.personIsSet()) this.setPerson(/* fromMenu => */ false);
+            if (!this.sharedPreferences.personIsSet())
+                this.setPerson(/* fromNavigationView => */ false);
             // endregion
 
             // region Connect scale.
@@ -443,10 +446,9 @@ org.wheatgenetics.androidlibrary.GetExportFileNameAlertDialog.Handler
         }
 
         // region Configure fragments.
+        this.box = null == savedInstanceState ? "" :
+            savedInstanceState.getString(org.wheatgenetics.inventory.MainActivity.BOX);
         {
-            this.box = null == savedInstanceState ? "" :
-                savedInstanceState.getString(org.wheatgenetics.inventory.MainActivity.BOX);
-
             final android.support.v4.app.FragmentManager fragmentManager =
                 this.getSupportFragmentManager();
             assert null != fragmentManager;
