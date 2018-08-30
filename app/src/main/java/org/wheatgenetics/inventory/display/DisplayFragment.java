@@ -37,7 +37,7 @@ implements org.wheatgenetics.inventory.display.DeleteRecordAlertDialog.Handler
     {
         public abstract void                                               focusEnvIdEditText();
         public abstract org.wheatgenetics.inventory.model.InventoryRecords inventoryRecords  ();
-        public abstract boolean deleteRecord(
+        public abstract void deleteRecord(
             org.wheatgenetics.inventory.model.InventoryRecord inventoryRecord);
     }
 

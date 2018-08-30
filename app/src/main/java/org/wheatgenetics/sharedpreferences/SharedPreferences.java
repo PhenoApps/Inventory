@@ -17,10 +17,10 @@ extends org.wheatgenetics.sharedpreferences.UpdateVersionSharedPreferences
         FIRST_NAME = "FirstName", LAST_NAME = "LastName", IGNORE_SCALE = "ignoreScale";
 
     // region Private Methods
-    private static int sendDebugLogMsg(
+    private static void sendDebugLogMsg(
     @android.support.annotation.NonNull final java.lang.String tag,
     @android.support.annotation.NonNull final java.lang.String msg)
-    { return android.util.Log.d("SharedPreferences." + tag, msg.equals("") ? "empty" : msg); }
+    { android.util.Log.d("SharedPreferences." + tag, msg.equals("") ? "empty" : msg); }
 
     // region First Name Private Methods
     private java.lang.String getFirstName()

@@ -556,12 +556,11 @@ org.wheatgenetics.androidlibrary.GetExportFileNameAlertDialog.Handler
     @java.lang.Override public org.wheatgenetics.inventory.model.InventoryRecords inventoryRecords()
     { return this.samplesTable().getAll(); }
 
-    @java.lang.Override public boolean deleteRecord(
+    @java.lang.Override public void deleteRecord(
     final org.wheatgenetics.inventory.model.InventoryRecord inventoryRecord)
     {
-        final boolean result = this.samplesTable().delete(inventoryRecord);
-        if (result) { assert null != this.displayFragment; this.displayFragment.refresh(); }
-        return result;
+        if (this.samplesTable().delete(inventoryRecord))
+            { assert null != this.displayFragment; this.displayFragment.refresh(); }
     }
     // endregion
 

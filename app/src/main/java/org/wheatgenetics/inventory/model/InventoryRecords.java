@@ -22,8 +22,8 @@ implements java.lang.Iterable<org.wheatgenetics.inventory.model.InventoryRecord>
     // region Public Methods
     public boolean isEmpty() { return this.linkedList.isEmpty(); }
 
-    public boolean add(final org.wheatgenetics.inventory.model.InventoryRecord inventoryRecord)
-    { return this.linkedList.add(inventoryRecord); }
+    public void add(final org.wheatgenetics.inventory.model.InventoryRecord inventoryRecord)
+    { this.linkedList.add(inventoryRecord); }
 
     public java.io.File writeCSV(final java.io.File file)
     {
@@ -112,7 +112,7 @@ implements java.lang.Iterable<org.wheatgenetics.inventory.model.InventoryRecord>
         }
     }
 
-    public int sendDebugLogMsg(final java.lang.String tag)
-    { return android.util.Log.d(tag, this.toString()); }
+    public void sendDebugLogMsg(final java.lang.String tag)
+    { android.util.Log.d(tag, this.toString()); }
     // endregion
 }

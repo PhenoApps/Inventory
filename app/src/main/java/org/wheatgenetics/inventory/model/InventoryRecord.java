@@ -95,7 +95,7 @@ public class InventoryRecord extends java.lang.Object
     public java.lang.String getPositionAsString()
     { return java.lang.Integer.toString(this.getPosition()); }
 
-    public int sendDebugLogMsg(final java.lang.String tag)
-    { return android.util.Log.d(tag, this.toString()); }
+    public void sendDebugLogMsg(final java.lang.String tag)
+    { android.util.Log.d(tag, this.toString()); }
     // endregion
 }
