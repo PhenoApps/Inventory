@@ -92,7 +92,7 @@ extends org.wheatgenetics.sharedpreferences.UpdateVersionSharedPreferences
     {
         final java.lang.String firstName, lastName;
         if (null == person)
-            { firstName = null; lastName = null; }
+            firstName = lastName = null;
         else
             { firstName = person.firstName; lastName = person.lastName; }
         this.setFirstName(firstName); this.setLastName (lastName);

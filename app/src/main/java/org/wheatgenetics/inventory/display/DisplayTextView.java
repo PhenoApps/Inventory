@@ -25,7 +25,7 @@ class DisplayTextView extends android.support.v7.widget.AppCompatTextView
         this.setLayoutParams(new android.widget.TableRow.LayoutParams(
             /* w          => */0,
             /* h          => */ android.view.ViewGroup.LayoutParams.WRAP_CONTENT,
-            /* initWeight => */ initWeight));
+            /* initWeight => */ initWeight                                      ));
     }
 
     DisplayTextView(final android.content.Context context, final java.lang.CharSequence text)

@@ -32,8 +32,7 @@ package org.wheatgenetics.inventory.display;
 public class DisplayFragment extends android.support.v4.app.Fragment
 implements org.wheatgenetics.inventory.display.DeleteRecordAlertDialog.Handler
 {
-    @java.lang.SuppressWarnings({"UnnecessaryInterfaceModifier"})
-    public interface Handler
+    @java.lang.SuppressWarnings({"UnnecessaryInterfaceModifier"}) public interface Handler
     {
         public abstract void                                               focusEnvIdEditText();
         public abstract org.wheatgenetics.inventory.model.InventoryRecords inventoryRecords  ();
@@ -47,13 +46,13 @@ implements org.wheatgenetics.inventory.display.DeleteRecordAlertDialog.Handler
 
     private org.wheatgenetics.inventory.model.InventoryRecord inventoryRecord;
     private org.wheatgenetics.inventory.display.DeleteRecordAlertDialog
-        deleteRecordAlertDialog = null;
-    private android.view.View.OnLongClickListener onLongClickListenerInstance = null;
+        deleteRecordAlertDialog = null;                                                 // lazy load
+    private android.view.View.OnLongClickListener onLongClickListenerInstance = null;   // lazy load
 
-    private android.widget.ScrollView           scrollViewInstance   = null;
-    private java.lang.Runnable                  scrollActionInstance = null;
-    private android.view.ViewGroup.LayoutParams layoutParamsInstance = null;
-    private android.widget.TableLayout          tableLayoutInstance  = null;
+    private android.widget.ScrollView           scrollViewInstance   = null;            // lazy load
+    private java.lang.Runnable                  scrollActionInstance = null;            // lazy load
+    private android.view.ViewGroup.LayoutParams layoutParamsInstance = null;            // lazy load
+    private android.widget.TableLayout          tableLayoutInstance  = null;            // lazy load
 
     /**
      * Position of last inventoryRecord added.  If == 0 then no inventoryRecord has been added yet.
@@ -126,11 +125,11 @@ implements org.wheatgenetics.inventory.display.DeleteRecordAlertDialog.Handler
 
     private void deleteRecord(final java.lang.Object tag)
     {
-        if (null != tag) if (tag instanceof org.wheatgenetics.inventory.model.InventoryRecord)
+        if (tag instanceof org.wheatgenetics.inventory.model.InventoryRecord)
         {
             if (null == this.deleteRecordAlertDialog) this.deleteRecordAlertDialog =
                 new org.wheatgenetics.inventory.display.DeleteRecordAlertDialog(
-                    this.getActivity(), this);
+                    this.getActivity(),this);
             this.inventoryRecord = (org.wheatgenetics.inventory.model.InventoryRecord) tag;
             this.deleteRecordAlertDialog.show(this.inventoryRecord.getEnvId());
         }
@@ -211,7 +210,7 @@ implements org.wheatgenetics.inventory.display.DeleteRecordAlertDialog.Handler
 
     @java.lang.Override public void onDetach() { this.handler = null; super.onDetach(); }
 
-    // region org.wheatgenetics.inventory.display.DeleteRecordAlertDialog.HandlerOverridden Method
+    // region org.wheatgenetics.inventory.display.DeleteRecordAlertDialog.Handler Overridden Method
     @java.lang.Override public void deleteRecord()
     { assert null != this.handler; this.handler.deleteRecord(this.inventoryRecord); }
     // endregion

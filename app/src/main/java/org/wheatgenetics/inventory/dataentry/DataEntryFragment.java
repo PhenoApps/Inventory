@@ -28,8 +28,7 @@ package org.wheatgenetics.inventory.dataentry;
 public class DataEntryFragment extends android.support.v4.app.Fragment
 implements org.wheatgenetics.inventory.dataentry.SetBoxAlertDialog.Handler
 {
-    @java.lang.SuppressWarnings({"UnnecessaryInterfaceModifier"})
-    public interface Handler
+    @java.lang.SuppressWarnings({"UnnecessaryInterfaceModifier"}) public interface Handler
     {
         public abstract void             setBox(java.lang.String box);
         public abstract java.lang.String getBox()                    ;
@@ -43,8 +42,9 @@ implements org.wheatgenetics.inventory.dataentry.SetBoxAlertDialog.Handler
     private android.widget.TextView boxValueTextView         ;
     private android.widget.EditText envidEditText, wtEditText;
 
-    private org.wheatgenetics.inventory.dataentry.SetBoxAlertDialog setBoxAlertDialog = null;
-    // endregion
+    private org.wheatgenetics.inventory.dataentry.SetBoxAlertDialog
+        setBoxAlertDialog = null;                                                           // lazy
+    // endregion                                                                            //  load
 
     // region Private Methods
     private static void sendDebugLogMsg(final java.lang.String msg)

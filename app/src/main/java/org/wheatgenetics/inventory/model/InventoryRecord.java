@@ -2,6 +2,7 @@ package org.wheatgenetics.inventory.model;
 
 /**
  * Uses:
+ * android.support.annotation.NonNull
  * android.util.Log
  *
  * org.wheatgenetics.javalib.Utils
@@ -10,9 +11,9 @@ package org.wheatgenetics.inventory.model;
 public class InventoryRecord extends java.lang.Object
 {
     // region Fields
-    private       java.lang.String box = null, envid = null, person = null, date = null;
-    private final int              position                                            ;
-    private       java.lang.String wt = null                                           ;
+    private final java.lang.String box, envid, person, date;
+    private final int              position                ;
+    private final java.lang.String wt                      ;
     // endregion
 
     private static java.lang.String trim(java.lang.String string)
@@ -51,7 +52,7 @@ public class InventoryRecord extends java.lang.Object
     }
     // endregion
 
-    @java.lang.Override public java.lang.String toString()
+    @android.support.annotation.NonNull @java.lang.Override public java.lang.String toString()
     {
         return this.getBox() + "," + this.getEnvId() + "," + this.getPerson() +
             "," + this.getDate() + "," + this.getPosition() + "," + this.getWt();
@@ -68,10 +69,13 @@ public class InventoryRecord extends java.lang.Object
     {
         final java.lang.String fields[] = this.toString().split(",");
         for (int i = 0; i < fields.length; i++)
-            if (fields[i].length() <= 0)
+        {
+            final java.lang.String field = fields[i];
+            if (field.length() <= 0)
                 fields[i] = "null";
             else
-                if (!fields[i].equals("null")) fields[i] = "'" + fields[i] + "'";
+                if (!field.equals("null")) fields[i] = "'" + field + "'";
+        }
 
         return "(" +
             fields[0] + "," +  // box

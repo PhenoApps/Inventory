@@ -13,8 +13,8 @@ package org.wheatgenetics.inventory.navigation;
  */
 class DeleteAlertDialog extends org.wheatgenetics.androidlibrary.AlertDialog
 {
-    @java.lang.SuppressWarnings({"UnnecessaryInterfaceModifier"})
-    interface Handler { public abstract void delete(); }
+    @java.lang.SuppressWarnings({"UnnecessaryInterfaceModifier"}) interface Handler
+    { public abstract void delete(); }
 
     private final org.wheatgenetics.inventory.navigation.DeleteAlertDialog.Handler handler;
 

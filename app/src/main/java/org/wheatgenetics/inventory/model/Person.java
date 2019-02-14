@@ -2,6 +2,8 @@ package org.wheatgenetics.inventory.model;
 
 /**
  * Uses:
+ * android.support.annotation.NonNull
+ *
  * org.wheatgenetics.javalib.Utils
  */
 @java.lang.SuppressWarnings({"ClassExplicitlyExtendsObject"})
@@ -17,7 +19,7 @@ public class Person extends java.lang.Object
         this.lastName  = org.wheatgenetics.javalib.Utils.adjust(lastName );
     }
 
-    @java.lang.Override public java.lang.String toString()
+    @android.support.annotation.NonNull @java.lang.Override public java.lang.String toString()
     { return (this.firstName + " " + this.lastName).trim(); }
 
     public boolean isSet() { return this.firstName.length() > 0 || this.lastName.length() > 0; }

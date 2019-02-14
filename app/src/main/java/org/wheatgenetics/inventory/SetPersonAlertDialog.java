@@ -19,8 +19,7 @@ package org.wheatgenetics.inventory;
  */
 class SetPersonAlertDialog extends org.wheatgenetics.androidlibrary.AlertDialog
 {
-    @java.lang.SuppressWarnings({"UnnecessaryInterfaceModifier"})
-    interface PersonStorer
+    @java.lang.SuppressWarnings({"UnnecessaryInterfaceModifier"}) interface PersonStorer
     {
         public abstract void storePerson(@android.support.annotation.NonNull
         final org.wheatgenetics.inventory.model.Person person);
@@ -84,7 +83,7 @@ class SetPersonAlertDialog extends org.wheatgenetics.androidlibrary.AlertDialog
         {
             final java.lang.String firstName, lastName;
             if (null == person)
-                { firstName = null; lastName = null; }
+                firstName = lastName = null;
             else
                 { firstName = person.firstName; lastName = person.lastName; }
             this.firstNameEditText.setText(firstName); this.lastNameEditText.setText(lastName);

@@ -16,15 +16,15 @@ package org.wheatgenetics.inventory.dataentry;
  */
 class SetBoxAlertDialog extends org.wheatgenetics.androidlibrary.AlertDialog
 {
-    @java.lang.SuppressWarnings({"UnnecessaryInterfaceModifier"})
-    interface Handler { public abstract void setBox(java.lang.String box); }
+    @java.lang.SuppressWarnings({"UnnecessaryInterfaceModifier"}) interface Handler
+    { public abstract void setBox(java.lang.String box); }
 
     // region Fields
     private final org.wheatgenetics.inventory.dataentry.SetBoxAlertDialog.Handler handler;
 
     private android.widget.EditText                     editText                         ;
-    private android.view.inputmethod.InputMethodManager inputMethodManagerInstance = null;
-    // endregion
+    private android.view.inputmethod.InputMethodManager inputMethodManagerInstance = null;  // lazy
+    // endregion                                                                            //  load
 
     // region Private Methods
     private android.view.inputmethod.InputMethodManager inputMethodManager()

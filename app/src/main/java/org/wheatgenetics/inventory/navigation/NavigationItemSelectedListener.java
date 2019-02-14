@@ -24,8 +24,7 @@ android.support.design.widget.NavigationView.OnNavigationItemSelectedListener,
 org.wheatgenetics.inventory.navigation.ExportAlertDialog.Handler             ,
 org.wheatgenetics.inventory.navigation.DeleteAlertDialog.Handler
 {
-    @java.lang.SuppressWarnings({"UnnecessaryInterfaceModifier"})
-    public interface Handler
+    @java.lang.SuppressWarnings({"UnnecessaryInterfaceModifier"}) public interface Handler
     {
         public abstract void setPerson(); public abstract void connectScale();
         public abstract void exportCSV(); public abstract void exportSQL   ();
@@ -39,15 +38,16 @@ org.wheatgenetics.inventory.navigation.DeleteAlertDialog.Handler
         handler;
     private final android.view.View.OnClickListener versionOnClickListener;
 
-    private org.wheatgenetics.inventory.navigation.ExportAlertDialog exportAlertDialog = null;
-    private org.wheatgenetics.inventory.navigation.DeleteAlertDialog deleteAlertDialog = null;
-    private org.wheatgenetics.about.AboutAlertDialog                 aboutAlertDialog  = null;
+    /** ll == lazy load */
+    private org.wheatgenetics.inventory.navigation.ExportAlertDialog exportAlertDialog = null; // ll
+    private org.wheatgenetics.inventory.navigation.DeleteAlertDialog deleteAlertDialog = null; // ll
+    private org.wheatgenetics.about.AboutAlertDialog                 aboutAlertDialog  = null; // ll
     // endregion
 
     public NavigationItemSelectedListener(final android.app.Activity activity,
-    final java.lang.String versionName,
-    final org.wheatgenetics.inventory.navigation.NavigationItemSelectedListener.Handler handler,
-    final android.view.View.OnClickListener versionOnClickListener)
+    final java.lang.String                                                              versionName,
+    final org.wheatgenetics.inventory.navigation.NavigationItemSelectedListener.Handler handler    ,
+    final android.view.View.OnClickListener                                  versionOnClickListener)
     {
         super();
 
@@ -66,27 +66,28 @@ org.wheatgenetics.inventory.navigation.DeleteAlertDialog.Handler
         {
             // The following five ids that have names that start with "nav_" come from
             // menu/activity_main_drawer.xml.
-            case org.wheatgenetics.inventory.R.id.nav_set_person : this.handler.setPerson(); break;
+            case org.wheatgenetics.inventory.R.id.nav_set_person: this.handler.setPerson(); break;
 
-            case org.wheatgenetics.inventory.R.id.nav_connect_scale :
+            case org.wheatgenetics.inventory.R.id.nav_connect_scale:
                 this.handler.connectScale(); break;
 
-            case org.wheatgenetics.inventory.R.id.nav_export :
+            case org.wheatgenetics.inventory.R.id.nav_export:
                 if (null == this.exportAlertDialog) this.exportAlertDialog =
                     new org.wheatgenetics.inventory.navigation.ExportAlertDialog(
-                        this.activity, this);
+                        this.activity,this);
                 this.exportAlertDialog.show(); break;
 
-            case org.wheatgenetics.inventory.R.id.nav_delete :
+            case org.wheatgenetics.inventory.R.id.nav_delete:
                 if (null == this.deleteAlertDialog) this.deleteAlertDialog =
                     new org.wheatgenetics.inventory.navigation.DeleteAlertDialog(
-                        this.activity, this);
+                        this.activity,this);
                 this.deleteAlertDialog.show(); break;
 
-            case org.wheatgenetics.inventory.R.id.nav_show_about :
+            case org.wheatgenetics.inventory.R.id.nav_show_about:
                 if (null == this.aboutAlertDialog)
                 {
                     assert null != this.activity;
+                    // noinspection SpellCheckingInspection
                     this.aboutAlertDialog = new org.wheatgenetics.about.AboutAlertDialog(
                         this.activity,
                         this.activity.getString(
@@ -98,7 +99,7 @@ org.wheatgenetics.inventory.navigation.DeleteAlertDialog.Handler
                                 " Scales (http://www.elane.net).\n",
                             "Inventory uses code from the following open source projects:",
                             "theUltimateScale ( https://github.com/" +
-                                "theUltimateLabs/theUtimateScale )"},
+                                "theUltimateLabs/theUtimateScale )"},    // intentionally misspelled
                         org.wheatgenetics.about.OtherApps.Index.INVENTORY,
                         this.versionOnClickListener                      );
                 }

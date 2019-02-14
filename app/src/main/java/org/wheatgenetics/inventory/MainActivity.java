@@ -80,17 +80,18 @@ org.wheatgenetics.androidlibrary.GetExportFileNameAlertDialog.Handler
     // region Fields
     private android.support.v4.widget.DrawerLayout drawerLayout = null;
 
-    private org.wheatgenetics.sharedpreferences.SharedPreferences sharedPreferences               ;
-    private org.wheatgenetics.usb.ScaleReader                     scaleReaderInstance       = null;
-    private org.wheatgenetics.usb.ScaleExceptionAlertDialog       scaleExceptionAlertDialog = null;
+    /** ll == lazy load */
+    private org.wheatgenetics.sharedpreferences.SharedPreferences sharedPreferences         ;
+    private org.wheatgenetics.usb.ScaleReader               scaleReaderInstance       = null;  // ll
+    private org.wheatgenetics.usb.ScaleExceptionAlertDialog scaleExceptionAlertDialog = null;  // ll
     private org.wheatgenetics.androidlibrary.GetExportFileNameAlertDialog
-        getExportFileNameAlertDialog = null;
-    private org.wheatgenetics.changelog.ChangeLogAlertDialog changeLogAlertDialog = null;
-    private org.wheatgenetics.zxing.BarcodeScanner           barcodeScanner       = null;
+        getExportFileNameAlertDialog = null;                                                   // ll
+    private org.wheatgenetics.changelog.ChangeLogAlertDialog changeLogAlertDialog = null;      // ll
+    private org.wheatgenetics.zxing.BarcodeScanner           barcodeScanner       = null;      // ll
 
-    private org.wheatgenetics.inventory.SetPersonAlertDialog        setPersonAlertDialog = null;
-    private org.wheatgenetics.inventory.InventoryDir                inventoryDir         = null;
-    private org.wheatgenetics.inventory.SamplesTable                samplesTableInstance = null;
+    private org.wheatgenetics.inventory.SetPersonAlertDialog        setPersonAlertDialog = null;//ll
+    private org.wheatgenetics.inventory.InventoryDir                inventoryDir         = null;//ll
+    private org.wheatgenetics.inventory.SamplesTable                samplesTableInstance = null;//ll
     private org.wheatgenetics.inventory.dataentry.DataEntryFragment dataEntryFragment          ;
     private org.wheatgenetics.inventory.display.DisplayFragment     displayFragment            ;
 
@@ -252,7 +253,7 @@ org.wheatgenetics.androidlibrary.GetExportFileNameAlertDialog.Handler
     {
         final android.widget.TextView personTextView = this.findViewById(
             org.wheatgenetics.inventory.R.id.personTextView);
-        assert null != personTextView; assert null != this.sharedPreferences;
+        assert null != this.sharedPreferences; assert null != personTextView;
         personTextView.setText(this.sharedPreferences.getPerson().toString());
     }
 
@@ -367,7 +368,8 @@ org.wheatgenetics.androidlibrary.GetExportFileNameAlertDialog.Handler
             try
             {
                 final android.content.pm.PackageInfo packageInfo =
-                    this.getPackageManager().getPackageInfo(this.getPackageName(), /* i => */0);
+                    this.getPackageManager().getPackageInfo(
+                        this.getPackageName(), /* flags => */0);
                 assert null != packageInfo;
                 versionCode = packageInfo.versionCode; versionName = packageInfo.versionName;
             }
@@ -570,7 +572,6 @@ org.wheatgenetics.androidlibrary.GetExportFileNameAlertDialog.Handler
     // endregion
     // endregion
 
-    public void handleSetBoxButtonClick(
-    @java.lang.SuppressWarnings("unused") final android.view.View v)
+    public void handleSetBoxButtonClick(final android.view.View v)
     { assert null != this.dataEntryFragment; dataEntryFragment.handleSetBoxButtonClick(this.box); }
 }

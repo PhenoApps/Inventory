@@ -54,23 +54,22 @@ class SamplesTable extends java.lang.Object
     private static android.content.ContentValues makeContentValues(
     final org.wheatgenetics.inventory.model.InventoryRecord inventoryRecord)
     {
-        final android.content.ContentValues contentValues = new android.content.ContentValues();
+        final android.content.ContentValues result = new android.content.ContentValues();
 
         assert null != inventoryRecord;
-        contentValues.put(org.wheatgenetics.inventory.SamplesTable.BOX_FIELD_NAME,
+        result.put(org.wheatgenetics.inventory.SamplesTable.BOX_FIELD_NAME,
             inventoryRecord.getBox());
-        contentValues.put(org.wheatgenetics.inventory.SamplesTable.ENVID_FIELD_NAME,
+        result.put(org.wheatgenetics.inventory.SamplesTable.ENVID_FIELD_NAME,
             inventoryRecord.getEnvId());
-        contentValues.put(org.wheatgenetics.inventory.SamplesTable.PERSON_FIELD_NAME,
+        result.put(org.wheatgenetics.inventory.SamplesTable.PERSON_FIELD_NAME,
             inventoryRecord.getPerson());
-        contentValues.put(org.wheatgenetics.inventory.SamplesTable.DATE_FIELD_NAME,
+        result.put(org.wheatgenetics.inventory.SamplesTable.DATE_FIELD_NAME,
             inventoryRecord.getDate());
-        contentValues.put(org.wheatgenetics.inventory.SamplesTable.POSITION_FIELD_NAME,
+        result.put(org.wheatgenetics.inventory.SamplesTable.POSITION_FIELD_NAME,
             inventoryRecord.getPosition());
-        contentValues.put(org.wheatgenetics.inventory.SamplesTable.WT_FIELD_NAME,
-            inventoryRecord.getWt());
+        result.put(org.wheatgenetics.inventory.SamplesTable.WT_FIELD_NAME, inventoryRecord.getWt());
 
-        return contentValues;
+        return result;
     }
 
     private int internalDelete(final java.lang.String whereClause)
@@ -79,7 +78,7 @@ class SamplesTable extends java.lang.Object
             this.sqLiteOpenHelper.getWritableDatabase();
         assert null != writableDatabase; return writableDatabase.delete(
             /* table       => */ org.wheatgenetics.inventory.SamplesTable.TABLE_NAME,
-            /* whereClause => */ whereClause,
+            /* whereClause => */ whereClause                                        ,
             /* whereArgs   => */null);
     }
     // endregion
@@ -134,7 +133,7 @@ class SamplesTable extends java.lang.Object
     // region Multiple-Record Package Methods
     org.wheatgenetics.inventory.model.InventoryRecords getAll()
     {
-        final org.wheatgenetics.inventory.model.InventoryRecords inventoryRecords =
+        final org.wheatgenetics.inventory.model.InventoryRecords result =
             new org.wheatgenetics.inventory.model.InventoryRecords();
         {
             final android.database.Cursor cursor;
@@ -149,7 +148,7 @@ class SamplesTable extends java.lang.Object
             if (null != cursor)
             {
                 while (cursor.moveToNext())
-                    inventoryRecords.add(new org.wheatgenetics.inventory.model.InventoryRecord(
+                    result.add(new org.wheatgenetics.inventory.model.InventoryRecord(
                         /* box      => */ cursor.getString(1),
                         /* envid    => */ cursor.getString(2),
                         /* person   => */ cursor.getString(3),
@@ -159,12 +158,12 @@ class SamplesTable extends java.lang.Object
                 cursor.close();
             }
         }
-        inventoryRecords.sendDebugLogMsg("getAll()"); return inventoryRecords;
+        result.sendDebugLogMsg("getAll()"); return result;
     }
 
     java.lang.String getBoxList()
     {
-        java.lang.StringBuilder boxList = null;
+        java.lang.StringBuilder stringBuilder = null;
         {
             final android.database.Cursor cursor;
             {
@@ -193,16 +192,16 @@ class SamplesTable extends java.lang.Object
 
                     if (null != box)
                     {
-                        boxList = new java.lang.StringBuilder("'" + box + "'");
-                        while (cursor.moveToNext())
-                            boxList.append(",'").append(cursor.getString(0)).append("'");
-                        boxList.insert(0,"(").append(")");
+                        stringBuilder = new java.lang.StringBuilder("'" + box + "'");
+                        while (cursor.moveToNext()) stringBuilder.append(",'")
+                            .append(cursor.getString(0)).append("'");
+                        stringBuilder.insert(0,"(").append(")");
                     }
                 }
                 cursor.close();
             }
         }
-        return null == boxList ? null : boxList.toString();
+        return null == stringBuilder ? null : stringBuilder.toString();
     }
 
     void deleteAll() { this.internalDelete(null); }
