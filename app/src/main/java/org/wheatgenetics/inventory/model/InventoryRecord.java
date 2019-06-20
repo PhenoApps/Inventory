@@ -67,6 +67,7 @@ public class InventoryRecord extends java.lang.Object
 
     java.lang.String getSQL()
     {
+        // noinspection CStyleArrayDeclaration
         final java.lang.String fields[] = this.toString().split(",");
         for (int i = 0; i < fields.length; i++)
         {

@@ -505,10 +505,11 @@ org.wheatgenetics.androidlibrary.GetExportFileNameAlertDialog.Handler
             "null"));
     }
 
-    @java.lang.Override public void onRequestPermissionsResult(
-                                        final int              requestCode   ,
-    @android.support.annotation.NonNull final java.lang.String permissions [],
-    @android.support.annotation.NonNull final int              grantResults[])
+    @java.lang.Override public void onRequestPermissionsResult(final int requestCode,
+    @android.support.annotation.NonNull @java.lang.SuppressWarnings({"CStyleArrayDeclaration"})
+        final java.lang.String permissions[],
+    @android.support.annotation.NonNull @java.lang.SuppressWarnings({"CStyleArrayDeclaration"})
+        final int grantResults[])
     {
         if (org.wheatgenetics.inventory.MainActivity.REQUEST_CODE == requestCode)
         {
